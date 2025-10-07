@@ -1,30 +1,28 @@
+import { generateTemplateHtml } from '../templateHtml/index.js'
+
 export function downloadHtml(templateName, formData) {
-  const html = `
-<!DOCTYPE html>
+  const emailHtml = generateTemplateHtml(templateName, formData)
+  
+  const html = `<!DOCTYPE html>
 <html lang="ko">
-<head><meta charset="UTF-8"></head>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>${getTemplateTitle(formData)}</title>
+</head>
 <body>
-${generateEmailHtml(formData)}
+${emailHtml}
 </body>
 </html>`
 
-  const cleanHtml = html.replace(/<script[^>]*>[\s\S]*?Live reload enabled[\s\S]*?<\/script>/gi, '')
-  const blob = new Blob([cleanHtml], { type: 'text/html' })
+  const blob = new Blob([html], { type: 'text/html; charset=utf-8' })
   const a = document.createElement('a')
   a.href = URL.createObjectURL(blob)
-  a.download = `${templateName}.html`
+  a.download = `${templateName}_${Date.now()}.html`
   a.click()
   URL.revokeObjectURL(a.href)
 }
 
-function generateEmailHtml(data) {
-  return `
-  <table width="100%" cellpadding="0" cellspacing="0" border="0">
-    <tr><td align="center">
-      <h1>${data.title}</h1>
-      <p>${data.subtitle}</p>
-      <img src="${data.heroImage}" style="width:100%">
-      <p>${data.mainText}</p>
-    </td></tr>
-  </table>`
+function getTemplateTitle(formData) {
+  return formData.title || formData.bannerTitle || formData.headerText || 'Email Template'
 }
