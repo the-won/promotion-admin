@@ -6,6 +6,7 @@
 import EmType1 from '../templates/EmType1.vue'
 import EmType2 from '../templates/EmType2.vue'
 import EmType3 from '../templates/EmType3.vue'
+import EmType4 from '../templates/EmType4.vue'
 import Vue from 'vue'
 
 export default {
@@ -35,7 +36,8 @@ export default {
       const map = {
         'em-type-1': EmType1,
         'em-type-2': EmType2,
-        'em-type-3': EmType3
+        'em-type-3': EmType3,
+        'em-type-4': EmType4,
       }
 
       const comp = map[this.template]

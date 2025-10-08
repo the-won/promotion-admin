@@ -181,6 +181,41 @@ const templateDefaults = {
       value: '#'
     },
    
+  },
+  'em-type-4': {
+     headerText: {
+      label: '헤더 텍스트',
+      type: 'text',
+      value: '특별한 이벤트'
+    },
+    backgroundImage: {
+      label: '배경 이미지 URL',
+      type: 'url',
+      value: 'https://d2odciwzsa8zjd.cloudfront.net/public/editorImage/202509/8dae3bd8-5e33-4d1c-af7e-3cdbc39b3b1a.png'
+    },
+    hotspots: {
+      label: '클릭 가능한 버튼 영역',
+      type: 'hotspot-list',
+      value: [
+        {
+          id: 1,
+          text: '지금 신청하기',
+          href: 'https://example.com/apply',
+          alt: '신청하기 버튼',
+          position: {
+            left: 30,
+            top: 70,
+            width: 30,
+            height: 10
+          }
+        }
+      ]
+    },
+    footerText: {
+      label: '푸터 텍스트',
+      type: 'text',
+      value: 'ⓒ 2025 회사명 All rights reserved.'
+    }
   }
 }
 

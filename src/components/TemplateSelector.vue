@@ -5,6 +5,7 @@
       <option value="em-type-1">em-type-1</option>
       <option value="em-type-2">em-type-2</option>
       <option value="em-type-3">em-type-3</option>
+      <option value="em-type-4">em-type-4</option>
     </select>
   </div>
 </template>

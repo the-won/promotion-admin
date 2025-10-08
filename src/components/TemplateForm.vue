@@ -97,13 +97,21 @@
           style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;"
         />
 
+      <!-- Hotspot Editor -->
+      <HotspotEditor
+        v-else-if="config.type === 'hotspot-list'"
+        v-model="localData[key]"
+      />
 
     </div>
   </div>
 </template>
 
 <script>
+import HotspotEditor from './HotspotEditor.vue'
+
 export default {
+  components: { HotspotEditor },
   props: ['template', 'value', 'templateConfig'],
   data() {
     return { 
