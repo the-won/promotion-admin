@@ -1,5 +1,10 @@
 <template>
-  <iframe ref="iframeRef" class="preview-frame"></iframe>
+  <div class="preview-container">
+    <component 
+      :is="currentComponent"
+      :data="formData"
+    />
+  </div>
 </template>
 
 <script>
@@ -7,54 +12,34 @@ import EmType1 from '../templates/EmType1.vue'
 import EmType2 from '../templates/EmType2.vue'
 import EmType3 from '../templates/EmType3.vue'
 import EmType4 from '../templates/EmType4.vue'
-import Vue from 'vue'
 
 export default {
+  components: {
+    EmType1,
+    EmType2,
+    EmType3,
+    EmType4
+  },
   props: ['template', 'formData'],
-  watch: {
-    formData: {
-      handler() {
-        this.renderPreview()
-      },
-      deep: true
-    },
-    template() {
-      this.renderPreview()
-    }
-  },
-  mounted() {
-    this.renderPreview()
-  },
-  methods: {
-    renderPreview() {
-      const iframe = this.$refs.iframeRef
-      const iframeDoc = iframe.contentDocument
-      iframeDoc.open()
-      iframeDoc.write('<!DOCTYPE html><html><body><div id="app"></div></body></html>')
-      iframeDoc.close()
-
+  computed: {
+    currentComponent() {
       const map = {
-        'em-type-1': EmType1,
-        'em-type-2': EmType2,
-        'em-type-3': EmType3,
-        'em-type-4': EmType4,
+        'em-type-1': 'EmType1',
+        'em-type-2': 'EmType2',
+        'em-type-3': 'EmType3',
+        'em-type-4': 'EmType4'
       }
-
-      const comp = map[this.template]
-      if (!comp) return
-
-      new Vue({
-        render: h => h(comp, { props: { data: this.formData } })
-      }).$mount(iframeDoc.getElementById('app'))
+      return map[this.template] || 'EmType1'
     }
   }
 }
 </script>
 
 <style scoped>
-.preview-frame {
+.preview-container {
   width: 100%;
   height: 100%;
-  border: none;
+  overflow: auto;
+  background: #fff;
 }
 </style>
