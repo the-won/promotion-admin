@@ -101,6 +101,8 @@
       <HotspotEditor
         v-else-if="config.type === 'hotspot-list'"
         v-model="localData[key]"
+        :selectedId="selectedHotspotId"
+        @select="handleSelectHotspot"
       />
 
     </div>
@@ -112,7 +114,7 @@ import HotspotEditor from './HotspotEditor.vue'
 
 export default {
   components: { HotspotEditor },
-  props: ['template', 'value', 'templateConfig'],
+  props: ['template', 'value', 'templateConfig', 'selectedHotspotId'],
   data() {
     return { 
       localData: {} 
@@ -124,7 +126,6 @@ export default {
   watch: {
     value: {
       handler(newVal) {
-        // 외부에서 값이 변경될 때만 업데이트 (무한루프 방지)
         if (JSON.stringify(newVal) !== JSON.stringify(this.localData)) {
           this.localData = { ...newVal }
         }
@@ -133,12 +134,16 @@ export default {
     },
     localData: {
       handler(val) {
-        // 내부에서 값이 변경될 때만 emit (무한루프 방지)
         if (JSON.stringify(val) !== JSON.stringify(this.value)) {
           this.$emit('input', { ...val })
         }
       },
       deep: true
+    }
+  },
+  methods: {
+    handleSelectHotspot(id) {
+      this.$emit('select-hotspot', id)
     }
   }
 }

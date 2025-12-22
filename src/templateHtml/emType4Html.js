@@ -1,5 +1,5 @@
 export function generateEmType4Html(data) {
-  const hotspotsHtml = data.hotspots.map(hotspot => {
+  const hotspotsHtml = (data.hotspots || []).map(hotspot => {
     const pos = hotspot.position
     return `
     <a 
@@ -16,14 +16,14 @@ export function generateEmType4Html(data) {
   <table width="100%" cellspacing="0" cellpadding="0" style="background:#e8f4f8;">
     <tr>
       <td align="center">
-        <table width="600" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:8px;overflow:hidden;">
+        <table width="900" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:8px;overflow:hidden;">
           <tr>
             <td align="center" style="padding:20px;background:#0077be;">
               <h1 style="color:#fff;margin:0;font-size:24px;">${data.headerText}</h1>
             </td>
           </tr>
           <tr>
-            <td style="position:relative;padding:0;">
+            <td style="padding:0;">
               <div style="position:relative;width:100%;">
                 <img src="${data.backgroundImage}" style="width:100%;display:block;" alt="Background" />
                 ${hotspotsHtml}

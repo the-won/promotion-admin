@@ -6,13 +6,19 @@
     </div>
 
     <div v-if="localHotspots.length === 0" class="empty-state">
-      버튼을 추가하여 클릭 가능한 영역을 만들어보세요.
+      버튼을 추가한 후 프리뷰에서 드래그하여 위치를 조정하세요.
     </div>
 
-    <div v-for="(hotspot, index) in localHotspots" :key="hotspot.id" class="hotspot-item">
+    <div 
+      v-for="(hotspot, index) in localHotspots" 
+      :key="hotspot.id" 
+      class="hotspot-item"
+      :class="{ selected: selectedId === hotspot.id }"
+      @click="selectHotspot(hotspot.id)"
+    >
       <div class="hotspot-header">
         <span class="hotspot-title">버튼 {{ index + 1 }}</span>
-        <button @click="removeHotspot(index)" class="delete-btn">🗑️</button>
+        <button @click.stop="removeHotspot(index)" class="delete-btn">🗑️</button>
       </div>
 
       <div class="form-group">
@@ -45,104 +51,9 @@
         />
       </div>
 
-      <div class="position-section">
-        <h5>📍 위치 및 크기</h5>
-
-        <!-- Left -->
-        <div class="form-group">
-          <label>가로 위치 (Left)</label>
-          <div class="slider-input-group">
-            <input 
-              type="range"
-              v-model.number="hotspot.position.left"
-              min="0"
-              max="100"
-              step="0.5"
-              class="slider"
-            />
-            <input 
-              type="number"
-              v-model.number="hotspot.position.left"
-              min="0"
-              max="100"
-              step="0.5"
-              class="number-input"
-            />
-            <span class="unit">%</span>
-          </div>
-        </div>
-
-        <!-- Top -->
-        <div class="form-group">
-          <label>세로 위치 (Top)</label>
-          <div class="slider-input-group">
-            <input 
-              type="range"
-              v-model.number="hotspot.position.top"
-              min="0"
-              max="100"
-              step="0.5"
-              class="slider"
-            />
-            <input 
-              type="number"
-              v-model.number="hotspot.position.top"
-              min="0"
-              max="100"
-              step="0.5"
-              class="number-input"
-            />
-            <span class="unit">%</span>
-          </div>
-        </div>
-
-        <!-- Width -->
-        <div class="form-group">
-          <label>너비 (Width)</label>
-          <div class="slider-input-group">
-            <input 
-              type="range"
-              v-model.number="hotspot.position.width"
-              min="5"
-              max="80"
-              step="0.5"
-              class="slider"
-            />
-            <input 
-              type="number"
-              v-model.number="hotspot.position.width"
-              min="5"
-              max="80"
-              step="0.5"
-              class="number-input"
-            />
-            <span class="unit">%</span>
-          </div>
-        </div>
-
-        <!-- Height -->
-        <div class="form-group">
-          <label>높이 (Height)</label>
-          <div class="slider-input-group">
-            <input 
-              type="range"
-              v-model.number="hotspot.position.height"
-              min="3"
-              max="30"
-              step="0.5"
-              class="slider"
-            />
-            <input 
-              type="number"
-              v-model.number="hotspot.position.height"
-              min="3"
-              max="30"
-              step="0.5"
-              class="number-input"
-            />
-            <span class="unit">%</span>
-          </div>
-        </div>
+      <div class="position-info">
+        <small>📍 위치: {{ hotspot.position.left.toFixed(1) }}%, {{ hotspot.position.top.toFixed(1) }}%</small><br>
+        <small>📐 크기: {{ hotspot.position.width.toFixed(1) }}% × {{ hotspot.position.height.toFixed(1) }}%</small>
       </div>
     </div>
   </div>
@@ -150,7 +61,7 @@
 
 <script>
 export default {
-  props: ['value'],
+  props: ['value', 'selectedId'],
   data() {
     return {
       localHotspots: []
@@ -179,21 +90,26 @@ export default {
   },
   methods: {
     addHotspot() {
-      this.localHotspots.push({
+      const newHotspot = {
         id: Date.now(),
         text: '버튼 텍스트',
         href: '#',
         alt: '버튼',
         position: {
-          left: 30,
-          top: 50,
-          width: 25,
-          height: 10
+          left: 35,
+          top: 40,
+          width: 30,
+          height: 12
         }
-      })
+      }
+      this.localHotspots.push(newHotspot)
+      this.$emit('select', newHotspot.id)
     },
     removeHotspot(index) {
       this.localHotspots.splice(index, 1)
+    },
+    selectHotspot(id) {
+      this.$emit('select', id)
     }
   }
 }
@@ -239,14 +155,27 @@ export default {
   background: #f9f9f9;
   border: 2px dashed #ddd;
   border-radius: 8px;
+  font-size: 14px;
 }
 
 .hotspot-item {
   background: white;
-  border: 1px solid #ddd;
+  border: 2px solid #ddd;
   border-radius: 8px;
   padding: 15px;
   margin-bottom: 15px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.hotspot-item:hover {
+  border-color: #007bff;
+}
+
+.hotspot-item.selected {
+  border-color: #007bff;
+  background: #f0f8ff;
+  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
 }
 
 .hotspot-header {
@@ -279,7 +208,7 @@ export default {
 }
 
 .form-group {
-  margin-bottom: 15px;
+  margin-bottom: 12px;
 }
 
 .form-group label {
@@ -298,65 +227,11 @@ export default {
   font-size: 14px;
 }
 
-.position-section {
-  margin-top: 20px;
-  padding-top: 15px;
+.position-info {
+  margin-top: 12px;
+  padding-top: 12px;
   border-top: 1px solid #eee;
-}
-
-.position-section h5 {
-  margin: 0 0 15px 0;
-  font-size: 14px;
   color: #666;
-}
-
-.slider-input-group {
-  display: flex;
-  gap: 10px;
-  align-items: center;
-}
-
-.slider {
-  flex: 1;
-  height: 6px;
-  -webkit-appearance: none;
-  appearance: none;
-  background: #ddd;
-  border-radius: 3px;
-  outline: none;
-}
-
-.slider::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  appearance: none;
-  width: 18px;
-  height: 18px;
-  background: #007bff;
-  cursor: pointer;
-  border-radius: 50%;
-}
-
-.slider::-moz-range-thumb {
-  width: 18px;
-  height: 18px;
-  background: #007bff;
-  cursor: pointer;
-  border-radius: 50%;
-  border: none;
-}
-
-.number-input {
-  width: 70px;
-  padding: 6px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  text-align: center;
-  font-size: 14px;
-}
-
-.unit {
-  font-size: 14px;
-  color: #666;
-  min-width: 20px;
+  font-size: 12px;
 }
 </style>

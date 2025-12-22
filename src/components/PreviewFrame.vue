@@ -3,6 +3,9 @@
     <component 
       :is="currentComponent"
       :data="formData"
+      :selectedId="selectedHotspotId"
+      @select-hotspot="handleSelectHotspot"
+      @update-hotspot="handleUpdateHotspot"
     />
   </div>
 </template>
@@ -20,7 +23,7 @@ export default {
     EmType3,
     EmType4
   },
-  props: ['template', 'formData'],
+  props: ['template', 'formData', 'selectedHotspotId'],
   computed: {
     currentComponent() {
       const map = {
@@ -30,6 +33,14 @@ export default {
         'em-type-4': 'EmType4'
       }
       return map[this.template] || 'EmType1'
+    }
+  },
+  methods: {
+    handleSelectHotspot(id) {
+      this.$emit('select-hotspot', id)
+    },
+    handleUpdateHotspot(hotspot) {
+      this.$emit('update-hotspot', hotspot)
     }
   }
 }
