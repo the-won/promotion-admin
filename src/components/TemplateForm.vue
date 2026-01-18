@@ -105,15 +105,43 @@
         @select="handleSelectHotspot"
       />
 
+
+
+      <!-- Date Picker (커스텀) -->
+      <DatePicker
+        v-else-if="config.type === 'date-picker'"
+        v-model="localData[key]"
+      />
+
+      <!-- Hotdeal Row1 Editor -->
+      <HotdealRow1Editor
+        v-else-if="config.type === 'hotdeal-row1-list'"
+        v-model="localData[key]"
+      />
+
+      <!-- Hotdeal Row3 Editor -->
+      <HotdealRow3Editor
+        v-else-if="config.type === 'hotdeal-row3-list'"
+        v-model="localData[key]"
+      />
+
     </div>
   </div>
 </template>
 
 <script>
 import HotspotEditor from './HotspotEditor.vue'
+import HotdealRow1Editor from './HotdealRow1Editor.vue'
+import HotdealRow3Editor from './HotdealRow3Editor.vue'
+import DatePicker from './DatePicker.vue'
 
 export default {
-  components: { HotspotEditor },
+  components: { 
+    HotspotEditor,
+    HotdealRow1Editor,
+    HotdealRow3Editor,
+    DatePicker
+  },
   props: ['template', 'value', 'templateConfig', 'selectedHotspotId'],
   data() {
     return { 

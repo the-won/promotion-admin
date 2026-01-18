@@ -189,5 +189,91 @@ export const templateDefaults = {
       type: 'text',
       value: '© 2025 회사명 All rights reserved.'
     }
+  },
+
+  'em-type-5': {
+    companyType: {
+      label: '도메인',
+      type: 'select',
+      value: 'normal',
+      options: [
+        { value: 'normal', label: 'TOBE' },
+        { value: 'hynix', label: 'HYNIX' }
+      ]
+    },
+    sendDate: {
+      label: '발송일 기준',
+      type: 'date-picker',
+      value: {
+        year: '2025',
+        month: '01',
+        day: '01'
+      }
+    },
+    headerImage: {
+      label: '화끈딜 상단 이미지 URL',
+      type: 'url',
+      value: 'http://i.benepia.co.kr/ckeditor/2023/11/22/8D3218FBB6DF.Tomcat_117006390481290.jpg'
+    },
+    headerImageAlt: {
+      label: '상단 이미지 대체 텍스트',
+      type: 'text',
+      value: '베네피아 5대혜택 - 이번주 최저가 상품! /최저가보상/무료반품/배송지연보상/할인쿠폰/경품증정'
+    },
+    row1Products: {
+      label: '화끈딜 1단 상품',
+      type: 'hotdeal-row1-list',
+      value: [
+        {
+          id: 1,
+          productId: '',
+          imageUrl: '',
+          imageAlt: ''
+        },
+        {
+          id: 2,
+          productId: '',
+          imageUrl: '',
+          imageAlt: ''
+        },
+        {
+          id: 3,
+          productId: '',
+          imageUrl: '',
+          imageAlt: ''
+        }
+      ]
+    },
+    row3Products: {
+      label: '화끈딜 3단 상품',
+      type: 'hotdeal-row3-list',
+      value: [
+        {
+          id: 1,
+          products: [
+            { productId: '', imageUrl: '', imageAlt: '' },
+            { productId: '', imageUrl: '', imageAlt: '' },
+            { productId: '', imageUrl: '', imageAlt: '' }
+          ]
+        },
+        {
+          id: 2,
+          products: [
+            { productId: '', imageUrl: '', imageAlt: '' },
+            { productId: '', imageUrl: '', imageAlt: '' },
+            { productId: '', imageUrl: '', imageAlt: '' }
+          ]
+        },
+        {
+          id: 3,
+          products: [
+            { productId: '', imageUrl: '', imageAlt: '' },
+            { productId: '', imageUrl: '', imageAlt: '' },
+            { productId: '', imageUrl: '', imageAlt: '' }
+          ]
+        }
+      ]
+    }
   }
+
 }
