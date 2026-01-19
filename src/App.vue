@@ -34,8 +34,6 @@ import PreviewFrame from './components/PreviewFrame.vue'
 import { downloadHtml } from './utils/downloadHtml.js'
 import { templateDefaults } from './config/templateDefaults.js'
 
-
-
 export default {
   components: { TemplateSelector, TemplateForm, PreviewFrame },
   data() {
@@ -68,16 +66,18 @@ export default {
     handleSelectHotspot(id) {
       this.selectedHotspotId = id
     },
-    handleUpdateHotspot(updatedHotspot) {
-      if (!this.formData.hotspots) return
-      
-      const hotspots = [...this.formData.hotspots]
-      const index = hotspots.findIndex(h => h.id === updatedHotspot.id)
-      if (index !== -1) {
-        hotspots[index] = updatedHotspot
-        this.formData = {
-          ...this.formData,
-          hotspots
+    handleUpdateHotspot(updatedHotspot, hotspotsKey) {
+      // hotspotsKey가 전달되면 해당 배열 업데이트
+      if (hotspotsKey && this.formData[hotspotsKey]) {
+        const index = this.formData[hotspotsKey].findIndex(h => h.id === updatedHotspot.id)
+        if (index !== -1) {
+          this.formData[hotspotsKey].splice(index, 1, updatedHotspot)
+        }
+      } else if (this.formData.hotspots) {
+        // 기존 방식 (hotspots 배열)
+        const index = this.formData.hotspots.findIndex(h => h.id === updatedHotspot.id)
+        if (index !== -1) {
+          this.formData.hotspots.splice(index, 1, updatedHotspot)
         }
       }
     }

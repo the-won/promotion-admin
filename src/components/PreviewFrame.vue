@@ -42,8 +42,9 @@ export default {
     handleSelectHotspot(id) {
       this.$emit('select-hotspot', id)
     },
-    handleUpdateHotspot(hotspot) {
-      this.$emit('update-hotspot', hotspot)
+    handleUpdateHotspot(hotspot, hotspotsKey) {
+      // hotspotsKey를 함께 전달
+      this.$emit('update-hotspot', hotspot, hotspotsKey)
     }
   }
 }

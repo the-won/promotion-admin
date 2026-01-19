@@ -1,5 +1,3 @@
-
-
 export const templateDefaults = {
   'em-type-1': {
     title: {
@@ -98,61 +96,53 @@ export const templateDefaults = {
     }
   },
   'em-type-3': {
-    headerText: {
-      label: '헤더 텍스트',
-      type: 'text',
-      value: '헤더 텍스트'
-    },
-    bodyContent: {
-      label: '본문 내용',
-      type: 'textarea',
-      value: '본문 내용',
-      rows: 5
-    },
-    ctaText: {
-      label: 'CTA 버튼',
-      type: 'text',
-      value: 'CTA 버튼'
-    },
-    ctaLink: {
-      label: 'CTA 링크',
-      type: 'url',
-      value: '#'
-    },
-    alignment: {
-      label: '정렬',
-      type: 'select',
-      value: 'center',
-      options: [
-        { value: 'left', label: '왼쪽' },
-        { value: 'center', label: '가운데' },
-        { value: 'right', label: '오른쪽' }
-      ]
-    },
-    fontSize: {
-      label: '폰트 크기',
-      type: 'radio',
-      value: 'medium',
-      options: [
-        { value: 'small', label: '작게' },
-        { value: 'medium', label: '보통' },
-        { value: 'large', label: '크게' }
-      ]
-    },
-    backgroundImage: {
-      label: '배경 이미지 URL',
+    backgroundImage1: {
+      label: '이미지 1 URL',
       type: 'url',
       value: 'https://d2odciwzsa8zjd.cloudfront.net/public/editorImage/202503/fbca6135-d59d-4be7-b483-6e2577e4e4c3.png'
     },
-    buttonText: {
-      label: '버튼 텍스트',
-      type: 'text',
-      value: '지금 신청하기'
-    },
-    buttonLink: {
-      label: '버튼 링크',
+    backgroundImage2: {
+      label: '이미지 2 URL',
       type: 'url',
-      value: '#'
+      value: 'https://d2odciwzsa8zjd.cloudfront.net/public/editorImage/202503/fbca6135-d59d-4be7-b483-6e2577e4e4c3.png'
+    },
+    hotspots1: {
+      label: '이미지 1 핫스팟',
+      type: 'hotspot-group',
+      value: [
+        {
+          id: 1,
+          text: '지금 신청하기',
+          href: 'https://example.com/apply',
+          alt: '신청하기 버튼',
+          title: '신청하기',
+          position: {
+            left: 30,
+            top: 70,
+            width: 30,
+            height: 10
+          }
+        }
+      ]
+    },
+    hotspots2: {
+      label: '이미지 2 핫스팟',
+      type: 'hotspot-group',
+      value: [
+        {
+          id: 2,
+          text: '더 알아보기',
+          href: 'https://example.com/more',
+          alt: '더보기 버튼',
+          title: '더 알아보기',
+          position: {
+            left: 40,
+            top: 60,
+            width: 25,
+            height: 10
+          }
+        }
+      ]
     }
   },
   'em-type-4': {

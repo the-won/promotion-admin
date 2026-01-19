@@ -1,34 +1,16 @@
 <template>
-  <div class="hotspot-editor">
-    <!-- 이미지 섹션 선택 탭 -->
-    <div class="section-tabs">
-      <button 
-        @click="activeSection = 'hotspots1'"
-        :class="{ active: activeSection === 'hotspots1' }"
-        class="tab-button"
-      >
-        이미지 1 핫스팟
-      </button>
-      <button 
-        @click="activeSection = 'hotspots2'"
-        :class="{ active: activeSection === 'hotspots2' }"
-        class="tab-button"
-      >
-        이미지 2 핫스팟
-      </button>
-    </div>
-
+  <div class="hotspot-group-editor">
     <div class="header">
       <h4>{{ getSectionLabel() }}</h4>
       <button @click="addHotspot" class="add-btn">+ 핫스팟 추가</button>
     </div>
 
-    <div v-if="currentHotspots.length === 0" class="empty-state">
+    <div v-if="localHotspots.length === 0" class="empty-state">
       핫스팟을 추가하세요.
     </div>
 
     <div 
-      v-for="(hotspot, index) in currentHotspots" 
+      v-for="(hotspot, index) in localHotspots" 
       :key="hotspot.id" 
       class="hotspot-item"
       :class="{ selected: selectedId === hotspot.id }"
@@ -51,11 +33,33 @@
       </div>
 
       <div class="form-group">
-        <label>링크 URL</label>
+        <label>링크 URL (href)</label>
         <input 
           type="url" 
-          v-model="hotspot.url"
+          v-model="hotspot.href"
           placeholder="https://example.com"
+          class="form-input"
+          @click.stop
+        />
+      </div>
+
+      <div class="form-group">
+        <label>대체 텍스트 (alt)</label>
+        <input 
+          type="text" 
+          v-model="hotspot.alt"
+          placeholder="이미지 설명"
+          class="form-input"
+          @click.stop
+        />
+      </div>
+
+      <div class="form-group">
+        <label>타이틀 (title)</label>
+        <input 
+          type="text" 
+          v-model="hotspot.title"
+          placeholder="툴팁 텍스트"
           class="form-input"
           @click.stop
         />
@@ -120,44 +124,38 @@
 
 <script>
 export default {
-  props: ['value', 'selectedId'],
-  data() {
-    return {
-      activeSection: 'hotspots1', // 현재 편집 중인 섹션
-      localData: {
-        hotspots1: [],
-        hotspots2: []
-      }
+  props: {
+    value: {
+      type: Array,
+      default: () => []
+    },
+    sectionKey: {
+      type: String,
+      required: true
+    },
+    selectedId: {
+      type: Number,
+      default: null
     }
   },
-  computed: {
-    currentHotspots() {
-      // 현재 활성 섹션의 핫스팟 배열 반환
-      return this.localData[this.activeSection] || []
+  data() {
+    return {
+      localHotspots: []
     }
   },
   created() {
-    // value는 { hotspots1: [...], hotspots2: [...] } 형태
-    if (this.value) {
-      this.localData = {
-        hotspots1: this.value.hotspots1 ? JSON.parse(JSON.stringify(this.value.hotspots1)) : [],
-        hotspots2: this.value.hotspots2 ? JSON.parse(JSON.stringify(this.value.hotspots2)) : []
-      }
-    }
+    this.localHotspots = this.value ? JSON.parse(JSON.stringify(this.value)) : []
   },
   watch: {
     value: {
       handler(newVal) {
-        if (newVal && JSON.stringify(newVal) !== JSON.stringify(this.localData)) {
-          this.localData = {
-            hotspots1: newVal.hotspots1 ? JSON.parse(JSON.stringify(newVal.hotspots1)) : [],
-            hotspots2: newVal.hotspots2 ? JSON.parse(JSON.stringify(newVal.hotspots2)) : []
-          }
+        if (JSON.stringify(newVal) !== JSON.stringify(this.localHotspots)) {
+          this.localHotspots = newVal ? JSON.parse(JSON.stringify(newVal)) : []
         }
       },
       deep: true
     },
-    localData: {
+    localHotspots: {
       handler(val) {
         if (JSON.stringify(val) !== JSON.stringify(this.value)) {
           this.$emit('input', JSON.parse(JSON.stringify(val)))
@@ -168,32 +166,37 @@ export default {
   },
   methods: {
     getSectionLabel() {
-      return this.activeSection === 'hotspots1' ? '이미지 1 핫스팟 목록' : '이미지 2 핫스팟 목록'
+      const labels = {
+        'hotspots1': '이미지 1 핫스팟 목록',
+        'hotspots2': '이미지 2 핫스팟 목록'
+      }
+      return labels[this.sectionKey] || '핫스팟 목록'
     },
     
     addHotspot() {
       const newId = Date.now()
       const newHotspot = {
         id: newId,
-        text: `버튼 ${this.currentHotspots.length + 1}`,
-        url: 'https://example.com',
+        text: `버튼 ${this.localHotspots.length + 1}`,
+        href: 'https://example.com',
+        alt: `버튼 ${this.localHotspots.length + 1}`,
+        title: `버튼 ${this.localHotspots.length + 1}`,
         position: {
-          left: 10 + (this.currentHotspots.length * 5),
-          top: 20 + (this.currentHotspots.length * 5),
+          left: 10 + (this.localHotspots.length * 5),
+          top: 20 + (this.localHotspots.length * 5),
           width: 20,
           height: 10
         }
       }
       
-      // 현재 활성 섹션에 추가
-      this.localData[this.activeSection].push(newHotspot)
+      this.localHotspots.push(newHotspot)
       this.$emit('select', newId)
     },
     
     removeHotspot(id) {
-      const index = this.currentHotspots.findIndex(h => h.id === id)
+      const index = this.localHotspots.findIndex(h => h.id === id)
       if (index !== -1) {
-        this.localData[this.activeSection].splice(index, 1)
+        this.localHotspots.splice(index, 1)
         if (this.selectedId === id) {
           this.$emit('select', null)
         }
@@ -208,39 +211,8 @@ export default {
 </script>
 
 <style scoped>
-.hotspot-editor {
+.hotspot-group-editor {
   margin-top: 20px;
-}
-
-.section-tabs {
-  display: flex;
-  gap: 10px;
-  margin-bottom: 15px;
-  border-bottom: 2px solid #ddd;
-}
-
-.tab-button {
-  padding: 10px 20px;
-  background: #f5f5f5;
-  border: none;
-  border-bottom: 3px solid transparent;
-  cursor: pointer;
-  font-size: 14px;
-  font-weight: 500;
-  color: #666;
-  transition: all 0.2s;
-}
-
-.tab-button:hover {
-  background: #e9ecef;
-  color: #333;
-}
-
-.tab-button.active {
-  background: white;
-  color: #007bff;
-  border-bottom-color: #007bff;
-  font-weight: bold;
 }
 
 .header {
@@ -254,6 +226,7 @@ export default {
   margin: 0;
   font-size: 16px;
   font-weight: bold;
+  color: #333;
 }
 
 .add-btn {
@@ -265,6 +238,7 @@ export default {
   cursor: pointer;
   font-size: 14px;
   font-weight: bold;
+  transition: background 0.2s;
 }
 
 .add-btn:hover {
@@ -325,6 +299,7 @@ export default {
   padding: 5px 10px;
   cursor: pointer;
   font-size: 14px;
+  transition: background 0.2s;
 }
 
 .delete-btn:hover {
@@ -349,19 +324,25 @@ export default {
   border: 1px solid #ddd;
   border-radius: 4px;
   font-size: 14px;
+  box-sizing: border-box;
 }
 
 .form-input:focus {
   outline: none;
   border-color: #007bff;
+  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.1);
 }
 
 .position-group {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 10px;
-  margin-top: 10px;
-  padding-top: 10px;
+  margin-top: 15px;
+  padding-top: 15px;
   border-top: 1px solid #eee;
+}
+
+.position-group .form-group {
+  margin-bottom: 0;
 }
 </style>

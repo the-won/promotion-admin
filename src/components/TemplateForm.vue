@@ -97,15 +97,16 @@
           style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;"
         />
 
-      <!-- Hotspot Editor -->
-      <HotspotEditor
-        v-else-if="config.type === 'hotspot-list'"
-        v-model="localData[key]"
-        :selectedId="selectedHotspotId"
-        @select="handleSelectHotspot"
-      />
-
-
+      <!-- Hotspot Group Editor (em-type-3 전용) -->
+      <div v-else-if="config.type === 'hotspot-group' && isHotspotGroupField(key)">
+        <HotspotGroupEditor
+          :value="getHotspotGroupValue(key)"
+          :sectionKey="key"
+          :selectedId="selectedHotspotId"
+          @input="handleHotspotGroupInput($event, key)"
+          @select="handleSelectHotspot"
+        />
+      </div>
 
       <!-- Date Picker (커스텀) -->
       <DatePicker
@@ -130,14 +131,14 @@
 </template>
 
 <script>
-import HotspotEditor from './HotspotEditor.vue'
+import HotspotGroupEditor from './HotspotGroupEditor.vue'
 import HotdealRow1Editor from './HotdealRow1Editor.vue'
 import HotdealRow3Editor from './HotdealRow3Editor.vue'
 import DatePicker from './DatePicker.vue'
 
 export default {
   components: { 
-    HotspotEditor,
+    HotspotGroupEditor,
     HotdealRow1Editor,
     HotdealRow3Editor,
     DatePicker
@@ -170,6 +171,21 @@ export default {
     }
   },
   methods: {
+    isHotspotGroupField(key) {
+      // hotspots1, hotspots2 등 hotspot 그룹 필드인지 확인
+      return key === 'hotspots1' || key === 'hotspots2'
+    },
+    
+    getHotspotGroupValue(key) {
+      // 해당 섹션의 핫스팟 배열 반환
+      return this.localData[key] || []
+    },
+    
+    handleHotspotGroupInput(value, key) {
+      // 특정 섹션의 핫스팟 업데이트
+      this.$set(this.localData, key, value)
+    },
+    
     handleSelectHotspot(id) {
       this.$emit('select-hotspot', id)
     }
