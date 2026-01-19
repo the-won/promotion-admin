@@ -20,6 +20,23 @@
             </td>
             
           </tr>
+          <tr v-for="group in data.imageLinkGroups" :key="group.id">
+            <td>
+              <a 
+                :href="group.href" 
+                :target="group.targetBlank ? '_blank' : '_self'" 
+                rel="noopener noreferrer"
+              >
+                <!-- 그룹 내의 모든 이미지 렌더링 -->
+                <img 
+                  v-for="image in group.images" 
+                  :key="image.id"
+                  :src="image.url" 
+                  :alt="image.alt"
+                />
+              </a>
+            </td>
+          </tr>
           <!-- <tr>
             <td :style="background-color: black; height: 50px; margin-top: 50px; opacity: ${data.bannerOpacity / 100}"></td>
           </tr> -->

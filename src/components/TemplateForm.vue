@@ -108,6 +108,14 @@
         />
       </div>
 
+
+      <!-- Image Link Group Editor (em-type-6) -->
+      <div v-else-if="config.type === 'image-link-group'">
+        <ImageLinkGroupEditor
+          v-model="localData[key]"
+        />
+      </div>
+
       <!-- Date Picker (커스텀) -->
       <DatePicker
         v-else-if="config.type === 'date-picker'"
@@ -135,13 +143,15 @@ import HotspotGroupEditor from './HotspotGroupEditor.vue'
 import HotdealRow1Editor from './HotdealRow1Editor.vue'
 import HotdealRow3Editor from './HotdealRow3Editor.vue'
 import DatePicker from './DatePicker.vue'
+import ImageLinkGroupEditor from './ImageLinkGroupEditor.vue'
 
 export default {
   components: { 
     HotspotGroupEditor,
     HotdealRow1Editor,
     HotdealRow3Editor,
-    DatePicker
+    DatePicker,
+    ImageLinkGroupEditor
   },
   props: ['template', 'value', 'templateConfig', 'selectedHotspotId'],
   data() {

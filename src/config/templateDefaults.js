@@ -93,7 +93,45 @@ export const templateDefaults = {
       max: 100,
       step: 5,
       unit: '%'
-    }
+    },
+
+    imageLinkGroups: {
+      label: '이미지 링크 그룹',
+      type: 'image-link-group',
+      value: [
+        {
+          id: 1,
+          href: 'https://example.com/product1',
+          targetBlank: true,
+          images: [
+            {
+              id: 1,
+              url: 'https://via.placeholder.com/630x300',
+              alt: '상품 이미지 1'
+            }
+          ]
+        },
+        {
+          id: 2,
+          href: 'https://example.com/product2',
+          targetBlank: true,
+          images: [
+            {
+              id: 2,
+              url: 'https://via.placeholder.com/630x200',
+              alt: '상품 이미지 2'
+            },
+            {
+              id: 3,
+              url: 'https://via.placeholder.com/630x150',
+              alt: '상품 이미지 3'
+            }
+          ]
+        }
+      ]
+    } 
+
+
   },
   'em-type-3': {
     backgroundImage1: {
