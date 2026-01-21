@@ -1,13 +1,21 @@
 <template>
-  <div class="preview-wrapper">
+  <div class="preview-deel">
     <div class="preview-card">
       <div class="preview-header">
-        <div class="preview-badge">Preview</div>
+        <div class="preview-info">
+          <h3 class="preview-title">템플릿 미리보기</h3>
+          <p class="preview-subtitle">실시간 렌더링</p>
+        </div>
         <div class="preview-actions">
-          <button class="preview-action-btn" title="새로고침">
+          <button class="action-btn" title="새로고침">
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
               <path d="M14 8C14 11.3137 11.3137 14 8 14C4.68629 14 2 11.3137 2 8C2 4.68629 4.68629 2 8 2C9.84841 2 11.4867 2.87568 12.5 4.23333" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
               <path d="M10 4H14V8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+          <button class="action-btn" title="전체화면">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <path d="M10 2H14V6M6 14H2V10M14 2L9 7M2 14L7 9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
           </button>
         </div>
@@ -68,15 +76,13 @@ export default {
 </script>
 
 <style scoped>
-.preview-wrapper {
+.preview-deel {
   width: 100%;
-  max-width: 1200px;
-  margin: 0 auto;
 }
 
 .preview-card {
   background: #fff;
-  border-radius: 12px;
+  border-radius: 16px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
   overflow: hidden;
   border: 1px solid #e5e7eb;
@@ -86,22 +92,28 @@ export default {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 16px 20px;
-  background: linear-gradient(to bottom, #fafbfc, #f5f7fa);
-  border-bottom: 1px solid #e5e7eb;
+  padding: 20px 24px;
+  background: linear-gradient(to bottom, #fafbfc, #f9fafb);
+  border-bottom: 1px solid #f3f4f6;
 }
 
-.preview-badge {
-  display: inline-flex;
-  align-items: center;
-  padding: 4px 12px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: #fff;
-  font-size: 11px;
+.preview-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.preview-title {
+  margin: 0;
+  font-size: 16px;
   font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  border-radius: 12px;
+  color: #1f2937;
+}
+
+.preview-subtitle {
+  margin: 0;
+  font-size: 12px;
+  color: #6b7280;
 }
 
 .preview-actions {
@@ -109,33 +121,33 @@ export default {
   gap: 8px;
 }
 
-.preview-action-btn {
-  width: 32px;
-  height: 32px;
+.action-btn {
+  width: 36px;
+  height: 36px;
   display: flex;
   align-items: center;
   justify-content: center;
   background: #fff;
   border: 1px solid #e5e7eb;
-  border-radius: 6px;
+  border-radius: 8px;
   color: #6b7280;
   cursor: pointer;
   transition: all 0.2s;
 }
 
-.preview-action-btn:hover {
+.action-btn:hover {
   background: #f9fafb;
   border-color: #d1d5db;
-  color: #374151;
+  color: #1f2937;
 }
 
 .preview-body {
-  padding: 20px;
+  padding: 24px;
   background: #fff;
-  min-height: 400px;
+  min-height: 500px;
 }
 
-/* 내부 컴포넌트에 대한 스타일 재정의 방지 */
+/* 내부 컴포넌트 스타일 */
 .preview-body >>> * {
   max-width: 100%;
 }

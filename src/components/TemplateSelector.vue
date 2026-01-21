@@ -1,22 +1,22 @@
 <template>
-  <div class="template-selector">
-    <h3 class="section-title">템플릿 선택</h3>
+  <div class="template-selector-deel">
+    <h4 class="selector-title">템플릿 선택</h4>
     <div class="template-grid">
       <div 
         v-for="template in templates" 
         :key="template.value"
         class="template-card"
-        :class="{ 'active': localValue === template.value }"
+        :class="{ 'is-selected': localValue === template.value }"
         @click="selectTemplate(template.value)"
       >
-        <div class="template-icon">{{ template.icon }}</div>
-        <div class="template-info">
-          <div class="template-name">{{ template.name }}</div>
-          <div class="template-desc">{{ template.desc }}</div>
+        <div class="card-icon">{{ template.icon }}</div>
+        <div class="card-content">
+          <div class="card-name">{{ template.name }}</div>
+          <div class="card-desc">{{ template.desc }}</div>
         </div>
-        <div class="template-check" v-if="localValue === template.value">
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-            <path d="M13.3337 4L6.00033 11.3333L2.66699 8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        <div class="card-check" v-if="localValue === template.value">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+            <path d="M11.6667 3.5L5.25 9.91667L2.33334 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
           </svg>
         </div>
       </div>
@@ -88,91 +88,94 @@ export default {
 </script>
 
 <style scoped>
-.template-selector {
+.template-selector-deel {
   width: 100%;
 }
 
-.section-title {
+.selector-title {
   margin: 0 0 16px 0;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 600;
-  color: #fff;
+  color: #6b7280;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  opacity: 0.9;
 }
 
 .template-grid {
   display: grid;
-  gap: 8px;
+  gap: 10px;
 }
 
 .template-card {
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 12px;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 8px;
+  padding: 14px;
+  background: #f9fafb;
+  border: 2px solid #f3f4f6;
+  border-radius: 10px;
   cursor: pointer;
   transition: all 0.2s;
   position: relative;
 }
 
 .template-card:hover {
-  background: rgba(255, 255, 255, 0.08);
-  border-color: rgba(102, 126, 234, 0.5);
+  background: #f3f4f6;
+  border-color: #e5e7eb;
+  transform: translateY(-1px);
 }
 
-.template-card.active {
-  background: rgba(102, 126, 234, 0.15);
-  border-color: #667eea;
+.template-card.is-selected {
+  background: #ede9fe;
+  border-color: #6366f1;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
 }
 
-.template-icon {
-  font-size: 24px;
-  width: 40px;
-  height: 40px;
+.card-icon {
+  width: 44px;
+  height: 44px;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 6px;
+  background: #fff;
+  border-radius: 8px;
+  font-size: 20px;
   flex-shrink: 0;
+  border: 1px solid #e5e7eb;
 }
 
-.template-card.active .template-icon {
-  background: rgba(102, 126, 234, 0.2);
+.template-card.is-selected .card-icon {
+  background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+  border-color: transparent;
 }
 
-.template-info {
+.card-content {
   flex: 1;
   min-width: 0;
 }
 
-.template-name {
+.card-name {
   font-size: 14px;
   font-weight: 600;
-  color: #fff;
+  color: #1f2937;
   margin-bottom: 2px;
 }
 
-.template-desc {
+.card-desc {
   font-size: 12px;
-  color: rgba(255, 255, 255, 0.6);
+  color: #6b7280;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
-.template-check {
+.card-check {
   width: 20px;
   height: 20px;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #667eea;
+  background: #6366f1;
   border-radius: 50%;
   color: #fff;
   flex-shrink: 0;

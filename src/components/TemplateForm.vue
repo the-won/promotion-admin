@@ -1,8 +1,8 @@
 <template>
-  <div class="template-form">
-    <h3 class="section-title">템플릿 설정</h3>
-    <div class="form-content">
-      <div v-for="(config, key) in templateConfig" :key="key" class="form-field">
+  <div class="template-form-deel">
+    <h4 class="form-title">템플릿 설정</h4>
+    <div class="form-fields">
+      <div v-for="(config, key) in templateConfig" :key="key" class="field-group">
         <label class="field-label">
           {{ config.label }}
         </label>
@@ -26,11 +26,11 @@
         ></textarea>
         
         <!-- Color Picker -->
-        <div v-else-if="config.type === 'color'" class="color-picker">
+        <div v-else-if="config.type === 'color'" class="color-field">
           <input 
             type="color"
             v-model="localData[key]"
-            class="color-input"
+            class="color-picker"
           />
           <input 
             type="text"
@@ -41,19 +41,21 @@
         </div>
         
         <!-- Select -->
-        <select
-          v-else-if="config.type === 'select'"
-          v-model="localData[key]"
-          class="field-select"
-        >
-          <option v-for="option in config.options" :key="option.value" :value="option.value">
-            {{ option.label }}
-          </option>
-        </select>
+        <div class="select-wrapper">
+          <select
+            v-if="config.type === 'select'"
+            v-model="localData[key]"
+            class="field-select"
+          >
+            <option v-for="option in config.options" :key="option.value" :value="option.value">
+              {{ option.label }}
+            </option>
+          </select>
+        </div>
         
         <!-- Radio -->
-        <div v-else-if="config.type === 'radio'" class="radio-group">
-          <label v-for="option in config.options" :key="option.value" class="radio-label">
+        <div v-if="config.type === 'radio'" class="radio-field">
+          <label v-for="option in config.options" :key="option.value" class="radio-option">
             <input 
               type="radio"
               :name="key"
@@ -61,45 +63,47 @@
               v-model="localData[key]"
               class="radio-input"
             />
-            <span class="radio-text">{{ option.label }}</span>
+            <span class="radio-box"></span>
+            <span class="radio-label">{{ option.label }}</span>
           </label>
         </div>
         
         <!-- Checkbox -->
-        <label v-else-if="config.type === 'checkbox'" class="checkbox-label">
+        <label v-if="config.type === 'checkbox'" class="checkbox-field">
           <input 
             type="checkbox"
             v-model="localData[key]"
             class="checkbox-input"
           />
-          <span class="checkbox-text">{{ config.checkboxLabel || '사용' }}</span>
+          <span class="checkbox-box"></span>
+          <span class="checkbox-label">{{ config.checkboxLabel || '사용' }}</span>
         </label>
 
         <!-- Range Slider -->
-        <div v-else-if="config.type === 'range'" class="range-group">
+        <div v-if="config.type === 'range'" class="range-field">
           <input 
             type="range"
             v-model.number="localData[key]"
             :min="config.min || 0"
             :max="config.max || 100"
             :step="config.step || 1"
-            class="range-input"
+            class="range-slider"
           />
-          <span class="range-value">
+          <div class="range-value">
             {{ localData[key] }}{{ config.unit || '' }}
-          </span>
+          </div>
         </div>
         
         <!-- Date -->
         <input 
-          v-else-if="config.type === 'date'"
+          v-if="config.type === 'date'"
           type="date"
           v-model="localData[key]"
           class="field-input"
         />
 
-        <!-- Hotspot Group Editor (em-type-3 전용) -->
-        <div v-else-if="config.type === 'hotspot-group' && isHotspotGroupField(key)">
+        <!-- Hotspot Group Editor -->
+        <div v-if="config.type === 'hotspot-group' && isHotspotGroupField(key)">
           <HotspotGroupEditor
             :value="getHotspotGroupValue(key)"
             :sectionKey="key"
@@ -109,15 +113,15 @@
           />
         </div>
 
-        <!-- Image Link Group Editor (em-type-6) -->
-        <div v-else-if="config.type === 'image-link-group'">
+        <!-- Image Link Group Editor -->
+        <div v-if="config.type === 'image-link-group'">
           <ImageLinkGroupEditor
             v-model="localData[key]"
           />
         </div>
 
-        <!-- Image Map Editor (em-type-imagemap) -->
-        <div v-else-if="config.type === 'image-map-rows'">
+        <!-- Image Map Editor -->
+        <div v-if="config.type === 'image-map-rows'">
           <ImageMapEditor
             :rows="localData.imageMapRows"
             :areas="localData.imageMapAreas"
@@ -128,21 +132,21 @@
           />
         </div>
 
-        <!-- Date Picker (커스텀) -->
+        <!-- Date Picker -->
         <DatePicker
-          v-else-if="config.type === 'date-picker'"
+          v-if="config.type === 'date-picker'"
           v-model="localData[key]"
         />
 
         <!-- Hotdeal Row1 Editor -->
         <HotdealRow1Editor
-          v-else-if="config.type === 'hotdeal-row1-list'"
+          v-if="config.type === 'hotdeal-row1-list'"
           v-model="localData[key]"
         />
 
         <!-- Hotdeal Row3 Editor -->
         <HotdealRow3Editor
-          v-else-if="config.type === 'hotdeal-row3-list'"
+          v-if="config.type === 'hotdeal-row3-list'"
           v-model="localData[key]"
         />
       </div>
@@ -215,27 +219,26 @@ export default {
 </script>
 
 <style scoped>
-.template-form {
+.template-form-deel {
   width: 100%;
 }
 
-.section-title {
-  margin: 0 0 16px 0;
-  font-size: 14px;
+.form-title {
+  margin: 0 0 20px 0;
+  font-size: 13px;
   font-weight: 600;
-  color: #fff;
+  color: #6b7280;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  opacity: 0.9;
 }
 
-.form-content {
+.form-fields {
   display: flex;
   flex-direction: column;
   gap: 20px;
 }
 
-.form-field {
+.field-group {
   display: flex;
   flex-direction: column;
   gap: 8px;
@@ -244,37 +247,33 @@ export default {
 .field-label {
   font-size: 13px;
   font-weight: 500;
-  color: rgba(255, 255, 255, 0.9);
-  letter-spacing: -0.1px;
+  color: #374151;
 }
 
 /* Input Styles */
 .field-input,
-.field-textarea,
-.field-select {
+.field-textarea {
   width: 100%;
-  padding: 10px 12px;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  border-radius: 6px;
-  color: #fff;
+  padding: 10px 14px;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  color: #1f2937;
   font-size: 14px;
   font-family: inherit;
   transition: all 0.2s;
 }
 
 .field-input:focus,
-.field-textarea:focus,
-.field-select:focus {
+.field-textarea:focus {
   outline: none;
-  background: rgba(255, 255, 255, 0.08);
-  border-color: #667eea;
-  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+  border-color: #6366f1;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
 }
 
 .field-input::placeholder,
 .field-textarea::placeholder {
-  color: rgba(255, 255, 255, 0.4);
+  color: #9ca3af;
 }
 
 .field-textarea {
@@ -282,155 +281,220 @@ export default {
   min-height: 80px;
 }
 
+/* Select */
+.select-wrapper {
+  position: relative;
+}
+
 .field-select {
+  width: 100%;
+  padding: 10px 40px 10px 14px;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  color: #1f2937;
+  font-size: 14px;
+  font-family: inherit;
   cursor: pointer;
   appearance: none;
-  background-image: url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1.5L6 6.5L11 1.5' stroke='%23ffffff' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  transition: all 0.2s;
+  background-image: url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1.5L6 6.5L11 1.5' stroke='%236b7280' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
-  background-position: right 12px center;
-  padding-right: 36px;
+  background-position: right 14px center;
+}
+
+.field-select:focus {
+  outline: none;
+  border-color: #6366f1;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
 }
 
 /* Color Picker */
-.color-picker {
+.color-field {
   display: flex;
   gap: 10px;
   align-items: center;
 }
 
-.color-input {
-  width: 50px;
+.color-picker {
+  width: 48px;
   height: 40px;
   padding: 4px;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  border-radius: 6px;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
   cursor: pointer;
   transition: all 0.2s;
 }
 
-.color-input:hover {
-  border-color: #667eea;
+.color-picker:hover {
+  border-color: #6366f1;
 }
 
-/* Radio Group */
-.radio-group {
+/* Radio */
+.radio-field {
   display: flex;
   flex-direction: column;
   gap: 10px;
 }
 
-.radio-label {
+.radio-option {
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 10px 12px;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 6px;
+  padding: 12px;
+  background: #f9fafb;
+  border: 1px solid #f3f4f6;
+  border-radius: 8px;
   cursor: pointer;
   transition: all 0.2s;
-  font-weight: normal;
 }
 
-.radio-label:hover {
-  background: rgba(255, 255, 255, 0.08);
-  border-color: rgba(102, 126, 234, 0.5);
+.radio-option:hover {
+  background: #f3f4f6;
+  border-color: #e5e7eb;
 }
 
 .radio-input {
-  width: 18px;
-  height: 18px;
-  cursor: pointer;
-  accent-color: #667eea;
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
 }
 
-.radio-text {
-  color: rgba(255, 255, 255, 0.9);
+.radio-box {
+  width: 18px;
+  height: 18px;
+  border: 2px solid #d1d5db;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  position: relative;
+}
+
+.radio-input:checked + .radio-box {
+  border-color: #6366f1;
+}
+
+.radio-input:checked + .radio-box::after {
+  content: '';
+  width: 10px;
+  height: 10px;
+  background: #6366f1;
+  border-radius: 50%;
+}
+
+.radio-label {
+  color: #374151;
   font-size: 14px;
 }
 
 /* Checkbox */
-.checkbox-label {
+.checkbox-field {
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 10px 12px;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 6px;
+  padding: 12px;
+  background: #f9fafb;
+  border: 1px solid #f3f4f6;
+  border-radius: 8px;
   cursor: pointer;
   transition: all 0.2s;
-  font-weight: normal;
 }
 
-.checkbox-label:hover {
-  background: rgba(255, 255, 255, 0.08);
-  border-color: rgba(102, 126, 234, 0.5);
+.checkbox-field:hover {
+  background: #f3f4f6;
+  border-color: #e5e7eb;
 }
 
 .checkbox-input {
-  width: 18px;
-  height: 18px;
-  cursor: pointer;
-  accent-color: #667eea;
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
 }
 
-.checkbox-text {
-  color: rgba(255, 255, 255, 0.9);
+.checkbox-box {
+  width: 18px;
+  height: 18px;
+  border: 2px solid #d1d5db;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.checkbox-input:checked + .checkbox-box {
+  background: #6366f1;
+  border-color: #6366f1;
+}
+
+.checkbox-input:checked + .checkbox-box::after {
+  content: '';
+  width: 4px;
+  height: 8px;
+  border: solid #fff;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+  margin-top: -2px;
+}
+
+.checkbox-label {
+  color: #374151;
   font-size: 14px;
 }
 
 /* Range Slider */
-.range-group {
+.range-field {
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 10px 12px;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 6px;
+  padding: 12px;
+  background: #f9fafb;
+  border: 1px solid #f3f4f6;
+  border-radius: 8px;
 }
 
-.range-input {
+.range-slider {
   flex: 1;
   height: 6px;
   appearance: none;
-  background: rgba(255, 255, 255, 0.1);
+  background: #e5e7eb;
   border-radius: 3px;
   outline: none;
   cursor: pointer;
 }
 
-.range-input::-webkit-slider-thumb {
+.range-slider::-webkit-slider-thumb {
   appearance: none;
-  width: 16px;
-  height: 16px;
-  background: #667eea;
+  width: 18px;
+  height: 18px;
+  background: #6366f1;
   border-radius: 50%;
   cursor: pointer;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   transition: all 0.2s;
 }
 
-.range-input::-webkit-slider-thumb:hover {
-  background: #7c8ff5;
+.range-slider::-webkit-slider-thumb:hover {
+  background: #4f46e5;
   transform: scale(1.1);
 }
 
-.range-input::-moz-range-thumb {
-  width: 16px;
-  height: 16px;
-  background: #667eea;
+.range-slider::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  background: #6366f1;
   border: none;
   border-radius: 50%;
   cursor: pointer;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   transition: all 0.2s;
 }
 
-.range-input::-moz-range-thumb:hover {
-  background: #7c8ff5;
+.range-slider::-moz-range-thumb:hover {
+  background: #4f46e5;
   transform: scale(1.1);
 }
 
@@ -438,7 +502,7 @@ export default {
   min-width: 50px;
   text-align: right;
   font-weight: 600;
-  color: #667eea;
+  color: #6366f1;
   font-size: 14px;
 }
 </style>
