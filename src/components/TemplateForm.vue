@@ -116,6 +116,15 @@
         />
       </div>
 
+      <!-- Image Map Editor (em-type-imagemap) -->
+      <div v-else-if="config.type === 'image-map'">
+        <ImageMapEditor
+          v-model="localData[key]"
+          :selectedAreaId="selectedHotspotId"
+          @select-area="handleSelectHotspot"
+        />
+      </div>
+
       <!-- Date Picker (커스텀) -->
       <DatePicker
         v-else-if="config.type === 'date-picker'"
@@ -144,6 +153,7 @@ import HotdealRow1Editor from './HotdealRow1Editor.vue'
 import HotdealRow3Editor from './HotdealRow3Editor.vue'
 import DatePicker from './DatePicker.vue'
 import ImageLinkGroupEditor from './ImageLinkGroupEditor.vue'
+import ImageMapEditor from './ImageMapEditor.vue'
 
 export default {
   components: { 
@@ -151,7 +161,8 @@ export default {
     HotdealRow1Editor,
     HotdealRow3Editor,
     DatePicker,
-    ImageLinkGroupEditor
+    ImageLinkGroupEditor, 
+    ImageMapEditor
   },
   props: ['template', 'value', 'templateConfig', 'selectedHotspotId'],
   data() {

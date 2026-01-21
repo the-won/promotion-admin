@@ -86,19 +86,28 @@ export default {
 </script>
 
 <style>
+html, body {
+  margin: 0;
+  padding: 0;
+}
+* {
+  box-sizing: border-box;
+}
 .app-container {
   display: flex;
   height: 100vh;
 }
 .sidebar {
-  flex: 1;
+  flex-basis: 350px;
+  min-width: 250px;
   padding: 20px;
   background: #f9fafb;
   border-right: 1px solid #ddd;
   overflow-y: auto;
 }
 .preview {
-  width: 1200px;
+  flex: 1;
+  min-width: 1000px;
   background: #fff;
   padding: 20px;
   overflow-y: auto;
@@ -117,5 +126,9 @@ export default {
 }
 .download-btn:hover {
   background: #0056b3;
+}
+img {
+  vertical-align: top;
+  border: none;
 }
 </style>

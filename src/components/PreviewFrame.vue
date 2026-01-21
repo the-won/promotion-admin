@@ -16,6 +16,7 @@ import EmType2 from '../templates/EmType2.vue'
 import EmType3 from '../templates/EmType3.vue'
 import EmType4 from '../templates/EmType4.vue'
 import EmType5 from '../templates/EmType5.vue'
+import EmTypeImageMap from '../templates/EmTypeImageMap.vue'  // ← 추가
 
 export default {
   components: {
@@ -23,7 +24,8 @@ export default {
     EmType2,
     EmType3,
     EmType4,
-    EmType5
+    EmType5,
+    EmTypeImageMap
   },
   props: ['template', 'formData', 'selectedHotspotId'],
   computed: {
@@ -33,7 +35,8 @@ export default {
         'em-type-2': 'EmType2',
         'em-type-3': 'EmType3',
         'em-type-4': 'EmType4',
-        'em-type-5': 'EmType5'
+        'em-type-5': 'EmType5',
+        'em-type-imagemap': 'EmTypeImageMap'
       }
       return map[this.template] || 'EmType1'
     }

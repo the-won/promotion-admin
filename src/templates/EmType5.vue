@@ -210,7 +210,7 @@ export default {
 </script>
 
 <style scoped>
-.em-type5-container {
+.em-type5-container * {
   font-family: '돋움', dotum, sans-serif;
   background: #ffffff;
 }

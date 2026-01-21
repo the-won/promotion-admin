@@ -7,6 +7,7 @@
       <option value="em-type-3">em-type-3</option>
       <option value="em-type-4">em-type-4</option>
       <option value="em-type-5">em-type-5 (화끈딜)</option>
+      <option value="em-type-imagemap">이미지맵사용</option>
     </select>
   </div>
 </template>
