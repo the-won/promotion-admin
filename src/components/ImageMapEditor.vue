@@ -52,19 +52,19 @@
         </div>
       </div>
 
-      <!-- 핫스팟(Area) 목록 -->
+      <!-- 핫스팟(Area) 목록 - 해당 row에 속한 것만 표시 -->
       <div class="hotspots-section">
         <div class="hotspots-header">
-          <h5>핫스팟 목록 ({{ row.areas.length }}개)</h5>
+          <h5>핫스팟 목록 ({{ getAreasForRow(row.id).length }}개)</h5>
           <button @click="addArea(row.id)" class="add-area-btn">+ 핫스팟 추가</button>
         </div>
 
-        <div v-if="row.areas.length === 0" class="empty-areas">
+        <div v-if="getAreasForRow(row.id).length === 0" class="empty-areas">
           핫스팟을 추가하면 프리뷰에서 드래그로 위치/크기를 조정할 수 있습니다.
         </div>
 
         <div 
-          v-for="(area, areaIndex) in row.areas" 
+          v-for="(area, areaIndex) in getAreasForRow(row.id)" 
           :key="area.id"
           class="area-item"
           :class="{ 'selected': selectedAreaId === area.id }"
@@ -72,7 +72,7 @@
         >
           <div class="area-header">
             <span class="area-title">핫스팟 {{ areaIndex + 1 }}</span>
-            <button @click.stop="removeArea(row.id, area.id)" class="delete-area-btn">삭제</button>
+            <button @click.stop="removeArea(area.id)" class="delete-area-btn">삭제</button>
           </div>
 
           <div class="form-group">
@@ -111,7 +111,11 @@
 export default {
   name: 'ImageMapEditor',
   props: {
-    value: {
+    rows: {
+      type: Array,
+      default: () => []
+    },
+    areas: {
       type: Array,
       default: () => []
     },
@@ -123,14 +127,16 @@ export default {
   data() {
     return {
       localRows: [],
+      localAreas: [],
       activeRowId: null
     }
   },
   created() {
-    this.localRows = this.value ? JSON.parse(JSON.stringify(this.value)) : []
+    this.localRows = this.rows ? JSON.parse(JSON.stringify(this.rows)) : []
+    this.localAreas = this.areas ? JSON.parse(JSON.stringify(this.areas)) : []
   },
   watch: {
-    value: {
+    rows: {
       handler(newVal) {
         if (JSON.stringify(newVal) !== JSON.stringify(this.localRows)) {
           this.localRows = newVal ? JSON.parse(JSON.stringify(newVal)) : []
@@ -138,16 +144,37 @@ export default {
       },
       deep: true
     },
+    areas: {
+      handler(newVal) {
+        if (JSON.stringify(newVal) !== JSON.stringify(this.localAreas)) {
+          this.localAreas = newVal ? JSON.parse(JSON.stringify(newVal)) : []
+        }
+      },
+      deep: true
+    },
     localRows: {
       handler(val) {
-        if (JSON.stringify(val) !== JSON.stringify(this.value)) {
-          this.$emit('input', JSON.parse(JSON.stringify(val)))
+        if (JSON.stringify(val) !== JSON.stringify(this.rows)) {
+          this.$emit('update:rows', JSON.parse(JSON.stringify(val)))
+        }
+      },
+      deep: true
+    },
+    localAreas: {
+      handler(val) {
+        if (JSON.stringify(val) !== JSON.stringify(this.areas)) {
+          this.$emit('update:areas', JSON.parse(JSON.stringify(val)))
         }
       },
       deep: true
     }
   },
   methods: {
+    // 특정 row에 속한 areas 반환
+    getAreasForRow(rowId) {
+      return this.localAreas.filter(a => a.rowId === rowId)
+    },
+
     // 행(Row) 추가
     addRow() {
       const newId = Date.now()
@@ -159,8 +186,7 @@ export default {
         width: 720,
         height: 400,
         imageAlt: '새 이미지',
-        mapName: mapName,
-        areas: []
+        mapName: mapName
       }
       
       this.localRows.push(newRow)
@@ -172,6 +198,9 @@ export default {
       const index = this.localRows.findIndex(r => r.id === rowId)
       if (index !== -1) {
         this.localRows.splice(index, 1)
+        // 해당 row에 속한 areas도 삭제
+        this.localAreas = this.localAreas.filter(a => a.rowId !== rowId)
+        
         if (this.activeRowId === rowId) {
           this.activeRowId = this.localRows.length > 0 ? this.localRows[0].id : null
         }
@@ -183,14 +212,16 @@ export default {
       const row = this.localRows.find(r => r.id === rowId)
       if (!row) return
 
+      const areasInRow = this.getAreasForRow(rowId)
       const newId = Date.now()
-      const offsetX = (row.areas.length % 3) * 100
-      const offsetY = Math.floor(row.areas.length / 3) * 80
+      const offsetX = (areasInRow.length % 3) * 100
+      const offsetY = Math.floor(areasInRow.length / 3) * 80
 
       const newArea = {
         id: newId,
+        rowId: rowId,
         href: 'https://example.com',
-        alt: `버튼 ${row.areas.length + 1}`,
+        alt: `버튼 ${areasInRow.length + 1}`,
         coords: {
           x1: 60 + offsetX,
           y1: 100 + offsetY,
@@ -199,18 +230,15 @@ export default {
         }
       }
 
-      row.areas.push(newArea)
+      this.localAreas.push(newArea)
       this.$emit('select-area', newId)
     },
 
     // 핫스팟 삭제
-    removeArea(rowId, areaId) {
-      const row = this.localRows.find(r => r.id === rowId)
-      if (!row) return
-
-      const index = row.areas.findIndex(a => a.id === areaId)
+    removeArea(areaId) {
+      const index = this.localAreas.findIndex(a => a.id === areaId)
       if (index !== -1) {
-        row.areas.splice(index, 1)
+        this.localAreas.splice(index, 1)
         if (this.selectedAreaId === areaId) {
           this.$emit('select-area', null)
         }
@@ -307,15 +335,6 @@ export default {
   outline: none;
   border-color: #007bff;
   box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.1);
-}
-
-.form-row {
-  display: flex;
-  gap: 10px;
-}
-
-.form-group.half {
-  flex: 1;
 }
 
 .hotspots-section {

@@ -117,10 +117,13 @@
       </div>
 
       <!-- Image Map Editor (em-type-imagemap) -->
-      <div v-else-if="config.type === 'image-map'">
+       <div v-else-if="config.type === 'image-map-rows'">
         <ImageMapEditor
-          v-model="localData[key]"
+          :rows="localData.imageMapRows"
+          :areas="localData.imageMapAreas"
           :selectedAreaId="selectedHotspotId"
+          @update:rows="localData.imageMapRows = $event"
+          @update:areas="localData.imageMapAreas = $event"
           @select-area="handleSelectHotspot"
         />
       </div>

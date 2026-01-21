@@ -17,13 +17,12 @@
               align="left"
               border="0"
               class="preview-image"
-              @load="onImageLoad(row.id)"
               @dragstart.prevent
             />
 
-            <!-- 핫스팟 오버레이 -->
+            <!-- 핫스팟 오버레이 - 해당 row에 속한 areas만 표시 -->
             <div
-              v-for="area in row.areas"
+              v-for="area in getAreasForRow(row.id)"
               :key="area.id"
               class="hotspot-overlay"
               :class="{ selected: selectedId === area.id }"
@@ -79,11 +78,15 @@ export default {
   computed: {
     rows() {
       return this.data.imageMapRows || []
+    },
+    areas() {
+      return this.data.imageMapAreas || []
     }
   },
   methods: {
-    onImageLoad(rowId) {
-      // 이미지 로드 완료
+    // 특정 row에 속한 areas 반환
+    getAreasForRow(rowId) {
+      return this.areas.filter(a => a.rowId === rowId)
     },
 
     getAreaStyle(area) {
@@ -97,7 +100,6 @@ export default {
     },
 
     handleContainerClick(event, row) {
-      // 빈 공간 클릭 시 선택 해제
       this.$emit('select-hotspot', null)
     },
 
@@ -138,7 +140,8 @@ export default {
       this.currentArea.coords.x2 = Math.round(newX1 + width)
       this.currentArea.coords.y2 = Math.round(newY1 + height)
 
-      this.$emit('update-hotspot', this.currentArea, this.currentRow.id)
+      // 'imageMapAreas'를 hotspotsKey로 전달 → 기존 App.vue 로직 활용
+      this.$emit('update-hotspot', this.currentArea, 'imageMapAreas')
     },
 
     stopDrag() {
@@ -205,7 +208,8 @@ export default {
       this.currentArea.coords.x2 = Math.round(x2)
       this.currentArea.coords.y2 = Math.round(y2)
 
-      this.$emit('update-hotspot', this.currentArea, this.currentRow.id)
+      // 'imageMapAreas'를 hotspotsKey로 전달
+      this.$emit('update-hotspot', this.currentArea, 'imageMapAreas')
     },
 
     stopResize() {

@@ -1,22 +1,14 @@
 /**
  * 이미지맵 기반 이메일 템플릿 HTML 생성
  * 
- * 생성되는 구조:
- * <table>
- *   <tr>
- *     <td>
- *       <img src="..." usemap="#mapContents01">
- *       <map name="mapContents01">
- *         <area shape="rect" coords="x1,y1,x2,y2" href="..." alt="...">
- *       </map>
- *     </td>
- *   </tr>
- *   ...
- * </table>
+ * 데이터 구조:
+ * - imageMapRows: [{ id, imageUrl, width, height, imageAlt, mapName }]
+ * - imageMapAreas: [{ id, rowId, href, alt, coords: { x1, y1, x2, y2 } }]
  */
 
 export function generateImageMapHtml(data) {
   const rows = data.imageMapRows || []
+  const areas = data.imageMapAreas || []
   
   if (rows.length === 0) {
     return '<!-- 이미지맵 데이터가 없습니다 -->'
@@ -25,8 +17,11 @@ export function generateImageMapHtml(data) {
   const rowsHtml = rows.map((row, index) => {
     const mapName = row.mapName || `mapContents${String(index + 1).padStart(2, '0')}`
     
+    // 해당 row에 속한 areas만 필터링
+    const rowAreas = areas.filter(a => a.rowId === row.id)
+    
     // area 태그들 생성
-    const areasHtml = row.areas.map(area => {
+    const areasHtml = rowAreas.map(area => {
       const coords = `${area.coords.x1},${area.coords.y1},${area.coords.x2},${area.coords.y2}`
       return `								<area shape="rect" coords="${coords}" href="${area.href}" alt="${area.alt}" target="_blank" title="새창열림">`
     }).join('\n')

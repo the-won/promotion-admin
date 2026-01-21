@@ -313,10 +313,12 @@ export const templateDefaults = {
   // templateDefaults.js 파일에 추가할 내용
   // 새로운 템플릿 타입 (예: em-type-7) 또는 기존 타입에 추가
 
+  // templateDefaults.js 파일에 추가할 내용
+
   'em-type-imagemap': {
     imageMapRows: {
-      label: '이미지맵 행 목록',
-      type: 'image-map',
+      label: '이미지 행 목록',
+      type: 'image-map-rows',
       value: [
         {
           id: 1,
@@ -324,21 +326,7 @@ export const templateDefaults = {
           width: 720,
           height: 1478,
           imageAlt: '[News01] 따뜻한 진심을 담은 연말 선물',
-          mapName: 'mapContents01',
-          areas: [
-            {
-              id: 1,
-              href: 'https://example.com/beauty',
-              alt: '홀리데이 뷰티 기프트 기획전',
-              coords: { x1: 60, y1: 349, x2: 660, y2: 853 }
-            },
-            {
-              id: 2,
-              href: 'https://example.com/health',
-              alt: '베스트 건강가전 선물 기획전',
-              coords: { x1: 60, y1: 893, x2: 660, y2: 1397 }
-            }
-          ]
+          mapName: 'mapContents01'
         },
         {
           id: 2,
@@ -346,21 +334,41 @@ export const templateDefaults = {
           width: 720,
           height: 1155,
           imageAlt: '[News02] 겨울에 즐기는 따뜻한 홈파티',
-          mapName: 'mapContents02',
-          areas: [
-            {
-              id: 3,
-              href: 'https://example.com/tree',
-              alt: '크리스마스 트리 기획전',
-              coords: { x1: 411, y1: 397, x2: 639, y2: 624 }
-            },
-            {
-              id: 4,
-              href: 'https://example.com/food',
-              alt: '홈파티 간편식 기획전',
-              coords: { x1: 77, y1: 686, x2: 305, y2: 914 }
-            }
-          ]
+          mapName: 'mapContents02'
+        }
+      ]
+    },
+    imageMapAreas: {
+      label: '핫스팟 목록',
+      type: 'image-map-areas',
+      value: [
+        {
+          id: 1,
+          rowId: 1,
+          href: 'https://example.com/beauty',
+          alt: '홀리데이 뷰티 기프트 기획전',
+          coords: { x1: 60, y1: 349, x2: 660, y2: 853 }
+        },
+        {
+          id: 2,
+          rowId: 1,
+          href: 'https://example.com/health',
+          alt: '베스트 건강가전 선물 기획전',
+          coords: { x1: 60, y1: 893, x2: 660, y2: 1397 }
+        },
+        {
+          id: 3,
+          rowId: 2,
+          href: 'https://example.com/tree',
+          alt: '크리스마스 트리 기획전',
+          coords: { x1: 411, y1: 397, x2: 639, y2: 624 }
+        },
+        {
+          id: 4,
+          rowId: 2,
+          href: 'https://example.com/food',
+          alt: '홈파티 간편식 기획전',
+          coords: { x1: 77, y1: 686, x2: 305, y2: 914 }
         }
       ]
     }
