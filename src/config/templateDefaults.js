@@ -143,7 +143,7 @@ export const templateDefaults = {
     backgroundImage1: {
       label: '이미지 1 URL',
       type: 'url',
-      value: 'https://org-i.benepia.co.kr/ckeditor/2025/12/11/BB588B647500.Tomcat_117654296464950.jpg'
+      value: 'https://d2odciwzsa8zjd.cloudfront.net/public/editorImage/202509/8dae3bd8-5e33-4d1c-af7e-3cdbc39b3b1a.png'
     },
     backgroundImage2: {
       label: '이미지 2 URL',
