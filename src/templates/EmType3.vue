@@ -322,11 +322,14 @@ export default {
 .label {
   color: #007bff;
   font-weight: bold;
-  font-size: 13px;
+  font-size: 12px;
   text-align: center;
   pointer-events: none;
   user-select: none;
   text-shadow: 0 1px 2px rgba(255,255,255,0.8);
+  padding: 2px 6px;
+  background: rgba(255,255,255,0.7);
+  border-radius: 3px;
 }
 
 .resize-handle {

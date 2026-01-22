@@ -106,18 +106,18 @@
                   @select-hotspot="handleSelectHotspot"
                 />
               </div>
+            </div>
 
-              <!-- Download Button -->
-              <div class="sidebar-footer">
-                <button @click="handleDownload" class="download-btn">
-                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                    <path d="M14 10V12.6667C14 13.0203 13.8595 13.3594 13.6095 13.6095C13.3594 13.8595 13.0203 14 12.6667 14H3.33333C2.97971 14 2.64057 13.8595 2.39052 13.6095C2.14048 13.3594 2 13.0203 2 12.6667V10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                    <path d="M4.66669 6.66667L8.00002 10L11.3334 6.66667" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                    <path d="M8 10V2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                  </svg>
-                  HTML 다운로드
-                </button>
-              </div>
+            <!-- Download Button (Fixed at bottom) -->
+            <div class="sidebar-footer-fixed">
+              <button @click="handleDownload" class="download-btn">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                  <path d="M14 10V12.6667C14 13.0203 13.8595 13.3594 13.6095 13.6095C13.3594 13.8595 13.0203 14 12.6667 14H3.33333C2.97971 14 2.64057 13.8595 2.39052 13.6095C2.14048 13.3594 2 13.0203 2 12.6667V10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                  <path d="M4.66669 6.66667L8.00002 10L11.3334 6.66667" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                  <path d="M8 10V2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                HTML 다운로드
+              </button>
             </div>
           </aside>
 
@@ -536,8 +536,7 @@ img {
 .card-body {
   flex: 1;
   overflow-y: auto;
-  display: flex;
-  flex-direction: column;
+  padding-bottom: 80px; /* 하단 고정 버튼 공간 확보 */
 }
 
 .sidebar-section {
@@ -545,15 +544,16 @@ img {
   border-bottom: 1px solid #f3f4f6;
 }
 
-.sidebar-form {
-  flex: 1;
-}
-
-.sidebar-footer {
-  padding: 20px 24px;
-  border-top: 1px solid #f3f4f6;
-  margin-top: auto;
-  flex-shrink: 0;
+.sidebar-footer-fixed {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 16px 24px;
+  background: #fff;
+  border-top: 1px solid #e5e7eb;
+  box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.05);
+  z-index: 10;
 }
 
 /* Download Button */
