@@ -108,6 +108,7 @@
             :value="getHotspotGroupValue(key)"
             :sectionKey="key"
             :selectedId="selectedHotspotId"
+            :visibleTopPosition="getVisibleTopForSection(key)"
             @input="handleHotspotGroupInput($event, key)"
             @select="handleSelectHotspot"
           />
@@ -126,6 +127,7 @@
             :rows="localData.imageMapRows"
             :areas="localData.imageMapAreas"
             :selectedAreaId="selectedHotspotId"
+            :visibleScrollPosition="visibleScrollPosition"
             @update:rows="localData.imageMapRows = $event"
             @update:areas="localData.imageMapAreas = $event"
             @select-area="handleSelectHotspot"
@@ -171,7 +173,7 @@ export default {
     ImageLinkGroupEditor, 
     ImageMapEditor
   },
-  props: ['template', 'value', 'templateConfig', 'selectedHotspotId'],
+  props: ['template', 'value', 'templateConfig', 'selectedHotspotId', 'visibleTopPositions', 'visibleScrollPosition'],
   data() {
     return { 
       localData: {} 
@@ -213,6 +215,15 @@ export default {
     
     handleSelectHotspot(id) {
       this.$emit('select-hotspot', id)
+    },
+    
+    getVisibleTopForSection(key) {
+      // visibleTopPositions가 있으면 해당 섹션의 위치 반환
+      if (this.visibleTopPositions) {
+        const imageIndex = key === 'hotspots1' ? 1 : 2
+        return this.visibleTopPositions[imageIndex] || 10
+      }
+      return 10 // 기본값
     }
   }
 }

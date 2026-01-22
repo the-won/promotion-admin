@@ -122,6 +122,10 @@ export default {
     selectedAreaId: {
       type: [Number, String],
       default: null
+    },
+    visibleScrollPosition: {
+      type: Object,
+      default: () => ({ scrollTop: 0, viewportHeight: 400 })
     }
   },
   data() {
@@ -214,8 +218,14 @@ export default {
 
       const areasInRow = this.getAreasForRow(rowId)
       const newId = Date.now()
-      const offsetX = (areasInRow.length % 3) * 100
-      const offsetY = Math.floor(areasInRow.length / 3) * 80
+      
+      // 스크롤 위치를 기반으로 y 좌표 계산
+      // imageMapRowPositions에서 해당 row의 보이는 Y 위치 가져오기
+      const rowPositions = this.visibleScrollPosition?.imageMapRowPositions || {}
+      const baseY = rowPositions[rowId] || 50
+      
+      const offsetX = (areasInRow.length % 3) * 150
+      const offsetY = (areasInRow.length % 2) * 100
 
       const newArea = {
         id: newId,
@@ -224,9 +234,9 @@ export default {
         alt: `버튼 ${areasInRow.length + 1}`,
         coords: {
           x1: 60 + offsetX,
-          y1: 100 + offsetY,
+          y1: Math.max(20, baseY + offsetY),
           x2: 200 + offsetX,
-          y2: 180 + offsetY
+          y2: Math.max(100, baseY + 80 + offsetY)
         }
       }
 

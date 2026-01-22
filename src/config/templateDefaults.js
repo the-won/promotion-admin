@@ -162,7 +162,7 @@ export const templateDefaults = {
           title: '신청하기',
           position: {
             left: 30,
-            top: 70,
+            top: 5,
             width: 30,
             height: 10
           }
@@ -181,7 +181,7 @@ export const templateDefaults = {
           title: '더 알아보기',
           position: {
             left: 40,
-            top: 60,
+            top: 5,
             width: 25,
             height: 10
           }

@@ -99,11 +99,27 @@ export default {
   mounted() {
     this.updateContainerRect()
     window.addEventListener('resize', this.updateContainerRect)
+    window.addEventListener('keydown', this.handleKeydown)
   },
   beforeDestroy() {
     window.removeEventListener('resize', this.updateContainerRect)
+    window.removeEventListener('keydown', this.handleKeydown)
   },
   methods: {
+    handleKeydown(event) {
+      // Delete 또는 Backspace 키로 선택된 핫스팟 삭제
+      if ((event.key === 'Delete' || event.key === 'Backspace') && this.selectedId) {
+        // input, textarea 등에서는 동작하지 않도록
+        const tagName = event.target.tagName.toLowerCase()
+        if (tagName === 'input' || tagName === 'textarea' || event.target.isContentEditable) {
+          return
+        }
+        
+        event.preventDefault()
+        this.$emit('delete-hotspot', this.selectedId)
+      }
+    },
+    
     onImageLoad(imageIndex) {
       this.$nextTick(() => {
         this.updateContainerRect(imageIndex)
@@ -254,8 +270,8 @@ export default {
         newPos.width = this.initialPos.width + deltaX
       }
       
-      newPos.width = Math.max(5, Math.min(80, newPos.width))
-      newPos.height = Math.max(3, Math.min(50, newPos.height))
+      newPos.width = Math.max(5, Math.min(100, newPos.width))
+      newPos.height = Math.max(3, Math.min(100, newPos.height))
       
       newPos.left = Math.max(0, Math.min(100 - newPos.width, newPos.left))
       newPos.top = Math.max(0, Math.min(100 - newPos.height, newPos.top))

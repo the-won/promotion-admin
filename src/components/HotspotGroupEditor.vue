@@ -64,60 +64,6 @@
           @click.stop
         />
       </div>
-
-      <div class="position-group">
-        <div class="form-group">
-          <label>Left (%)</label>
-          <input 
-            type="number" 
-            v-model.number="hotspot.position.left"
-            min="0"
-            max="100"
-            step="0.1"
-            class="form-input"
-            @click.stop
-          />
-        </div>
-
-        <div class="form-group">
-          <label>Top (%)</label>
-          <input 
-            type="number" 
-            v-model.number="hotspot.position.top"
-            min="0"
-            max="100"
-            step="0.1"
-            class="form-input"
-            @click.stop
-          />
-        </div>
-
-        <div class="form-group">
-          <label>Width (%)</label>
-          <input 
-            type="number" 
-            v-model.number="hotspot.position.width"
-            min="5"
-            max="80"
-            step="0.1"
-            class="form-input"
-            @click.stop
-          />
-        </div>
-
-        <div class="form-group">
-          <label>Height (%)</label>
-          <input 
-            type="number" 
-            v-model.number="hotspot.position.height"
-            min="3"
-            max="50"
-            step="0.1"
-            class="form-input"
-            @click.stop
-          />
-        </div>
-      </div>
     </div>
   </div>
 </template>
@@ -136,6 +82,10 @@ export default {
     selectedId: {
       type: Number,
       default: null
+    },
+    visibleTopPosition: {
+      type: Number,
+      default: 10
     }
   },
   data() {
@@ -175,6 +125,11 @@ export default {
     
     addHotspot() {
       const newId = Date.now()
+      // 현재 보이는 스크롤 위치를 기준으로 핫스팟 배치
+      // visibleTopPosition prop이 있으면 사용, 없으면 기본값 10
+      const baseTop = this.visibleTopPosition || 10
+      const offsetTop = (this.localHotspots.length * 5) % 30 // 중복 방지를 위한 오프셋
+      
       const newHotspot = {
         id: newId,
         text: `버튼 ${this.localHotspots.length + 1}`,
@@ -182,8 +137,8 @@ export default {
         alt: `버튼 ${this.localHotspots.length + 1}`,
         title: `버튼 ${this.localHotspots.length + 1}`,
         position: {
-          left: 10 + (this.localHotspots.length * 5),
-          top: 20 + (this.localHotspots.length * 5),
+          left: 10 + (this.localHotspots.length * 5) % 60,
+          top: Math.min(85, baseTop + offsetTop), // 최대 85%를 넘지 않도록
           width: 20,
           height: 10
         }
@@ -331,18 +286,5 @@ export default {
   outline: none;
   border-color: #007bff;
   box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.1);
-}
-
-.position-group {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 10px;
-  margin-top: 15px;
-  padding-top: 15px;
-  border-top: 1px solid #eee;
-}
-
-.position-group .form-group {
-  margin-bottom: 0;
 }
 </style>

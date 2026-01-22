@@ -103,6 +103,8 @@
                   v-model="formData"
                   :templateConfig="getTemplateConfig(selectedTemplate)"
                   :selectedHotspotId="selectedHotspotId"
+                  :visibleTopPositions="visibleTopPositions"
+                  :visibleScrollPosition="visibleScrollPosition"
                   @select-hotspot="handleSelectHotspot"
                 />
               </div>
@@ -134,11 +136,14 @@
             </div>
             <div class="preview-body">
               <PreviewFrame 
+                ref="previewFrame"
                 :template="selectedTemplate" 
                 :formData="formData"
                 :selectedHotspotId="selectedHotspotId"
                 @select-hotspot="handleSelectHotspot"
                 @update-hotspot="handleUpdateHotspot"
+                @delete-hotspot="handleDeleteHotspot"
+                @scroll-update="handlePreviewScroll"
               />
             </div>
           </main>
@@ -162,6 +167,8 @@ export default {
       formData: this.extractValues(templateDefaults['em-type-1']),
       selectedHotspotId: null,
       sidebarOpen: true,
+      visibleTopPositions: { 1: 10, 2: 10 }, // 각 이미지별 현재 보이는 영역의 top 위치
+      visibleScrollPosition: { scrollTop: 0, viewportHeight: 400 }, // 스크롤 위치 정보
       templates: [
         { value: 'em-type-1', name: 'Type 1', icon: '📄' },
         { value: 'em-type-2', name: 'Type 2', icon: '🖼️' },
@@ -176,9 +183,57 @@ export default {
     selectedTemplate(newTemplate) {
       this.formData = this.extractValues(templateDefaults[newTemplate])
       this.selectedHotspotId = null
+      // 템플릿 변경 시 스크롤 위치 초기화
+      this.$nextTick(() => {
+        this.updateVisiblePositions()
+      })
     }
   },
+  mounted() {
+    // window 스크롤 이벤트 리스너 등록
+    window.addEventListener('scroll', this.handleWindowScroll, { passive: true })
+    
+    // 초기 로딩 후 스크롤 위치 업데이트
+    this.$nextTick(() => {
+      setTimeout(() => {
+        this.updateVisiblePositions()
+      }, 100)
+    })
+  },
+  beforeDestroy() {
+    window.removeEventListener('scroll', this.handleWindowScroll)
+  },
   methods: {
+    handleWindowScroll() {
+      this.updateVisiblePositions()
+    },
+    updateVisiblePositions() {
+      const previewFrame = this.$refs.previewFrame
+      if (previewFrame) {
+        // EmType3용 위치
+        if (typeof previewFrame.getVisibleTopPosition === 'function') {
+          this.visibleTopPositions = {
+            1: previewFrame.getVisibleTopPosition(1),
+            2: previewFrame.getVisibleTopPosition(2)
+          }
+        }
+        // ImageMap용 위치
+        if (typeof previewFrame.getVisiblePositionsForImageMap === 'function') {
+          const imageMapPositions = previewFrame.getVisiblePositionsForImageMap()
+          this.visibleScrollPosition = {
+            ...this.visibleScrollPosition,
+            scrollTop: window.scrollY || window.pageYOffset,
+            viewportHeight: window.innerHeight,
+            imageMapRowPositions: imageMapPositions
+          }
+        } else {
+          this.visibleScrollPosition = {
+            scrollTop: window.scrollY || window.pageYOffset,
+            viewportHeight: window.innerHeight
+          }
+        }
+      }
+    },
     extractValues(config) {
       const result = {}
       for (const key in config) {
@@ -208,11 +263,58 @@ export default {
         }
       }
     },
+    handleDeleteHotspot(id) {
+      // EmType3용 (hotspots1, hotspots2)
+      if (this.formData.hotspots1) {
+        const index1 = this.formData.hotspots1.findIndex(h => h.id === id)
+        if (index1 !== -1) {
+          this.formData.hotspots1.splice(index1, 1)
+          this.selectedHotspotId = null
+          return
+        }
+      }
+      if (this.formData.hotspots2) {
+        const index2 = this.formData.hotspots2.findIndex(h => h.id === id)
+        if (index2 !== -1) {
+          this.formData.hotspots2.splice(index2, 1)
+          this.selectedHotspotId = null
+          return
+        }
+      }
+      // EmType4용 (hotspots)
+      if (this.formData.hotspots) {
+        const index = this.formData.hotspots.findIndex(h => h.id === id)
+        if (index !== -1) {
+          this.formData.hotspots.splice(index, 1)
+          this.selectedHotspotId = null
+          return
+        }
+      }
+      // ImageMap용 (imageMapAreas)
+      if (this.formData.imageMapAreas) {
+        const index = this.formData.imageMapAreas.findIndex(a => a.id === id)
+        if (index !== -1) {
+          this.formData.imageMapAreas.splice(index, 1)
+          this.selectedHotspotId = null
+          return
+        }
+      }
+    },
     toggleSidebar() {
       this.sidebarOpen = !this.sidebarOpen
     },
     selectTemplate(value) {
       this.selectedTemplate = value
+    },
+    handlePreviewScroll(scrollInfo) {
+      // 스크롤 위치 정보 저장 (ImageMapEditor용)
+      this.visibleScrollPosition = {
+        scrollTop: scrollInfo.scrollTop,
+        viewportHeight: scrollInfo.viewportHeight
+      }
+      
+      // 각 이미지별 보이는 위치 업데이트
+      this.updateVisiblePositions()
     }
   }
 }

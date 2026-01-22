@@ -83,7 +83,27 @@ export default {
       return this.data.imageMapAreas || []
     }
   },
+  mounted() {
+    window.addEventListener('keydown', this.handleKeydown)
+  },
+  beforeDestroy() {
+    window.removeEventListener('keydown', this.handleKeydown)
+  },
   methods: {
+    handleKeydown(event) {
+      // Delete 또는 Backspace 키로 선택된 핫스팟 삭제
+      if ((event.key === 'Delete' || event.key === 'Backspace') && this.selectedId) {
+        // input, textarea 등에서는 동작하지 않도록
+        const tagName = event.target.tagName.toLowerCase()
+        if (tagName === 'input' || tagName === 'textarea' || event.target.isContentEditable) {
+          return
+        }
+        
+        event.preventDefault()
+        this.$emit('delete-hotspot', this.selectedId)
+      }
+    },
+    
     // 특정 row에 속한 areas 반환
     getAreasForRow(rowId) {
       return this.areas.filter(a => a.rowId === rowId)
