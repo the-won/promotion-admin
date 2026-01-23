@@ -7,83 +7,85 @@
       
       <!-- Template Selector Tabs -->
       <div class="template-tabs">
-      <button 
-        v-for="template in templates" 
-        :key="template.value"
-        class="template-tab"
-        :class="{ 'active': selectedTemplate === template.value }"
-        @click="selectTemplate(template.value)"
-      >
-        <span class="tab-icon">{{ template.icon }}</span>
-        <span class="tab-text">{{ template.name }}</span>
-      </button>
-    </div>
+        <button 
+          v-for="template in templates" 
+          :key="template.value"
+          class="template-tab"
+          :class="{ 'active': selectedTemplate === template.value }"
+          @click="selectTemplate(template.value)"
+        >
+          <span class="tab-icon">{{ template.icon }}</span>
+          <span class="tab-text">{{ template.name }}</span>
+        </button>
+      </div>
 
-    <div class="content-grid">
-      <!-- Left Sidebar Card -->
-      <aside class="sidebar-card" :class="{ 'collapsed': !sidebarOpen }">
-        <div class="card-header">
-          <h3 class="card-title">템플릿 설정</h3>
-          <button class="close-btn" @click="toggleSidebar">
-            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-              <path d="M15 5L5 15M5 5L15 15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-          </button>
-        </div>
+      <div class="content-container">
+        <div class="content-grid">
+        <!-- Left Sidebar Card -->
+        <aside class="sidebar-card" :class="{ 'collapsed': !sidebarOpen }">
+          <div class="card-header">
+            <h3 class="card-title">템플릿 설정</h3>
+            <button class="close-btn" @click="toggleSidebar">
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                <path d="M15 5L5 15M5 5L15 15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </button>
+          </div>
 
-        <div class="card-body">
-          <!-- Template Form -->
-          <div class="sidebar-section sidebar-form" v-if="selectedTemplate">
-            <TemplateForm 
+          <div class="card-body">
+            <!-- Template Form -->
+            <div class="sidebar-section sidebar-form" v-if="selectedTemplate">
+              <TemplateForm 
+                :template="selectedTemplate" 
+                v-model="formData"
+                :templateConfig="getTemplateConfig(selectedTemplate)"
+                :selectedHotspotId="selectedHotspotId"
+                :visibleTopPositions="visibleTopPositions"
+                :visibleScrollPosition="visibleScrollPosition"
+                @select-hotspot="handleSelectHotspot"
+              />
+            </div>
+          </div>
+
+          <!-- Download Button (Fixed at bottom) -->
+          <div class="sidebar-footer-fixed">
+            <button @click="handleDownload" class="download-btn">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                <path d="M14 10V12.6667C14 13.0203 13.8595 13.3594 13.6095 13.6095C13.3594 13.8595 13.0203 14 12.6667 14H3.33333C2.97971 14 2.64057 13.8595 2.39052 13.6095C2.14048 13.3594 2 13.0203 2 12.6667V10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M4.66669 6.66667L8.00002 10L11.3334 6.66667" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M8 10V2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              HTML 다운로드
+            </button>
+          </div>
+        </aside>
+
+        <!-- Right Preview Card -->
+        <main class="preview-card" :class="{ 'expanded': !sidebarOpen }">
+          <div class="preview-header">
+            <h3 class="preview-title">미리보기</h3>
+            <button v-if="!sidebarOpen" class="show-sidebar-btn" @click="toggleSidebar">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                <path d="M2 4H14M2 8H14M2 12H14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              편집 메뉴 열기
+            </button>
+          </div>
+          <div class="preview-body">
+            <PreviewFrame 
+              ref="previewFrame"
               :template="selectedTemplate" 
-              v-model="formData"
-              :templateConfig="getTemplateConfig(selectedTemplate)"
+              :formData="formData"
               :selectedHotspotId="selectedHotspotId"
-              :visibleTopPositions="visibleTopPositions"
-              :visibleScrollPosition="visibleScrollPosition"
               @select-hotspot="handleSelectHotspot"
+              @update-hotspot="handleUpdateHotspot"
+              @delete-hotspot="handleDeleteHotspot"
+              @scroll-update="handlePreviewScroll"
             />
           </div>
+        </main>
         </div>
-
-        <!-- Download Button (Fixed at bottom) -->
-        <div class="sidebar-footer-fixed">
-          <button @click="handleDownload" class="download-btn">
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-              <path d="M14 10V12.6667C14 13.0203 13.8595 13.3594 13.6095 13.6095C13.3594 13.8595 13.0203 14 12.6667 14H3.33333C2.97971 14 2.64057 13.8595 2.39052 13.6095C2.14048 13.3594 2 13.0203 2 12.6667V10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-              <path d="M4.66669 6.66667L8.00002 10L11.3334 6.66667" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-              <path d="M8 10V2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-            HTML 다운로드
-          </button>
-        </div>
-      </aside>
-
-      <!-- Right Preview Card -->
-      <main class="preview-card" :class="{ 'expanded': !sidebarOpen }">
-        <div class="preview-header">
-          <h3 class="preview-title">미리보기</h3>
-          <button v-if="!sidebarOpen" class="show-sidebar-btn" @click="toggleSidebar">
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-              <path d="M2 4H14M2 8H14M2 12H14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-            편집 메뉴 열기
-          </button>
-        </div>
-        <div class="preview-body">
-          <PreviewFrame 
-            ref="previewFrame"
-            :template="selectedTemplate" 
-            :formData="formData"
-            :selectedHotspotId="selectedHotspotId"
-            @select-hotspot="handleSelectHotspot"
-            @update-hotspot="handleUpdateHotspot"
-            @delete-hotspot="handleDeleteHotspot"
-            @scroll-update="handlePreviewScroll"
-          />
-        </div>
-      </main>
-    </div>
+      </div>
     </div>
   </div>
 </template>
@@ -308,6 +310,10 @@ export default {
   font-weight: 600;
 }
 
+.content-container {
+  max-width: 1400px;
+  margin: 0 auto;
+}
 .content-grid {
   display: flex;
   gap: 24px;
