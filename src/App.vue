@@ -1,7 +1,7 @@
 <template>
   <div class="app-wrapper">
     <!-- Header -->
-    <header class="app-header">
+    <!-- <header class="app-header">
       <div class="header-left">
         <div class="logo">
           <div class="logo-icon">📧</div>
@@ -58,7 +58,7 @@
           <img src="https://i.pravatar.cc/40?img=12" alt="User" />
         </div>
       </div>
-    </header>
+    </header> -->
 
     <!-- Hero Section -->
     <div class="hero-section">
