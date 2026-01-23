@@ -1,42 +1,47 @@
 <template>
-  <div>
-    <!-- Hero Section -->
-    <div class="hero-section">
-      <h1 class="hero-title">Hey, Email Template 👋</h1>
-      <p class="hero-subtitle">실시간으로 이메일 템플릿을 편집하고 미리보기 하세요</p>
-      
-      <!-- Template Selector Tabs -->
-      <div class="template-tabs">
-        <button 
-          v-for="template in templates" 
-          :key="template.value"
-          class="template-tab"
-          :class="{ 'active': selectedTemplate === template.value }"
-          @click="selectTemplate(template.value)"
-        >
-          <span class="tab-icon">{{ template.icon }}</span>
-          <span class="tab-text">{{ template.name }}</span>
-        </button>
-      </div>
+  <div class="em-templates">
+    <!-- HERO -->
+    <section class="hero-section">
+      <div class="hero-inner">
+        <div class="hero-title-row">
+          <h1 class="hero-title">Email Template Builder</h1>
+          <span class="hero-badge">{{ selectedTemplate }}</span>
+        </div>
+        <p class="hero-subtitle">
+          실시간으로 이메일 템플릿을 편집하고 미리보기 하세요
+        </p>
 
-      <div class="content-container">
-        <div class="content-grid">
-        <!-- Left Sidebar Card -->
-        <aside class="sidebar-card" :class="{ 'collapsed': !sidebarOpen }">
-          <div class="card-header">
+        <!-- Template Tabs -->
+        <div class="template-tabs">
+          <button
+            v-for="template in templates"
+            :key="template.value"
+            class="template-tab"
+            :class="{ active: selectedTemplate === template.value }"
+            @click="selectTemplate(template.value)"
+          >
+            <span class="tab-icon">{{ template.icon }}</span>
+            <span class="tab-text">{{ template.name }}</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- CONTENT -->
+    <div class="content-container">
+      <div class="content-grid">
+        <!-- SIDEBAR -->
+        <aside class="sidebar-card" :class="{ collapsed: !sidebarOpen }">
+          <header class="card-header">
             <h3 class="card-title">템플릿 설정</h3>
-            <button class="close-btn" @click="toggleSidebar">
-              <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-                <path d="M15 5L5 15M5 5L15 15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-              </svg>
-            </button>
-          </div>
+            <button class="close-btn" @click="toggleSidebar">✕</button>
+          </header>
 
           <div class="card-body">
-            <!-- Template Form -->
-            <div class="sidebar-section sidebar-form" v-if="selectedTemplate">
-              <TemplateForm 
-                :template="selectedTemplate" 
+            <section class="sidebar-section">
+              <h4 class="section-title">기본 설정</h4>
+              <TemplateForm
+                :template="selectedTemplate"
                 v-model="formData"
                 :templateConfig="getTemplateConfig(selectedTemplate)"
                 :selectedHotspotId="selectedHotspotId"
@@ -44,47 +49,46 @@
                 :visibleScrollPosition="visibleScrollPosition"
                 @select-hotspot="handleSelectHotspot"
               />
-            </div>
+            </section>
           </div>
 
-          <!-- Download Button (Fixed at bottom) -->
-          <div class="sidebar-footer-fixed">
-            <button @click="handleDownload" class="download-btn">
-              <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                <path d="M14 10V12.6667C14 13.0203 13.8595 13.3594 13.6095 13.6095C13.3594 13.8595 13.0203 14 12.6667 14H3.33333C2.97971 14 2.64057 13.8595 2.39052 13.6095C2.14048 13.3594 2 13.0203 2 12.6667V10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                <path d="M4.66669 6.66667L8.00002 10L11.3334 6.66667" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                <path d="M8 10V2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-              </svg>
+          <footer class="sidebar-footer-fixed">
+            <button class="download-btn" @click="handleDownload">
               HTML 다운로드
             </button>
-          </div>
+          </footer>
         </aside>
 
-        <!-- Right Preview Card -->
-        <main class="preview-card" :class="{ 'expanded': !sidebarOpen }">
-          <div class="preview-header">
-            <h3 class="preview-title">미리보기</h3>
-            <button v-if="!sidebarOpen" class="show-sidebar-btn" @click="toggleSidebar">
-              <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                <path d="M2 4H14M2 8H14M2 12H14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-              </svg>
-              편집 메뉴 열기
+        <!-- PREVIEW -->
+        <main class="preview-card" :class="{ expanded: !sidebarOpen }">
+          <header class="preview-header">
+            <h3 class="preview-title">템플릿 미리보기<sub class="preview-subtitle">(실시간 렌더링</sub>
+            </h3>
+             
+            <button
+              v-if="!sidebarOpen"
+              class="show-sidebar-btn"
+              @click="toggleSidebar"
+            >
+              설정 열기
             </button>
-          </div>
+          </header>
+
           <div class="preview-body">
-            <PreviewFrame 
-              ref="previewFrame"
-              :template="selectedTemplate" 
-              :formData="formData"
-              :selectedHotspotId="selectedHotspotId"
-              @select-hotspot="handleSelectHotspot"
-              @update-hotspot="handleUpdateHotspot"
-              @delete-hotspot="handleDeleteHotspot"
-              @scroll-update="handlePreviewScroll"
-            />
+            <div class="preview-canvas">
+              <PreviewFrame
+                ref="previewFrame"
+                :template="selectedTemplate"
+                :formData="formData"
+                :selectedHotspotId="selectedHotspotId"
+                @select-hotspot="handleSelectHotspot"
+                @update-hotspot="handleUpdateHotspot"
+                @delete-hotspot="handleDeleteHotspot"
+                @scroll-update="handlePreviewScroll"
+              />
+            </div>
           </div>
         </main>
-        </div>
       </div>
     </div>
   </div>
@@ -93,13 +97,13 @@
 <script>
 import TemplateForm from '../components/TemplateForm.vue'
 import PreviewFrame from '../components/PreviewFrame.vue'
-import { downloadHtml } from '../utils/downloadHtml.js'
-import { templateDefaults } from '../config/templateDefaults.js'
+import { downloadHtml } from '../utils/downloadHtml'
+import { templateDefaults } from '../config/templateDefaults'
 
 export default {
   name: 'EmTemplates',
   components: { TemplateForm, PreviewFrame },
-  data() {
+   data() {
     return {
       selectedTemplate: 'em-type-1',
       formData: this.extractValues(templateDefaults['em-type-1']),
@@ -243,300 +247,200 @@ export default {
 </script>
 
 <style scoped>
-/* Hero Section */
+/* HERO */
 .hero-section {
-  padding: 48px 32px 60px;
+  background: linear-gradient(180deg, #c7b8ea, #f5e6d3);
+  padding: 56px 32px;
+}
+.hero-inner {
+  max-width: 1200px;
+  margin: 0 auto;
   text-align: center;
-  background: linear-gradient(to bottom, #c7b8ea 0%, #f5e6d3 100%);
-  margin: -32px -32px 32px -32px;
 }
-
-.hero-title {
-  margin: 0 0 12px 0;
-  font-size: 48px;
-  font-weight: 700;
-  color: #1f2937;
-  letter-spacing: -1.5px;
-}
-
-.hero-subtitle {
-  margin: 0 0 32px 0;
-  font-size: 18px;
-  color: #4b5563;
-  font-weight: 400;
-}
-
-.template-tabs {
+.hero-title-row {
   display: flex;
-  gap: 12px;
   justify-content: center;
-  flex-wrap: wrap;
-  margin-bottom: 32px;
-}
-
-.template-tab {
-  display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 12px 24px;
-  background: rgba(255, 255, 255, 0.8);
-  border: 2px solid transparent;
-  border-radius: 12px;
-  cursor: pointer;
-  font-size: 14px;
-  color: #6b7280;
-  transition: all 0.3s;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  gap: 12px;
 }
-
-.template-tab:hover {
-  background: rgba(255, 255, 255, 0.9);
-  border-color: rgba(99, 102, 241, 0.3);
-  transform: translateY(-2px);
+.hero-title {
+  font-size: 42px;
+  font-weight: 800;
 }
-
-.template-tab.active {
-  background: #fff;
-  border-color: #6366f1;
-  color: #1f2937;
-  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.2);
-}
-
-.tab-icon {
-  font-size: 18px;
-}
-
-.tab-text {
+.hero-badge {
+  background: #6366f1;
+  color: #fff;
+  padding: 6px 14px;
+  border-radius: 999px;
+  font-size: 13px;
   font-weight: 600;
 }
+.hero-subtitle {
+  margin: 12px 0 32px;
+  color: #4b5563;
+}
 
+/* TABS */
+.template-tabs {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.template-tab {
+  padding: 10px 20px;
+  border-radius: 12px;
+  background: #fff;
+  border: 2px solid transparent;
+  cursor: pointer;
+  font-weight: 600;
+}
+.template-tab.active {
+  border-color: #6366f1;
+  color: #6366f1;
+}
+
+/* LAYOUT */
 .content-container {
   max-width: 1400px;
-  margin: 0 auto;
+  margin: 32px auto;
 }
 .content-grid {
   display: flex;
   gap: 24px;
-  align-items: start;
 }
 
+/* SIDEBAR */
 .sidebar-card {
+  width: 360px;
   background: #fff;
   border-radius: 16px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05), 0 1px 3px rgba(0, 0, 0, 0.08);
-  border: 1px solid #e5e7eb;
   display: flex;
   flex-direction: column;
-  width: 360px;
-  max-height: calc(100vh - 280px);
-  overflow: hidden;
   position: sticky;
   top: 100px;
+}
+.card-header {
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+}
+.card-title {
+  font-weight: 700;
+  margin-right: auto;
+}
+.close-btn {
+  border: none;
+  background: none;
+  cursor: pointer;
+}
+.section-title {
+  font-size: 13px;
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+.card-body {
+  padding: 20px;
+  overflow-y: auto;
+}
+.sidebar-footer-fixed {
+  padding: 16px;
+  border-top: 1px solid #eee;
+}
+.download-btn {
+  width: 100%;
+  padding: 12px;
+  background: #6366f1;
+  color: #fff;
+  border-radius: 10px;
+  border: none;
+}
+
+/* PREVIEW */
+.preview-card {
+  flex: 1;
+  background: #fff;
+  border-radius: 16px;
+  display: flex;
+  flex-direction: column;
+}
+.preview-header {
+  padding: 16px 20px;
+  display: flex;
+  justify-content: space-between;
+}
+.preview-body {
+  background: #f9fafb;
+  /* padding: 32px; */
+  flex: 1;
+  display: flex;
+  justify-content: center;
+}
+.preview-canvas {
+  background: #fff;
+  /* padding: 24px; */
+  margin: 0 auto;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+}
+
+/* ===== SIDEBAR TOGGLE ===== */
+.sidebar-card {
+  transition: width 0.35s ease, opacity 0.25s ease, transform 0.35s ease;
   flex-shrink: 0;
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .sidebar-card.collapsed {
   width: 0;
-  min-width: 0;
   opacity: 0;
-  transform: translateX(-20px);
-  border: none;
-  padding: 0;
-  margin: 0;
-  box-shadow: none;
+  transform: translateX(-12px);
+  pointer-events: none;
+  overflow: hidden;
 }
 
-.card-header {
-  padding: 20px 24px;
-  border-bottom: 1px solid #f3f4f6;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  background: linear-gradient(to bottom, #fafbfc, #fff);
-  flex-shrink: 0;
+/* ===== PREVIEW EXPAND ===== */
+.preview-card {
+  transition: flex 0.35s ease;
 }
 
-.card-title {
-  margin: 0;
-  font-size: 16px;
+.preview-card.expanded {
+  flex: 1 1 100%;
+}
+
+/* ===== SHOW SIDEBAR BUTTON ===== */
+.show-sidebar-btn {
+  padding: 6px 12px;
+  font-size: 13px;
   font-weight: 600;
-  color: #1f2937;
-}
-
-.close-btn {
-  width: 32px;
-  height: 32px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: #f9fafb;
-  border: 1px solid #e5e7eb;
   border-radius: 8px;
-  color: #6b7280;
+  border: 1px solid #6366f1;
+  background: #fff;
+  color: #6366f1;
   cursor: pointer;
-  transition: all 0.2s;
 }
 
-.close-btn:hover {
-  background: #f3f4f6;
-  color: #ef4444;
+/* ===== SIDEBAR INTERNAL SCROLL ===== */
+.sidebar-card {
+  max-height: calc(100vh - 140px); /* hero + 여백 고려 */
+  overflow: hidden;
 }
 
 .card-body {
   flex: 1;
   overflow-y: auto;
-  padding-bottom: 80px;
+  padding-bottom: 24px;
+    scrollbar-width: none;        /* Firefox */
+  -ms-overflow-style: none;     /* IE / Edge */
+}
+.card-body::-webkit-scrollbar {
+  width: 0;
+  height: 0;
 }
 
-.sidebar-section {
-  padding: 20px 24px;
-  border-bottom: 1px solid #f3f4f6;
-}
-
+/* footer 항상 하단 고정 */
 .sidebar-footer-fixed {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  padding: 16px 24px;
+  margin-top: auto;
   background: #fff;
-  border-top: 1px solid #e5e7eb;
-  box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.05);
-  z-index: 10;
 }
 
-.download-btn {
-  width: 100%;
-  padding: 12px 20px;
-  background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
-  color: white;
-  border: none;
-  border-radius: 10px;
-  font-size: 14px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  box-shadow: 0 2px 8px rgba(99, 102, 241, 0.3);
-}
 
-.download-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
-}
-
-.download-btn:active {
-  transform: translateY(0);
-}
-
-.preview-card {
-  background: #fff;
-  border-radius: 16px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05), 0 1px 3px rgba(0, 0, 0, 0.08);
-  border: 1px solid #e5e7eb;
-  min-height: 600px;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.preview-header {
-  padding: 20px 24px;
-  border-bottom: 1px solid #f3f4f6;
-  background: linear-gradient(to bottom, #fafbfc, #fff);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex-shrink: 0;
-}
-
-.preview-title {
-  margin: 0;
-  font-size: 16px;
-  font-weight: 600;
-  color: #1f2937;
-}
-
-.show-sidebar-btn {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 8px 16px;
-  background: #f9fafb;
-  border: 1px solid #e5e7eb;
-  border-radius: 8px;
-  color: #6b7280;
-  font-size: 13px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.show-sidebar-btn:hover {
-  background: #f3f4f6;
-  border-color: #6366f1;
-  color: #6366f1;
-}
-
-.preview-body {
-  flex: 1;
-  padding: 24px;
-  overflow-y: auto;
-}
-
-.card-body::-webkit-scrollbar,
-.preview-body::-webkit-scrollbar {
-  width: 6px;
-}
-
-.card-body::-webkit-scrollbar-track,
-.preview-body::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.card-body::-webkit-scrollbar-thumb,
-.preview-body::-webkit-scrollbar-thumb {
-  background: #d1d5db;
-  border-radius: 3px;
-}
-
-.card-body::-webkit-scrollbar-thumb:hover,
-.preview-body::-webkit-scrollbar-thumb:hover {
-  background: #9ca3af;
-}
-
-@media (max-width: 1200px) {
-  .content-grid {
-    flex-direction: column;
-  }
-  
-  .sidebar-card {
-    width: 100%;
-    max-width: 100%;
-    margin-bottom: 24px;
-    position: relative;
-    top: 0;
-  }
-  
-  .sidebar-card.collapsed {
-    display: none;
-  }
-}
-
-@media (max-width: 768px) {
-  .template-tabs {
-    gap: 8px;
-  }
-  
-  .template-tab {
-    padding: 10px 16px;
-    font-size: 13px;
-  }
-}
 </style>
