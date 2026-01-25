@@ -312,7 +312,10 @@ export default {
 
 /* SIDEBAR */
 .sidebar-card {
-  width: 360px;
+  /* position: fixed !important;
+  top: 0;
+  left: 0; */
+  width: 300px;
   background: #fff;
   border-radius: 16px;
   display: flex;
@@ -358,6 +361,7 @@ export default {
 
 /* PREVIEW */
 .preview-card {
+  /* margin-left: 320px; */
   flex: 1;
   background: #fff;
   border-radius: 16px;
