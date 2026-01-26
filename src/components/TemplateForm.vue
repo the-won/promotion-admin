@@ -1,8 +1,13 @@
 <template>
   <div class="template-form-deel">
     <h4 class="form-title">템플릿 설정</h4>
-    <div class="form-fields">
-      <div v-for="(config, key) in templateConfig" :key="key" class="field-group">
+    <div class="form-fields" :class="{ expanded: sidebarExpanded }">
+      <div 
+        v-for="(config, key) in templateConfig" 
+        :key="key" 
+        class="field-group"
+        :class="{ 'full-width': isFullWidthField(config.type) }"
+      >
         <label class="field-label">
           {{ config.label }}
         </label>
@@ -109,6 +114,7 @@
             :sectionKey="key"
             :selectedId="selectedHotspotId"
             :visibleTopPosition="getVisibleTopForSection(key)"
+            :sidebarExpanded="sidebarExpanded"
             @input="handleHotspotGroupInput($event, key)"
             @select="handleSelectHotspot"
           />
@@ -118,6 +124,7 @@
         <div v-if="config.type === 'image-link-group'">
           <ImageLinkGroupEditor
             v-model="localData[key]"
+            :sidebarExpanded="sidebarExpanded"
           />
         </div>
 
@@ -128,6 +135,7 @@
             :areas="localData.imageMapAreas"
             :selectedAreaId="selectedHotspotId"
             :visibleScrollPosition="visibleScrollPosition"
+            :sidebarExpanded="sidebarExpanded"
             @update:rows="localData.imageMapRows = $event"
             @update:areas="localData.imageMapAreas = $event"
             @select-area="handleSelectHotspot"
@@ -173,7 +181,7 @@ export default {
     ImageLinkGroupEditor, 
     ImageMapEditor
   },
-  props: ['template', 'value', 'templateConfig', 'selectedHotspotId', 'visibleTopPositions', 'visibleScrollPosition'],
+  props: ['template', 'value', 'templateConfig', 'selectedHotspotId', 'visibleTopPositions', 'visibleScrollPosition', 'sidebarExpanded'],
   data() {
     return { 
       localData: {} 
@@ -201,6 +209,12 @@ export default {
     }
   },
   methods: {
+    isFullWidthField(type) {
+      // 이 타입들은 expanded 상태에서도 전체 너비 사용
+      const fullWidthTypes = ['hotspot-group', 'image-link-group', 'image-map-rows', 'textarea']
+      return fullWidthTypes.includes(type)
+    },
+    
     isHotspotGroupField(key) {
       return key === 'hotspots1' || key === 'hotspots2'
     },
@@ -247,6 +261,17 @@ export default {
   display: flex;
   flex-direction: column;
   gap: 20px;
+  transition: all 0.3s ease;
+}
+
+.form-fields.expanded {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px 20px;
+}
+
+.form-fields.expanded .field-group.full-width {
+  grid-column: 1 / -1;
 }
 
 .field-group {

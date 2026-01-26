@@ -9,13 +9,14 @@
       핫스팟을 추가하세요.
     </div>
 
-    <div 
-      v-for="(hotspot, index) in localHotspots" 
-      :key="hotspot.id" 
-      class="hotspot-item"
-      :class="{ selected: selectedId === hotspot.id }"
-      @click="selectHotspot(hotspot.id)"
-    >
+    <div class="hotspot-items-container" :class="{ expanded: sidebarExpanded }">
+      <div 
+        v-for="(hotspot, index) in localHotspots" 
+        :key="hotspot.id" 
+        class="hotspot-item"
+        :class="{ selected: selectedId === hotspot.id }"
+        @click="selectHotspot(hotspot.id)"
+      >
       <div class="hotspot-header">
         <span class="hotspot-title">{{ hotspot.text || `핫스팟 ${index + 1}` }}</span>
         <button @click.stop="removeHotspot(hotspot.id)" class="delete-btn">🗑️</button>
@@ -65,6 +66,7 @@
         />
       </div>
     </div>
+    </div>
   </div>
 </template>
 
@@ -86,6 +88,10 @@ export default {
     visibleTopPosition: {
       type: Number,
       default: 10
+    },
+    sidebarExpanded: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
@@ -168,6 +174,18 @@ export default {
 <style scoped>
 .hotspot-group-editor {
   margin-top: 20px;
+}
+
+.hotspot-items-container {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.hotspot-items-container.expanded {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
 }
 
 .header {

@@ -45,11 +45,12 @@
           이미지를 추가하세요.
         </div>
 
-        <div 
-          v-for="(image, imageIndex) in group.images" 
-          :key="image.id"
-          class="image-item"
-        >
+        <div class="images-grid" :class="{ expanded: sidebarExpanded }">
+          <div 
+            v-for="(image, imageIndex) in group.images" 
+            :key="image.id"
+            class="image-item"
+          >
           <div class="image-item-header">
             <span class="image-number">이미지 {{ imageIndex + 1 }}</span>
             <button @click.stop="removeImage(group.id, image.id)" class="delete-small-btn">🗑️</button>
@@ -77,6 +78,7 @@
             />
           </div>
         </div>
+        </div>
       </div>
     </div>
 
@@ -93,6 +95,10 @@ export default {
     value: {
       type: Array,
       default: () => []
+    },
+    sidebarExpanded: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
@@ -249,6 +255,18 @@ export default {
   margin: 0;
   color: #333;
   font-size: 16px;
+}
+
+.images-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.images-grid.expanded {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
 }
 
 .add-image-btn {

@@ -63,13 +63,14 @@
           핫스팟을 추가하면 프리뷰에서 드래그로 위치/크기를 조정할 수 있습니다.
         </div>
 
-        <div 
-          v-for="(area, areaIndex) in getAreasForRow(row.id)" 
-          :key="area.id"
-          class="area-item"
-          :class="{ 'selected': selectedAreaId === area.id }"
-          @click="selectArea(area.id)"
-        >
+        <div class="area-items-grid" :class="{ expanded: sidebarExpanded }">
+          <div 
+            v-for="(area, areaIndex) in getAreasForRow(row.id)" 
+            :key="area.id"
+            class="area-item"
+            :class="{ 'selected': selectedAreaId === area.id }"
+            @click="selectArea(area.id)"
+          >
           <div class="area-header">
             <span class="area-title">핫스팟 {{ areaIndex + 1 }}</span>
             <button @click.stop="removeArea(area.id)" class="delete-area-btn">삭제</button>
@@ -96,6 +97,7 @@
               @click.stop
             />
           </div>
+        </div>
         </div>
       </div>
     </div>
@@ -126,6 +128,10 @@ export default {
     visibleScrollPosition: {
       type: Object,
       default: () => ({ scrollTop: 0, viewportHeight: 400 })
+    },
+    sidebarExpanded: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
@@ -386,6 +392,18 @@ export default {
   border: 2px dashed #ddd;
   border-radius: 6px;
   font-size: 13px;
+}
+
+.area-items-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.area-items-grid.expanded {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
 }
 
 .area-item {

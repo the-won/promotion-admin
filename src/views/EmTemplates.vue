@@ -31,8 +31,16 @@
     <div class="content-container">
       <div class="content-grid">
         <!-- SIDEBAR -->
-        <aside class="sidebar-card" :class="{ collapsed: !sidebarOpen }">
+        <aside class="sidebar-card" :class="{ collapsed: !sidebarOpen, expanded: sidebarExpanded }">
           <header class="card-header">
+            <button class="width-toggle-btn" @click="toggleSidebarWidth" title="너비 조절">
+              <svg v-if="!sidebarExpanded" width="16" height="16" viewBox="0 0 16 16" fill="none">
+                <path d="M1 8H15M15 8L11 4M15 8L11 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              <svg v-else width="16" height="16" viewBox="0 0 16 16" fill="none">
+                <path d="M15 8H1M1 8L5 4M1 8L5 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </button>
             <h3 class="card-title">템플릿 설정</h3>
             <button class="close-btn" @click="toggleSidebar">✕</button>
           </header>
@@ -47,6 +55,7 @@
                 :selectedHotspotId="selectedHotspotId"
                 :visibleTopPositions="visibleTopPositions"
                 :visibleScrollPosition="visibleScrollPosition"
+                :sidebarExpanded="sidebarExpanded"
                 @select-hotspot="handleSelectHotspot"
               />
             </section>
@@ -109,6 +118,7 @@ export default {
       formData: this.extractValues(templateDefaults['em-type-1']),
       selectedHotspotId: null,
       sidebarOpen: true,
+      sidebarExpanded: false,
       visibleTopPositions: { 1: 10, 2: 10 },
       visibleScrollPosition: { scrollTop: 0, viewportHeight: 400 },
       templates: [
@@ -236,6 +246,9 @@ export default {
     toggleSidebar() {
       this.sidebarOpen = !this.sidebarOpen
     },
+    toggleSidebarWidth() {
+      this.sidebarExpanded = !this.sidebarExpanded
+    },
     selectTemplate(templateValue) {
       this.selectedTemplate = templateValue
     },
@@ -323,11 +336,39 @@ export default {
   position: sticky;
   top: 100px;
 }
+
+.sidebar-card.expanded {
+  width: 600px;
+}
+
 .card-header {
   padding: 16px 20px;
   display: flex;
   align-items: center;
+  gap: 12px;
 }
+
+.width-toggle-btn {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f3f4f6;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  color: #6b7280;
+  cursor: pointer;
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+
+.width-toggle-btn:hover {
+  background: #e5e7eb;
+  border-color: #6366f1;
+  color: #6366f1;
+}
+
 .card-title {
   font-weight: 700;
   margin-right: auto;
