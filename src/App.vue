@@ -60,7 +60,9 @@ html, body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
-
+body {
+  overflow-x: hidden;
+}
 * {
   box-sizing: border-box;
 }
@@ -75,8 +77,8 @@ img {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  background: linear-gradient(to bottom, #c7b8ea 0%, rgba(199, 184, 234, 0.95) 10%);
-  background: #f5e6d3;
+  /* background: linear-gradient(to bottom, #c7b8ea 0%, rgba(199, 184, 234, 0.95) 10%);
+  background: #f5e6d3; */
 }
 
 /* Header */
@@ -86,10 +88,12 @@ img {
   align-items: center;
   justify-content: space-between;
   padding: 0 24px;
-  position: sticky;
+  position: absolute;
+  width: 100%;
+  left: 0;
   top: 0;
   z-index: 100;
-  background: linear-gradient(to bottom, #c7b8ea 0%, rgba(199, 184, 234, 0.95) 100%);
+  /* background: linear-gradient(to bottom, #c7b8ea 0%, rgba(199, 184, 234, 0.95) 100%); */
 }
 
 .header-left {

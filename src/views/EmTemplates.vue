@@ -1,103 +1,119 @@
 <template>
   <div class="em-templates">
-    <!-- HERO -->
-    <section class="hero-section">
-      <div class="hero-inner">
-        <div class="hero-title-row">
-          <h1 class="hero-title">Email Template Builder</h1>
-          <span class="hero-badge">{{ selectedTemplate }}</span>
-        </div>
-        <p class="hero-subtitle">
-          실시간으로 이메일 템플릿을 편집하고 미리보기 하세요
-        </p>
-
-        <!-- Template Tabs -->
-        <div class="template-tabs">
-          <button
-            v-for="template in templates"
-            :key="template.value"
-            class="template-tab"
-            :class="{ active: selectedTemplate === template.value }"
-            @click="selectTemplate(template.value)"
-          >
-            <span class="tab-icon">{{ template.icon }}</span>
-            <span class="tab-text">{{ template.name }}</span>
-          </button>
-        </div>
-      </div>
-    </section>
-
-    <!-- CONTENT -->
-    <div class="content-container">
-      <div class="content-grid">
-        <!-- SIDEBAR -->
-        <aside class="sidebar-card" :class="{ collapsed: !sidebarOpen, expanded: sidebarExpanded }">
-          <header class="card-header">
-            <button class="width-toggle-btn" @click="toggleSidebarWidth" title="너비 조절">
-              <svg v-if="!sidebarExpanded" width="16" height="16" viewBox="0 0 16 16" fill="none">
-                <path d="M1 8H15M15 8L11 4M15 8L11 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-              </svg>
-              <svg v-else width="16" height="16" viewBox="0 0 16 16" fill="none">
-                <path d="M15 8H1M1 8L5 4M1 8L5 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-              </svg>
-            </button>
-            <h3 class="card-title">템플릿 설정</h3>
-            <button class="close-btn" @click="toggleSidebar">✕</button>
-          </header>
-
-          <div class="card-body">
-            <section class="sidebar-section">
-              <h4 class="section-title">기본 설정</h4>
-              <TemplateForm
-                :template="selectedTemplate"
-                v-model="formData"
-                :templateConfig="getTemplateConfig(selectedTemplate)"
-                :selectedHotspotId="selectedHotspotId"
-                :visibleTopPositions="visibleTopPositions"
-                :visibleScrollPosition="visibleScrollPosition"
-                :sidebarExpanded="sidebarExpanded"
-                @select-hotspot="handleSelectHotspot"
-              />
-            </section>
+    <div class="main-container">
+      <!-- HERO -->
+      <section class="hero-section">
+        <div class="hero-inner">
+          <div class="hero-title-row">
+            <h1 class="hero-title">Email Template Builder</h1>
+            <span class="hero-badge">{{ selectedTemplate }}</span>
           </div>
+          <p class="hero-subtitle">
+            실시간으로 이메일 템플릿을 편집하고 미리보기 하세요
+          </p>
 
-          <footer class="sidebar-footer-fixed">
-            <button class="download-btn" @click="handleDownload">
-              HTML 다운로드
-            </button>
-          </footer>
-        </aside>
-
-        <!-- PREVIEW -->
-        <main class="preview-card" :class="{ expanded: !sidebarOpen }">
-          <header class="preview-header">
-            <h3 class="preview-title">템플릿 미리보기<sub class="preview-subtitle">(실시간 렌더링</sub>
-            </h3>
-             
+          <!-- Template Tabs -->
+          <div class="template-tabs">
             <button
-              v-if="!sidebarOpen"
-              class="show-sidebar-btn"
-              @click="toggleSidebar"
+              v-for="template in templates"
+              :key="template.value"
+              class="template-tab"
+              :class="{ active: selectedTemplate === template.value }"
+              @click="selectTemplate(template.value)"
             >
-              설정 열기
+              <span class="tab-icon">{{ template.icon }}</span>
+              <span class="tab-text">{{ template.name }}</span>
             </button>
-          </header>
-
-          <div class="preview-body">
-            <div class="preview-canvas">
-              <PreviewFrame
-                ref="previewFrame"
-                :template="selectedTemplate"
-                :formData="formData"
-                :selectedHotspotId="selectedHotspotId"
-                @select-hotspot="handleSelectHotspot"
-                @update-hotspot="handleUpdateHotspot"
-                @delete-hotspot="handleDeleteHotspot"
-                @scroll-update="handlePreviewScroll"
-              />
-            </div>
           </div>
-        </main>
+        </div>
+      </section>
+      <svg class="hero-waves Bsection2" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 24 150 28 " preserveAspectRatio="none">
+        <defs>
+          <path id="wave-path" d="M-160 44c30 0 58-18 88-18s 58 18 88 18 58-18 88-18 58 18 88 18 v44h-352z"></path>
+        </defs>
+        <g class="wave1">
+          <use xlink:href="#wave-path" x="50" y="3" fill="rgba(32,32,32, .1)"></use>
+        </g>
+        <g class="wave2">
+          <use xlink:href="#wave-path" x="50" y="0" fill="rgba(32,32,32, .2)"></use>
+        </g>
+        <g class="wave3">
+          <use xlink:href="#wave-path" x="50" y="9" fill="#202020"></use>
+        </g>
+      </svg>
+
+      <!-- CONTENT -->
+      <div class="content-container">
+        <div class="content-grid">
+          <!-- SIDEBAR -->
+          <aside class="sidebar-card" :class="{ collapsed: !sidebarOpen, expanded: sidebarExpanded }">
+            <header class="card-header">
+              <button class="width-toggle-btn" @click="toggleSidebarWidth" title="너비 조절">
+                <svg v-if="!sidebarExpanded" width="16" height="16" viewBox="0 0 16 16" fill="none">
+                  <path d="M1 8H15M15 8L11 4M15 8L11 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <svg v-else width="16" height="16" viewBox="0 0 16 16" fill="none">
+                  <path d="M15 8H1M1 8L5 4M1 8L5 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </button>
+              <h3 class="card-title">템플릿 설정</h3>
+              <button class="close-btn" @click="toggleSidebar">✕</button>
+            </header>
+
+            <div class="card-body">
+              <section class="sidebar-section">
+                <h4 class="section-title">기본 설정</h4>
+                <TemplateForm
+                  :template="selectedTemplate"
+                  v-model="formData"
+                  :templateConfig="getTemplateConfig(selectedTemplate)"
+                  :selectedHotspotId="selectedHotspotId"
+                  :visibleTopPositions="visibleTopPositions"
+                  :visibleScrollPosition="visibleScrollPosition"
+                  :sidebarExpanded="sidebarExpanded"
+                  @select-hotspot="handleSelectHotspot"
+                />
+              </section>
+            </div>
+
+            <footer class="sidebar-footer-fixed">
+              <button class="download-btn" @click="handleDownload">
+                HTML 다운로드
+              </button>
+            </footer>
+          </aside>
+
+          <!-- PREVIEW -->
+          <main class="preview-card" :class="{ expanded: !sidebarOpen }">
+            <header class="preview-header">
+              <h3 class="preview-title">템플릿 미리보기<sub class="preview-subtitle">(실시간 렌더링</sub>
+              </h3>
+              
+              <button
+                v-if="!sidebarOpen"
+                class="show-sidebar-btn"
+                @click="toggleSidebar"
+              >
+                설정 열기
+              </button>
+            </header>
+
+            <div class="preview-body">
+              <div class="preview-canvas">
+                <PreviewFrame
+                  ref="previewFrame"
+                  :template="selectedTemplate"
+                  :formData="formData"
+                  :selectedHotspotId="selectedHotspotId"
+                  @select-hotspot="handleSelectHotspot"
+                  @update-hotspot="handleUpdateHotspot"
+                  @delete-hotspot="handleDeleteHotspot"
+                  @scroll-update="handlePreviewScroll"
+                />
+              </div>
+            </div>
+          </main>
+        </div>
       </div>
     </div>
   </div>
@@ -260,25 +276,171 @@ export default {
 </script>
 
 <style scoped>
-/* HERO */
-.hero-section {
-  background: linear-gradient(180deg, #c7b8ea, #f5e6d3);
-  padding: 56px 32px;
+:root {
+  --sidebar-wid: 300px;
 }
-.hero-inner {
+.em-templates {
+  padding-left: 300px;
+}
+.main-container {
   max-width: 1200px;
   margin: 0 auto;
+}
+
+
+/* HERO */
+.hero-section {
+  /* background: linear-gradient(180deg, #c7b8ea, #f5e6d3); */
+  /* padding: 56px 32px; */
+  filter: saturate(180%);
+  width: calc(100vw - 300px);
+  margin-left: calc(((calc(100vw - 300px) - 100%) / 2) * -1) !important;
+  height: 550px !important;
+  position: relative;
+  background-attachment: fixed;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: 50% -175px;
+  background-image: url("https://blog.kakaocdn.net/dna/chZ3BL/btrIzFMbJ4r/AAAAAAAAAAAAAAAAAAAAABENuT3xPS7CJMvqaXXBeDrNUpAzW1mo5v_bn74HoZYO/img.png?credential=yqXZFxpELC7KVnFOS48ylbz2pIh7yKj8&expires=1769871599&allow_ip=&allow_referer=&signature=nzR1osduT8%2FrzQVkwuLlHHE2AgE%3D");
+  /* background-image: url("https://blog.kakaocdn.net/dna/wn0hA/btrJlGSuANS/AAAAAAAAAAAAAAAAAAAAAEwgHjH5b2Tdg9RFrwdmgUgdsP-bkxDdCsdBr-fiLzzH/img.jpg?credential=yqXZFxpELC7KVnFOS48ylbz2pIh7yKj8&expires=1769871599&allow_ip=&allow_referer=&signature=uGR%2FwLXkFXqYnUML%2F4S8bv6HRvk%3D"); */
+    --thumbnail-blur: 0px;
+}
+.hero-section::after {
+  content: '';
+    position: absolute;
+    bottom: 0;
+    top: 0;
+    left: 0;
+    right: 0;
+    background-color: rgb(14 17 31 / 50%);
+    backdrop-filter: blur(0);
+}
+.hero-waves {
+  display: block;
+  width: calc(100vw - 300px);
+  height: 60px;
+  z-index: 5;
+  position: absolute;
+  right: 0;
+  top: 490px;
+}
+
+
+.wave1 use {
+    fill: rgba(255, 255, 255, 0.1);
+
+    -webkit-animation: move-forever1 10s linear infinite;
+    animation: move-forever1 10s linear infinite;
+    -webkit-animation-delay: -2s;
+    animation-delay: -2s;
+}
+
+.wave2 use {
+    fill: rgba(255, 255, 255, 0.2);
+
+    -webkit-animation: move-forever2 8s linear infinite;
+    animation: move-forever2 8s linear infinite;
+    -webkit-animation-delay: -2s;
+    animation-delay: -2s;
+}
+
+.wave3 use {
+    fill: rgba(255, 255, 255, 1);
+
+    -webkit-animation: move-forever3 6s linear infinite;
+    animation: move-forever3 6s linear infinite;
+    -webkit-animation-delay: -2s;
+    animation-delay: -2s;
+}
+
+@-webkit-keyframes move-forever1 {
+    0% {
+        transform: translate(85px, 0%);
+    }
+
+    100% {
+        transform: translate(-90px, 0%);
+    }
+}
+
+@keyframes move-forever1 {
+    0% {
+        transform: translate(85px, 0%);
+    }
+
+    100% {
+        transform: translate(-90px, 0%);
+    }
+}
+
+@-webkit-keyframes move-forever2 {
+    0% {
+        transform: translate(-90px, 0%);
+    }
+
+    100% {
+        transform: translate(85px, 0%);
+    }
+}
+
+@keyframes move-forever2 {
+    0% {
+        transform: translate(-90px, 0%);
+    }
+
+    100% {
+        transform: translate(85px, 0%);
+    }
+}
+
+@-webkit-keyframes move-forever3 {
+    0% {
+        transform: translate(-90px, 0%);
+    }
+
+    100% {
+        transform: translate(85px, 0%);
+    }
+}
+
+@keyframes move-forever3 {
+    0% {
+        transform: translate(-90px, 0%);
+    }
+
+    100% {
+        transform: translate(85px, 0%);
+    }
+}
+
+
+
+
+
+
+
+
+.hero-inner {
+  /* max-width: 1200px;
+  margin: 0 auto; */
+  padding-top: 200px;
   text-align: center;
+  z-index: 3;
 }
 .hero-title-row {
+  position: relative;
   display: flex;
   justify-content: center;
   align-items: center;
   gap: 12px;
+  z-index: 5;
 }
 .hero-title {
+  font-family: "MaplestoryLight";
   font-size: 42px;
   font-weight: 800;
+  color: #fff;
+  
 }
 .hero-badge {
   background: #6366f1;
@@ -289,16 +451,20 @@ export default {
   font-weight: 600;
 }
 .hero-subtitle {
+  position: relative;
   margin: 12px 0 32px;
-  color: #4b5563;
+  color: #fff;
+  z-index: 5;
 }
 
 /* TABS */
 .template-tabs {
+  position: relative;
   display: flex;
   justify-content: center;
   gap: 10px;
   flex-wrap: wrap;
+  z-index: 5;
 }
 .template-tab {
   padding: 10px 20px;
@@ -330,15 +496,32 @@ export default {
   left: 0; */
   width: 300px;
   background: #fff;
-  border-radius: 16px;
+  /* border-radius: 16px; */
   display: flex;
   flex-direction: column;
-  position: sticky;
-  top: 100px;
+  position: fixed;
+  top: 0px;
+  bottom: 0;
+  left: 0;
+  box-shadow: 0 2px 5px 0 rgb(0 0 0 / 16%), 0 2px 10px 0 rgb(0 0 0 / 2%);
 }
 
 .sidebar-card.expanded {
   width: 600px;
+}
+
+/* ===== SIDEBAR TOGGLE ===== */
+.sidebar-card {
+  transition: width 0.35s ease, opacity 0.25s ease, transform 0.35s ease;
+  flex-shrink: 0;
+}
+
+.sidebar-card.collapsed {
+  width: 0;
+  opacity: 0;
+  transform: translateX(-12px);
+  pointer-events: none;
+  overflow: hidden;
 }
 
 .card-header {
@@ -415,7 +598,7 @@ export default {
   justify-content: space-between;
 }
 .preview-body {
-  background: #f9fafb;
+  /* background: #f9fafb; */
   /* padding: 32px; */
   flex: 1;
   display: flex;
@@ -425,22 +608,10 @@ export default {
   background: #fff;
   /* padding: 24px; */
   margin: 0 auto;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+  /* box-shadow: 0 10px 30px rgba(0,0,0,0.08); */
 }
 
-/* ===== SIDEBAR TOGGLE ===== */
-.sidebar-card {
-  transition: width 0.35s ease, opacity 0.25s ease, transform 0.35s ease;
-  flex-shrink: 0;
-}
 
-.sidebar-card.collapsed {
-  width: 0;
-  opacity: 0;
-  transform: translateX(-12px);
-  pointer-events: none;
-  overflow: hidden;
-}
 
 /* ===== PREVIEW EXPAND ===== */
 .preview-card {
@@ -463,11 +634,6 @@ export default {
   cursor: pointer;
 }
 
-/* ===== SIDEBAR INTERNAL SCROLL ===== */
-.sidebar-card {
-  max-height: calc(100vh - 140px); /* hero + 여백 고려 */
-  overflow: hidden;
-}
 
 .card-body {
   flex: 1;
