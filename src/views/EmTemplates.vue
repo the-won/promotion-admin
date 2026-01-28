@@ -1,8 +1,8 @@
 <template>
-  <div class="em-templates">
+  <div class="em-templates" :class="{ 'no-sidebar': !sidebarOpen, 'wide-sidebar': sidebarExpanded }">
     <div class="main-container">
       <!-- HERO -->
-      <section class="hero-section">
+      <section class="hero-section" :class="{ 'no-sidebar': !sidebarOpen, 'wide-sidebar': sidebarExpanded }">
         <div class="hero-inner">
           <div class="hero-title-row">
             <h1 class="hero-title">Email Template Builder</h1>
@@ -27,7 +27,7 @@
           </div>
         </div>
       </section>
-      <svg class="hero-waves Bsection2" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 24 150 28 " preserveAspectRatio="none">
+      <svg class="hero-waves Bsection2" :class="{ 'no-sidebar': !sidebarOpen, 'wide-sidebar': sidebarExpanded }" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 24 150 28 " preserveAspectRatio="none">
         <defs>
           <path id="wave-path" d="M-160 44c30 0 58-18 88-18s 58 18 88 18 58-18 88-18 58 18 88 18 v44h-352z"></path>
         </defs>
@@ -281,10 +281,23 @@ export default {
 }
 .em-templates {
   padding-left: 300px;
+  transition: padding-left 0.35s ease;
+}
+.em-templates.wide-sidebar {
+  padding-left: 600px;
+}
+.em-templates.no-sidebar,
+.em-templates.no-sidebar.wide-sidebar {
+  padding-left: 0 !important;
 }
 .main-container {
   max-width: 1200px;
   margin: 0 auto;
+  transition: max-width 0.35s ease;
+}
+.no-sidebar .main-container,
+.no-sidebar.wide-sidebar .main-container {
+  max-width: none !important;
 }
 
 
@@ -295,6 +308,7 @@ export default {
   filter: saturate(180%);
   width: calc(100vw - 300px);
   margin-left: calc(((calc(100vw - 300px) - 100%) / 2) * -1) !important;
+  transition: width 0.35s ease, margin-left 0.35s ease;
   height: 550px !important;
   position: relative;
   background-attachment: fixed;
@@ -319,6 +333,7 @@ export default {
   display: block;
   width: calc(100vw - 300px);
   height: 60px;
+  transition: width 0.35s ease;
   z-index: 5;
   position: absolute;
   right: 0;
@@ -512,7 +527,7 @@ export default {
 
 /* ===== SIDEBAR TOGGLE ===== */
 .sidebar-card {
-  transition: width 0.35s ease, opacity 0.25s ease, transform 0.35s ease;
+  transition: width 0.35s ease, opacity 0.35s ease, transform 0.35s ease;
   flex-shrink: 0;
 }
 
@@ -654,4 +669,24 @@ export default {
 }
 
 
+
+/* hero-section 반응형 width */
+.hero-section.wide-sidebar {
+  width: calc(100vw - 600px);
+  margin-left: calc(((calc(100vw - 600px) - 100%) / 2) * -1) !important;
+}
+.hero-section.no-sidebar,
+.hero-section.no-sidebar.wide-sidebar {
+  width: 100vw !important;
+  margin-left: 0 !important;
+}
+
+/* hero-waves 반응형 width */
+.hero-waves.wide-sidebar {
+  width: calc(100vw - 600px);
+}
+.hero-waves.no-sidebar,
+.hero-waves.no-sidebar.wide-sidebar {
+  width: 100vw !important;
+}
 </style>
