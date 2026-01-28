@@ -62,6 +62,13 @@
 
             <div class="card-body">
               <section class="sidebar-section">
+                <button class="template-select-btn" @click="openModal">
+                  <span class="btn-icon">📋</span>
+                  <span class="btn-text">템플릿 선택</span>
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                    <path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </button>
                 <h4 class="section-title">기본 설정</h4>
                 <TemplateForm
                   :template="selectedTemplate"
@@ -116,34 +123,45 @@
         </div>
       </div>
     </div>
+
+    <!-- Template Select Modal -->
+    <TemplateSelectModal
+      :isOpen="isModalOpen"
+      :selectedTemplate="selectedTemplate"
+      :templates="templates"
+      @select="handleModalSelect"
+      @close="closeModal"
+    />
   </div>
 </template>
 
 <script>
 import TemplateForm from '../components/TemplateForm.vue'
 import PreviewFrame from '../components/PreviewFrame.vue'
+import TemplateSelectModal from '../modals/TemplateSelectModal.vue'
 import { downloadHtml } from '../utils/downloadHtml'
 import { templateDefaults } from '../config/templateDefaults'
 
 export default {
   name: 'EmTemplates',
-  components: { TemplateForm, PreviewFrame },
-   data() {
+  components: { TemplateForm, PreviewFrame, TemplateSelectModal },
+  data() {
     return {
       selectedTemplate: 'em-type-1',
       formData: this.extractValues(templateDefaults['em-type-1']),
       selectedHotspotId: null,
       sidebarOpen: true,
       sidebarExpanded: false,
+      isModalOpen: false,
       visibleTopPositions: { 1: 10, 2: 10 },
       visibleScrollPosition: { scrollTop: 0, viewportHeight: 400 },
       templates: [
-        { value: 'em-type-1', name: 'Type 1', icon: '📄' },
-        { value: 'em-type-2', name: 'Type 2', icon: '🖼️' },
-        { value: 'em-type-3', name: 'Type 3', icon: '📦' },
-        { value: 'em-type-4', name: 'Type 4', icon: '📰' },
-        { value: 'em-type-5', name: 'Type 5', icon: '🔥' },
-        { value: 'em-type-imagemap', name: 'Image Map', icon: '🗺️' }
+        { value: 'em-type-1', name: 'Type 1', icon: '📄', description: '기본 텍스트 템플릿' },
+        { value: 'em-type-2', name: 'Type 2', icon: '🖼️', description: '이미지 중심 템플릿' },
+        { value: 'em-type-3', name: 'Type 3', icon: '📦', description: '박스 레이아웃 템플릿' },
+        { value: 'em-type-4', name: 'Type 4', icon: '📰', description: '뉴스레터 템플릿' },
+        { value: 'em-type-5', name: 'Type 5', icon: '🔥', description: '핫스팟 인터랙티브 템플릿' },
+        { value: 'em-type-imagemap', name: 'Image Map', icon: '🗺️', description: '이미지맵 템플릿' }
       ]
     }
   },
@@ -226,36 +244,15 @@ export default {
       }
     },
     handleDeleteHotspot(id) {
-      if (this.formData.hotspots1) {
-        const index1 = this.formData.hotspots1.findIndex(h => h.id === id)
-        if (index1 !== -1) {
-          this.formData.hotspots1.splice(index1, 1)
-          this.selectedHotspotId = null
-          return
-        }
-      }
-      if (this.formData.hotspots2) {
-        const index2 = this.formData.hotspots2.findIndex(h => h.id === id)
-        if (index2 !== -1) {
-          this.formData.hotspots2.splice(index2, 1)
-          this.selectedHotspotId = null
-          return
-        }
-      }
-      if (this.formData.hotspots) {
-        const index = this.formData.hotspots.findIndex(h => h.id === id)
-        if (index !== -1) {
-          this.formData.hotspots.splice(index, 1)
-          this.selectedHotspotId = null
-          return
-        }
-      }
-      if (this.formData.imageMapAreas) {
-        const index = this.formData.imageMapAreas.findIndex(a => a.id === id)
-        if (index !== -1) {
-          this.formData.imageMapAreas.splice(index, 1)
-          this.selectedHotspotId = null
-          return
+      const keys = ['hotspots1', 'hotspots2', 'hotspots', 'imageMapAreas']
+      for (const key of keys) {
+        if (this.formData[key]) {
+          const index = this.formData[key].findIndex(h => h.id === id)
+          if (index !== -1) {
+            this.formData[key].splice(index, 1)
+            this.selectedHotspotId = null
+            return
+          }
         }
       }
     },
@@ -270,6 +267,20 @@ export default {
     },
     handlePreviewScroll() {
       this.updateVisiblePositions()
+    },
+    openModal() {
+      this.isModalOpen = true
+    },
+    closeModal() {
+      this.isModalOpen = false
+    },
+    handleModalSelect(templateValue) {
+      console.log('선택된 템플릿:', templateValue); // 디버깅용
+      if (templateValue) {
+        this.selectedTemplate = templateValue;
+        // 변경 후 모달 닫기
+        this.closeModal();
+      }
     }
   }
 }
@@ -303,8 +314,6 @@ export default {
 
 /* HERO */
 .hero-section {
-  /* background: linear-gradient(180deg, #c7b8ea, #f5e6d3); */
-  /* padding: 56px 32px; */
   filter: saturate(180%);
   width: calc(100vw - 300px);
   margin-left: calc(((calc(100vw - 300px) - 100%) / 2) * -1) !important;
@@ -316,18 +325,17 @@ export default {
   background-repeat: no-repeat;
   background-position: 50% -175px;
   background-image: url("https://blog.kakaocdn.net/dna/chZ3BL/btrIzFMbJ4r/AAAAAAAAAAAAAAAAAAAAABENuT3xPS7CJMvqaXXBeDrNUpAzW1mo5v_bn74HoZYO/img.png?credential=yqXZFxpELC7KVnFOS48ylbz2pIh7yKj8&expires=1769871599&allow_ip=&allow_referer=&signature=nzR1osduT8%2FrzQVkwuLlHHE2AgE%3D");
-  /* background-image: url("https://blog.kakaocdn.net/dna/wn0hA/btrJlGSuANS/AAAAAAAAAAAAAAAAAAAAAEwgHjH5b2Tdg9RFrwdmgUgdsP-bkxDdCsdBr-fiLzzH/img.jpg?credential=yqXZFxpELC7KVnFOS48ylbz2pIh7yKj8&expires=1769871599&allow_ip=&allow_referer=&signature=uGR%2FwLXkFXqYnUML%2F4S8bv6HRvk%3D"); */
-    --thumbnail-blur: 0px;
+  --thumbnail-blur: 0px;
 }
 .hero-section::after {
   content: '';
-    position: absolute;
-    bottom: 0;
-    top: 0;
-    left: 0;
-    right: 0;
-    background-color: rgb(14 17 31 / 50%);
-    backdrop-filter: blur(0);
+  position: absolute;
+  bottom: 0;
+  top: 0;
+  left: 0;
+  right: 0;
+  background-color: rgb(14 17 31 / 50%);
+  backdrop-filter: blur(0);
 }
 .hero-waves {
   display: block;
@@ -340,104 +348,40 @@ export default {
   top: 490px;
 }
 
-
 .wave1 use {
-    fill: rgba(255, 255, 255, 0.1);
-
-    -webkit-animation: move-forever1 10s linear infinite;
-    animation: move-forever1 10s linear infinite;
-    -webkit-animation-delay: -2s;
-    animation-delay: -2s;
+  fill: rgba(255, 255, 255, 0.1);
+  animation: move-forever1 10s linear infinite;
+  animation-delay: -2s;
 }
 
 .wave2 use {
-    fill: rgba(255, 255, 255, 0.2);
-
-    -webkit-animation: move-forever2 8s linear infinite;
-    animation: move-forever2 8s linear infinite;
-    -webkit-animation-delay: -2s;
-    animation-delay: -2s;
+  fill: rgba(255, 255, 255, 0.2);
+  animation: move-forever2 8s linear infinite;
+  animation-delay: -2s;
 }
 
 .wave3 use {
-    fill: rgba(255, 255, 255, 1);
-
-    -webkit-animation: move-forever3 6s linear infinite;
-    animation: move-forever3 6s linear infinite;
-    -webkit-animation-delay: -2s;
-    animation-delay: -2s;
-}
-
-@-webkit-keyframes move-forever1 {
-    0% {
-        transform: translate(85px, 0%);
-    }
-
-    100% {
-        transform: translate(-90px, 0%);
-    }
+  fill: rgba(255, 255, 255, 1);
+  animation: move-forever3 6s linear infinite;
+  animation-delay: -2s;
 }
 
 @keyframes move-forever1 {
-    0% {
-        transform: translate(85px, 0%);
-    }
-
-    100% {
-        transform: translate(-90px, 0%);
-    }
-}
-
-@-webkit-keyframes move-forever2 {
-    0% {
-        transform: translate(-90px, 0%);
-    }
-
-    100% {
-        transform: translate(85px, 0%);
-    }
+  0% { transform: translate(85px, 0%); }
+  100% { transform: translate(-90px, 0%); }
 }
 
 @keyframes move-forever2 {
-    0% {
-        transform: translate(-90px, 0%);
-    }
-
-    100% {
-        transform: translate(85px, 0%);
-    }
-}
-
-@-webkit-keyframes move-forever3 {
-    0% {
-        transform: translate(-90px, 0%);
-    }
-
-    100% {
-        transform: translate(85px, 0%);
-    }
+  0% { transform: translate(-90px, 0%); }
+  100% { transform: translate(85px, 0%); }
 }
 
 @keyframes move-forever3 {
-    0% {
-        transform: translate(-90px, 0%);
-    }
-
-    100% {
-        transform: translate(85px, 0%);
-    }
+  0% { transform: translate(-90px, 0%); }
+  100% { transform: translate(85px, 0%); }
 }
 
-
-
-
-
-
-
-
 .hero-inner {
-  /* max-width: 1200px;
-  margin: 0 auto; */
   padding-top: 200px;
   text-align: center;
   z-index: 3;
@@ -455,7 +399,6 @@ export default {
   font-size: 42px;
   font-weight: 800;
   color: #fff;
-  
 }
 .hero-badge {
   background: #6366f1;
@@ -506,12 +449,8 @@ export default {
 
 /* SIDEBAR */
 .sidebar-card {
-  /* position: fixed !important;
-  top: 0;
-  left: 0; */
   width: 300px;
   background: #fff;
-  /* border-radius: 16px; */
   display: flex;
   flex-direction: column;
   position: fixed;
@@ -525,7 +464,6 @@ export default {
   width: 600px;
 }
 
-/* ===== SIDEBAR TOGGLE ===== */
 .sidebar-card {
   transition: width 0.35s ease, opacity 0.35s ease, transform 0.35s ease;
   flex-shrink: 0;
@@ -596,11 +534,11 @@ export default {
   color: #fff;
   border-radius: 10px;
   border: none;
+  cursor: pointer;
 }
 
 /* PREVIEW */
 .preview-card {
-  /* margin-left: 320px; */
   flex: 1;
   background: #fff;
   border-radius: 16px;
@@ -613,22 +551,15 @@ export default {
   justify-content: space-between;
 }
 .preview-body {
-  /* background: #f9fafb; */
-  /* padding: 32px; */
   flex: 1;
   display: flex;
   justify-content: center;
 }
 .preview-canvas {
   background: #fff;
-  /* padding: 24px; */
   margin: 0 auto;
-  /* box-shadow: 0 10px 30px rgba(0,0,0,0.08); */
 }
 
-
-
-/* ===== PREVIEW EXPAND ===== */
 .preview-card {
   transition: flex 0.35s ease;
 }
@@ -637,7 +568,6 @@ export default {
   flex: 1 1 100%;
 }
 
-/* ===== SHOW SIDEBAR BUTTON ===== */
 .show-sidebar-btn {
   padding: 6px 12px;
   font-size: 13px;
@@ -649,26 +579,68 @@ export default {
   cursor: pointer;
 }
 
-
 .card-body {
   flex: 1;
   overflow-y: auto;
   padding-bottom: 24px;
-    scrollbar-width: none;        /* Firefox */
-  -ms-overflow-style: none;     /* IE / Edge */
+  scrollbar-width: none;
+  -ms-overflow-style: none;
 }
 .card-body::-webkit-scrollbar {
   width: 0;
   height: 0;
 }
 
-/* footer 항상 하단 고정 */
 .sidebar-footer-fixed {
   margin-top: auto;
   background: #fff;
 }
 
+/* Template Select Button */
+.template-select-btn {
+  width: 100%;
+  padding: 12px 16px;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+  border: none;
+  border-radius: 10px;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 2px 8px rgba(99, 102, 241, 0.25);
+}
 
+.template-select-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.35);
+}
+
+.template-select-btn:active {
+  transform: translateY(0);
+}
+
+.template-select-btn .btn-icon {
+  font-size: 18px;
+}
+
+.template-select-btn .btn-text {
+  flex: 1;
+  text-align: left;
+}
+
+.template-select-btn svg {
+  opacity: 0.8;
+  transition: transform 0.2s;
+}
+
+.template-select-btn:hover svg {
+  transform: translateY(2px);
+}
 
 /* hero-section 반응형 width */
 .hero-section.wide-sidebar {
