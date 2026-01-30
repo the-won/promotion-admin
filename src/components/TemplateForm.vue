@@ -1,6 +1,16 @@
 <template>
   <div class="template-form-deel">
     <h4 class="form-title">템플릿 설정</h4>
+
+    <!-- 화끈딜 템플릿일 경우 통합 업로드 표시 -->
+    <HotdealExcelUploader
+      v-if="template === 'em-type-5'"
+      :row1Products="localData.row1Products"
+      :row3Products="localData.row3Products"
+      @update:row1Products="localData.row1Products = $event"
+      @update:row3Products="localData.row3Products = $event"
+    />
+
     <div class="form-fields" :class="{ expanded: sidebarExpanded }">
       <div 
         v-for="(config, key) in templateConfig" 
@@ -168,6 +178,7 @@
 import HotspotGroupEditor from './HotspotGroupEditor.vue'
 import HotdealRow1Editor from './HotdealRow1Editor.vue'
 import HotdealRow3Editor from './HotdealRow3Editor.vue'
+import HotdealExcelUploader from './HotdealExcelUploader.vue'
 import DatePicker from './DatePicker.vue'
 import ImageLinkGroupEditor from './ImageLinkGroupEditor.vue'
 import ImageMapEditor from './ImageMapEditor.vue'
@@ -177,6 +188,7 @@ export default {
     HotspotGroupEditor,
     HotdealRow1Editor,
     HotdealRow3Editor,
+    HotdealExcelUploader,
     DatePicker,
     ImageLinkGroupEditor, 
     ImageMapEditor

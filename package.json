@@ -17,6 +17,7 @@
     "vue": "^2.7.14"
   },
   "dependencies": {
-    "vue-router": "^3.6.5"
+    "vue-router": "^3.6.5",
+    "xlsx": "^0.18.5"
   }
 }

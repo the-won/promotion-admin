@@ -172,18 +172,27 @@ export default {
       this.$nextTick(() => {
         this.updateVisiblePositions()
       })
+    },
+    sidebarOpen(val) {
+      this.updateBodyClass()
+    },
+    sidebarExpanded(val) {
+      this.updateBodyClass()
     }
   },
   mounted() {
+    document.body.classList.add('page-em-templates')
     window.addEventListener('scroll', this.handleWindowScroll, { passive: true })
     this.$nextTick(() => {
       setTimeout(() => {
         this.updateVisiblePositions()
       }, 100)
     })
+    this.updateBodyClass()
   },
   beforeDestroy() {
     window.removeEventListener('scroll', this.handleWindowScroll)
+    document.body.classList.remove('sidebar-closed', 'sidebar-expanded', 'page-em-templates')
   },
   methods: {
     handleWindowScroll() {
@@ -275,11 +284,14 @@ export default {
       this.isModalOpen = false
     },
     handleModalSelect(templateValue) {
-      console.log('선택된 템플릿:', templateValue); // 디버깅용
-      if (templateValue) {
-        this.selectedTemplate = templateValue;
-        // 변경 후 모달 닫기
-        this.closeModal();
+      this.selectedTemplate = templateValue
+    },
+    updateBodyClass() {
+      document.body.classList.remove('sidebar-closed', 'sidebar-expanded')
+      if (!this.sidebarOpen) {
+        document.body.classList.add('sidebar-closed')
+      } else if (this.sidebarExpanded) {
+        document.body.classList.add('sidebar-expanded')
       }
     }
   }
@@ -458,6 +470,7 @@ export default {
   bottom: 0;
   left: 0;
   box-shadow: 0 2px 5px 0 rgb(0 0 0 / 16%), 0 2px 10px 0 rgb(0 0 0 / 2%);
+  z-index: 20;
 }
 
 .sidebar-card.expanded {

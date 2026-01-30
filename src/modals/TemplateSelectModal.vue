@@ -20,7 +20,6 @@
               :class="{ active: selectedTemplate === template.value }"
               :style="{ animationDelay: `${index * 0.09}s` }"
               @click="selectTemplate(template.value)"
-              
             >
               <div class="template-icon">{{ template.icon }}</div>
               <div class="template-info">
@@ -37,8 +36,7 @@
         </div>
 
         <div class="modal-footer">
-          <button class="btn-cancel" @click="close">취소</button>
-          <button class="btn-confirm" @click="confirm">선택 완료</button>
+          <button class="btn-confirm" @click="confirm">확인</button>
         </div>
       </div>
     </div>
@@ -86,9 +84,9 @@ export default {
   methods: {
     selectTemplate(value) {
       this.tempSelected = value
+      this.$emit('select', value)
     },
     confirm() {
-      this.$emit('select', this.tempSelected)
       this.close()
     },
     close() {
@@ -309,28 +307,15 @@ export default {
   justify-content: flex-end;
 }
 
-.btn-cancel,
 .btn-confirm {
-  padding: 10px 20px;
+  width: 100%;
+  padding: 12px 20px;
   border-radius: 8px;
   font-size: 14px;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s;
   border: none;
-}
-
-.btn-cancel {
-  background: #f3f4f6;
-  color: #6b7280;
-}
-
-.btn-cancel:hover {
-  background: #e5e7eb;
-  color: #1f2937;
-}
-
-.btn-confirm {
   background: #6366f1;
   color: #fff;
 }

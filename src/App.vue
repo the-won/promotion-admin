@@ -2,12 +2,12 @@
   <div class="app-wrapper">
     <!-- Header -->
     <header class="app-header">
-      <div class="header-left">
+      <!-- <div class="header-left">
         <div class="logo">
           <div class="logo-icon">📧</div>
           <span class="logo-text">EmailBuilder</span>
         </div>
-      </div>
+      </div> -->
 
       <nav class="header-center">
         <router-link to="/home" class="nav-link">
@@ -84,16 +84,49 @@ img {
 /* Header */
 .app-header {
   height: 64px;
-  display: flex;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
   align-items: center;
-  justify-content: space-between;
   padding: 0 24px;
   position: absolute;
   width: 100%;
   left: 0;
   top: 0;
   z-index: 100;
+  transition: left 0.35s ease, width 0.35s ease;
   /* background: linear-gradient(to bottom, #c7b8ea 0%, rgba(199, 184, 234, 0.95) 100%); */
+}
+
+/* Sidebar 상태에 따른 Header 조정 - EM Templates 페이지에서만 */
+body.page-em-templates:not(.sidebar-closed) .app-header {
+  left: 300px;
+  width: calc(100% - 300px);
+}
+
+body.page-em-templates.sidebar-expanded .app-header {
+  left: 600px;
+  width: calc(100% - 600px);
+}
+
+body.page-em-templates.sidebar-closed .app-header {
+  left: 0;
+  width: 100%;
+}
+
+/* Sidebar 상태에 따른 Header 조정 - Event Templates 페이지에서만 */
+body.page-event-templates:not(.sidebar-closed) .app-header {
+  left: 300px;
+  width: calc(100% - 300px);
+}
+
+body.page-event-templates.sidebar-expanded .app-header {
+  left: 600px;
+  width: calc(100% - 600px);
+}
+
+body.page-event-templates.sidebar-closed .app-header {
+  left: 0;
+  width: 100%;
 }
 
 .header-left {
@@ -123,6 +156,8 @@ img {
 }
 
 .header-center {
+  grid-column: 2;
+  justify-self: center;
   display: flex;
   align-items: center;
   gap: 8px;
@@ -157,6 +192,8 @@ img {
 }
 
 .header-right {
+  grid-column: 3;
+  justify-self: end;
   display: flex;
   align-items: center;
   gap: 12px;

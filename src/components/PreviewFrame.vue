@@ -312,8 +312,5 @@ export default {
   min-height: 500px;
 }
 
-/* 내부 컴포넌트 스타일 */
-.preview-body >>> * {
-  max-width: 100%;
-}
+
 </style>
