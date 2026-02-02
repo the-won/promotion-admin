@@ -1,9 +1,9 @@
 import { generateEmType1Html } from './emType1Html.js'
-import { generateEmType2Html } from './emType2Html.js'
+import { generateEmType2Html } from './em/type-image-link/emType2Html.js'
 import { generateEmType3Html } from './emType3Html.js'
 import { generateEmType4Html } from './emType4Html.js'
-import { generateEmType5Html } from './emType5Html.js'
-import { generateImageMapHtml } from './ImageMapHtml.js'
+import { generateEmType5Html } from './em/secret-sale/emType5Html.js'
+import { generateImageMapHtml } from './em/type-usemap/ImageMapHtml.js'
 
 // 템플릿별 HTML 생성 함수 매핑
 export const templateHtmlGenerators = {

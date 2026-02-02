@@ -37,11 +37,11 @@
 
 <script>
 import EmType1 from '../templates/EmType1.vue'
-import EmType2 from '../templates/EmType2.vue'
+import EmType2 from '../templates/em/type-image-link/EmType2.vue'
 import EmType3 from '../templates/EmType3.vue'
 import EmType4 from '../templates/EmType4.vue'
-import EmType5 from '../templates/EmType5.vue'
-import EmTypeImageMap from '../templates/EmTypeImageMap.vue'
+import EmType5 from '../templates/em/secret-sale/EmType5.vue'
+import EmTypeImageMap from '../templates/em/type-usemap/EmTypeImageMap.vue'
 
 export default {
   components: {

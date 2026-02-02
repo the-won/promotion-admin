@@ -158,7 +158,7 @@ export default {
       templates: [
         { value: 'em-type-1', name: 'Type 1', icon: '📄', description: '기본 텍스트 템플릿' },
         { value: 'em-type-2', name: 'Image Link', icon: '🖼️', description: '이미지 중심 템플릿' },
-        { value: 'em-type-3', name: 'Image Map', icon: '📦', description: '박스 레이아웃 템플릿' },
+        { value: 'em-type-3', name: 'Image Map', icon: '📦', description: '이벤트 이미지맵 템플릿' },
         { value: 'em-type-4', name: 'Type 4', icon: '📰', description: '뉴스레터 템플릿' },
         { value: 'em-type-5', name: '비밀특가', icon: '🔥', description: '핫스팟 인터랙티브 템플릿' },
         { value: 'em-type-imagemap', name: 'Use Map', icon: '🗺️', description: '이미지맵 템플릿' }
@@ -337,6 +337,9 @@ export default {
   background-repeat: no-repeat;
   background-position: 50% -175px;
   background-image: url("https://blog.kakaocdn.net/dna/chZ3BL/btrIzFMbJ4r/AAAAAAAAAAAAAAAAAAAAABENuT3xPS7CJMvqaXXBeDrNUpAzW1mo5v_bn74HoZYO/img.png?credential=yqXZFxpELC7KVnFOS48ylbz2pIh7yKj8&expires=1769871599&allow_ip=&allow_referer=&signature=nzR1osduT8%2FrzQVkwuLlHHE2AgE%3D");
+  background-image: url("https://blog.kakaocdn.net/dna/deimrK/btr7PkDl3hZ/AAAAAAAAAAAAAAAAAAAAAPxYo3lgm_PEF6lk6qTSQp7wutn5DnJWfqjpYWjAKfez/img.jpg?credential=yqXZFxpELC7KVnFOS48ylbz2pIh7yKj8&expires=1772290799&allow_ip=&allow_referer=&signature=e1Y1Xh5RVmixUiQ8fgBHdVoGHYg%3D");
+  background-image: url("https://blog.kakaocdn.net/dna/b5Wezm/btr8gVDgmhW/AAAAAAAAAAAAAAAAAAAAAJVwI6VP9s5H7t6ByZ_PPuZvybQz-abYRTGNM_HOV7fz/img.webp?credential=yqXZFxpELC7KVnFOS48ylbz2pIh7yKj8&expires=1772290799&allow_ip=&allow_referer=&signature=ACFLzGWfyRcRydaVZO%2BLPU6Us4Y%3D");
+  /* background-image: url("https://blog.kakaocdn.net/dna/c74F1G/btrzKSgdFwa/AAAAAAAAAAAAAAAAAAAAADIhaE5YkgarnddnHcFS3XI2ctPHRUmGFUz8wLQ-60jR/img.jpg?credential=yqXZFxpELC7KVnFOS48ylbz2pIh7yKj8&expires=1772290799&allow_ip=&allow_referer=&signature=yFepALoo48N01A4f86qTtyMMx3o%3D"); */
   --thumbnail-blur: 0px;
 }
 .hero-section::after {
