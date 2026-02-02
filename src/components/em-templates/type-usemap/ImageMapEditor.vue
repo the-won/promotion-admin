@@ -15,7 +15,7 @@
       <!-- 이미지 설정 -->
       <div class="image-settings">
         <div class="form-group">
-          <label>이미지 URL</label>
+          <label>이미지  ha ha URL</label>
           <input 
             type="url" 
             v-model="row.imageUrl"

@@ -157,11 +157,11 @@ export default {
       visibleScrollPosition: { scrollTop: 0, viewportHeight: 400 },
       templates: [
         { value: 'em-type-1', name: 'Type 1', icon: '📄', description: '기본 텍스트 템플릿' },
-        { value: 'em-type-2', name: 'Type 2', icon: '🖼️', description: '이미지 중심 템플릿' },
-        { value: 'em-type-3', name: 'Type 3', icon: '📦', description: '박스 레이아웃 템플릿' },
+        { value: 'em-type-2', name: 'Image Link', icon: '🖼️', description: '이미지 중심 템플릿' },
+        { value: 'em-type-3', name: 'Image Map', icon: '📦', description: '박스 레이아웃 템플릿' },
         { value: 'em-type-4', name: 'Type 4', icon: '📰', description: '뉴스레터 템플릿' },
-        { value: 'em-type-5', name: 'Type 5', icon: '🔥', description: '핫스팟 인터랙티브 템플릿' },
-        { value: 'em-type-imagemap', name: 'Image Map', icon: '🗺️', description: '이미지맵 템플릿' }
+        { value: 'em-type-5', name: '비밀특가', icon: '🔥', description: '핫스팟 인터랙티브 템플릿' },
+        { value: 'em-type-imagemap', name: 'Use Map', icon: '🗺️', description: '이미지맵 템플릿' }
       ]
     }
   },

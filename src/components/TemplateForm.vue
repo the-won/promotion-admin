@@ -176,12 +176,12 @@
 
 <script>
 import HotspotGroupEditor from './HotspotGroupEditor.vue'
-import HotdealRow1Editor from './HotdealRow1Editor.vue'
-import HotdealRow3Editor from './HotdealRow3Editor.vue'
-import HotdealExcelUploader from './HotdealExcelUploader.vue'
+import HotdealRow1Editor from './em-templates/secret-sale/HotdealRow1Editor.vue'
+import HotdealRow3Editor from './em-templates/secret-sale/HotdealRow3Editor.vue'
+import HotdealExcelUploader from './em-templates/secret-sale/HotdealExcelUploader.vue'
 import DatePicker from './DatePicker.vue'
-import ImageLinkGroupEditor from './ImageLinkGroupEditor.vue'
-import ImageMapEditor from './ImageMapEditor.vue'
+import ImageLinkGroupEditor from './em-templates/type-image-link/ImageLinkGroupEditor.vue'
+import ImageMapEditor from './em-templates/type-usemap/ImageMapEditor.vue'
 
 export default {
   components: { 
