@@ -1,7 +1,7 @@
 <template>
   <div class="preview-deel">
     <div class="preview-card">
-      <div class="preview-header">
+      <!-- <div class="preview-header">
         <div class="preview-info">
           <h3 class="preview-title">템플릿 미리보기</h3>
           <p class="preview-subtitle">실시간 렌더링</p>
@@ -19,7 +19,7 @@
             </svg>
           </button>
         </div>
-      </div>
+      </div> -->
       <div class="preview-body" ref="previewBody" @scroll="handleScroll">
         <component 
           ref="templateComponent"
@@ -246,11 +246,25 @@ export default {
 }
 
 .preview-card {
-  background: #fff;
-  border-radius: 16px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
+  margin-top: 30px;
+  padding: 40px 5px 5px;
+  background: #3d3d3e;
+  border-radius: 5px;
+  position: relative;
   overflow: hidden;
-  border: 1px solid #e5e7eb;
+}
+.preview-card::after {
+  content: '';
+  box-shadow: 20px 0 #fdbc40, 40px 0 #35cd4b;
+  height: 12px;
+  left: 12px;
+  width: 12px;
+  top: 9px;
+  margin-top: 3px;
+  position: absolute;
+  background: #fc625d;
+  border-radius: 50%;
+  pointer-events: all;
 }
 
 .preview-header {
@@ -307,10 +321,13 @@ export default {
 }
 
 .preview-body {
-  padding: 24px;
+  padding: 25px;
   background: #fff;
   min-height: 500px;
 }
-
+/* 이벤트템플릿 사이즈  */
+.page-event-templates .preview-body {
+  width: 780px;
+}
 
 </style>

@@ -92,8 +92,8 @@
 
           <!-- PREVIEW -->
           <main class="preview-card" :class="{ expanded: !sidebarOpen }">
-            <header class="preview-header">
-              <h3 class="preview-title">템플릿 미리보기<sub class="preview-subtitle">(실시간 렌더링</sub>
+            <!-- <header class="preview-header">
+              <h3 class="preview-title">템플릿 미리보기<sub class="preview-subtitle">(실시간 렌더링)</sub>
               </h3>
               
               <button
@@ -103,9 +103,17 @@
               >
                 설정 열기
               </button>
-            </header>
+            </header> -->
 
-            <div class="preview-body">
+            <button
+                v-if="!sidebarOpen"
+                class="show-sidebar-btn"
+                @click="toggleSidebar"
+              >
+                설정 열기
+              </button>
+
+            <div class="preview-body-wrap">
               <div class="preview-canvas">
                 <PreviewFrame
                   ref="previewFrame"
@@ -472,7 +480,7 @@ export default {
   top: 0px;
   bottom: 0;
   left: 0;
-  box-shadow: 0 2px 5px 0 rgb(0 0 0 / 16%), 0 2px 10px 0 rgb(0 0 0 / 2%);
+  box-shadow: 0 1px 2px 0 rgb(0 0 0 / 16%), 0 1px 2px 0 rgb(0 0 0 / 2%);
   z-index: 20;
 }
 
@@ -566,7 +574,7 @@ export default {
   display: flex;
   justify-content: space-between;
 }
-.preview-body {
+.preview-body-wrap {
   flex: 1;
   display: flex;
   justify-content: center;
@@ -585,6 +593,8 @@ export default {
 }
 
 .show-sidebar-btn {
+  position: fixed;
+  top: 50px;
   padding: 6px 12px;
   font-size: 13px;
   font-weight: 600;

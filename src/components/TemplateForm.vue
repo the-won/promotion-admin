@@ -1,5 +1,5 @@
 <template>
-  <div class="template-form-deel">
+  <div class="template-form">
     <h4 class="form-title">템플릿 설정</h4>
 
     <!-- 화끈딜 템플릿일 경우 통합 업로드 표시 -->
@@ -15,12 +15,10 @@
       <div 
         v-for="(config, key) in templateConfig" 
         :key="key" 
-        class="field-group"
+        class="form-group"
         :class="{ 'full-width': isFullWidthField(config.type) }"
       >
-        <label class="field-label">
-          {{ config.label }}
-        </label>
+        <label class="form-label">{{ config.label }}</label>
         
         <!-- Text, URL, Email, Number 등 -->
         <input 
@@ -28,7 +26,7 @@
           :type="config.type"
           v-model="localData[key]"
           :placeholder="config.placeholder || ''"
-          class="field-input"
+          class="form-input"
         />
         
         <!-- Textarea -->
@@ -37,7 +35,7 @@
           v-model="localData[key]"
           :rows="config.rows || 3"
           :placeholder="config.placeholder || ''"
-          class="field-textarea"
+          class="form-textarea"
         ></textarea>
         
         <!-- Color Picker -->
@@ -50,123 +48,113 @@
           <input 
             type="text"
             v-model="localData[key]"
-            class="field-input"
-            style="flex: 1;"
+            class="form-input"
           />
         </div>
         
         <!-- Select -->
-        <div class="select-wrapper">
-          <select
-            v-if="config.type === 'select'"
-            v-model="localData[key]"
-            class="field-select"
-          >
-            <option v-for="option in config.options" :key="option.value" :value="option.value">
-              {{ option.label }}
-            </option>
-          </select>
-        </div>
+        <select
+          v-else-if="config.type === 'select'"
+          v-model="localData[key]"
+          class="form-select"
+        >
+          <option v-for="option in config.options" :key="option.value" :value="option.value">
+            {{ option.label }}
+          </option>
+        </select>
         
         <!-- Radio -->
-        <div v-if="config.type === 'radio'" class="radio-field">
-          <label v-for="option in config.options" :key="option.value" class="radio-option">
+        <div v-else-if="config.type === 'radio'" class="radio-group">
+          <label v-for="option in config.options" :key="option.value" class="radio-item">
             <input 
               type="radio"
               :name="key"
               :value="option.value"
               v-model="localData[key]"
-              class="radio-input"
+              class="form-radio"
             />
-            <span class="radio-box"></span>
             <span class="radio-label">{{ option.label }}</span>
           </label>
         </div>
         
         <!-- Checkbox -->
-        <label v-if="config.type === 'checkbox'" class="checkbox-field">
+        <label v-else-if="config.type === 'checkbox'" class="checkbox-item">
           <input 
             type="checkbox"
             v-model="localData[key]"
-            class="checkbox-input"
+            class="form-checkbox"
           />
-          <span class="checkbox-box"></span>
           <span class="checkbox-label">{{ config.checkboxLabel || '사용' }}</span>
         </label>
 
         <!-- Range Slider -->
-        <div v-if="config.type === 'range'" class="range-field">
+        <div v-else-if="config.type === 'range'" class="range-field">
           <input 
             type="range"
             v-model.number="localData[key]"
             :min="config.min || 0"
             :max="config.max || 100"
             :step="config.step || 1"
-            class="range-slider"
+            class="form-range"
           />
-          <div class="range-value">
-            {{ localData[key] }}{{ config.unit || '' }}
-          </div>
+          <span class="range-value">{{ localData[key] }}{{ config.unit || '' }}</span>
         </div>
         
         <!-- Date -->
         <input 
-          v-if="config.type === 'date'"
+          v-else-if="config.type === 'date'"
           type="date"
           v-model="localData[key]"
-          class="field-input"
+          class="form-input"
         />
-
-        <!-- Hotspot Group Editor -->
-        <div v-if="config.type === 'hotspot-group' && isHotspotGroupField(key)">
-          <HotspotGroupEditor
-            :value="getHotspotGroupValue(key)"
-            :sectionKey="key"
-            :selectedId="selectedHotspotId"
-            :visibleTopPosition="getVisibleTopForSection(key)"
-            :sidebarExpanded="sidebarExpanded"
-            @input="handleHotspotGroupInput($event, key)"
-            @select="handleSelectHotspot"
-          />
-        </div>
-
-        <!-- Image Link Group Editor -->
-        <div v-if="config.type === 'image-link-group'">
-          <ImageLinkGroupEditor
-            v-model="localData[key]"
-            :sidebarExpanded="sidebarExpanded"
-          />
-        </div>
-
-        <!-- Image Map Editor -->
-        <div v-if="config.type === 'image-map-rows'">
-          <ImageMapEditor
-            :rows="localData.imageMapRows"
-            :areas="localData.imageMapAreas"
-            :selectedAreaId="selectedHotspotId"
-            :visibleScrollPosition="visibleScrollPosition"
-            :sidebarExpanded="sidebarExpanded"
-            @update:rows="localData.imageMapRows = $event"
-            @update:areas="localData.imageMapAreas = $event"
-            @select-area="handleSelectHotspot"
-          />
-        </div>
 
         <!-- Date Picker -->
         <DatePicker
-          v-if="config.type === 'date-picker'"
+          v-else-if="config.type === 'date-picker'"
           v-model="localData[key]"
+        />
+
+        <!-- Hotspot Group Editor -->
+        <HotspotGroupEditor
+          v-else-if="config.type === 'hotspot-group' && isHotspotGroupField(key)"
+          :value="getHotspotGroupValue(key)"
+          :sectionKey="key"
+          :selectedId="selectedHotspotId"
+          :visibleTopPosition="getVisibleTopForSection(key)"
+          :sidebarExpanded="sidebarExpanded"
+          @input="handleHotspotGroupInput($event, key)"
+          @select="handleSelectHotspot"
+        />
+
+        <!-- Image Link Group Editor -->
+        <ImageLinkGroupEditor
+          v-else-if="config.type === 'image-link-group'"
+          v-model="localData[key]"
+          :sidebarExpanded="sidebarExpanded"
+        />
+
+        <!-- Image Map Editor -->
+        <ImageMapEditor
+          v-else-if="config.type === 'image-map-rows'"
+          :rows="localData.imageMapRows"
+          :areas="localData.imageMapAreas"
+          :selectedAreaId="selectedHotspotId"
+          :visibleScrollPosition="visibleScrollPosition"
+          :sidebarExpanded="sidebarExpanded"
+          @update:rows="localData.imageMapRows = $event"
+          @update:areas="localData.imageMapAreas = $event"
+          @select-area="handleSelectHotspot"
         />
 
         <!-- Hotdeal Row1 Editor -->
         <HotdealRow1Editor
-          v-if="config.type === 'hotdeal-row1-list'"
+          v-else-if="config.type === 'hotdeal-row1-list'"
           v-model="localData[key]"
         />
 
         <!-- Hotdeal Row3 Editor -->
         <HotdealRow3Editor
-          v-if="config.type === 'hotdeal-row3-list'"
+          v-else-if="config.type === 'hotdeal-row3-list'"
           v-model="localData[key]"
         />
       </div>
@@ -175,7 +163,7 @@
 </template>
 
 <script>
-import HotspotGroupEditor from './HotspotGroupEditor.vue'
+import HotspotGroupEditor from './event/HotspotGroupEditor.vue'
 import HotdealRow1Editor from './em/secret-sale/HotdealRow1Editor.vue'
 import HotdealRow3Editor from './em/secret-sale/HotdealRow3Editor.vue'
 import HotdealExcelUploader from './em/secret-sale/HotdealExcelUploader.vue'
@@ -222,7 +210,6 @@ export default {
   },
   methods: {
     isFullWidthField(type) {
-      // 이 타입들은 expanded 상태에서도 전체 너비 사용
       const fullWidthTypes = ['hotspot-group', 'image-link-group', 'image-map-rows', 'textarea']
       return fullWidthTypes.includes(type)
     },
@@ -244,27 +231,26 @@ export default {
     },
     
     getVisibleTopForSection(key) {
-      // visibleTopPositions가 있으면 해당 섹션의 위치 반환
       if (this.visibleTopPositions) {
         const imageIndex = key === 'hotspots1' ? 1 : 2
         return this.visibleTopPositions[imageIndex] || 10
       }
-      return 10 // 기본값
+      return 10
     }
   }
 }
 </script>
 
 <style scoped>
-.template-form-deel {
+.template-form {
   width: 100%;
 }
 
 .form-title {
   margin: 0 0 20px 0;
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 600;
-  color: #6b7280;
+  color: var(--color-text-secondary, #64748b);
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
@@ -272,89 +258,31 @@ export default {
 .form-fields {
   display: flex;
   flex-direction: column;
-  gap: 20px;
-  transition: all 0.3s ease;
+  gap: 16px;
 }
 
 .form-fields.expanded {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 16px 20px;
+  gap: 14px 16px;
 }
 
-.form-fields.expanded .field-group.full-width {
+.form-fields.expanded .form-group.full-width {
   grid-column: 1 / -1;
 }
 
-.field-group {
+/* Form Group - 공통 스타일 오버라이드 */
+.form-group {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 6px;
+  margin-bottom: 0;
 }
 
-.field-label {
-  font-size: 13px;
+.form-label {
+  font-size: 11px;
   font-weight: 500;
-  color: #374151;
-}
-
-/* Input Styles */
-.field-input,
-.field-textarea {
-  width: 100%;
-  padding: 10px 14px;
-  background: #fff;
-  border: 1px solid #e5e7eb;
-  border-radius: 8px;
-  color: #1f2937;
-  font-size: 14px;
-  font-family: inherit;
-  transition: all 0.2s;
-}
-
-.field-input:focus,
-.field-textarea:focus {
-  outline: none;
-  border-color: #6366f1;
-  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
-}
-
-.field-input::placeholder,
-.field-textarea::placeholder {
-  color: #9ca3af;
-}
-
-.field-textarea {
-  resize: vertical;
-  min-height: 80px;
-}
-
-/* Select */
-.select-wrapper {
-  position: relative;
-}
-
-.field-select {
-  width: 100%;
-  padding: 10px 40px 10px 14px;
-  background: #fff;
-  border: 1px solid #e5e7eb;
-  border-radius: 8px;
-  color: #1f2937;
-  font-size: 14px;
-  font-family: inherit;
-  cursor: pointer;
-  appearance: none;
-  transition: all 0.2s;
-  background-image: url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1.5L6 6.5L11 1.5' stroke='%236b7280' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-position: right 14px center;
-}
-
-.field-select:focus {
-  outline: none;
-  border-color: #6366f1;
-  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+  color: var(--color-text-secondary, #64748b);
 }
 
 /* Color Picker */
@@ -364,133 +292,98 @@ export default {
   align-items: center;
 }
 
+.color-field .form-input {
+  flex: 1;
+}
+
 .color-picker {
-  width: 48px;
-  height: 40px;
-  padding: 4px;
-  background: #fff;
-  border: 1px solid #e5e7eb;
-  border-radius: 8px;
+  width: 40px;
+  height: var(--form-height, 32px);
+  padding: 2px;
+  background: var(--color-bg, #fff);
+  border: 1px solid var(--color-border, #e8ebf0);
+  border-radius: var(--form-radius, 8px);
   cursor: pointer;
-  transition: all 0.2s;
 }
 
 .color-picker:hover {
-  border-color: #6366f1;
+  border-color: var(--color-border-hover, #d8dce3);
 }
 
-/* Radio */
-.radio-field {
+/* Radio Group */
+.radio-group {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 8px;
 }
 
-.radio-option {
+.radio-item {
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 12px;
-  background: #f9fafb;
-  border: 1px solid #f3f4f6;
-  border-radius: 8px;
+  padding: 10px 12px;
+  background: var(--color-bg-secondary, #f5f6fa);
+  border: 1px solid transparent;
+  border-radius: var(--form-radius, 8px);
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.15s ease;
 }
 
-.radio-option:hover {
-  background: #f3f4f6;
-  border-color: #e5e7eb;
+.radio-item:hover {
+  background: var(--color-bg-tertiary, #eceef2);
 }
 
-.radio-input {
-  position: absolute;
-  opacity: 0;
-  pointer-events: none;
+.radio-item:has(.form-radio:checked) {
+  background: var(--color-primary-light, #eef0ff);
+  border-color: var(--color-primary, #5568f8);
 }
 
-.radio-box {
-  width: 18px;
-  height: 18px;
-  border: 2px solid #d1d5db;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.2s;
-  position: relative;
-}
-
-.radio-input:checked + .radio-box {
-  border-color: #6366f1;
-}
-
-.radio-input:checked + .radio-box::after {
-  content: '';
-  width: 10px;
-  height: 10px;
-  background: #6366f1;
-  border-radius: 50%;
+.form-radio {
+  width: 16px;
+  height: 16px;
+  margin: 0;
+  accent-color: var(--color-primary, #5568f8);
+  cursor: pointer;
 }
 
 .radio-label {
-  color: #374151;
-  font-size: 14px;
+  font-size: 11px;
+  color: var(--color-text, #2d3748);
 }
 
 /* Checkbox */
-.checkbox-field {
+.checkbox-item {
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 12px;
-  background: #f9fafb;
-  border: 1px solid #f3f4f6;
-  border-radius: 8px;
+  padding: 10px 12px;
+  background: var(--color-bg-secondary, #f5f6fa);
+  border: 1px solid transparent;
+  border-radius: var(--form-radius, 8px);
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.15s ease;
 }
 
-.checkbox-field:hover {
-  background: #f3f4f6;
-  border-color: #e5e7eb;
+.checkbox-item:hover {
+  background: var(--color-bg-tertiary, #eceef2);
 }
 
-.checkbox-input {
-  position: absolute;
-  opacity: 0;
-  pointer-events: none;
+.checkbox-item:has(.form-checkbox:checked) {
+  background: var(--color-primary-light, #eef0ff);
+  border-color: var(--color-primary, #5568f8);
 }
 
-.checkbox-box {
-  width: 18px;
-  height: 18px;
-  border: 2px solid #d1d5db;
-  border-radius: 4px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.2s;
-}
-
-.checkbox-input:checked + .checkbox-box {
-  background: #6366f1;
-  border-color: #6366f1;
-}
-
-.checkbox-input:checked + .checkbox-box::after {
-  content: '';
-  width: 4px;
-  height: 8px;
-  border: solid #fff;
-  border-width: 0 2px 2px 0;
-  transform: rotate(45deg);
-  margin-top: -2px;
+.form-checkbox {
+  width: 16px;
+  height: 16px;
+  margin: 0;
+  accent-color: var(--color-primary, #5568f8);
+  cursor: pointer;
 }
 
 .checkbox-label {
-  color: #374151;
-  font-size: 14px;
+  font-size: 11px;
+  color: var(--color-text, #2d3748);
 }
 
 /* Range Slider */
@@ -498,59 +391,49 @@ export default {
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 12px;
-  background: #f9fafb;
-  border: 1px solid #f3f4f6;
-  border-radius: 8px;
+  padding: 10px 12px;
+  background: var(--color-bg-secondary, #f5f6fa);
+  border-radius: var(--form-radius, 8px);
 }
 
-.range-slider {
+.form-range {
   flex: 1;
-  height: 6px;
+  height: 4px;
   appearance: none;
-  background: #e5e7eb;
-  border-radius: 3px;
+  background: var(--color-border, #e8ebf0);
+  border-radius: 2px;
   outline: none;
   cursor: pointer;
 }
 
-.range-slider::-webkit-slider-thumb {
+.form-range::-webkit-slider-thumb {
   appearance: none;
-  width: 18px;
-  height: 18px;
-  background: #6366f1;
+  width: 16px;
+  height: 16px;
+  background: var(--color-primary, #5568f8);
   border-radius: 50%;
   cursor: pointer;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  transition: all 0.2s;
+  transition: all 0.15s ease;
 }
 
-.range-slider::-webkit-slider-thumb:hover {
-  background: #4f46e5;
+.form-range::-webkit-slider-thumb:hover {
   transform: scale(1.1);
 }
 
-.range-slider::-moz-range-thumb {
-  width: 18px;
-  height: 18px;
-  background: #6366f1;
+.form-range::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  background: var(--color-primary, #5568f8);
   border: none;
   border-radius: 50%;
   cursor: pointer;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  transition: all 0.2s;
-}
-
-.range-slider::-moz-range-thumb:hover {
-  background: #4f46e5;
-  transform: scale(1.1);
 }
 
 .range-value {
-  min-width: 50px;
+  min-width: 45px;
   text-align: right;
   font-weight: 600;
-  color: #6366f1;
-  font-size: 14px;
+  font-size: 11px;
+  color: var(--color-primary, #5568f8);
 }
 </style>

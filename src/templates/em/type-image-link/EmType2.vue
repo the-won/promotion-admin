@@ -19,14 +19,14 @@
                   </td>
                 </tr>
                 <tr> 
-            <td style="FONT-SIZE: 12px" height="37" valign="top" align="right"><strong>%UserName%님</strong></td>
+            <td :style="`font-size: 12px`" height="37" valign="top" align="right"><strong>%UserName%님</strong></td>
                 </tr>
                 <!-- // 2013-06-19 username 간격 수정 -->
               </tbody>
           </table>
 
           <!-- contents table -->
-          <table style="border:1px solid #bebebe;" cellspacing="0" cellpadding="0" width="720">
+          <table :style="`border:1px solid #bebebe;`" cellspacing="0" cellpadding="0" width="720">
             <tbody>
                <tr v-for="group in data.imageLinkGroups" :key="group.id">
                   <td align="center" :style="{ paddingBottom: '3px', paddingTop: '3px', paddingLeft: '3px', paddingRight: '3px' }">

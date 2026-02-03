@@ -52,25 +52,7 @@ export default {
 </script>
 
 <style>
-/* Reset & Base */
-html, body {
-  margin: 0;
-  padding: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-body {
-  overflow-x: hidden;
-}
-* {
-  box-sizing: border-box;
-}
 
-img {
-  vertical-align: top;
-  border: none;
-}
 
 /* App Wrapper */
 .app-wrapper {

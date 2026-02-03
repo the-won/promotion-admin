@@ -19,7 +19,7 @@
                   </td>
                 </tr>
                 <tr>
-                  <td style="FONT-SIZE: 12px" height="37" valign="top" align="right">
+                  <td :style="`font-size: 12px`" height="37" valign="top" align="right">
                     <strong>%UserName%님</strong>
                   </td>
                 </tr>
@@ -27,10 +27,10 @@
             </table>
 
             <!-- 메인 컨텐츠 -->
-            <table style="border:1px solid #bebebe;" cellspacing="0" cellpadding="0" width="720">
+            <table :style="`border:1px solid #bebebe;`" cellspacing="0" cellpadding="0" width="720">
               <tbody>
                 <tr>
-                  <td style="PADDING: 3px" align="center">
+                  <td :style="`padding: 3px`" align="center">
                     <!-- 상단 이미지 -->
                     <table cellSpacing="0" cellPadding="0" width="720" border="0">
                       <tbody>
@@ -43,7 +43,7 @@
                     </table>
 
                     <!-- 상품 영역 -->
-                    <table cellSpacing="0" cellPadding="0" width="720" border="0" style="background-color: #eeeeee;">
+                    <table cellSpacing="0" cellPadding="0" width="720" border="0" :style="`background-color: #eeeeee;`">
                       <tbody>
                         <!-- 1단 상품 -->
                         <template v-for="(product, index) in data.row1Products">
@@ -51,12 +51,12 @@
                             <td :height="index === 0 ? 60 : 13"></td>
                           </tr>
                           <tr :key="'row1-product-' + product.id + '-' + index">
-                            <td style="FONT-SIZE: 0px; VERTICAL-ALIGN: top">
+                            <td :style="`font-size: 0px; VERTICAL-ALIGN: top`">
                               <table cellSpacing="0" cellPadding="0" width="720" border="0">
                                 <tbody>
                                   <tr>
                                     <td width="45"></td>
-                                    <td style="FONT-SIZE: 0px; VERTICAL-ALIGN: top">
+                                    <td :style="`font-size: 0px; VERTICAL-ALIGN: top`">
                                       <a :href="getProductUrl(product.productId)" target="_blank">
                                         <img :src="product.imageUrl" align="left" width="630" :alt="product.imageAlt" border="0">
                                       </a>
@@ -75,24 +75,24 @@
                             <td :height="index === 0 ? 43 : 30"></td>
                           </tr>
                           <tr :key="'row3-product-' + productSet.id + '-' + index">
-                            <td style="FONT-SIZE: 0px; VERTICAL-ALIGN: top">
+                            <td :style="`font-size: 0px; VERTICAL-ALIGN: top`">
                               <table cellSpacing="0" cellPadding="0" width="720" border="0">
                                 <tbody>
                                   <tr>
                                     <td width="45"></td>
-                                    <td style="FONT-SIZE: 0px; VERTICAL-ALIGN: top">
+                                    <td :style="`font-size: 0px; VERTICAL-ALIGN: top`">
                                       <a :href="getProductUrl(productSet.products[0].productId)" target="_blank">
                                         <img :src="productSet.products[0].imageUrl" align="left" width="200" :alt="productSet.products[0].imageAlt" border="0">
                                       </a>
                                     </td>
                                     <td width="15"></td>
-                                    <td style="FONT-SIZE: 0px; VERTICAL-ALIGN: top">
+                                    <td :style="`font-size: 0px; VERTICAL-ALIGN: top`">
                                       <a :href="getProductUrl(productSet.products[1].productId)" target="_blank">
                                         <img :src="productSet.products[1].imageUrl" align="left" width="200" :alt="productSet.products[1].imageAlt" border="0">
                                       </a>
                                     </td>
                                     <td width="15"></td>
-                                    <td style="FONT-SIZE: 0px; VERTICAL-ALIGN: top">
+                                    <td :style="`font-size: 0px; VERTICAL-ALIGN: top`">
                                       <a :href="getProductUrl(productSet.products[2].productId)" target="_blank">
                                         <img :src="productSet.products[2].imageUrl" align="left" width="200" :alt="productSet.products[2].imageAlt" border="0">
                                       </a>
@@ -130,25 +130,25 @@
             <table cellSpacing="0" cellPadding="0" width="728" border="0">
               <tbody>
                 <tr>
-                  <td style="HEIGHT: 5px"></td>
+                  <td :style="`HEIGHT: 5px`"></td>
                 </tr>
                 <tr>
-                  <td style="BACKGROUND: #f2f2f2; PADDING: 18px 9px">
-                    <table style="TEXT-ALIGN: left" cellSpacing="0" cellPadding="0" width="100%" border="0">
+                  <td :style="`BACKGROUND: #f2f2f2; padding: 18px 9px`">
+                    <table :style="`TEXT-ALIGN: left`" cellSpacing="0" cellPadding="0" width="100%" border="0">
                       <tbody>
                         <tr>
-                          <td style="FONT-SIZE: 12px; FONT-FAMILY: '돋움',dotum,sans-serif; COLOR: #5b5b5b">
+                          <td :style="`font-size: 12px; font-family: '돋움',dotum,sans-serif; COLOR: #5b5b5b`">
                             · 본 메일은 {{ getFormattedDate() }} 기준 회원님의 베네피아 이메일 수신 동의 여부를 확인한 결과, 수신에 동의하였기에 발송됩니다.
                           </td>
                         </tr>
                         <tr>
-                          <td style="FONT-SIZE: 12px; FONT-FAMILY: '돋움',dotum,sans-serif; COLOR: #5b5b5b; PADDING-TOP: 4px">
-                            · 베네피아 메일 수신을 원하지 않으시면, <a style="COLOR: #21a7e5; TEXT-DECORATION: none" :href="getUrl('refuse')" target="_blank"><strong>[수신거부]</strong></a>를 클릭해주시기 바랍니다.
+                          <td :style="`font-size: 12px; font-family: '돋움',dotum,sans-serif; COLOR: #5b5b5b; padding-top: 4px`">
+                            · 베네피아 메일 수신을 원하지 않으시면, <a :style="`COLOR: #21a7e5; TEXT-DECORATION: none`" :href="getUrl('refuse')" target="_blank"><strong>[수신거부]</strong></a>를 클릭해주시기 바랍니다.
                           </td>
                         </tr>
                         <tr>
-                          <td style="FONT-SIZE: 12px; FONT-FAMILY: '돋움',dotum,sans-serif; COLOR: #5b5b5b; PADDING-TOP: 4px">
-                            · 본 메일은 발신전용으로 회신되지 않습니다. 궁금하신 사항은 <a style="COLOR: #21a7e5; TEXT-DECORATION: none" :href="getUrl('inquiry')" target="_blank"><strong>[온라인문의]</strong></a>로 문의하시면 친절하게 안내해 드리겠습니다.
+                          <td :style="`font-size: 12px; font-family: '돋움',dotum,sans-serif; COLOR: #5b5b5b; padding-top: 4px`">
+                            · 본 메일은 발신전용으로 회신되지 않습니다. 궁금하신 사항은 <a :style="`COLOR: #21a7e5; TEXT-DECORATION: none`" :href="getUrl('inquiry')" target="_blank"><strong>[온라인문의]</strong></a>로 문의하시면 친절하게 안내해 드리겠습니다.
                           </td>
                         </tr>
                       </tbody>
@@ -210,8 +210,5 @@ export default {
 </script>
 
 <style scoped>
-.em-type5-container * {
-  font-family: '돋움', dotum, sans-serif;
-  background: #ffffff;
-}
+
 </style>

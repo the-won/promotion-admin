@@ -1,24 +1,30 @@
 <template>
   <div class="date-picker">
-    <div class="date-picker-row">
-      <select v-model="localDate.year" class="date-select">
-        <option v-for="year in years" :key="year" :value="year">{{ year }}</option>
-      </select>
-      <span class="separator">년</span>
+    <div class="form-row">
+      <div class="form-group">
+        <select v-model="localDate.year" class="form-select">
+          <option v-for="year in years" :key="year" :value="year">{{ year }}</option>
+        </select>
+      </div>
+      <span class="date-separator">년</span>
       
-      <select v-model="localDate.month" class="date-select">
-        <option v-for="month in months" :key="month.value" :value="month.value">
-          {{ month.label }}
-        </option>
-      </select>
-      <span class="separator">월</span>
+      <div class="form-group">
+        <select v-model="localDate.month" class="form-select">
+          <option v-for="month in months" :key="month.value" :value="month.value">
+            {{ month.label }}
+          </option>
+        </select>
+      </div>
+      <span class="date-separator">월</span>
       
-      <select v-model="localDate.day" class="date-select">
-        <option v-for="day in days" :key="day.value" :value="day.value">
-          {{ day.label }}
-        </option>
-      </select>
-      <span class="separator">일</span>
+      <div class="form-group">
+        <select v-model="localDate.day" class="form-select">
+          <option v-for="day in days" :key="day.value" :value="day.value">
+            {{ day.label }}
+          </option>
+        </select>
+      </div>
+      <span class="date-separator">일</span>
     </div>
   </div>
 </template>
@@ -91,32 +97,23 @@ export default {
 </script>
 
 <style scoped>
-.date-picker {
-  margin-top: 5px;
-}
+/* .date-picker {
+  margin-top: 8px;
+} */
 
-.date-picker-row {
-  display: flex;
+.date-picker .form-row {
   align-items: center;
-  gap: 5px;
+  gap: 0;
 }
 
-.date-select {
-  padding: 8px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  font-size: 14px;
-  background: white;
-  cursor: pointer;
+.date-picker .form-group {
+  flex: 0 0 auto;
+  min-width: 70px;
 }
 
-.date-select:focus {
-  outline: none;
-  border-color: #007bff;
-}
-
-.separator {
-  font-size: 14px;
-  color: #666;
+.date-separator {
+  font-size: 11px;
+  color: var(--color-text-secondary, #64748b);
+  padding: 0 4px;
 }
 </style>
