@@ -1,25 +1,16 @@
 <template>
   <div class="hotspot-group-editor">
-    <!-- Device Toggle -->
-    <DeviceToggle v-model="currentDevice" />
-
-    <!-- Image URL Fields -->
+    <!-- Image URL Field (웹/모바일에 따라 다른 값 바인딩) -->
     <div class="image-url-section">
       <div class="form-group">
-        <label>🖥️ 웹 이미지 URL</label>
+        <label>
+          {{ deviceType === 'mobile' ? '📱 모바일' : '🖥️ 웹' }} 이미지 URL
+        </label>
         <input 
           type="url" 
-          v-model="localData.webImageUrl"
-          placeholder="https://example.com/web-image.jpg"
-          class="form-input"
-        />
-      </div>
-      <div class="form-group">
-        <label>📱 모바일 이미지 URL</label>
-        <input 
-          type="url" 
-          v-model="localData.mobileImageUrl"
-          placeholder="https://example.com/mobile-image.jpg"
+          :value="currentImageUrl"
+          @input="updateImageUrl($event.target.value)"
+          placeholder="https://example.com/image.jpg"
           class="form-input"
         />
       </div>
@@ -27,10 +18,7 @@
 
     <!-- Section Header -->
     <div class="section-header">
-      <h4>
-        <span class="device-badge" :class="currentDevice">{{ currentDevice === 'mobile' ? '📱' : '🖥️' }}</span>
-        핫스팟 목록
-      </h4>
+      <h4>핫스팟 목록</h4>
       <button @click="addHotspot" class="btn btn-success">추가</button>
     </div>
 
@@ -104,12 +92,7 @@
 </template>
 
 <script>
-import DeviceToggle from '../DeviceToggle.vue'
-
 export default {
-  components: {
-    DeviceToggle
-  },
   props: {
     value: {
       type: Object,
@@ -118,6 +101,10 @@ export default {
         mobileImageUrl: '',
         hotspots: []
       })
+    },
+    deviceType: {
+      type: String,
+      default: 'web'
     },
     selectedId: {
       type: Number,
@@ -138,8 +125,14 @@ export default {
         webImageUrl: '',
         mobileImageUrl: '',
         hotspots: []
-      },
-      currentDevice: 'web'
+      }
+    }
+  },
+  computed: {
+    currentImageUrl() {
+      return this.deviceType === 'mobile' 
+        ? this.localData.mobileImageUrl 
+        : this.localData.webImageUrl
     }
   },
   created() {
@@ -161,9 +154,6 @@ export default {
         }
       },
       deep: true
-    },
-    currentDevice(newVal) {
-      this.$emit('device-change', newVal)
     }
   },
   methods: {
@@ -174,6 +164,14 @@ export default {
           mobileImageUrl: this.value.mobileImageUrl || '',
           hotspots: this.value.hotspots ? JSON.parse(JSON.stringify(this.value.hotspots)) : []
         }
+      }
+    },
+    
+    updateImageUrl(url) {
+      if (this.deviceType === 'mobile') {
+        this.localData.mobileImageUrl = url
+      } else {
+        this.localData.webImageUrl = url
       }
     },
     
@@ -219,34 +217,10 @@ export default {
 
 <style scoped>
 .hotspot-group-editor {
-  margin-top: 16px;
+  margin-top: 8px;
 }
 
 .image-url-section {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  margin-bottom: 20px;
-  padding: 16px;
-  background: var(--color-bg-secondary, #f5f6fa);
-  border-radius: var(--card-radius, 10px);
-}
-
-.section-header h4 {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.device-badge {
-  font-size: 14px;
-}
-
-.device-badge.mobile {
-  color: var(--color-success, #4ade80);
-}
-
-.device-badge.web {
-  color: var(--color-primary, #5568f8);
+  margin-bottom: 16px;
 }
 </style>

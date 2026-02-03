@@ -79,6 +79,7 @@
                   :visibleScrollPosition="visibleScrollPosition"
                   :sidebarExpanded="sidebarExpanded"
                   @select-hotspot="handleSelectHotspot"
+                  @device-change="currentDevice = $event"
                 />
               </section>
             </div>
@@ -91,7 +92,7 @@
           </aside>
 
           <!-- PREVIEW -->
-          <main class="preview-card" :class="{ expanded: !sidebarOpen }">
+          <main class="preview-card" :class="{ expanded: !sidebarOpen, 'is-mobile': currentDevice === 'mobile' }">
             <!-- <header class="preview-header">
               <h3 class="preview-title">템플릿 미리보기<sub class="preview-subtitle">(실시간 렌더링)</sub>
               </h3>
@@ -163,6 +164,7 @@ export default {
       isModalOpen: false,
       visibleTopPositions: { 1: 10, 2: 10 },
       visibleScrollPosition: { scrollTop: 0, viewportHeight: 400 },
+      currentDevice: 'web',  // 추가
       templates: [
         { value: 'em-type-1', name: 'Type 1', icon: '📄', description: '기본 텍스트 템플릿' },
         // { value: 'em-type-2', name: 'Image Link', icon: '🖼️', description: '이미지 중심 템플릿' },
@@ -247,23 +249,51 @@ export default {
     handleSelectHotspot(id) {
       this.selectedHotspotId = id
     },
-    handleUpdateHotspot(updatedHotspot, hotspotsKey) {
-      if (hotspotsKey && this.formData[hotspotsKey]) {
-        const index = this.formData[hotspotsKey].findIndex(h => h.id === updatedHotspot.id)
+    handleUpdateHotspot(updatedHotspot, groupKey) {
+      // 새 구조: hotspotGroup1, hotspotGroup2 (내부에 hotspots 배열)
+      if (groupKey && this.formData[groupKey] && this.formData[groupKey].hotspots) {
+        const index = this.formData[groupKey].hotspots.findIndex(h => h.id === updatedHotspot.id)
         if (index !== -1) {
-          this.formData[hotspotsKey].splice(index, 1, updatedHotspot)
+          this.$set(this.formData[groupKey].hotspots, index, updatedHotspot)
+          return
         }
-      } else if (this.formData.hotspots) {
+      }
+      
+      // 이전 구조 호환: hotspots1, hotspots2 (직접 배열)
+      if (groupKey && Array.isArray(this.formData[groupKey])) {
+        const index = this.formData[groupKey].findIndex(h => h.id === updatedHotspot.id)
+        if (index !== -1) {
+          this.$set(this.formData[groupKey], index, updatedHotspot)
+          return
+        }
+      }
+      
+      // fallback: hotspots 배열
+      if (this.formData.hotspots) {
         const index = this.formData.hotspots.findIndex(h => h.id === updatedHotspot.id)
         if (index !== -1) {
-          this.formData.hotspots.splice(index, 1, updatedHotspot)
+          this.$set(this.formData.hotspots, index, updatedHotspot)
         }
       }
     },
     handleDeleteHotspot(id) {
-      const keys = ['hotspots1', 'hotspots2', 'hotspots', 'imageMapAreas']
-      for (const key of keys) {
-        if (this.formData[key]) {
+      // 새 구조: hotspotGroup1, hotspotGroup2 (내부에 hotspots 배열)
+      const groupKeys = ['hotspotGroup1', 'hotspotGroup2']
+      for (const key of groupKeys) {
+        if (this.formData[key] && this.formData[key].hotspots) {
+          const index = this.formData[key].hotspots.findIndex(h => h.id === id)
+          if (index !== -1) {
+            this.formData[key].hotspots.splice(index, 1)
+            this.selectedHotspotId = null
+            return
+          }
+        }
+      }
+      
+      // 이전 구조 호환: 직접 배열
+      const arrayKeys = ['hotspots1', 'hotspots2', 'hotspots', 'imageMapAreas']
+      for (const key of arrayKeys) {
+        if (Array.isArray(this.formData[key])) {
           const index = this.formData[key].findIndex(h => h.id === id)
           if (index !== -1) {
             this.formData[key].splice(index, 1)

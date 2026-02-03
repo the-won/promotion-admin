@@ -1,25 +1,22 @@
 <template>
-  <div>
-    <h1 style="color:#fff;margin:0;font-size:24px;">{{ data.headerText }}</h1>
-    
+  <div class="event-preview">
     <!-- 첫 번째 이미지 + 핫스팟 -->
     <div 
+      v-if="imageUrl1"
       class="image-container" 
       ref="container1"
       @mousedown="handleContainerClick($event, 1)"
     >
-      <!-- 이미지 -->
       <img 
-        :src="data.backgroundImage1" 
+        :src="imageUrl1" 
         class="background-image"
         alt="Background"
         @load="onImageLoad(1)"
         @dragstart.prevent
       />
       
-      <!-- 각 버튼 영역 (드래그 가능) -->
       <div
-        v-for="hotspot in data.hotspots1"
+        v-for="hotspot in hotspots1"
         :key="hotspot.id"
         class="draggable-hotspot"
         :class="{ selected: selectedId === hotspot.id }"
@@ -28,7 +25,6 @@
       >
         <span class="label">{{ hotspot.text }}</span>
         
-        <!-- 리사이즈 핸들 (선택된 경우만) -->
         <template v-if="selectedId === hotspot.id">
           <div class="resize-handle nw" @mousedown.stop="startResize($event, hotspot, 'nw', 1)"></div>
           <div class="resize-handle ne" @mousedown.stop="startResize($event, hotspot, 'ne', 1)"></div>
@@ -40,22 +36,21 @@
 
     <!-- 두 번째 이미지 + 핫스팟 -->
     <div 
+      v-if="imageUrl2"
       class="image-container" 
       ref="container2"
       @mousedown="handleContainerClick($event, 2)"
     >
-      <!-- 이미지 -->
       <img 
-        :src="data.backgroundImage2" 
+        :src="imageUrl2" 
         class="background-image"
         alt="Background 2"
         @load="onImageLoad(2)"
         @dragstart.prevent
       />
       
-      <!-- 각 버튼 영역 (드래그 가능) -->
       <div
-        v-for="hotspot in data.hotspots2"
+        v-for="hotspot in hotspots2"
         :key="hotspot.id"
         class="draggable-hotspot"
         :class="{ selected: selectedId === hotspot.id }"
@@ -64,7 +59,6 @@
       >
         <span class="label">{{ hotspot.text }}</span>
         
-        <!-- 리사이즈 핸들 (선택된 경우만) -->
         <template v-if="selectedId === hotspot.id">
           <div class="resize-handle nw" @mousedown.stop="startResize($event, hotspot, 'nw', 2)"></div>
           <div class="resize-handle ne" @mousedown.stop="startResize($event, hotspot, 'ne', 2)"></div>
@@ -73,14 +67,25 @@
         </template>
       </div>
     </div>
-
   </div>
-
 </template>
 
 <script>
 export default {
-  props: ['data', 'selectedId'],
+  props: {
+    data: {
+      type: Object,
+      required: true
+    },
+    selectedId: {
+      type: Number,
+      default: null
+    },
+    deviceType: {
+      type: String,
+      default: 'web'
+    }
+  },
   data() {
     return {
       dragging: false,
@@ -96,6 +101,26 @@ export default {
       }
     }
   },
+  computed: {
+    // 현재 디바이스에 따른 이미지 URL
+    imageUrl1() {
+      const group = this.data.hotspotGroup1
+      if (!group) return null
+      return this.deviceType === 'mobile' ? group.mobileImageUrl : group.webImageUrl
+    },
+    imageUrl2() {
+      const group = this.data.hotspotGroup2
+      if (!group) return null
+      return this.deviceType === 'mobile' ? group.mobileImageUrl : group.webImageUrl
+    },
+    // 핫스팟 데이터
+    hotspots1() {
+      return this.data.hotspotGroup1?.hotspots || []
+    },
+    hotspots2() {
+      return this.data.hotspotGroup2?.hotspots || []
+    }
+  },
   mounted() {
     this.updateContainerRect()
     window.addEventListener('resize', this.updateContainerRect)
@@ -107,9 +132,7 @@ export default {
   },
   methods: {
     handleKeydown(event) {
-      // Delete 또는 Backspace 키로 선택된 핫스팟 삭제
       if ((event.key === 'Delete' || event.key === 'Backspace') && this.selectedId) {
-        // input, textarea 등에서는 동작하지 않도록
         const tagName = event.target.tagName.toLowerCase()
         if (tagName === 'input' || tagName === 'textarea' || event.target.isContentEditable) {
           return
@@ -128,7 +151,6 @@ export default {
     
     updateContainerRect(imageIndex) {
       if (imageIndex) {
-        // 특정 이미지만 업데이트
         const ref = this.$refs[`container${imageIndex}`]
         if (ref) {
           const rect = ref.getBoundingClientRect()
@@ -138,7 +160,6 @@ export default {
           }
         }
       } else {
-        // 모든 이미지 업데이트
         [1, 2].forEach(idx => {
           const ref = this.$refs[`container${idx}`]
           if (ref) {
@@ -206,7 +227,7 @@ export default {
       newLeft = Math.max(0, Math.min(100 - this.currentHotspot.position.width, newLeft))
       newTop = Math.max(0, Math.min(100 - this.currentHotspot.position.height, newTop))
       
-      const hotspotsKey = `hotspots${this.currentImageIndex}`
+      const groupKey = `hotspotGroup${this.currentImageIndex}`
       
       this.$emit('update-hotspot', {
         ...this.currentHotspot,
@@ -215,7 +236,7 @@ export default {
           left: newLeft,
           top: newTop
         }
-      }, hotspotsKey)
+      }, groupKey)
     },
     
     stopDrag() {
@@ -276,12 +297,12 @@ export default {
       newPos.left = Math.max(0, Math.min(100 - newPos.width, newPos.left))
       newPos.top = Math.max(0, Math.min(100 - newPos.height, newPos.top))
       
-      const hotspotsKey = `hotspots${this.currentImageIndex}`
+      const groupKey = `hotspotGroup${this.currentImageIndex}`
       
       this.$emit('update-hotspot', {
         ...this.currentHotspot,
         position: newPos
-      }, hotspotsKey)
+      }, groupKey)
     },
     
     stopResize() {
@@ -296,6 +317,10 @@ export default {
 </script>
 
 <style scoped>
+.event-preview {
+  width: 100%;
+}
+
 .image-container {
   position: relative;
   width: 100%;

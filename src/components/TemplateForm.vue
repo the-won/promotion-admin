@@ -2,6 +2,11 @@
   <div class="template-form">
     <h4 class="form-title">템플릿 설정</h4>
 
+    <!-- Device Toggle (hotspot-group 타입이 있을 때만 표시) -->
+    <div v-if="hasHotspotGroup" class="device-toggle-section">
+      <DeviceToggle v-model="currentDevice" />
+    </div>
+
     <!-- 화끈딜 템플릿일 경우 통합 업로드 표시 -->
     <HotdealExcelUploader
       v-if="template === 'em-type-5'"
@@ -118,11 +123,11 @@
         <HotspotGroupEditor
           v-else-if="config.type === 'hotspot-group'"
           v-model="localData[key]"
+          :deviceType="currentDevice"
           :selectedId="selectedHotspotId"
           :visibleTopPosition="getVisibleTopForKey(key)"
           :sidebarExpanded="sidebarExpanded"
           @select="handleSelectHotspot"
-          @device-change="handleDeviceChange"
         />
 
         <!-- Image Link Group Editor -->
@@ -162,6 +167,7 @@
 </template>
 
 <script>
+import DeviceToggle from './DeviceToggle.vue'
 import HotspotGroupEditor from './event/HotspotGroupEditor.vue'
 import HotdealRow1Editor from './em/secret-sale/HotdealRow1Editor.vue'
 import HotdealRow3Editor from './em/secret-sale/HotdealRow3Editor.vue'
@@ -172,6 +178,7 @@ import ImageMapEditor from './em/type-usemap/ImageMapEditor.vue'
 
 export default {
   components: { 
+    DeviceToggle,
     HotspotGroupEditor,
     HotdealRow1Editor,
     HotdealRow3Editor,
@@ -195,6 +202,12 @@ export default {
       currentDevice: 'web'
     }
   },
+  computed: {
+    hasHotspotGroup() {
+      if (!this.templateConfig) return false
+      return Object.values(this.templateConfig).some(config => config.type === 'hotspot-group')
+    }
+  },
   created() {
     this.localData = { ...this.value }
   },
@@ -214,6 +227,9 @@ export default {
         }
       },
       deep: true
+    },
+    currentDevice(newVal) {
+      this.$emit('device-change', newVal)
     }
   },
   methods: {
@@ -223,7 +239,6 @@ export default {
     },
     
     isHideLabelField(type) {
-      // HotspotGroupEditor는 자체적으로 구조를 가지므로 라벨 숨김
       return ['hotspot-group'].includes(type)
     },
     
@@ -231,14 +246,8 @@ export default {
       this.$emit('select-hotspot', id)
     },
     
-    handleDeviceChange(device) {
-      this.currentDevice = device
-      this.$emit('device-change', device)
-    },
-    
     getVisibleTopForKey(key) {
       if (this.visibleTopPositions) {
-        // hotspotGroup1 → 1, hotspotGroup2 → 2
         const match = key.match(/\d+$/)
         const index = match ? parseInt(match[0]) : 1
         return this.visibleTopPositions[index] || 10
@@ -261,6 +270,10 @@ export default {
   color: var(--color-text-secondary, #64748b);
   text-transform: uppercase;
   letter-spacing: 0.5px;
+}
+
+.device-toggle-section {
+  margin-bottom: 20px;
 }
 
 .form-fields {

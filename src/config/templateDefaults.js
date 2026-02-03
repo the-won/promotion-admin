@@ -145,7 +145,7 @@ export const templateDefaults = {
       type: 'hotspot-group',
       value: {
         webImageUrl: 'https://d2odciwzsa8zjd.cloudfront.net/public/editorImage/202509/8dae3bd8-5e33-4d1c-af7e-3cdbc39b3b1a.png',
-        mobileImageUrl: 'https://d2odciwzsa8zjd.cloudfront.net/public/editorImage/202509/8dae3bd8-5e33-4d1c-af7e-3cdbc39b3b1a-mobile.png',
+        mobileImageUrl: '',  // 모바일 URL은 필요시 입력
         hotspots: [
           {
             id: 1,
@@ -168,7 +168,7 @@ export const templateDefaults = {
       type: 'hotspot-group',
       value: {
         webImageUrl: 'https://d2odciwzsa8zjd.cloudfront.net/public/editorImage/202503/fbca6135-d59d-4be7-b483-6e2577e4e4c3.png',
-        mobileImageUrl: 'https://d2odciwzsa8zjd.cloudfront.net/public/editorImage/202503/fbca6135-d59d-4be7-b483-6e2577e4e4c3-mobile.png',
+        mobileImageUrl: '',  // 모바일 URL은 필요시 입력
         hotspots: [
           {
             id: 2,
