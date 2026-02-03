@@ -18,7 +18,7 @@
         class="form-group"
         :class="{ 'full-width': isFullWidthField(config.type) }"
       >
-        <label class="form-label">{{ config.label }}</label>
+        <label v-if="!isHideLabelField(config.type)" class="form-label">{{ config.label }}</label>
         
         <!-- Text, URL, Email, Number 등 -->
         <input 
@@ -114,16 +114,15 @@
           v-model="localData[key]"
         />
 
-        <!-- Hotspot Group Editor -->
+        <!-- Hotspot Group Editor (이미지 + 핫스팟 통합) -->
         <HotspotGroupEditor
-          v-else-if="config.type === 'hotspot-group' && isHotspotGroupField(key)"
-          :value="getHotspotGroupValue(key)"
-          :sectionKey="key"
+          v-else-if="config.type === 'hotspot-group'"
+          v-model="localData[key]"
           :selectedId="selectedHotspotId"
-          :visibleTopPosition="getVisibleTopForSection(key)"
+          :visibleTopPosition="getVisibleTopForKey(key)"
           :sidebarExpanded="sidebarExpanded"
-          @input="handleHotspotGroupInput($event, key)"
           @select="handleSelectHotspot"
+          @device-change="handleDeviceChange"
         />
 
         <!-- Image Link Group Editor -->
@@ -181,10 +180,19 @@ export default {
     ImageLinkGroupEditor, 
     ImageMapEditor
   },
-  props: ['template', 'value', 'templateConfig', 'selectedHotspotId', 'visibleTopPositions', 'visibleScrollPosition', 'sidebarExpanded'],
+  props: [
+    'template', 
+    'value', 
+    'templateConfig', 
+    'selectedHotspotId', 
+    'visibleTopPositions', 
+    'visibleScrollPosition', 
+    'sidebarExpanded'
+  ],
   data() {
     return { 
-      localData: {} 
+      localData: {},
+      currentDevice: 'web'
     }
   },
   created() {
@@ -214,26 +222,26 @@ export default {
       return fullWidthTypes.includes(type)
     },
     
-    isHotspotGroupField(key) {
-      return key === 'hotspots1' || key === 'hotspots2'
-    },
-    
-    getHotspotGroupValue(key) {
-      return this.localData[key] || []
-    },
-    
-    handleHotspotGroupInput(value, key) {
-      this.$set(this.localData, key, value)
+    isHideLabelField(type) {
+      // HotspotGroupEditor는 자체적으로 구조를 가지므로 라벨 숨김
+      return ['hotspot-group'].includes(type)
     },
     
     handleSelectHotspot(id) {
       this.$emit('select-hotspot', id)
     },
     
-    getVisibleTopForSection(key) {
+    handleDeviceChange(device) {
+      this.currentDevice = device
+      this.$emit('device-change', device)
+    },
+    
+    getVisibleTopForKey(key) {
       if (this.visibleTopPositions) {
-        const imageIndex = key === 'hotspots1' ? 1 : 2
-        return this.visibleTopPositions[imageIndex] || 10
+        // hotspotGroup1 → 1, hotspotGroup2 → 2
+        const match = key.match(/\d+$/)
+        const index = match ? parseInt(match[0]) : 1
+        return this.visibleTopPositions[index] || 10
       }
       return 10
     }
@@ -271,7 +279,7 @@ export default {
   grid-column: 1 / -1;
 }
 
-/* Form Group - 공통 스타일 오버라이드 */
+/* Form Group */
 .form-group {
   display: flex;
   flex-direction: column;

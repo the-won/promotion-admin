@@ -1,20 +1,48 @@
 <template>
   <div class="hotspot-group-editor">
+    <!-- Device Toggle -->
+    <DeviceToggle v-model="currentDevice" />
+
+    <!-- Image URL Fields -->
+    <div class="image-url-section">
+      <div class="form-group">
+        <label>🖥️ 웹 이미지 URL</label>
+        <input 
+          type="url" 
+          v-model="localData.webImageUrl"
+          placeholder="https://example.com/web-image.jpg"
+          class="form-input"
+        />
+      </div>
+      <div class="form-group">
+        <label>📱 모바일 이미지 URL</label>
+        <input 
+          type="url" 
+          v-model="localData.mobileImageUrl"
+          placeholder="https://example.com/mobile-image.jpg"
+          class="form-input"
+        />
+      </div>
+    </div>
+
     <!-- Section Header -->
     <div class="section-header">
-      <h4>{{ getSectionLabel() }}</h4>
-      <button @click="addHotspot" class="btn btn-success">+ 핫스팟 추가</button>
+      <h4>
+        <span class="device-badge" :class="currentDevice">{{ currentDevice === 'mobile' ? '📱' : '🖥️' }}</span>
+        핫스팟 목록
+      </h4>
+      <button @click="addHotspot" class="btn btn-success">추가</button>
     </div>
 
     <!-- Empty State -->
-    <div v-if="localHotspots.length === 0" class="empty-state">
+    <div v-if="localData.hotspots.length === 0" class="empty-state">
       핫스팟을 추가하세요.
     </div>
 
     <!-- Items Grid -->
     <div class="items-grid" :class="{ 'cols-2': sidebarExpanded }">
       <div 
-        v-for="(hotspot, index) in localHotspots" 
+        v-for="(hotspot, index) in localData.hotspots" 
         :key="hotspot.id" 
         class="card selectable"
         :class="{ selected: selectedId === hotspot.id }"
@@ -76,15 +104,20 @@
 </template>
 
 <script>
+import DeviceToggle from '../DeviceToggle.vue'
+
 export default {
+  components: {
+    DeviceToggle
+  },
   props: {
     value: {
-      type: Array,
-      default: () => []
-    },
-    sectionKey: {
-      type: String,
-      required: true
+      type: Object,
+      default: () => ({
+        webImageUrl: '',
+        mobileImageUrl: '',
+        hotspots: []
+      })
     },
     selectedId: {
       type: Number,
@@ -101,66 +134,76 @@ export default {
   },
   data() {
     return {
-      localHotspots: []
+      localData: {
+        webImageUrl: '',
+        mobileImageUrl: '',
+        hotspots: []
+      },
+      currentDevice: 'web'
     }
   },
   created() {
-    this.localHotspots = this.value ? JSON.parse(JSON.stringify(this.value)) : []
+    this.initLocalData()
   },
   watch: {
     value: {
       handler(newVal) {
-        if (JSON.stringify(newVal) !== JSON.stringify(this.localHotspots)) {
-          this.localHotspots = newVal ? JSON.parse(JSON.stringify(newVal)) : []
+        if (JSON.stringify(newVal) !== JSON.stringify(this.localData)) {
+          this.initLocalData()
         }
       },
       deep: true
     },
-    localHotspots: {
+    localData: {
       handler(val) {
         if (JSON.stringify(val) !== JSON.stringify(this.value)) {
           this.$emit('input', JSON.parse(JSON.stringify(val)))
         }
       },
       deep: true
+    },
+    currentDevice(newVal) {
+      this.$emit('device-change', newVal)
     }
   },
   methods: {
-    getSectionLabel() {
-      const labels = {
-        'hotspots1': '이미지 1 핫스팟 목록',
-        'hotspots2': '이미지 2 핫스팟 목록'
+    initLocalData() {
+      if (this.value) {
+        this.localData = {
+          webImageUrl: this.value.webImageUrl || '',
+          mobileImageUrl: this.value.mobileImageUrl || '',
+          hotspots: this.value.hotspots ? JSON.parse(JSON.stringify(this.value.hotspots)) : []
+        }
       }
-      return labels[this.sectionKey] || '핫스팟 목록'
     },
     
     addHotspot() {
       const newId = Date.now()
       const baseTop = this.visibleTopPosition || 10
-      const offsetTop = (this.localHotspots.length * 5) % 30
+      const offsetTop = (this.localData.hotspots.length * 5) % 30
       
       const newHotspot = {
         id: newId,
-        text: `버튼 ${this.localHotspots.length + 1}`,
+        text: `버튼 ${this.localData.hotspots.length + 1}`,
         href: 'https://example.com',
-        alt: `버튼 ${this.localHotspots.length + 1}`,
-        title: `버튼 ${this.localHotspots.length + 1}`,
+        alt: `버튼 ${this.localData.hotspots.length + 1}`,
+        title: `버튼 ${this.localData.hotspots.length + 1}`,
         position: {
-          left: 10 + (this.localHotspots.length * 5) % 60,
+          left: 10 + (this.localData.hotspots.length * 5) % 60,
           top: Math.min(85, baseTop + offsetTop),
           width: 20,
           height: 10
         }
       }
       
-      this.localHotspots.push(newHotspot)
+      this.localData.hotspots.push(newHotspot)
       this.$emit('select', newId)
     },
     
     removeHotspot(id) {
-      const index = this.localHotspots.findIndex(h => h.id === id)
+      const index = this.localData.hotspots.findIndex(h => h.id === id)
       if (index !== -1) {
-        this.localHotspots.splice(index, 1)
+        this.localData.hotspots.splice(index, 1)
         if (this.selectedId === id) {
           this.$emit('select', null)
         }
@@ -175,8 +218,35 @@ export default {
 </script>
 
 <style scoped>
-/* 컴포넌트 고유 스타일만 */
 .hotspot-group-editor {
   margin-top: 16px;
+}
+
+.image-url-section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 20px;
+  padding: 16px;
+  background: var(--color-bg-secondary, #f5f6fa);
+  border-radius: var(--card-radius, 10px);
+}
+
+.section-header h4 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.device-badge {
+  font-size: 14px;
+}
+
+.device-badge.mobile {
+  color: var(--color-success, #4ade80);
+}
+
+.device-badge.web {
+  color: var(--color-primary, #5568f8);
 }
 </style>

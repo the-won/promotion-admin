@@ -140,53 +140,51 @@ export const templateDefaults = {
 
   },
   'em-type-3': {
-    backgroundImage1: {
-      label: '이미지 1 URL',
-      type: 'url',
-      value: 'https://d2odciwzsa8zjd.cloudfront.net/public/editorImage/202509/8dae3bd8-5e33-4d1c-af7e-3cdbc39b3b1a.png'
-    },
-    backgroundImage2: {
-      label: '이미지 2 URL',
-      type: 'url',
-      value: 'https://d2odciwzsa8zjd.cloudfront.net/public/editorImage/202503/fbca6135-d59d-4be7-b483-6e2577e4e4c3.png'
-    },
-    hotspots1: {
-      label: '이미지 1 핫스팟',
+     hotspotGroup1: {
+      label: '이미지 1 설정',
       type: 'hotspot-group',
-      value: [
-        {
-          id: 1,
-          text: '지금 신청하기',
-          href: 'https://example.com/apply',
-          alt: '신청하기 버튼',
-          title: '신청하기',
-          position: {
-            left: 30,
-            top: 5,
-            width: 30,
-            height: 10
+      value: {
+        webImageUrl: 'https://d2odciwzsa8zjd.cloudfront.net/public/editorImage/202509/8dae3bd8-5e33-4d1c-af7e-3cdbc39b3b1a.png',
+        mobileImageUrl: 'https://d2odciwzsa8zjd.cloudfront.net/public/editorImage/202509/8dae3bd8-5e33-4d1c-af7e-3cdbc39b3b1a-mobile.png',
+        hotspots: [
+          {
+            id: 1,
+            text: '지금 신청하기',
+            href: 'https://example.com/apply',
+            alt: '신청하기 버튼',
+            title: '신청하기',
+            position: {
+              left: 30,
+              top: 5,
+              width: 30,
+              height: 10
+            }
           }
-        }
-      ]
+        ]
+      }
     },
-    hotspots2: {
-      label: '이미지 2 핫스팟',
+    hotspotGroup2: {
+      label: '이미지 2 설정',
       type: 'hotspot-group',
-      value: [
-        {
-          id: 2,
-          text: '더 알아보기',
-          href: 'https://example.com/more',
-          alt: '더보기 버튼',
-          title: '더 알아보기',
-          position: {
-            left: 40,
-            top: 5,
-            width: 25,
-            height: 10
+      value: {
+        webImageUrl: 'https://d2odciwzsa8zjd.cloudfront.net/public/editorImage/202503/fbca6135-d59d-4be7-b483-6e2577e4e4c3.png',
+        mobileImageUrl: 'https://d2odciwzsa8zjd.cloudfront.net/public/editorImage/202503/fbca6135-d59d-4be7-b483-6e2577e4e4c3-mobile.png',
+        hotspots: [
+          {
+            id: 2,
+            text: '더 알아보기',
+            href: 'https://example.com/more',
+            alt: '더보기 버튼',
+            title: '더 알아보기',
+            position: {
+              left: 40,
+              top: 5,
+              width: 25,
+              height: 10
+            }
           }
-        }
-      ]
+        ]
+      }
     }
   },
   'em-type-4': {
