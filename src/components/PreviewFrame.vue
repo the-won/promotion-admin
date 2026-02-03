@@ -1,25 +1,7 @@
 <template>
   <div class="preview-deel">
     <div class="preview-card">
-      <!-- <div class="preview-header">
-        <div class="preview-info">
-          <h3 class="preview-title">템플릿 미리보기</h3>
-          <p class="preview-subtitle">실시간 렌더링</p>
-        </div>
-        <div class="preview-actions">
-          <button class="action-btn" title="새로고침">
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-              <path d="M14 8C14 11.3137 11.3137 14 8 14C4.68629 14 2 11.3137 2 8C2 4.68629 4.68629 2 8 2C9.84841 2 11.4867 2.87568 12.5 4.23333" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-              <path d="M10 4H14V8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-          </button>
-          <button class="action-btn" title="전체화면">
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-              <path d="M10 2H14V6M6 14H2V10M14 2L9 7M2 14L7 9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-          </button>
-        </div>
-      </div> -->
+     
       <div class="preview-body" ref="previewBody" @scroll="handleScroll">
         <component 
           ref="templateComponent"
@@ -38,7 +20,7 @@
 <script>
 import EmType1 from '../templates/EmType1.vue'
 import EmType2 from '../templates/em/type-image-link/EmType2.vue'
-import EmType3 from '../templates/EmType3.vue'
+import EmType3 from '../templates/event/EmType3.vue'
 import EmType4 from '../templates/EmType4.vue'
 import EmType5 from '../templates/em/secret-sale/EmType5.vue'
 import EmTypeImageMap from '../templates/em/type-usemap/EmTypeImageMap.vue'
