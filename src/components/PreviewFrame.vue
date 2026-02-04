@@ -9,6 +9,8 @@
           :data="formData"
           :deviceType="deviceType"
           :selectedId="selectedHotspotId"
+          :activeRowId="activeRowId"
+          :activeImageIndex="activeImageIndex"
           @select-hotspot="handleSelectHotspot"
           @update-hotspot="handleUpdateHotspot"
           @delete-hotspot="handleDeleteHotspot"
@@ -39,6 +41,14 @@ export default {
     template: String,
     formData: Object,
     selectedHotspotId: [Number, String],
+    activeRowId: {
+      type: [Number, String],
+      default: null
+    },
+    activeImageIndex: {
+      type: Number,
+      default: null
+    },
     deviceType: {
       type: String,
       default: 'web'

@@ -79,6 +79,8 @@
                   :visibleScrollPosition="visibleScrollPosition"
                   :sidebarExpanded="sidebarExpanded"
                   @select-hotspot="handleSelectHotspot"
+                  @active-row-change="handleActiveRowChange"
+                  @active-image-change="handleActiveImageChange"
                   @device-change="currentDevice = $event"
                 />
               </section>
@@ -93,19 +95,6 @@
 
           <!-- PREVIEW -->
           <main class="preview-card-wrap" :class="{ expanded: !sidebarOpen, 'is-mobile': currentDevice === 'mobile' }">
-            <!-- <header class="preview-header">
-              <h3 class="preview-title">템플릿 미리보기<sub class="preview-subtitle">(실시간 렌더링)</sub>
-              </h3>
-              
-              <button
-                v-if="!sidebarOpen"
-                class="show-sidebar-btn"
-                @click="toggleSidebar"
-              >
-                설정 열기
-              </button>
-            </header> -->
-
             <button
                 v-if="!sidebarOpen"
                 class="show-sidebar-btn"
@@ -122,6 +111,8 @@
                   :formData="formData"
                   :deviceType="currentDevice"
                   :selectedHotspotId="selectedHotspotId"
+                  :activeRowId="activeRowId"
+                  :activeImageIndex="activeImageIndex"
                   @select-hotspot="handleSelectHotspot"
                   @update-hotspot="handleUpdateHotspot"
                   @delete-hotspot="handleDeleteHotspot"
@@ -153,26 +144,25 @@ import { downloadHtml } from '../utils/downloadHtml'
 import { templateDefaults } from '../config/templateDefaults'
 
 export default {
-  name: 'EventeTemplates',
+  name: 'EventTemplates',
   components: { TemplateForm, PreviewFrame, TemplateSelectModal },
   data() {
     return {
       selectedTemplate: 'em-type-1',
       formData: this.extractValues(templateDefaults['em-type-1']),
       selectedHotspotId: null,
+      activeRowId: null,
+      activeImageIndex: null,
       sidebarOpen: true,
       sidebarExpanded: false,
       isModalOpen: false,
       visibleTopPositions: { 1: 10, 2: 10 },
       visibleScrollPosition: { scrollTop: 0, viewportHeight: 400 },
-      currentDevice: 'web',  // 추가
+      currentDevice: 'web',
       templates: [
         { value: 'em-type-1', name: 'Type 1', icon: '📄', description: '기본 텍스트 템플릿' },
-        // { value: 'em-type-2', name: 'Image Link', icon: '🖼️', description: '이미지 중심 템플릿' },
         { value: 'em-type-3', name: 'Image Map', icon: '📦', description: '이벤트 이미지맵 템플릿' },
-        // { value: 'em-type-4', name: 'Type 4', icon: '📰', description: '뉴스레터 템플릿' },
-        { value: 'em-type-5', name: '비밀특가', icon: '🔥', description: '핫스팟 인터랙티브 템플릿' },
-        // { value: 'em-type-imagemap', name: 'Use Map', icon: '🗺️', description: '이미지맵 템플릿' }
+        { value: 'em-type-5', name: '비밀특가', icon: '🔥', description: '핫스팟 인터랙티브 템플릿' }
       ]
     }
   },
@@ -180,6 +170,8 @@ export default {
     selectedTemplate(newTemplate) {
       this.formData = this.extractValues(templateDefaults[newTemplate])
       this.selectedHotspotId = null
+      this.activeRowId = null
+      this.activeImageIndex = null
       this.$nextTick(() => {
         this.updateVisiblePositions()
       })
@@ -203,7 +195,7 @@ export default {
   },
   beforeDestroy() {
     window.removeEventListener('scroll', this.handleWindowScroll)
-    document.body.classList.remove('sidebar-closed', 'sidebar-expanded', 'page-em-templates')
+    document.body.classList.remove('sidebar-closed', 'sidebar-expanded', 'page-event-templates')
   },
   methods: {
     handleWindowScroll() {
@@ -249,6 +241,12 @@ export default {
     },
     handleSelectHotspot(id) {
       this.selectedHotspotId = id
+    },
+    handleActiveRowChange(rowId) {
+      this.activeRowId = rowId
+    },
+    handleActiveImageChange(imageIndex) {
+      this.activeImageIndex = imageIndex
     },
     handleUpdateHotspot(updatedHotspot, groupKey) {
       // 새 구조: hotspotGroup1, hotspotGroup2 (내부에 hotspots 배열)
@@ -378,7 +376,6 @@ export default {
   background-image: url("https://blog.kakaocdn.net/dna/chZ3BL/btrIzFMbJ4r/AAAAAAAAAAAAAAAAAAAAABENuT3xPS7CJMvqaXXBeDrNUpAzW1mo5v_bn74HoZYO/img.png?credential=yqXZFxpELC7KVnFOS48ylbz2pIh7yKj8&expires=1769871599&allow_ip=&allow_referer=&signature=nzR1osduT8%2FrzQVkwuLlHHE2AgE%3D");
   background-image: url("https://blog.kakaocdn.net/dna/deimrK/btr7PkDl3hZ/AAAAAAAAAAAAAAAAAAAAAPxYo3lgm_PEF6lk6qTSQp7wutn5DnJWfqjpYWjAKfez/img.jpg?credential=yqXZFxpELC7KVnFOS48ylbz2pIh7yKj8&expires=1772290799&allow_ip=&allow_referer=&signature=e1Y1Xh5RVmixUiQ8fgBHdVoGHYg%3D");
   background-image: url("https://blog.kakaocdn.net/dna/b5Wezm/btr8gVDgmhW/AAAAAAAAAAAAAAAAAAAAAJVwI6VP9s5H7t6ByZ_PPuZvybQz-abYRTGNM_HOV7fz/img.webp?credential=yqXZFxpELC7KVnFOS48ylbz2pIh7yKj8&expires=1772290799&allow_ip=&allow_referer=&signature=ACFLzGWfyRcRydaVZO%2BLPU6Us4Y%3D");
-  /* background-image: url("https://blog.kakaocdn.net/dna/c74F1G/btrzKSgdFwa/AAAAAAAAAAAAAAAAAAAAADIhaE5YkgarnddnHcFS3XI2ctPHRUmGFUz8wLQ-60jR/img.jpg?credential=yqXZFxpELC7KVnFOS48ylbz2pIh7yKj8&expires=1772290799&allow_ip=&allow_referer=&signature=yFepALoo48N01A4f86qTtyMMx3o%3D"); */
   --thumbnail-blur: 0px;
 }
 .page-event-templates .hero-section {

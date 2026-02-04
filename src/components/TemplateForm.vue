@@ -123,11 +123,13 @@
         <HotspotGroupEditor
           v-else-if="config.type === 'hotspot-group'"
           v-model="localData[key]"
+          :groupIndex="getGroupIndexFromKey(key)"
           :deviceType="currentDevice"
           :selectedId="selectedHotspotId"
           :visibleTopPosition="getVisibleTopForKey(key)"
           :sidebarExpanded="sidebarExpanded"
           @select="handleSelectHotspot"
+          @active-image-change="handleActiveImageChange"
         />
 
         <!-- Image Link Group Editor -->
@@ -148,6 +150,7 @@
           @update:rows="localData.imageMapRows = $event"
           @update:areas="localData.imageMapAreas = $event"
           @select-area="handleSelectHotspot"
+          @active-row-change="handleActiveRowChange"
         />
 
         <!-- Hotdeal Row1 Editor -->
@@ -199,7 +202,9 @@ export default {
   data() {
     return { 
       localData: {},
-      currentDevice: 'web'
+      currentDevice: 'web',
+      activeRowId: null,
+      activeImageIndex: null
     }
   },
   computed: {
@@ -244,6 +249,22 @@ export default {
     
     handleSelectHotspot(id) {
       this.$emit('select-hotspot', id)
+    },
+    
+    handleActiveRowChange(rowId) {
+      this.activeRowId = rowId
+      this.$emit('active-row-change', rowId)
+    },
+    
+    handleActiveImageChange(imageIndex) {
+      this.activeImageIndex = imageIndex
+      this.$emit('active-image-change', imageIndex)
+    },
+    
+    getGroupIndexFromKey(key) {
+      // hotspotGroup1 -> 1, hotspotGroup2 -> 2
+      const match = key.match(/\d+$/)
+      return match ? parseInt(match[0]) : 1
     },
     
     getVisibleTopForKey(key) {

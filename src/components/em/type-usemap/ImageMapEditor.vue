@@ -6,6 +6,8 @@
       :key="row.id"
       class="card mb-4"
       :class="{ 'card-active': activeRowId === row.id }"
+      @mouseenter="setActiveRow(row.id)"
+      @mouseleave="setActiveRow(null)"
     >
       <div class="card-header">
         <span class="card-title">행 {{ rowIndex + 1 }}</span>
@@ -182,6 +184,11 @@ export default {
     }
   },
   methods: {
+    setActiveRow(rowId) {
+      this.activeRowId = rowId
+      this.$emit('active-row-change', rowId)
+    },
+    
     getAreasForRow(rowId) {
       return this.localAreas.filter(a => a.rowId === rowId)
     },

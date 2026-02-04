@@ -79,6 +79,8 @@
                   :visibleScrollPosition="visibleScrollPosition"
                   :sidebarExpanded="sidebarExpanded"
                   @select-hotspot="handleSelectHotspot"
+                  @active-row-change="handleActiveRowChange"
+                  @active-image-change="handleActiveImageChange"
                   @device-change="currentDevice = $event"
                 />
               </section>
@@ -122,6 +124,8 @@
                   :formData="formData"
                   :deviceType="currentDevice"
                   :selectedHotspotId="selectedHotspotId"
+                  :activeRowId="activeRowId"
+                  :activeImageIndex="activeImageIndex"
                   @select-hotspot="handleSelectHotspot"
                   @update-hotspot="handleUpdateHotspot"
                   @delete-hotspot="handleDeleteHotspot"
@@ -160,6 +164,8 @@ export default {
       selectedTemplate: 'em-type-1',
       formData: this.extractValues(templateDefaults['em-type-1']),
       selectedHotspotId: null,
+      activeRowId: null,
+      activeImageIndex: null,
       sidebarOpen: true,
       sidebarExpanded: false,
       isModalOpen: false,
@@ -249,6 +255,12 @@ export default {
     },
     handleSelectHotspot(id) {
       this.selectedHotspotId = id
+    },
+    handleActiveRowChange(rowId) {
+      this.activeRowId = rowId
+    },
+    handleActiveImageChange(imageIndex) {
+      this.activeImageIndex = imageIndex
     },
     handleUpdateHotspot(updatedHotspot, groupKey) {
       // 새 구조: hotspotGroup1, hotspotGroup2 (내부에 hotspots 배열)

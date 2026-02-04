@@ -1,7 +1,11 @@
 <template>
   <div class="hotspot-group-editor">
     <!-- Image URL Field (웹/모바일에 따라 다른 값 바인딩) -->
-    <div class="image-url-section">
+    <div 
+      class="image-url-section"
+      @mouseenter="setActiveImage(true)"
+      @mouseleave="setActiveImage(false)"
+    >
       <div class="form-group">
         <label>
           {{ deviceType === 'mobile' ? '📱 모바일' : '🖥️ 웹' }} 이미지 URL
@@ -102,6 +106,10 @@ export default {
         hotspots: []
       })
     },
+    groupIndex: {
+      type: Number,
+      default: 1
+    },
     deviceType: {
       type: String,
       default: 'web'
@@ -157,6 +165,10 @@ export default {
     }
   },
   methods: {
+    setActiveImage(isActive) {
+      this.$emit('active-image-change', isActive ? this.groupIndex : null)
+    },
+    
     initLocalData() {
       if (this.value) {
         this.localData = {
@@ -222,5 +234,13 @@ export default {
 
 .image-url-section {
   margin-bottom: 16px;
+  padding: 12px;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+}
+
+.image-url-section:hover {
+  background: rgba(85, 104, 248, 0.05);
+  box-shadow: 0 0 0 2px rgba(85, 104, 248, 0.1);
 }
 </style>

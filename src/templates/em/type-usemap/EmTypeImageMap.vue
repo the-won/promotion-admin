@@ -5,6 +5,7 @@
         <td>
           <div 
             class="image-container"
+            :class="{ 'image-container-highlighted': activeRowId === row.id }"
             :ref="'container_' + row.id"
             :style="{ width: row.width + 'px', position: 'relative' }"
             @mousedown="handleContainerClick($event, row)"
@@ -94,6 +95,10 @@ export default {
       default: () => ({})
     },
     selectedId: {
+      type: [Number, String],
+      default: null
+    },
+    activeRowId: {
       type: [Number, String],
       default: null
     }
@@ -302,6 +307,42 @@ export default {
   user-select: none;
   background: #fff;
   vertical-align: top;
+  transition: all 0.3s ease;
+}
+
+.image-container-highlighted {
+  outline: 4px solid #5568f8;
+  outline-offset: 4px;
+  box-shadow: 0 0 0 4px rgba(85, 104, 248, 0.1),
+              0 8px 24px rgba(85, 104, 248, 0.2);
+  background: rgba(85, 104, 248, 0.02);
+  transform: scale(1.01);
+  z-index: 5;
+}
+
+.image-container-highlighted::before {
+  content: '';
+  position: absolute;
+  top: -8px;
+  left: -8px;
+  right: -8px;
+  bottom: -8px;
+  background: linear-gradient(135deg, 
+    rgba(85, 104, 248, 0.1) 0%, 
+    rgba(85, 104, 248, 0.05) 50%,
+    rgba(85, 104, 248, 0.1) 100%);
+  border-radius: 4px;
+  pointer-events: none;
+  animation: pulse-highlight 2s ease-in-out infinite;
+}
+
+@keyframes pulse-highlight {
+  0%, 100% {
+    opacity: 0.5;
+  }
+  50% {
+    opacity: 1;
+  }
 }
 
 .preview-image {
