@@ -19,7 +19,7 @@ export function generateEmType5Html(data) {
   const companyType = data.companyType || 'normal'
   const urls = companyUrls[companyType]
   
-  const sendDate = data.sendDate || { year: '2025', month: '01', day: '01' }
+  const sendDate = data.sendDate || { year: '2026', month: '01', day: '01' }
   const formattedDate = `${sendDate.year}년 ${parseInt(sendDate.month)}월 ${parseInt(sendDate.day)}일`
 
   function getProductUrl(productId) {

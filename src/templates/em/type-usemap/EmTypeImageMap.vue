@@ -57,7 +57,7 @@
               <td style="BACKGROUND: #f2f2f2; PADDING-BOTTOM: 18px; PADDING-TOP: 18px; PADDING-LEFT: 9px; PADDING-RIGHT: 9px"><table style="TEXT-ALIGN: left" cellspacing="0" cellpadding="0" width="100%" border="0">
                 <tbody>
                   <tr>
-                  <td style="FONT-SIZE: 12px; FONT-FAMILY: '돋움',dotum,sans-serif; COLOR: #5b5b5b"> · 본 메일은 2025년 12월 11일 기준 회원님의 베네피아 이메일 수신 동의 여부를 확인한 결과, 수신에 동의하였기에 발송됩니다.</td>
+                  <td style="FONT-SIZE: 12px; FONT-FAMILY: '돋움',dotum,sans-serif; COLOR: #5b5b5b"> · 본 메일은 {{ getFormattedDate() }} 기준 회원님의 베네피아 이메일 수신 동의 여부를 확인한 결과, 수신에 동의하였기에 발송됩니다.</td>
                   </tr> 
                   <tr>
                   <td style="FONT-SIZE: 12px; FONT-FAMILY: '돋움',dotum,sans-serif; COLOR: #5b5b5b; PADDING-TOP: 4px"> · 베네피아 메일을 수신을 원하지 않으시면, <a style="COLOR: #21a7e5; TEXT-DECORATION: none" href="https://$:domain:$.benepia.co.kr/mail/rcvMailYn/rcvMailYn.do?encMailId=$:enc_mail_id:$&amp;encMbrId=$:enc_mbr_id:$" target="_blank" title="새창열림"><strong>[수신거부]</strong></a>를 클릭해주시기 바랍니다. (If you don`t want this of information or <br>
@@ -74,7 +74,7 @@
               <td><img border="0" alt="Copyright (C) SK M&amp;service. All rights Reserved" src="https://org-i.benepia.co.kr/ckeditor/2025/05/21/afb-19d54843e91e17478007034700.jpg" width="708" height="54"></td>
               </tr>
             </tbody>
-            </table>
+          </table>
         </td>
       </tr>
     </table>
@@ -276,6 +276,12 @@ export default {
 
       document.removeEventListener('mousemove', this.onResize)
       document.removeEventListener('mouseup', this.stopResize)
+    },
+
+    getFormattedDate() {
+      if (!this.data.sendDate) return ''
+      const { year, month, day } = this.data.sendDate
+      return `${year}년 ${parseInt(month)}월 ${parseInt(day)}일`
     }
   },
 
@@ -295,6 +301,7 @@ export default {
   display: inline-block;
   user-select: none;
   background: #fff;
+  vertical-align: top;
 }
 
 .preview-image {

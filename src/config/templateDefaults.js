@@ -314,6 +314,15 @@ export const templateDefaults = {
   // templateDefaults.js 파일에 추가할 내용
 
   'em-type-imagemap': {
+    sendDate: {
+      label: '발송일 기준',
+      type: 'date-picker',
+      value: {
+        year: '2026',
+        month: '01',
+        day: '01'
+      }
+    },
     imageMapRows: {
       label: '이미지 행 목록',
       type: 'image-map-rows',
