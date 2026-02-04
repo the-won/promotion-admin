@@ -79,6 +79,7 @@
                   :visibleScrollPosition="visibleScrollPosition"
                   :sidebarExpanded="sidebarExpanded"
                   @select-hotspot="handleSelectHotspot"
+                  @device-change="currentDevice = $event"
                 />
               </section>
             </div>
@@ -91,7 +92,7 @@
           </aside>
 
           <!-- PREVIEW -->
-          <main class="preview-card" :class="{ expanded: !sidebarOpen }">
+          <main class="preview-card-wrap" :class="{ expanded: !sidebarOpen, 'is-mobile': currentDevice === 'mobile' }">
             <!-- <header class="preview-header">
               <h3 class="preview-title">템플릿 미리보기<sub class="preview-subtitle">(실시간 렌더링)</sub>
               </h3>
@@ -119,6 +120,7 @@
                   ref="previewFrame"
                   :template="selectedTemplate"
                   :formData="formData"
+                  :deviceType="currentDevice"
                   :selectedHotspotId="selectedHotspotId"
                   @select-hotspot="handleSelectHotspot"
                   @update-hotspot="handleUpdateHotspot"
@@ -163,6 +165,7 @@ export default {
       isModalOpen: false,
       visibleTopPositions: { 1: 10, 2: 10 },
       visibleScrollPosition: { scrollTop: 0, viewportHeight: 400 },
+      currentDevice: 'web',  // 추가
       templates: [
         { value: 'em-type-1', name: 'Type 1', icon: '📄', description: '기본 텍스트 템플릿' },
         { value: 'em-type-2', name: 'Image Link', icon: '🖼️', description: '이미지 중심 템플릿' },
@@ -590,7 +593,7 @@ export default {
 }
 
 /* PREVIEW */
-.preview-card {
+.preview-card-wrap {
   flex: 1;
   background: #fff;
   border-radius: 16px;
@@ -612,11 +615,11 @@ export default {
   margin: 0 auto;
 }
 
-.preview-card {
+.preview-card-wrap {
   transition: flex 0.35s ease;
 }
 
-.preview-card.expanded {
+.preview-card-wrap.expanded {
   flex: 1 1 100%;
 }
 

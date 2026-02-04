@@ -71,6 +71,11 @@ export function generateFullEmailHtml(data) {
 ${imageMapHtml}
                 </td>
               </tr>
+              <tr>
+                <td>
+                  hahaha
+                </td>
+              </tr>
             </tbody>
           </table>
           <!--[if mso]>

@@ -7,6 +7,7 @@
           ref="templateComponent"
           :is="currentComponent"
           :data="formData"
+          :deviceType="deviceType"
           :selectedId="selectedHotspotId"
           @select-hotspot="handleSelectHotspot"
           @update-hotspot="handleUpdateHotspot"
@@ -34,7 +35,15 @@ export default {
     EmType5,
     EmTypeImageMap
   },
-  props: ['template', 'formData', 'selectedHotspotId'],
+  props: {
+    template: String,
+    formData: Object,
+    selectedHotspotId: [Number, String],
+    deviceType: {
+      type: String,
+      default: 'web'
+    }
+  },
   data() {
     return {
       scrollInfo: {
@@ -309,7 +318,14 @@ export default {
 }
 /* 이벤트템플릿 사이즈  */
 .page-event-templates .preview-body {
-  width: 780px;
+  width: 800px;
 }
 
+/* 이벤트템플릿 모바일인 경우 */
+.is-mobile .preview-body  {
+  padding: 0;
+}
+.page-event-templates .is-mobile .preview-body {
+  width: 480px;
+}
 </style>

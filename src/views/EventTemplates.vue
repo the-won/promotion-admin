@@ -92,7 +92,7 @@
           </aside>
 
           <!-- PREVIEW -->
-          <main class="preview-card" :class="{ expanded: !sidebarOpen, 'is-mobile': currentDevice === 'mobile' }">
+          <main class="preview-card-wrap" :class="{ expanded: !sidebarOpen, 'is-mobile': currentDevice === 'mobile' }">
             <!-- <header class="preview-header">
               <h3 class="preview-title">템플릿 미리보기<sub class="preview-subtitle">(실시간 렌더링)</sub>
               </h3>
@@ -120,6 +120,7 @@
                   ref="previewFrame"
                   :template="selectedTemplate"
                   :formData="formData"
+                  :deviceType="currentDevice"
                   :selectedHotspotId="selectedHotspotId"
                   @select-hotspot="handleSelectHotspot"
                   @update-hotspot="handleUpdateHotspot"
@@ -595,7 +596,7 @@ export default {
 }
 
 /* PREVIEW */
-.preview-card {
+.preview-card-wrap {
   flex: 1;
   background: #fff;
   border-radius: 16px;
@@ -617,11 +618,11 @@ export default {
   margin: 0 auto;
 }
 
-.preview-card {
+.preview-card-wrap {
   transition: flex 0.35s ease;
 }
 
-.preview-card.expanded {
+.preview-card-wrap.expanded {
   flex: 1 1 100%;
 }
 

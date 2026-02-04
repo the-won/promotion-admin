@@ -40,6 +40,41 @@
               </template>
             </div>
           </div>
+
+
+         
+        </td>
+      </tr>
+      <tr>
+        <td>
+           <!-- 푸터 -->
+          <table cellspacing="0" cellpadding="0" width="728" border="0">
+            <tbody>
+              <tr> 
+              <td style="HEIGHT: 5px"></td>
+              </tr>
+              <tr>
+              <td style="BACKGROUND: #f2f2f2; PADDING-BOTTOM: 18px; PADDING-TOP: 18px; PADDING-LEFT: 9px; PADDING-RIGHT: 9px"><table style="TEXT-ALIGN: left" cellspacing="0" cellpadding="0" width="100%" border="0">
+                <tbody>
+                  <tr>
+                  <td style="FONT-SIZE: 12px; FONT-FAMILY: '돋움',dotum,sans-serif; COLOR: #5b5b5b"> · 본 메일은 2025년 12월 11일 기준 회원님의 베네피아 이메일 수신 동의 여부를 확인한 결과, 수신에 동의하였기에 발송됩니다.</td>
+                  </tr> 
+                  <tr>
+                  <td style="FONT-SIZE: 12px; FONT-FAMILY: '돋움',dotum,sans-serif; COLOR: #5b5b5b; PADDING-TOP: 4px"> · 베네피아 메일을 수신을 원하지 않으시면, <a style="COLOR: #21a7e5; TEXT-DECORATION: none" href="https://$:domain:$.benepia.co.kr/mail/rcvMailYn/rcvMailYn.do?encMailId=$:enc_mail_id:$&amp;encMbrId=$:enc_mbr_id:$" target="_blank" title="새창열림"><strong>[수신거부]</strong></a>를 클릭해주시기 바랍니다. (If you don`t want this of information or <br>
+                    &nbsp;&nbsp;e-mail, please <a style="COLOR: #21a7e5; TEXT-DECORATION: none" href="https://$:domain:$.benepia.co.kr/mail/rcvMailYn/rcvMailYn.do?encMailId=$:enc_mail_id:$&amp;encMbrId=$:enc_mbr_id:$" target="_blank" title="새창열림"> <strong>[click the Refusal]</strong></a>) </td>				  
+                  </tr>
+                  <tr>
+                  <td style="FONT-SIZE: 12px; FONT-FAMILY: '돋움',dotum,sans-serif; COLOR: #5b5b5b; PADDING-TOP: 4px"> · 본 메일은 발신전용으로 회신되지 않습니다. 궁금하신 사항은 <a style="COLOR: #21a7e5; TEXT-DECORATION: none" href="https://$:domain:$.benepia.co.kr/frnt/mypage/qnaList.do?mnuId=84&amp;mnuTopLevel=11&amp;mnuLevel=1&amp;list" target="_blank" title="새창열림"><strong>[온라인문의]</strong></a>로 문의하시면 친절하게 안내해 드리겠습니다. </td>
+                  </tr>
+                </tbody>
+                </table></td>
+              </tr>
+              <!-- 2015-02-16, add // -->
+              <tr>
+              <td><img border="0" alt="Copyright (C) SK M&amp;service. All rights Reserved" src="https://org-i.benepia.co.kr/ckeditor/2025/05/21/afb-19d54843e91e17478007034700.jpg" width="708" height="54"></td>
+              </tr>
+            </tbody>
+            </table>
         </td>
       </tr>
     </table>
@@ -254,10 +289,6 @@ export default {
 </script>
 
 <style scoped>
-.em-type-imagemap {
-  padding: 20px;
-  background: #f5f5f5;
-}
 
 .image-container {
   position: relative;

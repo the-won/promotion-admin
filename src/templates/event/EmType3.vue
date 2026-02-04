@@ -102,16 +102,22 @@ export default {
     }
   },
   computed: {
-    // 현재 디바이스에 따른 이미지 URL
+    // 현재 디바이스에 따른 이미지 URL (모바일 URL 없으면 웹 URL fallback)
     imageUrl1() {
       const group = this.data.hotspotGroup1
       if (!group) return null
-      return this.deviceType === 'mobile' ? group.mobileImageUrl : group.webImageUrl
+      if (this.deviceType === 'mobile') {
+        return group.mobileImageUrl || group.webImageUrl
+      }
+      return group.webImageUrl
     },
     imageUrl2() {
       const group = this.data.hotspotGroup2
       if (!group) return null
-      return this.deviceType === 'mobile' ? group.mobileImageUrl : group.webImageUrl
+      if (this.deviceType === 'mobile') {
+        return group.mobileImageUrl || group.webImageUrl
+      }
+      return group.webImageUrl
     },
     // 핫스팟 데이터
     hotspots1() {
