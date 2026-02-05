@@ -44,6 +44,11 @@
             />
           </div>
         </div>
+        
+        <!-- 자동 입력 성공 메시지 -->
+        <div v-if="row._autoFilled" class="auto-fill-message">
+          ✓ {{ row.width }} × {{ row.height }} 자동 입력됨
+        </div>
 
         <div class="form-group">
           <label>이미지 Alt</label>
@@ -149,6 +154,10 @@ export default {
     this.localRows = this.rows ? JSON.parse(JSON.stringify(this.rows)) : []
     this.localAreas = this.areas ? JSON.parse(JSON.stringify(this.areas)) : []
   },
+  mounted() {
+    // 각 row의 imageUrl 변경 감지
+    this.setupImageUrlWatchers()
+  },
   watch: {
     rows: {
       handler(newVal) {
@@ -168,6 +177,7 @@ export default {
     },
     localRows: {
       handler(val) {
+        // 기존 로직: 부모로 전달
         if (JSON.stringify(val) !== JSON.stringify(this.rows)) {
           this.$emit('update:rows', JSON.parse(JSON.stringify(val)))
         }
@@ -184,9 +194,71 @@ export default {
     }
   },
   methods: {
+    setupImageUrlWatchers() {
+      // 각 row의 imageUrl을 감시
+      this.localRows.forEach((row, index) => {
+        this.$watch(
+          () => this.localRows[index].imageUrl,
+          (newUrl, oldUrl) => {
+            if (newUrl && newUrl !== oldUrl) {
+              console.log('이미지 URL 변경 감지:', newUrl)
+              this.updateImageSize(this.localRows[index], newUrl)
+            }
+          }
+        )
+      })
+    },
+    
     setActiveRow(rowId) {
       this.activeRowId = rowId
       this.$emit('active-row-change', rowId)
+    },
+    
+    updateImageSize(row, url) {
+      console.log('updateImageSize 호출됨:', url)
+      
+      // 이전 타이머 취소 (디바운스)
+      if (row._timer) {
+        clearTimeout(row._timer)
+      }
+      
+      // 500ms 후 실행
+      row._timer = setTimeout(() => {
+        console.log('이미지 로드 시작:', url)
+        const img = new Image()
+        
+        img.onload = () => {
+          console.log('이미지 로드 성공:', img.naturalWidth, 'x', img.naturalHeight)
+          // 크기 업데이트
+          row.width = img.naturalWidth
+          row.height = img.naturalHeight
+          
+          // 성공 메시지 3초간 표시
+          this.$set(row, '_autoFilled', true)
+          setTimeout(() => {
+            this.$set(row, '_autoFilled', false)
+          }, 3000)
+        }
+        
+        img.onerror = () => {
+          // 에러는 조용히 무시
+          console.log('이미지 로드 실패:', url)
+        }
+        
+        img.src = url
+      }, 500)
+    },
+    
+    handleFileSelect(event, row) {
+      const file = event.target.files[0]
+      if (file && file.type.startsWith('image/')) {
+        const reader = new FileReader()
+        reader.onload = (e) => {
+          // Base64 데이터 URL로 변환하여 이미지 URL로 사용
+          row.imageUrl = e.target.result
+        }
+        reader.readAsDataURL(file)
+      }
     },
     
     getAreasForRow(rowId) {
@@ -208,6 +280,20 @@ export default {
       
       this.localRows.push(newRow)
       this.activeRowId = newId
+      
+      // 새 row에 대한 watcher 추가
+      this.$nextTick(() => {
+        const index = this.localRows.length - 1
+        this.$watch(
+          () => this.localRows[index].imageUrl,
+          (newUrl, oldUrl) => {
+            if (newUrl && newUrl !== oldUrl) {
+              console.log('새 row - 이미지 URL 변경 감지:', newUrl)
+              this.updateImageSize(this.localRows[index], newUrl)
+            }
+          }
+        )
+      })
     },
 
     removeRow(rowId) {
@@ -299,5 +385,72 @@ export default {
 .card-header-sm {
   margin-bottom: 10px;
   padding-bottom: 8px;
+}
+
+.image-input-wrapper {
+  display: flex;
+  gap: 6px;
+  align-items: stretch;
+}
+
+.image-input-wrapper .form-input {
+  flex: 1;
+}
+
+.btn-file {
+  padding: 6px 12px;
+  background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+  box-shadow: 0 2px 4px rgba(99, 102, 241, 0.2);
+}
+
+.btn-file:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(99, 102, 241, 0.3);
+}
+
+.btn-file:active {
+  transform: translateY(0);
+}
+
+.file-info {
+  margin-top: 6px;
+  padding: 6px 10px;
+  background: #f0fdf4;
+  border: 1px solid #86efac;
+  border-radius: 4px;
+  color: #16a34a;
+  font-size: 11px;
+  font-weight: 500;
+}
+
+.auto-fill-message {
+  margin-top: 8px;
+  padding: 8px 12px;
+  background: #f0fdf4;
+  border: 1px solid #86efac;
+  border-radius: 6px;
+  color: #16a34a;
+  font-size: 12px;
+  font-weight: 500;
+  animation: slideIn 0.3s ease;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 </style>
