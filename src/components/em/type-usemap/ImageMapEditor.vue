@@ -86,14 +86,118 @@
             </div>
 
             <div class="form-group">
-              <label>링크 URL (href)</label>
+              <label>링크 타입</label>
+              <select 
+                v-model="area.linkType" 
+                @change="updateAreaUrl(area)"
+                class="form-input" 
+                @click.stop
+              >
+                <option value="plan">기획전</option>
+                <option value="product">상품</option>
+                <option value="event">이벤트</option>
+                <option value="search">검색어</option>
+                <option value="custom">기타 (전체 URL)</option>
+              </select>
+            </div>
+
+            <!-- 기획전 입력 -->
+            <div v-if="area.linkType === 'plan'" class="link-inputs">
+              <div class="form-group">
+                <label>기획전 코드</label>
+                <input 
+                  type="text" 
+                  v-model="area.linkData.planCode"
+                  @input="updateAreaUrl(area)"
+                  placeholder="예: 12345"
+                  class="form-input"
+                  @click.stop
+                />
+              </div>
+            </div>
+
+            <!-- 상품 입력 -->
+            <div v-if="area.linkType === 'product'" class="link-inputs">
+              <div class="form-group">
+                <label>상품 코드</label>
+                <input 
+                  type="text" 
+                  v-model="area.linkData.productCode"
+                  @input="updateAreaUrl(area)"
+                  placeholder="예: PRD001"
+                  class="form-input"
+                  @click.stop
+                />
+              </div>
+            </div>
+
+            <!-- 이벤트 입력 -->
+            <div v-if="area.linkType === 'event'" class="link-inputs">
+              <div class="form-group">
+                <label>웹 이벤트 코드</label>
+                <input 
+                  type="text" 
+                  v-model="area.linkData.webEventCode"
+                  @input="updateAreaUrl(area)"
+                  placeholder="웹용 코드"
+                  class="form-input"
+                  @click.stop
+                />
+              </div>
+              <div class="form-group">
+                <label>모바일 이벤트 코드</label>
+                <input 
+                  type="text" 
+                  v-model="area.linkData.mobileEventCode"
+                  @input="updateAreaUrl(area)"
+                  placeholder="모바일용 코드"
+                  class="form-input"
+                  @click.stop
+                />
+              </div>
+            </div>
+
+            <!-- 검색어 입력 -->
+            <div v-if="area.linkType === 'search'" class="link-inputs">
+              <div class="form-group">
+                <label>검색어</label>
+                <input 
+                  type="text" 
+                  v-model="area.linkData.searchKeyword"
+                  @input="updateAreaUrl(area)"
+                  placeholder="예: 커피"
+                  class="form-input"
+                  @click.stop
+                />
+              </div>
+            </div>
+
+            <!-- 기타 (전체 URL) 입력 -->
+            <div v-if="area.linkType === 'custom'" class="link-inputs">
+              <div class="form-group">
+                <label>전체 URL</label>
+                <input 
+                  type="url" 
+                  v-model="area.linkData.customUrl"
+                  @input="updateAreaUrl(area)"
+                  placeholder="https://example.com"
+                  class="form-input"
+                  @click.stop
+                />
+              </div>
+            </div>
+
+            <!-- 생성된 URL 미리보기 -->
+            <div class="form-group">
+              <label>🔗 생성된 URL</label>
               <input 
-                type="url" 
-                v-model="area.href"
-                placeholder="https://example.com"
-                class="form-input"
+                type="text" 
+                :value="area.href"
+                readonly
+                class="form-input url-preview"
                 @click.stop
               />
+              <small class="help-text">※ 위 정보를 바탕으로 자동 생성됩니다</small>
             </div>
 
             <div class="form-group">
@@ -147,7 +251,8 @@ export default {
     return {
       localRows: [],
       localAreas: [],
-      activeRowId: null
+      activeRowId: null,
+      rowWatchers: []  // row별 watcher 언마운트 함수 저장
     }
   },
   created() {
@@ -157,6 +262,14 @@ export default {
   mounted() {
     // 각 row의 imageUrl 변경 감지
     this.setupImageUrlWatchers()
+    
+    // 기존 areas 초기화 및 watcher 설정
+    this.initializeAreas()
+  },
+  beforeDestroy() {
+    // 모든 watcher 해제
+    this.rowWatchers.forEach(unwatch => unwatch())
+    this.rowWatchers = []
   },
   watch: {
     rows: {
@@ -194,18 +307,121 @@ export default {
     }
   },
   methods: {
+    // URL 템플릿
+    generateUrl(area) {
+      console.log('generateUrl 호출:', area)
+      
+      if (!area.linkType || !area.linkData) {
+        console.log('linkType 또는 linkData 없음')
+        return ''
+      }
+
+      const { linkType, linkData } = area
+      console.log('linkType:', linkType, 'linkData:', linkData)
+
+      switch(linkType) {
+        case 'plan':
+          if (!linkData.planCode) {
+            console.log('planCode 없음')
+            return ''
+          }
+          const planUrl = `https://newfront.benepia.co.kr/gatepage/emGateway.do?pcUrl=https://$:domain:$.benepia.co.kr/frnt/pointmall/pointmall.do?returnUrl=/main/eventDisplay.bene?dpPlanNo=${linkData.planCode}&mbUrl=https://mr2.benepia.co.kr/gateLink.bene?domain=$:domain:$%26linkUrl=/main/planDetail.bene?dpPlanNo=${linkData.planCode}`
+          console.log('생성된 기획전 URL:', planUrl)
+          return planUrl
+        
+        case 'product':
+          if (!linkData.productCode) {
+            console.log('productCode 없음')
+            return ''
+          }
+          const productUrl = `https://newfront.benepia.co.kr/gatepage/emGateway.do?pcUrl=https://$:domain:$.benepia.co.kr/frnt/pointmall/pointmall.do?returnUrl=https://newmall.benepia.co.kr/disp/storeMain.bene?chnlId=%26custCoCd=$:co_cd:$%26shopId=%26prdId=${linkData.productCode}&mbUrl=https://mr2.benepia.co.kr/gateLink.bene?domain=$:domain:$%26linkUrl=/disp/detailView.bene?prdId=${linkData.productCode}`
+          console.log('생성된 상품 URL:', productUrl)
+          return productUrl
+        
+        case 'event':
+          if (!linkData.webEventCode || !linkData.mobileEventCode) {
+            console.log('webEventCode 또는 mobileEventCode 없음')
+            return ''
+          }
+          const eventUrl = `https://newfront.benepia.co.kr/gatepage/emGateway.do?pcUrl=https://$:domain:$.benepia.co.kr/frnt/eventzone/eventZoneView.do?evtTypCd=1%26evtNo=${linkData.webEventCode}&mbUrl=https://mr2.benepia.co.kr/gateLink.bene?domain=$:domain:$%26linkUrl=/disp/eventDetailView.bene?dispAreaSeq=${linkData.mobileEventCode}`
+          console.log('생성된 이벤트 URL:', eventUrl)
+          return eventUrl
+        
+        case 'search':
+          if (!linkData.searchKeyword) {
+            console.log('searchKeyword 없음')
+            return ''
+          }
+          const keyword = encodeURIComponent(linkData.searchKeyword)
+          const searchUrl = `https://newfront.benepia.co.kr/gatepage/emGateway.do?pcUrl=https://$:domain:$.benepia.co.kr/search/searchList.do?srchLocChck=header%26srchTxt=${keyword}&mbUrl=https://mr2.benepia.co.kr/gateLink.bene?domain=$:domain:$%26linkUrl=/searchResult.bene?srchTxt=${keyword}`
+          console.log('생성된 검색 URL:', searchUrl)
+          return searchUrl
+        
+        case 'custom':
+          console.log('기타 URL:', linkData.customUrl)
+          return linkData.customUrl || ''
+        
+        default:
+          console.log('알 수 없는 linkType:', linkType)
+          return ''
+      }
+    },
+    
+    updateAreaUrl(area) {
+      console.log('updateAreaUrl 호출:', area)
+      const newUrl = this.generateUrl(area)
+      console.log('생성된 새 URL:', newUrl)
+      if (newUrl !== area.href) {
+        area.href = newUrl
+        console.log('area.href 업데이트 완료')
+      }
+    },
+    
+    initializeAreas() {
+      // 기존 area에 linkType이 없으면 초기화
+      this.localAreas.forEach(area => {
+        if (!area.linkType) {
+          this.$set(area, 'linkType', 'custom')
+        }
+        if (!area.linkData) {
+          this.$set(area, 'linkData', {
+            planCode: '',
+            productCode: '',
+            webEventCode: '',
+            mobileEventCode: '',
+            searchKeyword: '',
+            customUrl: area.href || ''
+          })
+        }
+      })
+    },
+    
     setupImageUrlWatchers() {
+      // 기존 watchers 모두 해제
+      this.rowWatchers.forEach(unwatch => unwatch())
+      this.rowWatchers = []
+      
       // 각 row의 imageUrl을 감시
       this.localRows.forEach((row, index) => {
-        this.$watch(
-          () => this.localRows[index].imageUrl,
+        const unwatch = this.$watch(
+          () => {
+            // 안전하게 체크
+            if (this.localRows[index]) {
+              return this.localRows[index].imageUrl
+            }
+            return null
+          },
           (newUrl, oldUrl) => {
-            if (newUrl && newUrl !== oldUrl) {
+            // row가 여전히 존재하는지 확인
+            if (newUrl && newUrl !== oldUrl && this.localRows[index]) {
               console.log('이미지 URL 변경 감지:', newUrl)
               this.updateImageSize(this.localRows[index], newUrl)
             }
           }
         )
+        
+        // unwatch 함수 저장
+        this.rowWatchers.push(unwatch)
       })
     },
     
@@ -281,18 +497,9 @@ export default {
       this.localRows.push(newRow)
       this.activeRowId = newId
       
-      // 새 row에 대한 watcher 추가
+      // watcher 재설정 (새 row 포함)
       this.$nextTick(() => {
-        const index = this.localRows.length - 1
-        this.$watch(
-          () => this.localRows[index].imageUrl,
-          (newUrl, oldUrl) => {
-            if (newUrl && newUrl !== oldUrl) {
-              console.log('새 row - 이미지 URL 변경 감지:', newUrl)
-              this.updateImageSize(this.localRows[index], newUrl)
-            }
-          }
-        )
+        this.setupImageUrlWatchers()
       })
     },
 
@@ -305,6 +512,11 @@ export default {
         if (this.activeRowId === rowId) {
           this.activeRowId = this.localRows.length > 0 ? this.localRows[0].id : null
         }
+        
+        // watcher 재설정 (삭제된 row의 watcher 제거)
+        this.$nextTick(() => {
+          this.setupImageUrlWatchers()
+        })
       }
     },
 
@@ -324,6 +536,18 @@ export default {
       const newArea = {
         id: newId,
         rowId: rowId,
+        
+        // 링크 타입 및 데이터
+        linkType: 'custom',
+        linkData: {
+          planCode: '',
+          productCode: '',
+          webEventCode: '',
+          mobileEventCode: '',
+          searchKeyword: '',
+          customUrl: 'https://example.com'
+        },
+        
         href: 'https://example.com',
         alt: `버튼 ${areasInRow.length + 1}`,
         coords: {
@@ -335,6 +559,7 @@ export default {
       }
 
       this.localAreas.push(newArea)
+      
       this.$emit('select-area', newId)
     },
 
@@ -452,5 +677,43 @@ export default {
     opacity: 1;
     transform: translateY(0);
   }
+}
+
+/* 링크 입력 영역 */
+.link-inputs {
+  padding: 12px;
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  margin-bottom: 12px;
+}
+
+.link-inputs .form-group {
+  margin-bottom: 8px;
+}
+
+.link-inputs .form-group:last-child {
+  margin-bottom: 0;
+}
+
+/* URL 미리보기 */
+.url-preview {
+  background: #f3f4f6 !important;
+  color: #6b7280;
+  font-size: 11px;
+  font-family: monospace;
+  cursor: text;
+}
+
+.url-preview:focus {
+  background: #fff !important;
+  color: #111827;
+}
+
+.help-text {
+  display: block;
+  margin-top: 4px;
+  font-size: 11px;
+  color: #6b7280;
 }
 </style>
