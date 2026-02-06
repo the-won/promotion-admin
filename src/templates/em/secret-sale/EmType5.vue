@@ -133,22 +133,22 @@
                   <td :style="`HEIGHT: 5px`"></td>
                 </tr>
                 <tr>
-                  <td :style="`BACKGROUND: #f2f2f2; padding: 18px 9px`">
+                  <td :style="`background: #f2f2f2; padding: 18px 9px`">
                     <table :style="`TEXT-ALIGN: left`" cellSpacing="0" cellPadding="0" width="100%" border="0">
                       <tbody>
                         <tr>
-                          <td :style="`font-size: 12px; font-family: '돋움',dotum,sans-serif; COLOR: #5b5b5b`">
+                          <td :style="`font-size: 12px; font-family: '돋움',dotum,sans-serif; color: #5b5b5b`">
                             · 본 메일은 {{ getFormattedDate() }} 기준 회원님의 베네피아 이메일 수신 동의 여부를 확인한 결과, 수신에 동의하였기에 발송됩니다.
                           </td>
                         </tr>
                         <tr>
-                          <td :style="`font-size: 12px; font-family: '돋움',dotum,sans-serif; COLOR: #5b5b5b; padding-top: 4px`">
-                            · 베네피아 메일 수신을 원하지 않으시면, <a :style="`COLOR: #21a7e5; TEXT-DECORATION: none`" :href="getUrl('refuse')" target="_blank"><strong>[수신거부]</strong></a>를 클릭해주시기 바랍니다.
+                          <td :style="`font-size: 12px; font-family: '돋움',dotum,sans-serif; color: #5b5b5b; padding-top: 4px`">
+                            · 베네피아 메일 수신을 원하지 않으시면, <a :style="`color: #21a7e5; text-decoration: none`" :href="getUrl('refuse')" target="_blank"><strong>[수신거부]</strong></a>를 클릭해주시기 바랍니다.
                           </td>
                         </tr>
                         <tr>
-                          <td :style="`font-size: 12px; font-family: '돋움',dotum,sans-serif; COLOR: #5b5b5b; padding-top: 4px`">
-                            · 본 메일은 발신전용으로 회신되지 않습니다. 궁금하신 사항은 <a :style="`COLOR: #21a7e5; TEXT-DECORATION: none`" :href="getUrl('inquiry')" target="_blank"><strong>[온라인문의]</strong></a>로 문의하시면 친절하게 안내해 드리겠습니다.
+                          <td :style="`font-size: 12px; font-family: '돋움',dotum,sans-serif; color: #5b5b5b; padding-top: 4px`">
+                            · 본 메일은 발신전용으로 회신되지 않습니다. 궁금하신 사항은 <a :style="`color: #21a7e5; text-decoration: none`" :href="getUrl('inquiry')" target="_blank"><strong>[온라인문의]</strong></a>로 문의하시면 친절하게 안내해 드리겠습니다.
                           </td>
                         </tr>
                       </tbody>

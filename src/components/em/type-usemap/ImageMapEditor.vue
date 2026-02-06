@@ -1,5 +1,23 @@
 <template>
   <div class="image-map-editor">
+    <!-- 🆕 전역 벤더 선택 (상단) -->
+    <div class="global-vendor-selector">
+      <div class="form-group">
+        <label>🏢 벤더 타입 (전체 핫스팟 적용)</label>
+        <select 
+          v-model="globalVendor" 
+          @change="handleVendorChange"
+          class="form-input vendor-select"
+        >
+          <option value="normal">일반</option>
+          <option value="hynix">하이닉스</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- 구분선 -->
+    <hr class="vendor-divider" />
+
     <!-- 행(Row) 목록 -->
     <div 
       v-for="(row, rowIndex) in localRows" 
@@ -133,27 +151,45 @@
 
             <!-- 이벤트 입력 -->
             <div v-if="area.linkType === 'event'" class="link-inputs">
-              <div class="form-group">
-                <label>웹 이벤트 코드</label>
-                <input 
-                  type="text" 
-                  v-model="area.linkData.webEventCode"
-                  @input="updateAreaUrl(area)"
-                  placeholder="웹용 코드"
-                  class="form-input"
-                  @click.stop
-                />
+              <!-- 일반: 웹 + 모바일 코드 둘 다 -->
+              <div v-if="globalVendor === 'normal'">
+                <div class="form-group">
+                  <label>웹 이벤트 코드</label>
+                  <input 
+                    type="text" 
+                    v-model="area.linkData.webEventCode"
+                    @input="updateAreaUrl(area)"
+                    placeholder="웹용 코드"
+                    class="form-input"
+                    @click.stop
+                  />
+                </div>
+                <div class="form-group">
+                  <label>모바일 이벤트 코드</label>
+                  <input 
+                    type="text" 
+                    v-model="area.linkData.mobileEventCode"
+                    @input="updateAreaUrl(area)"
+                    placeholder="모바일용 코드"
+                    class="form-input"
+                    @click.stop
+                  />
+                </div>
               </div>
-              <div class="form-group">
-                <label>모바일 이벤트 코드</label>
-                <input 
-                  type="text" 
-                  v-model="area.linkData.mobileEventCode"
-                  @input="updateAreaUrl(area)"
-                  placeholder="모바일용 코드"
-                  class="form-input"
-                  @click.stop
-                />
+              
+              <!-- 하이닉스: 모바일 코드만 -->
+              <div v-else>
+                <div class="form-group">
+                  <label>모바일 이벤트 코드</label>
+                  <input 
+                    type="text" 
+                    v-model="area.linkData.mobileEventCode"
+                    @input="updateAreaUrl(area)"
+                    placeholder="모바일용 코드"
+                    class="form-input"
+                    @click.stop
+                  />
+                </div>
               </div>
             </div>
 
@@ -245,6 +281,10 @@ export default {
     sidebarExpanded: {
       type: Boolean,
       default: false
+    },
+    companyType: {
+      type: String,
+      default: 'normal'
     }
   },
   data() {
@@ -252,12 +292,16 @@ export default {
       localRows: [],
       localAreas: [],
       activeRowId: null,
-      rowWatchers: []  // row별 watcher 언마운트 함수 저장
+      rowWatchers: [],
+      globalVendor: 'normal'  // 전역 벤더 설정
     }
   },
   created() {
     this.localRows = this.rows ? JSON.parse(JSON.stringify(this.rows)) : []
     this.localAreas = this.areas ? JSON.parse(JSON.stringify(this.areas)) : []
+    
+    // companyType props로 globalVendor 초기화
+    this.globalVendor = this.companyType || 'normal'
   },
   mounted() {
     // 각 row의 imageUrl 변경 감지
@@ -304,6 +348,18 @@ export default {
         }
       },
       deep: true
+    },
+    globalVendor(val) {
+      // 전역 벤더 변경 시 부모에 전달
+      this.$emit('update:vendor', val)
+      // companyType도 함께 업데이트
+      this.$emit('update:companyType', val)
+    },
+    companyType(newVal) {
+      // 부모의 companyType이 변경되면 globalVendor도 동기화
+      if (newVal !== this.globalVendor) {
+        this.globalVendor = newVal
+      }
     }
   },
   methods: {
@@ -317,7 +373,40 @@ export default {
       }
 
       const { linkType, linkData } = area
-      console.log('linkType:', linkType, 'linkData:', linkData)
+      const vendorType = this.globalVendor  // 전역 벤더 사용
+      
+      console.log('linkType:', linkType, 'linkData:', linkData, 'vendor:', vendorType)
+
+      // 벤더별 URL 템플릿
+      const templates = {
+        normal: {
+          plan: (code) => 
+            `https://newfront.benepia.co.kr/gatepage/emGateway.do?pcUrl=https://$:domain:$.benepia.co.kr/frnt/pointmall/pointmall.do?returnUrl=/main/eventDisplay.bene?dpPlanNo=${code}&mbUrl=https://mr2.benepia.co.kr/gateLink.bene?domain=$:domain:$%26linkUrl=/main/planDetail.bene?dpPlanNo=${code}`,
+          
+          product: (code) => 
+            `https://newfront.benepia.co.kr/gatepage/emGateway.do?pcUrl=https://$:domain:$.benepia.co.kr/frnt/pointmall/pointmall.do?returnUrl=https://newmall.benepia.co.kr/disp/storeMain.bene?chnlId=%26custCoCd=$:co_cd:$%26shopId=%26prdId=${code}&mbUrl=https://mr2.benepia.co.kr/gateLink.bene?domain=$:domain:$%26linkUrl=/disp/detailView.bene?prdId=${code}`,
+          
+          event: (webCode, mobileCode) => 
+            `https://newfront.benepia.co.kr/gatepage/emGateway.do?pcUrl=https://$:domain:$.benepia.co.kr/frnt/eventzone/eventZoneView.do?evtTypCd=1%26evtNo=${webCode}&mbUrl=https://mr2.benepia.co.kr/gateLink.bene?domain=$:domain:$%26linkUrl=/disp/eventDetailView.bene?dispAreaSeq=${mobileCode}`,
+          
+          search: (keyword) => 
+            `https://newfront.benepia.co.kr/gatepage/emGateway.do?pcUrl=https://$:domain:$.benepia.co.kr/search/searchList.do?srchLocChck=header%26srchTxt=${keyword}&mbUrl=https://mr2.benepia.co.kr/gateLink.bene?domain=$:domain:$%26linkUrl=/searchResult.bene?srchTxt=${keyword}`
+        },
+        
+        hynix: {
+          plan: (code) => 
+            `https://newfront.benepia.co.kr/gatepage/emGateway.do?pcUrl=https://skhynix.benepia.co.kr/hynix/pointmall/pointmall.do?returnUrl=/main/eventDisplay.bene?dpPlanNo=${code}&&mbUrl=https://mr2.benepia.co.kr/gateLink.bene?linkUrl=/main/planDetail.bene?dpPlanNo=${code}`,
+          
+          product: (code) => 
+            `https://newfront.benepia.co.kr/gatepage/emGateway.do?pcUrl=https://skhynix.benepia.co.kr/hynix/pointmall/pointmall.do?returnUrl=/disp/storeMain.bene?chnlId=BENE%26custCoCd=00C4%26shopId=%26prdId=${code}&mbUrl=https://mr2.benepia.co.kr/gateLink.bene?linkUrl=/disp/detailView.bene?prdId=${code}`,
+          
+          event: (mobileCode) => 
+            `https://newfront.benepia.co.kr/gatepage/emGateway.do?pcUrl=https://skhynix.benepia.co.kr/hynix/getFrontMain.do&mbUrl=https://mr2.benepia.co.kr/gateLink.bene?linkUrl=/disp/eventDetailView.bene?dispAreaSeq=${mobileCode}`,
+          
+          search: (keyword) => 
+            `https://newfront.benepia.co.kr/gatepage/emGateway.do?pcUrl=https://skhynix.benepia.co.kr/hynix/getFrontMain.do&mbUrl=https://mr2.benepia.co.kr/gateLink.bene?linkUrl=/searchResult.bene?srchTxt=${keyword}`
+        }
+      }
 
       switch(linkType) {
         case 'plan':
@@ -325,7 +414,7 @@ export default {
             console.log('planCode 없음')
             return ''
           }
-          const planUrl = `https://newfront.benepia.co.kr/gatepage/emGateway.do?pcUrl=https://$:domain:$.benepia.co.kr/frnt/pointmall/pointmall.do?returnUrl=/main/eventDisplay.bene?dpPlanNo=${linkData.planCode}&mbUrl=https://mr2.benepia.co.kr/gateLink.bene?domain=$:domain:$%26linkUrl=/main/planDetail.bene?dpPlanNo=${linkData.planCode}`
+          const planUrl = templates[vendorType].plan(linkData.planCode)
           console.log('생성된 기획전 URL:', planUrl)
           return planUrl
         
@@ -334,18 +423,31 @@ export default {
             console.log('productCode 없음')
             return ''
           }
-          const productUrl = `https://newfront.benepia.co.kr/gatepage/emGateway.do?pcUrl=https://$:domain:$.benepia.co.kr/frnt/pointmall/pointmall.do?returnUrl=https://newmall.benepia.co.kr/disp/storeMain.bene?chnlId=%26custCoCd=$:co_cd:$%26shopId=%26prdId=${linkData.productCode}&mbUrl=https://mr2.benepia.co.kr/gateLink.bene?domain=$:domain:$%26linkUrl=/disp/detailView.bene?prdId=${linkData.productCode}`
+          const productUrl = templates[vendorType].product(linkData.productCode)
           console.log('생성된 상품 URL:', productUrl)
           return productUrl
         
         case 'event':
-          if (!linkData.webEventCode || !linkData.mobileEventCode) {
-            console.log('webEventCode 또는 mobileEventCode 없음')
-            return ''
+          // 일반: 웹 + 모바일 코드 둘 다 필요
+          // 하이닉스: 모바일 코드만 필요
+          if (vendorType === 'normal') {
+            if (!linkData.webEventCode || !linkData.mobileEventCode) {
+              console.log('webEventCode 또는 mobileEventCode 없음')
+              return ''
+            }
+            const eventUrl = templates[vendorType].event(linkData.webEventCode, linkData.mobileEventCode)
+            console.log('생성된 이벤트 URL (일반):', eventUrl)
+            return eventUrl
+          } else {
+            // 하이닉스는 모바일 코드만
+            if (!linkData.mobileEventCode) {
+              console.log('mobileEventCode 없음')
+              return ''
+            }
+            const eventUrl = templates[vendorType].event(linkData.mobileEventCode)
+            console.log('생성된 이벤트 URL (하이닉스):', eventUrl)
+            return eventUrl
           }
-          const eventUrl = `https://newfront.benepia.co.kr/gatepage/emGateway.do?pcUrl=https://$:domain:$.benepia.co.kr/frnt/eventzone/eventZoneView.do?evtTypCd=1%26evtNo=${linkData.webEventCode}&mbUrl=https://mr2.benepia.co.kr/gateLink.bene?domain=$:domain:$%26linkUrl=/disp/eventDetailView.bene?dispAreaSeq=${linkData.mobileEventCode}`
-          console.log('생성된 이벤트 URL:', eventUrl)
-          return eventUrl
         
         case 'search':
           if (!linkData.searchKeyword) {
@@ -353,7 +455,7 @@ export default {
             return ''
           }
           const keyword = encodeURIComponent(linkData.searchKeyword)
-          const searchUrl = `https://newfront.benepia.co.kr/gatepage/emGateway.do?pcUrl=https://$:domain:$.benepia.co.kr/search/searchList.do?srchLocChck=header%26srchTxt=${keyword}&mbUrl=https://mr2.benepia.co.kr/gateLink.bene?domain=$:domain:$%26linkUrl=/searchResult.bene?srchTxt=${keyword}`
+          const searchUrl = templates[vendorType].search(keyword)
           console.log('생성된 검색 URL:', searchUrl)
           return searchUrl
         
@@ -375,6 +477,30 @@ export default {
         area.href = newUrl
         console.log('area.href 업데이트 완료')
       }
+    },
+    
+    handleVendorChange() {
+      console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━')
+      console.log('🔄 벤더 변경됨:', this.globalVendor)
+      console.log('📊 전체 핫스팟 수:', this.localAreas.length)
+      
+      // 모든 핫스팟의 URL 재생성
+      this.localAreas.forEach((area, index) => {
+        console.log(`\n핫스팟 ${index + 1}:`)
+        console.log('  - linkType:', area.linkType)
+        console.log('  - 변경 전 href:', area.href)
+        
+        this.updateAreaUrl(area)
+        
+        console.log('  - 변경 후 href:', area.href)
+      })
+      
+      // 🆕 명시적으로 부모에게 업데이트된 areas 전달
+      this.$emit('update:areas', JSON.parse(JSON.stringify(this.localAreas)))
+      
+      console.log('\n✅ 모든 핫스팟 URL 업데이트 완료')
+      console.log('✅ 부모 컴포넌트에 업데이트된 areas 전달 완료')
+      console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n')
     },
     
     initializeAreas() {
@@ -715,5 +841,55 @@ export default {
   margin-top: 4px;
   font-size: 11px;
   color: #6b7280;
+}
+
+/* 전역 벤더 선택 영역 */
+.global-vendor-selector {
+  padding: 16px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+
+.global-vendor-selector .form-group {
+  margin-bottom: 0;
+}
+
+.global-vendor-selector label {
+  color: #fff;
+  font-weight: 600;
+  font-size: 14px;
+  margin-bottom: 8px;
+  display: block;
+}
+
+.vendor-select {
+  width: 100%;
+  max-width: 200px;
+  font-weight: 600;
+  font-size: 14px;
+  padding: 8px 12px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.vendor-select:hover {
+  border-color: rgba(255, 255, 255, 0.6);
+  background: #fff;
+}
+
+.vendor-select:focus {
+  outline: none;
+  border-color: #fff;
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.2);
+}
+
+.vendor-divider {
+  border: none;
+  border-top: 2px solid #e5e7eb;
+  margin: 20px 0;
 }
 </style>

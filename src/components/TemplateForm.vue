@@ -144,6 +144,7 @@
           v-else-if="config.type === 'image-map-rows'"
           :rows="localData.imageMapRows"
           :areas="localData.imageMapAreas"
+          :companyType.sync="localData.companyType" 
           :selectedAreaId="selectedHotspotId"
           :visibleScrollPosition="visibleScrollPosition"
           :sidebarExpanded="sidebarExpanded"

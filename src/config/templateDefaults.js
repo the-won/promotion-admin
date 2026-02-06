@@ -314,6 +314,15 @@ export const templateDefaults = {
   // templateDefaults.js 파일에 추가할 내용
 
   'em-type-imagemap': {
+     companyType: {
+      label: '도메인',
+      type: 'select',
+      value: 'normal',
+      options: [
+        { value: 'normal', label: 'TOBE' },
+        { value: 'hynix', label: 'HYNIX' }
+      ]
+    },
     sendDate: {
       label: '발송일 기준',
       type: 'date-picker',
