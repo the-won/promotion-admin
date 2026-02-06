@@ -102,7 +102,14 @@ export const templateDefaults = {
         {
           id: 1,
           href: 'https://example.com/product1',
-          targetBlank: true,
+          // linkData: {
+          //   planCode: '',
+          //   productCode: '12345',
+          //   webEventCode: '',
+          //   mobileEventCode: '',
+          //   searchKeyword: '',
+          //   customUrl: ''
+          // },
           images: [
             {
               id: 1,
