@@ -22,14 +22,16 @@
     <div 
       v-for="(row, rowIndex) in localRows" 
       :key="row.id"
+      :ref="`row-${row.id}`"
       class="card mb-4"
       :class="{ 'card-active': activeRowId === row.id }"
       @mouseenter="setActiveRow(row.id)"
       @mouseleave="setActiveRow(null)"
+      @click="selectRow(row.id, rowIndex)"
     >
       <div class="card-header">
         <span class="card-title">행 {{ rowIndex + 1 }}</span>
-        <button @click="removeRow(row.id)" class="btn btn-danger btn-sm">행 삭제</button>
+        <button @click.stop="removeRow(row.id)" class="btn btn-danger btn-sm">행 삭제</button>
       </div>
 
       <!-- 이미지 설정 -->
@@ -259,8 +261,11 @@
 </template>
 
 <script>
+import imageHighlightMixin from '../../../utils/imageHighlightMixin.js' 
+
 export default {
   name: 'ImageMapEditor',
+  mixins: [imageHighlightMixin],
   props: {
     rows: {
       type: Array,
@@ -273,6 +278,10 @@ export default {
     selectedAreaId: {
       type: [Number, String],
       default: null
+    },
+    selectedRowInfo: {
+      type: Object,
+      default: () => ({ rowId: null, rowIndex: null })
     },
     visibleScrollPosition: {
       type: Object,
@@ -354,6 +363,19 @@ export default {
       this.$emit('update:vendor', val)
       // companyType도 함께 업데이트
       this.$emit('update:companyType', val)
+    },
+    'selectedRowInfo.timestamp'(newVal) {
+      console.log('👀 selectedRowInfo 타임스탬프 변경됨:', newVal)
+      
+      if (this.selectedRowInfo && this.selectedRowInfo.rowId) {
+        // 행 ID로 스크롤 (Mixin의 scrollToImageByRef 사용)
+        const refKey = `row-${this.selectedRowInfo.rowId}`
+        this.$nextTick(() => {
+          this.scrollToImageByRef(refKey)
+          // 2초 후 하이라이트 제거
+          this.startHighlightTimer(2000)
+        })
+      }
     },
     companyType(newVal) {
       // 부모의 companyType이 변경되면 globalVendor도 동기화
@@ -554,6 +576,11 @@ export default {
     setActiveRow(rowId) {
       this.activeRowId = rowId
       this.$emit('active-row-change', rowId)
+    },
+    
+    selectRow(rowId, rowIndex) {
+      console.log('🖼️ 행 선택됨:', { rowId, rowIndex })
+      this.$emit('select-row', { rowId, rowIndex })
     },
     
     updateImageSize(row, url) {

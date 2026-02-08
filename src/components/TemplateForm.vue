@@ -146,11 +146,14 @@
           :rows="localData.imageMapRows"
           :areas="localData.imageMapAreas"
           :selectedAreaId="selectedHotspotId"
+          :selectedRowInfo="selectedRowInfo"
           :visibleScrollPosition="visibleScrollPosition"
           :sidebarExpanded="sidebarExpanded"
           @update:rows="localData.imageMapRows = $event"
           @update:areas="localData.imageMapAreas = $event"
           @select-area="handleSelectHotspot"
+          @select-row="handleSelectRow"
+          @clear-highlight="handleClearRowHighlight"
         />
 
         <!-- Hotdeal Row1 Editor -->
@@ -203,7 +206,8 @@ export default {
     return { 
       localData: {},
       currentDevice: 'web',
-      selectedImageInfo: { groupId: null, imageId: null }
+      selectedImageInfo: { groupId: null, imageId: null },
+      selectedRowInfo: { rowId: null, rowIndex: null }
     }
   },
   computed: {
@@ -256,8 +260,18 @@ export default {
       this.$emit('select-image', info)
     },
     
+    handleSelectRow(info) {
+      console.log('🖼️ 행 선택됨:', info)
+      this.selectedRowInfo = info
+      this.$emit('select-row', info)
+    },
+    
     handleActiveImageChange(info) {
       this.selectedImageInfo = info
+    },
+    
+    handleClearRowHighlight() {
+      this.selectedRowInfo = { rowId: null, rowIndex: null }
     },
     
     getVisibleTopForKey(key) {

@@ -10,9 +10,11 @@
           :deviceType="deviceType"
           :selectedId="selectedHotspotId"
           :selectedImageInfo="selectedImageInfo"
+          :selectedRowInfo="selectedRowInfo"
           @select-hotspot="handleSelectHotspot"
           @update-hotspot="handleUpdateHotspot"
           @delete-hotspot="handleDeleteHotspot"
+          @clear-highlight="handleClearHighlight"
         />
       </div>
     </div>
@@ -47,6 +49,10 @@ export default {
     selectedImageInfo: {
       type: Object,
       default: () => ({ groupId: null, imageId: null })
+    },
+    selectedRowInfo: {
+      type: Object,
+      default: () => ({ rowId: null, rowIndex: null })
     }
   },
   data() {
@@ -90,6 +96,9 @@ export default {
     },
     handleDeleteHotspot(id) {
       this.$emit('delete-hotspot', id)
+    },
+    handleClearHighlight() {
+      this.$emit('clear-highlight')
     },
     handleWindowScroll() {
       this.updateScrollInfo()
@@ -320,9 +329,6 @@ export default {
   padding: 25px;
   background: #fff;
   min-height: 500px;
-  /* max-height: 100vh; */
-  /* overflow-y: auto; */
-  /* overflow-x: hidden; */
 }
 /* 이벤트템플릿 사이즈  */
 .page-event-templates .preview-body {

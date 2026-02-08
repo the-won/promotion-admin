@@ -80,6 +80,7 @@
                   :sidebarExpanded="sidebarExpanded"
                   @select-hotspot="handleSelectHotspot"
                   @select-image="handleSelectImage"
+                  @select-row="handleSelectRow"
                   @active-row-change="handleActiveRowChange"
                   @active-image-change="handleActiveImageChange"
                   @device-change="currentDevice = $event"
@@ -128,6 +129,7 @@
                   :activeRowId="activeRowId"
                   :activeImageIndex="activeImageIndex"
                   :selectedImageInfo="selectedImageInfo"
+                  :selectedRowInfo="selectedRowInfo"
                   @select-hotspot="handleSelectHotspot"
                   @update-hotspot="handleUpdateHotspot"
                   @delete-hotspot="handleDeleteHotspot"
@@ -170,6 +172,7 @@ export default {
       activeRowId: null,
       activeImageIndex: null,
       selectedImageInfo: { groupId: null, imageId: null },
+      selectedRowInfo: { rowId: null, rowIndex: null },
       sidebarOpen: true,
       sidebarExpanded: false,
       isModalOpen: false,
@@ -270,6 +273,16 @@ export default {
         timestamp: Date.now()  // 매번 다른 값으로 watch 트리거
       }
       console.log('✅ selectedImageInfo 설정:', this.selectedImageInfo)
+    },
+    handleSelectRow(info) {
+      console.log('🖼️ 행 선택됨 (EmTemplates):', info)
+      // 타임스탬프를 추가하여 완전히 새로운 객체로 만듦
+      this.selectedRowInfo = { 
+        rowId: info.rowId, 
+        rowIndex: info.rowIndex,
+        timestamp: Date.now()
+      }
+      console.log('✅ selectedRowInfo 설정:', this.selectedRowInfo)
     },
     handleActiveRowChange(rowId) {
       this.activeRowId = rowId

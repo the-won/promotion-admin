@@ -37,6 +37,7 @@
                     @mousedown="handleContainerClick($event, row)"
                   >
                     <img 
+                      :ref="`row-${row.id}`"
                       :src="row.imageUrl" 
                       :width="row.width"
                       :height="row.height"
@@ -44,6 +45,7 @@
                       align="left"
                       border="0"
                       class="preview-image"
+                      :class="{ 'highlight-image': isRowActive(row.id) }"
                       @dragstart.prevent
                     />
 
@@ -114,8 +116,11 @@
 </template>
 
 <script>
+import imageHighlightMixin from '../../../utils/imageHighlightMixin'
+
 export default {
   name: 'EmTypeImageMap',
+  mixins: [imageHighlightMixin],
   props: {
     data: {
       type: Object,
@@ -128,6 +133,10 @@ export default {
     activeRowId: {
       type: [Number, String],
       default: null
+    },
+    selectedRowInfo: {
+      type: Object,
+      default: () => ({ rowId: null, rowIndex: null })
     }
   },
   data() {
@@ -171,7 +180,24 @@ export default {
   beforeDestroy() {
     window.removeEventListener('keydown', this.handleKeydown)
   },
+  watch: {
+    'selectedRowInfo.timestamp'(newVal) {
+      console.log('👀 selectedRowInfo 타임스탬프 변경됨:', newVal)
+      
+      if (this.selectedRowInfo && this.selectedRowInfo.rowId) {
+        const refKey = `row-${this.selectedRowInfo.rowId}`
+        this.$nextTick(() => {
+          this.scrollToImageByRef(refKey)
+          this.startHighlightTimer(2000)
+        })
+      }
+    }
+  },
   methods: {
+    isRowActive(rowId) {
+      return this.selectedRowInfo && this.selectedRowInfo.rowId === rowId
+    },
+    
     handleKeydown(event) {
       // Delete 또는 Backspace 키로 선택된 핫스팟 삭제
       if ((event.key === 'Delete' || event.key === 'Backspace') && this.selectedId) {
@@ -487,5 +513,24 @@ export default {
   padding: 60px 20px;
   font-size: 14px;
   background: #fff;
+}
+
+/* 이미지 하이라이트 */
+.highlight-image {
+  outline: 3px solid #6366f1;
+  outline-offset: 2px;
+  box-shadow: 0 0 12px rgba(99, 102, 241, 0.5);
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    outline-color: #6366f1;
+    box-shadow: 0 0 12px rgba(99, 102, 241, 0.5);
+  }
+  50% {
+    outline-color: #818cf8;
+    box-shadow: 0 0 20px rgba(99, 102, 241, 0.8);
+  }
 }
 </style>

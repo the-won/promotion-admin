@@ -86,7 +86,11 @@
 </template>
 
 <script>
+import imageHighlightMixin from '../../../utils/imageHighlightMixin.js'
+
 export default {
+  mixins: [imageHighlightMixin],
+  
   props: {
     data: {
       type: Object,
@@ -97,11 +101,7 @@ export default {
       default: () => ({ groupId: null, imageId: null })
     }
   },
-  data() {
-    return {
-      highlightTimer: null
-    }
-  },
+  
   methods: {
     isImageActive(groupId, imageId) {
       return this.selectedImageInfo && 
@@ -110,64 +110,8 @@ export default {
     },
     
     scrollToImage(groupId, imageId) {
-      this.$nextTick(() => {
-        const refKey = `image-${groupId}-${imageId}`
-        const imageEl = this.$refs[refKey]
-        
-        console.log('🔍 스크롤 시도:', { refKey, imageEl })
-        
-        if (imageEl && imageEl[0]) {
-          const element = imageEl[0]
-          
-          // 페이지(window) 스크롤 사용
-          const elementRect = element.getBoundingClientRect()
-          
-          // 현재 스크롤 위치
-          const currentScroll = window.pageYOffset || document.documentElement.scrollTop
-          
-          // 이미지의 실제 위치 (페이지 기준)
-          const elementOffsetTop = elementRect.top + currentScroll
-          
-          // 중앙 계산값
-          const centerOffset = (window.innerHeight / 2) - (elementRect.height / 2)
-          let targetScroll = elementOffsetTop - centerOffset
-          
-          // 최대/최소 스크롤 계산
-          const maxScroll = document.documentElement.scrollHeight - window.innerHeight
-          
-          console.log('📍 스크롤 계산 중:', {
-            이미지위치: elementOffsetTop,
-            중앙오프셋: centerOffset,
-            계산된목표: targetScroll,
-            최대스크롤: maxScroll,
-            페이지높이: document.documentElement.scrollHeight,
-            윈도우높이: window.innerHeight
-          })
-          
-          // 음수 스크롤 방지 (최소 0으로 보정)
-          targetScroll = Math.max(0, targetScroll)
-          
-          // 최대 스크롤 제한
-          targetScroll = Math.min(targetScroll, Math.max(0, maxScroll))
-          
-          console.log('📍 최종 스크롤 정보:', {
-            현재스크롤: currentScroll,
-            목표스크롤: targetScroll,
-            스크롤이동량: targetScroll - currentScroll,
-            이미지높이: elementRect.height
-          })
-          
-          // 페이지 스크롤 실행
-          window.scrollTo({ 
-            top: targetScroll, 
-            behavior: 'smooth' 
-          })
-          
-          console.log('✅ 스크롤 완료:', { groupId, imageId })
-        } else {
-          console.warn('⚠️ 이미지 요소를 찾을 수 없습니다:', refKey)
-        }
-      })
+      const refKey = `image-${groupId}-${imageId}`
+      this.scrollToImageByRef(refKey)
     }
   },
   
@@ -175,29 +119,13 @@ export default {
     'selectedImageInfo.timestamp'(newVal) {
       console.log('👀 타임스탬프 변경됨:', newVal)
       
-      // 기존 타이머 제거
-      if (this.highlightTimer) {
-        clearTimeout(this.highlightTimer)
-      }
-      
       if (this.selectedImageInfo && this.selectedImageInfo.groupId && this.selectedImageInfo.imageId) {
-        this.$nextTick(() => {
-          this.scrollToImage(this.selectedImageInfo.groupId, this.selectedImageInfo.imageId)
-        })
+        // Mixin의 scrollToImageByRef 사용
+        this.scrollToImage(this.selectedImageInfo.groupId, this.selectedImageInfo.imageId)
         
-        // 2초 후 하이라이트 제거
-        this.highlightTimer = setTimeout(() => {
-          console.log('⏰ 2초 경과 - 하이라이트 제거')
-          this.$emit('clear-highlight')
-        }, 2000)
+        // Mixin의 startHighlightTimer 사용 (2초 후 하이라이트 제거)
+        this.startHighlightTimer(2000)
       }
-    }
-  },
-  
-  beforeDestroy() {
-    // 컴포넌트 제거 시 타이머 정리
-    if (this.highlightTimer) {
-      clearTimeout(this.highlightTimer)
     }
   }
 }
