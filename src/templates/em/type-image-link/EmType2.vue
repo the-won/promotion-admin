@@ -39,8 +39,10 @@
                       <img 
                         v-for="image in group.images" 
                         :key="image.id"
+                        :ref="`image-${group.id}-${image.id}`"
                         :src="image.url" 
                         :alt="image.alt"
+                        :class="{ 'highlight-image': isImageActive(group.id, image.id) }"
                       />
                     </a>
                   </td>
@@ -85,9 +87,138 @@
 
 <script>
 export default {
-  props: ['data'],
+  props: {
+    data: {
+      type: Object,
+      default: () => ({})
+    },
+    selectedImageInfo: {
+      type: Object,
+      default: () => ({ groupId: null, imageId: null })
+    }
+  },
+  data() {
+    return {
+      highlightTimer: null
+    }
+  },
   methods: {
-   
+    isImageActive(groupId, imageId) {
+      return this.selectedImageInfo && 
+             this.selectedImageInfo.groupId === groupId && 
+             this.selectedImageInfo.imageId === imageId
+    },
+    
+    scrollToImage(groupId, imageId) {
+      this.$nextTick(() => {
+        const refKey = `image-${groupId}-${imageId}`
+        const imageEl = this.$refs[refKey]
+        
+        console.log('🔍 스크롤 시도:', { refKey, imageEl })
+        
+        if (imageEl && imageEl[0]) {
+          const element = imageEl[0]
+          
+          // 페이지(window) 스크롤 사용
+          const elementRect = element.getBoundingClientRect()
+          
+          // 현재 스크롤 위치
+          const currentScroll = window.pageYOffset || document.documentElement.scrollTop
+          
+          // 이미지의 실제 위치 (페이지 기준)
+          const elementOffsetTop = elementRect.top + currentScroll
+          
+          // 중앙 계산값
+          const centerOffset = (window.innerHeight / 2) - (elementRect.height / 2)
+          let targetScroll = elementOffsetTop - centerOffset
+          
+          // 최대/최소 스크롤 계산
+          const maxScroll = document.documentElement.scrollHeight - window.innerHeight
+          
+          console.log('📍 스크롤 계산 중:', {
+            이미지위치: elementOffsetTop,
+            중앙오프셋: centerOffset,
+            계산된목표: targetScroll,
+            최대스크롤: maxScroll,
+            페이지높이: document.documentElement.scrollHeight,
+            윈도우높이: window.innerHeight
+          })
+          
+          // 음수 스크롤 방지 (최소 0으로 보정)
+          targetScroll = Math.max(0, targetScroll)
+          
+          // 최대 스크롤 제한
+          targetScroll = Math.min(targetScroll, Math.max(0, maxScroll))
+          
+          console.log('📍 최종 스크롤 정보:', {
+            현재스크롤: currentScroll,
+            목표스크롤: targetScroll,
+            스크롤이동량: targetScroll - currentScroll,
+            이미지높이: elementRect.height
+          })
+          
+          // 페이지 스크롤 실행
+          window.scrollTo({ 
+            top: targetScroll, 
+            behavior: 'smooth' 
+          })
+          
+          console.log('✅ 스크롤 완료:', { groupId, imageId })
+        } else {
+          console.warn('⚠️ 이미지 요소를 찾을 수 없습니다:', refKey)
+        }
+      })
+    }
+  },
+  
+  watch: {
+    'selectedImageInfo.timestamp'(newVal) {
+      console.log('👀 타임스탬프 변경됨:', newVal)
+      
+      // 기존 타이머 제거
+      if (this.highlightTimer) {
+        clearTimeout(this.highlightTimer)
+      }
+      
+      if (this.selectedImageInfo && this.selectedImageInfo.groupId && this.selectedImageInfo.imageId) {
+        this.$nextTick(() => {
+          this.scrollToImage(this.selectedImageInfo.groupId, this.selectedImageInfo.imageId)
+        })
+        
+        // 2초 후 하이라이트 제거
+        this.highlightTimer = setTimeout(() => {
+          console.log('⏰ 2초 경과 - 하이라이트 제거')
+          this.$emit('clear-highlight')
+        }, 2000)
+      }
+    }
+  },
+  
+  beforeDestroy() {
+    // 컴포넌트 제거 시 타이머 정리
+    if (this.highlightTimer) {
+      clearTimeout(this.highlightTimer)
+    }
   }
 }
 </script>
+
+<style scoped>
+.highlight-image {
+  outline: 3px solid #6366f1;
+  outline-offset: 2px;
+  box-shadow: 0 0 12px rgba(99, 102, 241, 0.5);
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    outline-color: #6366f1;
+    box-shadow: 0 0 12px rgba(99, 102, 241, 0.5);
+  }
+  50% {
+    outline-color: #818cf8;
+    box-shadow: 0 0 20px rgba(99, 102, 241, 0.8);
+  }
+}
+</style>

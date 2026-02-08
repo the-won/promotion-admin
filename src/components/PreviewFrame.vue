@@ -9,8 +9,7 @@
           :data="formData"
           :deviceType="deviceType"
           :selectedId="selectedHotspotId"
-          :activeRowId="activeRowId"
-          :activeImageIndex="activeImageIndex"
+          :selectedImageInfo="selectedImageInfo"
           @select-hotspot="handleSelectHotspot"
           @update-hotspot="handleUpdateHotspot"
           @delete-hotspot="handleDeleteHotspot"
@@ -41,17 +40,13 @@ export default {
     template: String,
     formData: Object,
     selectedHotspotId: [Number, String],
-    activeRowId: {
-      type: [Number, String],
-      default: null
-    },
-    activeImageIndex: {
-      type: Number,
-      default: null
-    },
     deviceType: {
       type: String,
       default: 'web'
+    },
+    selectedImageInfo: {
+      type: Object,
+      default: () => ({ groupId: null, imageId: null })
     }
   },
   data() {
@@ -325,6 +320,9 @@ export default {
   padding: 25px;
   background: #fff;
   min-height: 500px;
+  /* max-height: 100vh; */
+  /* overflow-y: auto; */
+  /* overflow-x: hidden; */
 }
 /* 이벤트템플릿 사이즈  */
 .page-event-templates .preview-body {

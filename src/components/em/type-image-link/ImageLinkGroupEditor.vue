@@ -178,6 +178,10 @@
             v-for="(image, imageIndex) in group.images" 
             :key="image.id"
             class="card card-nested"
+            :class="{ 'card-active': activeGroupId === group.id && activeImageId === image.id }"
+            @mouseenter="setActiveImage(group.id, image.id)"
+            @mouseleave="setActiveImage(null, null)"
+            @click="selectImage(group.id, image.id, imageIndex)"
           >
             <div class="card-header card-header-sm">
               <span class="card-title text-muted">이미지 {{ imageIndex + 1 }}</span>
@@ -236,7 +240,9 @@ export default {
   data() {
     return {
       localGroups: [],
-      globalVendor: 'normal'
+      globalVendor: 'normal',
+      activeGroupId: null,
+      activeImageId: null
     }
   },
   created() {
@@ -466,6 +472,17 @@ export default {
           group.images.splice(index, 1)
         }
       }
+    },
+    
+    setActiveImage(groupId, imageId) {
+      this.activeGroupId = groupId
+      this.activeImageId = imageId
+      this.$emit('active-image-change', { groupId, imageId })
+    },
+    
+    selectImage(groupId, imageId, imageIndex) {
+      // 이미지 클릭 시 부모에 알림 (프리뷰 스크롤 이동용)
+      this.$emit('select-image', { groupId, imageId, imageIndex })
     }
   }
 }
@@ -582,5 +599,24 @@ export default {
   margin-top: 4px;
   font-size: 11px;
   color: #6b7280;
+}
+
+/* 이미지 카드 하이라이트만 적용 (그룹 카드는 제외) */
+.card-nested.card-active {
+  background: #f0f4ff !important;
+  outline: 2px solid #6366f1;
+  outline-offset: 1px;
+  animation: cardPulse 1.5s ease-in-out infinite;
+}
+
+@keyframes cardPulse {
+  0%, 100% {
+    outline-color: #6366f1;
+    box-shadow: 0 2px 8px rgba(99, 102, 241, 0.3);
+  }
+  50% {
+    outline-color: #818cf8;
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.5);
+  }
 }
 </style>

@@ -79,6 +79,7 @@
                   :visibleScrollPosition="visibleScrollPosition"
                   :sidebarExpanded="sidebarExpanded"
                   @select-hotspot="handleSelectHotspot"
+                  @select-image="handleSelectImage"
                   @active-row-change="handleActiveRowChange"
                   @active-image-change="handleActiveImageChange"
                   @device-change="currentDevice = $event"
@@ -126,10 +127,12 @@
                   :selectedHotspotId="selectedHotspotId"
                   :activeRowId="activeRowId"
                   :activeImageIndex="activeImageIndex"
+                  :selectedImageInfo="selectedImageInfo"
                   @select-hotspot="handleSelectHotspot"
                   @update-hotspot="handleUpdateHotspot"
                   @delete-hotspot="handleDeleteHotspot"
                   @scroll-update="handlePreviewScroll"
+                  @clear-highlight="handleClearHighlight"
                 />
               </div>
             </div>
@@ -166,6 +169,7 @@ export default {
       selectedHotspotId: null,
       activeRowId: null,
       activeImageIndex: null,
+      selectedImageInfo: { groupId: null, imageId: null },
       sidebarOpen: true,
       sidebarExpanded: false,
       isModalOpen: false,
@@ -256,11 +260,36 @@ export default {
     handleSelectHotspot(id) {
       this.selectedHotspotId = id
     },
+    handleSelectImage(info) {
+      console.log('🖼️ 이미지 선택됨 (EmTemplates):', info)
+      // 타임스탬프를 추가하여 완전히 새로운 객체로 만듦
+      this.selectedImageInfo = { 
+        groupId: info.groupId, 
+        imageId: info.imageId,
+        imageIndex: info.imageIndex,
+        timestamp: Date.now()  // 매번 다른 값으로 watch 트리거
+      }
+      console.log('✅ selectedImageInfo 설정:', this.selectedImageInfo)
+    },
     handleActiveRowChange(rowId) {
       this.activeRowId = rowId
     },
-    handleActiveImageChange(imageIndex) {
-      this.activeImageIndex = imageIndex
+    handleActiveImageChange(imageInfo) {
+      // ImageLinkGroup의 이미지 정보
+      if (imageInfo && imageInfo.groupId && imageInfo.imageId) {
+        this.selectedImageInfo = { 
+          groupId: imageInfo.groupId, 
+          imageId: imageInfo.imageId,
+          timestamp: Date.now()
+        }
+      } else {
+        // EmType3 등의 이미지 인덱스
+        this.activeImageIndex = imageInfo
+      }
+    },
+    handleClearHighlight() {
+      console.log('🧹 하이라이트 제거')
+      this.selectedImageInfo = { groupId: null, imageId: null }
     },
     handleUpdateHotspot(updatedHotspot, groupKey) {
       // 새 구조: hotspotGroup1, hotspotGroup2 (내부에 hotspots 배열)

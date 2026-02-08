@@ -123,13 +123,11 @@
         <HotspotGroupEditor
           v-else-if="config.type === 'hotspot-group'"
           v-model="localData[key]"
-          :groupIndex="getGroupIndexFromKey(key)"
           :deviceType="currentDevice"
           :selectedId="selectedHotspotId"
           :visibleTopPosition="getVisibleTopForKey(key)"
           :sidebarExpanded="sidebarExpanded"
           @select="handleSelectHotspot"
-          @active-image-change="handleActiveImageChange"
         />
 
         <!-- Image Link Group Editor -->
@@ -137,6 +135,9 @@
           v-else-if="config.type === 'image-link-group'"
           v-model="localData[key]"
           :sidebarExpanded="sidebarExpanded"
+          :companyType.sync="localData.companyType"
+          @select-image="handleSelectImage"
+          @active-image-change="handleActiveImageChange"
         />
 
         <!-- Image Map Editor -->
@@ -144,14 +145,12 @@
           v-else-if="config.type === 'image-map-rows'"
           :rows="localData.imageMapRows"
           :areas="localData.imageMapAreas"
-          :companyType.sync="localData.companyType" 
           :selectedAreaId="selectedHotspotId"
           :visibleScrollPosition="visibleScrollPosition"
           :sidebarExpanded="sidebarExpanded"
           @update:rows="localData.imageMapRows = $event"
           @update:areas="localData.imageMapAreas = $event"
           @select-area="handleSelectHotspot"
-          @active-row-change="handleActiveRowChange"
         />
 
         <!-- Hotdeal Row1 Editor -->
@@ -204,8 +203,7 @@ export default {
     return { 
       localData: {},
       currentDevice: 'web',
-      activeRowId: null,
-      activeImageIndex: null
+      selectedImageInfo: { groupId: null, imageId: null }
     }
   },
   computed: {
@@ -252,20 +250,14 @@ export default {
       this.$emit('select-hotspot', id)
     },
     
-    handleActiveRowChange(rowId) {
-      this.activeRowId = rowId
-      this.$emit('active-row-change', rowId)
+    handleSelectImage(info) {
+      console.log('🖼️ 이미지 선택됨:', info)
+      this.selectedImageInfo = info
+      this.$emit('select-image', info)
     },
     
-    handleActiveImageChange(imageIndex) {
-      this.activeImageIndex = imageIndex
-      this.$emit('active-image-change', imageIndex)
-    },
-    
-    getGroupIndexFromKey(key) {
-      // hotspotGroup1 -> 1, hotspotGroup2 -> 2
-      const match = key.match(/\d+$/)
-      return match ? parseInt(match[0]) : 1
+    handleActiveImageChange(info) {
+      this.selectedImageInfo = info
     },
     
     getVisibleTopForKey(key) {
