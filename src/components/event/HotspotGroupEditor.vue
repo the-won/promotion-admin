@@ -5,6 +5,7 @@
       class="image-url-section"
       @mouseenter="setActiveImage(true)"
       @mouseleave="setActiveImage(false)"
+      @click="selectImage"
     >
       <div class="form-group">
         <label>
@@ -118,6 +119,10 @@ export default {
       type: Number,
       default: null
     },
+    selectedHotspotInfo: {
+      type: Object,
+      default: () => ({ hotspotId: null, groupIndex: null })
+    },
     visibleTopPosition: {
       type: Number,
       default: 10
@@ -221,7 +226,15 @@ export default {
     },
     
     selectHotspot(id) {
+      console.log('🎯 핫스팟 선택됨:', { hotspotId: id, groupIndex: this.groupIndex })
       this.$emit('select', id)
+      this.$emit('select-hotspot', { hotspotId: id, groupIndex: this.groupIndex })
+    },
+    
+    selectImage() {
+      console.log('🖼️ 이미지 영역 선택됨:', { groupIndex: this.groupIndex })
+      // 특별한 ID로 이미지 컨테이너를 식별
+      this.$emit('select-image', { groupIndex: this.groupIndex })
     }
   }
 }

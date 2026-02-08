@@ -75,10 +75,13 @@
                   v-model="formData"
                   :templateConfig="getTemplateConfig(selectedTemplate)"
                   :selectedHotspotId="selectedHotspotId"
+                  :selectedHotspotInfo="selectedHotspotInfo"
                   :visibleTopPositions="visibleTopPositions"
                   :visibleScrollPosition="visibleScrollPosition"
                   :sidebarExpanded="sidebarExpanded"
                   @select-hotspot="handleSelectHotspot"
+                  @select-hotspot-info="handleSelectHotspotInfo"
+                  @select-hotspot-image="handleSelectHotspotImage"
                   @active-row-change="handleActiveRowChange"
                   @active-image-change="handleActiveImageChange"
                   @device-change="currentDevice = $event"
@@ -111,12 +114,14 @@
                   :formData="formData"
                   :deviceType="currentDevice"
                   :selectedHotspotId="selectedHotspotId"
+                  :selectedHotspotInfo="selectedHotspotInfo"
                   :activeRowId="activeRowId"
                   :activeImageIndex="activeImageIndex"
                   @select-hotspot="handleSelectHotspot"
                   @update-hotspot="handleUpdateHotspot"
                   @delete-hotspot="handleDeleteHotspot"
                   @scroll-update="handlePreviewScroll"
+                  @clear-highlight="handleClearHotspotHighlight"
                 />
               </div>
             </div>
@@ -151,6 +156,7 @@ export default {
       selectedTemplate: 'em-type-1',
       formData: this.extractValues(templateDefaults['em-type-1']),
       selectedHotspotId: null,
+      selectedHotspotInfo: { hotspotId: null, groupIndex: null },
       activeRowId: null,
       activeImageIndex: null,
       sidebarOpen: true,
@@ -241,6 +247,29 @@ export default {
     },
     handleSelectHotspot(id) {
       this.selectedHotspotId = id
+    },
+    handleSelectHotspotInfo(info) {
+      console.log('🎯 핫스팟 정보 선택됨 (EventTemplates):', info)
+      this.selectedHotspotInfo = {
+        hotspotId: info.hotspotId,
+        groupIndex: info.groupIndex,
+        timestamp: Date.now()
+      }
+      console.log('✅ selectedHotspotInfo 설정:', this.selectedHotspotInfo)
+    },
+    handleSelectHotspotImage(info) {
+      console.log('🖼️ 이미지 영역 선택됨 (EventTemplates):', info)
+      // 이미지 컨테이너로 스크롤하기 위한 특별한 ID 사용
+      this.selectedHotspotInfo = {
+        hotspotId: `image-container-${info.groupIndex}`,
+        groupIndex: info.groupIndex,
+        timestamp: Date.now()
+      }
+      console.log('✅ selectedHotspotInfo 설정:', this.selectedHotspotInfo)
+    },
+    handleClearHotspotHighlight() {
+      console.log('🧹 핫스팟 하이라이트 제거')
+      this.selectedHotspotInfo = { hotspotId: null, groupIndex: null }
     },
     handleActiveRowChange(rowId) {
       this.activeRowId = rowId

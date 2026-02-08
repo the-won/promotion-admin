@@ -123,11 +123,15 @@
         <HotspotGroupEditor
           v-else-if="config.type === 'hotspot-group'"
           v-model="localData[key]"
+          :groupIndex="parseInt(key.match(/\d+/)?.[0] || 1)"
           :deviceType="currentDevice"
           :selectedId="selectedHotspotId"
+          :selectedHotspotInfo="selectedHotspotInfo"
           :visibleTopPosition="getVisibleTopForKey(key)"
           :sidebarExpanded="sidebarExpanded"
           @select="handleSelectHotspot"
+          @select-hotspot="handleSelectHotspotWithInfo"
+          @select-image="handleSelectHotspotImage"
         />
 
         <!-- Image Link Group Editor -->
@@ -207,7 +211,8 @@ export default {
       localData: {},
       currentDevice: 'web',
       selectedImageInfo: { groupId: null, imageId: null },
-      selectedRowInfo: { rowId: null, rowIndex: null }
+      selectedRowInfo: { rowId: null, rowIndex: null },
+      selectedHotspotInfo: { hotspotId: null, groupIndex: null }
     }
   },
   computed: {
@@ -252,6 +257,18 @@ export default {
     
     handleSelectHotspot(id) {
       this.$emit('select-hotspot', id)
+    },
+    
+    handleSelectHotspotWithInfo(info) {
+      console.log('🎯 핫스팟 정보 선택됨:', info)
+      this.selectedHotspotInfo = info
+      this.$emit('select-hotspot-info', info)
+    },
+    
+    handleSelectHotspotImage(info) {
+      console.log('🖼️ 이미지 영역 선택됨:', info)
+      // 이미지 컨테이너를 선택하기 위한 특별한 이벤트
+      this.$emit('select-hotspot-image', info)
     },
     
     handleSelectImage(info) {

@@ -3,9 +3,11 @@
     <!-- 첫 번째 이미지 + 핫스팟 -->
     <div 
       v-if="imageUrl1"
+      :ref="`image-container-1`"
       class="image-container"
-      :class="{ 'image-container-highlighted': activeImageIndex === 1 }"
-      ref="container1"
+      :class="{ 
+        'image-container-highlighted': activeImageIndex === 1 || isImageContainerActive(1)
+      }"
       @mousedown="handleContainerClick($event, 1)"
     >
       <img 
@@ -19,8 +21,12 @@
       <div
         v-for="hotspot in hotspots1"
         :key="hotspot.id"
+        :ref="`hotspot-${hotspot.id}`"
         class="draggable-hotspot"
-        :class="{ selected: selectedId === hotspot.id }"
+        :class="{ 
+          selected: selectedId === hotspot.id,
+          'highlight-hotspot': isHotspotActive(hotspot.id, 1)
+        }"
         :style="getHotspotStyle(hotspot)"
         @mousedown="startDrag($event, hotspot, 1)"
       >
@@ -38,9 +44,11 @@
     <!-- 두 번째 이미지 + 핫스팟 -->
     <div 
       v-if="imageUrl2"
+      :ref="`image-container-2`"
       class="image-container"
-      :class="{ 'image-container-highlighted': activeImageIndex === 2 }"
-      ref="container2"
+      :class="{ 
+        'image-container-highlighted': activeImageIndex === 2 || isImageContainerActive(2)
+      }"
       @mousedown="handleContainerClick($event, 2)"
     >
       <img 
@@ -54,8 +62,12 @@
       <div
         v-for="hotspot in hotspots2"
         :key="hotspot.id"
+        :ref="`hotspot-${hotspot.id}`"
         class="draggable-hotspot"
-        :class="{ selected: selectedId === hotspot.id }"
+        :class="{ 
+          selected: selectedId === hotspot.id,
+          'highlight-hotspot': isHotspotActive(hotspot.id, 2)
+        }"
         :style="getHotspotStyle(hotspot)"
         @mousedown="startDrag($event, hotspot, 2)"
       >
@@ -73,7 +85,10 @@
 </template>
 
 <script>
+import imageHighlightMixin from '../..//utils/imageHighlightMixin'
+
 export default {
+  mixins: [imageHighlightMixin],
   props: {
     data: {
       type: Object,
@@ -86,6 +101,10 @@ export default {
     activeImageIndex: {
       type: Number,
       default: null
+    },
+    selectedHotspotInfo: {
+      type: Object,
+      default: () => ({ hotspotId: null, groupIndex: null })
     },
     deviceType: {
       type: String,
@@ -142,7 +161,43 @@ export default {
     window.removeEventListener('resize', this.updateContainerRect)
     window.removeEventListener('keydown', this.handleKeydown)
   },
+  watch: {
+    'selectedHotspotInfo.timestamp'(newVal) {
+      console.log('👀 selectedHotspotInfo 타임스탬프 변경됨:', newVal)
+      
+      if (this.selectedHotspotInfo && this.selectedHotspotInfo.hotspotId) {
+        // 이미지 컨테이너인 경우 (image-container-1, image-container-2)
+        if (typeof this.selectedHotspotInfo.hotspotId === 'string' && 
+            this.selectedHotspotInfo.hotspotId.startsWith('image-container-')) {
+          const refKey = this.selectedHotspotInfo.hotspotId
+          this.$nextTick(() => {
+            this.scrollToImageByRef(refKey)
+            this.startHighlightTimer(2000)
+          })
+        } else {
+          // 일반 핫스팟인 경우
+          const refKey = `hotspot-${this.selectedHotspotInfo.hotspotId}`
+          this.$nextTick(() => {
+            this.scrollToImageByRef(refKey)
+            this.startHighlightTimer(2000)
+          })
+        }
+      }
+    }
+  },
   methods: {
+    isHotspotActive(hotspotId, groupIndex) {
+      return this.selectedHotspotInfo && 
+             this.selectedHotspotInfo.hotspotId === hotspotId && 
+             this.selectedHotspotInfo.groupIndex === groupIndex
+    },
+    
+    isImageContainerActive(groupIndex) {
+      return this.selectedHotspotInfo && 
+             this.selectedHotspotInfo.hotspotId === `image-container-${groupIndex}` &&
+             this.selectedHotspotInfo.groupIndex === groupIndex
+    },
+    
     handleKeydown(event) {
       if ((event.key === 'Delete' || event.key === 'Backspace') && this.selectedId) {
         const tagName = event.target.tagName.toLowerCase()
@@ -460,5 +515,25 @@ export default {
   background: #007bff;
   transform: scale(1.4);
   transition: all 0.15s;
+}
+
+/* 핫스팟 하이라이트 */
+.highlight-hotspot {
+  outline: 3px solid #6366f1 !important;
+  outline-offset: 2px;
+  box-shadow: 0 0 20px rgba(99, 102, 241, 0.8) !important;
+  animation: hotspotPulse 1.5s ease-in-out infinite;
+  z-index: 100 !important;
+}
+
+@keyframes hotspotPulse {
+  0%, 100% {
+    outline-color: #6366f1;
+    box-shadow: 0 0 20px rgba(99, 102, 241, 0.8);
+  }
+  50% {
+    outline-color: #818cf8;
+    box-shadow: 0 0 30px rgba(99, 102, 241, 1);
+  }
 }
 </style>

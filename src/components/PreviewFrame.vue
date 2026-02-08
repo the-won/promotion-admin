@@ -11,6 +11,7 @@
           :selectedId="selectedHotspotId"
           :selectedImageInfo="selectedImageInfo"
           :selectedRowInfo="selectedRowInfo"
+          :selectedHotspotInfo="selectedHotspotInfo"
           @select-hotspot="handleSelectHotspot"
           @update-hotspot="handleUpdateHotspot"
           @delete-hotspot="handleDeleteHotspot"
@@ -53,6 +54,10 @@ export default {
     selectedRowInfo: {
       type: Object,
       default: () => ({ rowId: null, rowIndex: null })
+    },
+    selectedHotspotInfo: {
+      type: Object,
+      default: () => ({ hotspotId: null, groupIndex: null })
     }
   },
   data() {
