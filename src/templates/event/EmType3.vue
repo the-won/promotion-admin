@@ -85,7 +85,7 @@
 </template>
 
 <script>
-import imageHighlightMixin from '../..//utils/imageHighlightMixin'
+import imageHighlightMixin from '../../utils/imageHighlightMixin'
 
 export default {
   mixins: [imageHighlightMixin],
@@ -218,7 +218,7 @@ export default {
     
     updateContainerRect(imageIndex) {
       if (imageIndex) {
-        const ref = this.$refs[`container${imageIndex}`]
+        const ref = this.$refs[`image-container-${imageIndex}`]
         if (ref) {
           const rect = ref.getBoundingClientRect()
           this.containerRects[imageIndex] = {
@@ -228,7 +228,7 @@ export default {
         }
       } else {
         [1, 2].forEach(idx => {
-          const ref = this.$refs[`container${idx}`]
+          const ref = this.$refs[`image-container-${idx}`]
           if (ref) {
             const rect = ref.getBoundingClientRect()
             this.containerRects[idx] = {
@@ -251,7 +251,8 @@ export default {
     },
     
     handleContainerClick(event, imageIndex) {
-      if (event.target === this.$refs[`container${imageIndex}`] || 
+      const containerRef = this.$refs[`image-container-${imageIndex}`]
+      if (event.target === containerRef || 
           event.target.classList.contains('background-image')) {
         this.$emit('select-hotspot', null)
       }
