@@ -98,6 +98,7 @@
 
 <script>
 export default {
+  name: 'HotspotGroupEditor',
   props: {
     value: {
       type: Object,
@@ -167,6 +168,9 @@ export default {
         }
       },
       deep: true
+    },
+    visibleTopPosition(newVal) {
+      console.log(`📊 Group ${this.groupIndex} - visibleTopPosition 업데이트:`, newVal)
     }
   },
   methods: {
@@ -194,8 +198,20 @@ export default {
     
     addHotspot() {
       const newId = Date.now()
-      const baseTop = this.visibleTopPosition || 10
-      const offsetTop = (this.localData.hotspots.length * 5) % 30
+      
+      // 현재 보이는 스크롤 위치 가져오기
+      let baseTop = this.visibleTopPosition || 10
+      
+      console.log('🎯 핫스팟 추가 위치 계산:', {
+        groupIndex: this.groupIndex,
+        visibleTopPosition: this.visibleTopPosition,
+        baseTop: baseTop,
+        currentHotspotsCount: this.localData.hotspots.length
+      })
+      
+      // 여러 개 추가할 때 겹치지 않도록 오프셋 적용
+      const offsetTop = (this.localData.hotspots.length * 8) % 40
+      const finalTop = Math.min(85, Math.max(5, baseTop + offsetTop))
       
       const newHotspot = {
         id: newId,
@@ -205,14 +221,21 @@ export default {
         title: `버튼 ${this.localData.hotspots.length + 1}`,
         position: {
           left: 10 + (this.localData.hotspots.length * 5) % 60,
-          top: Math.min(85, baseTop + offsetTop),
+          top: finalTop,
           width: 20,
           height: 10
         }
       }
       
+      console.log('✅ 새 핫스팟 생성:', newHotspot)
+      
       this.localData.hotspots.push(newHotspot)
-      this.$emit('select', newId)
+      
+      // 핫스팟 선택 및 스크롤
+      this.$nextTick(() => {
+        this.$emit('select', newId)
+        this.$emit('select-hotspot', { hotspotId: newId, groupIndex: this.groupIndex })
+      })
     },
     
     removeHotspot(id) {
@@ -233,7 +256,6 @@ export default {
     
     selectImage() {
       console.log('🖼️ 이미지 영역 선택됨:', { groupIndex: this.groupIndex })
-      // 특별한 ID로 이미지 컨테이너를 식별
       this.$emit('select-image', { groupIndex: this.groupIndex })
     }
   }
@@ -250,10 +272,143 @@ export default {
   padding: 12px;
   border-radius: 8px;
   transition: all 0.2s ease;
+  cursor: pointer;
 }
 
 .image-url-section:hover {
   background: rgba(85, 104, 248, 0.05);
   box-shadow: 0 0 0 2px rgba(85, 104, 248, 0.1);
+}
+
+.form-group {
+  margin-bottom: 12px;
+}
+
+.form-group label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: #374151;
+  margin-bottom: 6px;
+}
+
+.form-input {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  font-size: 14px;
+  transition: all 0.2s;
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: #6366f1;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.section-header h4 {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 700;
+  color: #1f2937;
+}
+
+.btn {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-success {
+  background: #10b981;
+  color: white;
+}
+
+.btn-success:hover {
+  background: #059669;
+}
+
+.btn-danger {
+  background: #ef4444;
+  color: white;
+}
+
+.btn-danger:hover {
+  background: #dc2626;
+}
+
+.btn-sm {
+  padding: 4px 10px;
+  font-size: 12px;
+}
+
+.empty-state {
+  padding: 32px;
+  text-align: center;
+  color: #9ca3af;
+  font-size: 14px;
+  border: 2px dashed #e5e7eb;
+  border-radius: 8px;
+  margin-bottom: 16px;
+}
+
+.items-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+}
+
+.items-grid.cols-2 {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.card {
+  padding: 12px;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  background: white;
+  transition: all 0.2s;
+}
+
+.card.selectable {
+  cursor: pointer;
+}
+
+.card.selectable:hover {
+  border-color: #6366f1;
+  box-shadow: 0 2px 8px rgba(99, 102, 241, 0.15);
+}
+
+.card.selected {
+  border-color: #6366f1;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+  background: rgba(99, 102, 241, 0.02);
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.card-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: #1f2937;
 }
 </style>

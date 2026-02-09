@@ -61,8 +61,6 @@
             </header>
 
             <div class="card-body">
-              
-
               <!-- 배너 설정 -->
               <div class="banner-settings">
                 <label class="checkbox-item">
@@ -81,7 +79,6 @@
                   <span>하단 배너 사용</span>
                 </label>
               </div>
-            
 
               <section class="sidebar-section">
                 <button class="template-select-btn" @click="openModal">
@@ -201,9 +198,8 @@ export default {
       },
       templates: [
         { value: 'em-type-1', name: 'Type 1', icon: '📄', description: '기본 텍스트 템플릿' },
-        { value: 'em-type-3', name: 'Image Map', icon: '📦', description: '이벤트 이미지맵 템플릿' },
-        // { value: 'em-type-5', name: '비밀특가', icon: '🔥', description: '핫스팟 인터랙티브 템플릿' }
-      ],
+        { value: 'em-type-3', name: 'Image Map', icon: '📦', description: '이벤트 이미지맵 템플릿' }
+      ]
     }
   },
   computed: {
@@ -230,47 +226,92 @@ export default {
   },
   mounted() {
     document.body.classList.add('page-event-templates')
+    
+    // window 스크롤 이벤트 리스너
     window.addEventListener('scroll', this.handleWindowScroll, { passive: true })
+    
+    // PreviewFrame 내부 스크롤도 감지
     this.$nextTick(() => {
+      const previewFrame = this.$refs.previewFrame
+      if (previewFrame && previewFrame.$el) {
+        const previewBody = previewFrame.$el.querySelector('.preview-body')
+        if (previewBody) {
+          previewBody.addEventListener('scroll', this.handlePreviewScroll, { passive: true })
+        }
+      }
+      
       setTimeout(() => {
         this.updateVisiblePositions()
       }, 100)
     })
+    
     this.updateBodyClass()
   },
   beforeDestroy() {
     window.removeEventListener('scroll', this.handleWindowScroll)
+    
+    // PreviewFrame 스크롤 리스너 제거
+    const previewFrame = this.$refs.previewFrame
+    if (previewFrame && previewFrame.$el) {
+      const previewBody = previewFrame.$el.querySelector('.preview-body')
+      if (previewBody) {
+        previewBody.removeEventListener('scroll', this.handlePreviewScroll)
+      }
+    }
+    
     document.body.classList.remove('sidebar-closed', 'sidebar-expanded', 'page-event-templates')
   },
   methods: {
     handleWindowScroll() {
+      console.log('🔄 Window 스크롤 이벤트')
       this.updateVisiblePositions()
     },
+    
+    handlePreviewScroll() {
+      console.log('🔄 Preview 스크롤 이벤트')
+      this.updateVisiblePositions()
+    },
+    
     updateVisiblePositions() {
       const previewFrame = this.$refs.previewFrame
-      if (previewFrame) {
-        if (typeof previewFrame.getVisibleTopPosition === 'function') {
-          this.visibleTopPositions = {
-            1: previewFrame.getVisibleTopPosition(1),
-            2: previewFrame.getVisibleTopPosition(2)
-          }
+      if (!previewFrame) {
+        console.log('⚠️ previewFrame ref 없음')
+        return
+      }
+      
+      if (typeof previewFrame.getVisibleTopPosition === 'function') {
+        const pos1 = previewFrame.getVisibleTopPosition(1)
+        const pos2 = previewFrame.getVisibleTopPosition(2)
+        
+        this.visibleTopPositions = {
+          1: pos1,
+          2: pos2
         }
-        if (typeof previewFrame.getVisiblePositionsForImageMap === 'function') {
-          const imageMapPositions = previewFrame.getVisiblePositionsForImageMap()
-          this.visibleScrollPosition = {
-            ...this.visibleScrollPosition,
-            scrollTop: window.scrollY || window.pageYOffset,
-            viewportHeight: window.innerHeight,
-            imageMapRowPositions: imageMapPositions
-          }
-        } else {
-          this.visibleScrollPosition = {
-            scrollTop: window.scrollY || window.pageYOffset,
-            viewportHeight: window.innerHeight
-          }
+        
+        console.log('📍 스크롤 위치 업데이트:', {
+          group1: pos1,
+          group2: pos2
+        })
+      } else {
+        console.log('⚠️ getVisibleTopPosition 메서드 없음')
+      }
+      
+      if (typeof previewFrame.getVisiblePositionsForImageMap === 'function') {
+        const imageMapPositions = previewFrame.getVisiblePositionsForImageMap()
+        this.visibleScrollPosition = {
+          ...this.visibleScrollPosition,
+          scrollTop: window.scrollY || window.pageYOffset,
+          viewportHeight: window.innerHeight,
+          imageMapRowPositions: imageMapPositions
+        }
+      } else {
+        this.visibleScrollPosition = {
+          scrollTop: window.scrollY || window.pageYOffset,
+          viewportHeight: window.innerHeight
         }
       }
     },
+    
     extractValues(config) {
       const result = {}
       for (const key in config) {
@@ -278,15 +319,19 @@ export default {
       }
       return result
     },
+    
     getTemplateConfig(templateName) {
       return templateDefaults[templateName]
     },
+    
     handleDownload() {
       downloadHtml(this.selectedTemplate, this.formData)
     },
+    
     handleSelectHotspot(id) {
       this.selectedHotspotId = id
     },
+    
     handleSelectHotspotInfo(info) {
       console.log('🎯 핫스팟 정보 선택됨 (EventTemplates):', info)
       this.selectedHotspotInfo = {
@@ -296,9 +341,9 @@ export default {
       }
       console.log('✅ selectedHotspotInfo 설정:', this.selectedHotspotInfo)
     },
+    
     handleSelectHotspotImage(info) {
       console.log('🖼️ 이미지 영역 선택됨 (EventTemplates):', info)
-      // 이미지 컨테이너로 스크롤하기 위한 특별한 ID 사용
       this.selectedHotspotInfo = {
         hotspotId: `image-container-${info.groupIndex}`,
         groupIndex: info.groupIndex,
@@ -306,18 +351,21 @@ export default {
       }
       console.log('✅ selectedHotspotInfo 설정:', this.selectedHotspotInfo)
     },
+    
     handleClearHotspotHighlight() {
       console.log('🧹 핫스팟 하이라이트 제거')
       this.selectedHotspotInfo = { hotspotId: null, groupIndex: null }
     },
+    
     handleActiveRowChange(rowId) {
       this.activeRowId = rowId
     },
+    
     handleActiveImageChange(imageIndex) {
       this.activeImageIndex = imageIndex
     },
+    
     handleUpdateHotspot(updatedHotspot, groupKey) {
-      // 새 구조: hotspotGroup1, hotspotGroup2 (내부에 hotspots 배열)
       if (groupKey && this.formData[groupKey] && this.formData[groupKey].hotspots) {
         const index = this.formData[groupKey].hotspots.findIndex(h => h.id === updatedHotspot.id)
         if (index !== -1) {
@@ -326,7 +374,6 @@ export default {
         }
       }
       
-      // 이전 구조 호환: hotspots1, hotspots2 (직접 배열)
       if (groupKey && Array.isArray(this.formData[groupKey])) {
         const index = this.formData[groupKey].findIndex(h => h.id === updatedHotspot.id)
         if (index !== -1) {
@@ -335,7 +382,6 @@ export default {
         }
       }
       
-      // fallback: hotspots 배열
       if (this.formData.hotspots) {
         const index = this.formData.hotspots.findIndex(h => h.id === updatedHotspot.id)
         if (index !== -1) {
@@ -343,8 +389,8 @@ export default {
         }
       }
     },
+    
     handleDeleteHotspot(id) {
-      // 새 구조: hotspotGroup1, hotspotGroup2 (내부에 hotspots 배열)
       const groupKeys = ['hotspotGroup1', 'hotspotGroup2']
       for (const key of groupKeys) {
         if (this.formData[key] && this.formData[key].hotspots) {
@@ -357,7 +403,6 @@ export default {
         }
       }
       
-      // 이전 구조 호환: 직접 배열
       const arrayKeys = ['hotspots1', 'hotspots2', 'hotspots', 'imageMapAreas']
       for (const key of arrayKeys) {
         if (Array.isArray(this.formData[key])) {
@@ -370,27 +415,31 @@ export default {
         }
       }
     },
+    
     toggleSidebar() {
       this.sidebarOpen = !this.sidebarOpen
     },
+    
     toggleSidebarWidth() {
       this.sidebarExpanded = !this.sidebarExpanded
     },
+    
     selectTemplate(templateValue) {
       this.selectedTemplate = templateValue
     },
-    handlePreviewScroll() {
-      this.updateVisiblePositions()
-    },
+    
     openModal() {
       this.isModalOpen = true
     },
+    
     closeModal() {
       this.isModalOpen = false
     },
+    
     handleModalSelect(templateValue) {
       this.selectedTemplate = templateValue
     },
+    
     updateBodyClass() {
       document.body.classList.remove('sidebar-closed', 'sidebar-expanded')
       if (!this.sidebarOpen) {
@@ -404,6 +453,7 @@ export default {
 </script>
 
 <style scoped>
+/* 기존 스타일 전체 유지 */
 :root {
   --sidebar-wid: 300px;
 }
@@ -428,8 +478,6 @@ export default {
   max-width: none !important;
 }
 
-
-/* HERO */
 .hero-section {
   filter: saturate(180%);
   width: calc(100vw - 300px);
@@ -442,8 +490,6 @@ export default {
   background-repeat: no-repeat;
   background-position: 50% -175px;
   background-image: url("https://blog.kakaocdn.net/dna/chZ3BL/btrIzFMbJ4r/AAAAAAAAAAAAAAAAAAAAABENuT3xPS7CJMvqaXXBeDrNUpAzW1mo5v_bn74HoZYO/img.png?credential=yqXZFxpELC7KVnFOS48ylbz2pIh7yKj8&expires=1769871599&allow_ip=&allow_referer=&signature=nzR1osduT8%2FrzQVkwuLlHHE2AgE%3D");
-  background-image: url("https://blog.kakaocdn.net/dna/deimrK/btr7PkDl3hZ/AAAAAAAAAAAAAAAAAAAAAPxYo3lgm_PEF6lk6qTSQp7wutn5DnJWfqjpYWjAKfez/img.jpg?credential=yqXZFxpELC7KVnFOS48ylbz2pIh7yKj8&expires=1772290799&allow_ip=&allow_referer=&signature=e1Y1Xh5RVmixUiQ8fgBHdVoGHYg%3D");
-  background-image: url("https://blog.kakaocdn.net/dna/b5Wezm/btr8gVDgmhW/AAAAAAAAAAAAAAAAAAAAAJVwI6VP9s5H7t6ByZ_PPuZvybQz-abYRTGNM_HOV7fz/img.webp?credential=yqXZFxpELC7KVnFOS48ylbz2pIh7yKj8&expires=1772290799&allow_ip=&allow_referer=&signature=ACFLzGWfyRcRydaVZO%2BLPU6Us4Y%3D");
   --thumbnail-blur: 0px;
 }
 .page-event-templates .hero-section {
@@ -537,7 +583,6 @@ export default {
   z-index: 5;
 }
 
-/* TABS */
 .template-tabs {
   position: relative;
   display: flex;
@@ -559,7 +604,6 @@ export default {
   color: #6366f1;
 }
 
-/* LAYOUT */
 .content-container {
   max-width: 1400px;
   margin: 32px auto;
@@ -569,7 +613,6 @@ export default {
   gap: 24px;
 }
 
-/* SIDEBAR */
 .sidebar-card {
   width: 300px;
   background: #fff;
@@ -581,15 +624,12 @@ export default {
   left: 0;
   box-shadow: 0 1px 2px 0 rgb(0 0 0 / 16%), 0 1px 2px 0 rgb(0 0 0 / 2%);
   z-index: 20;
+  transition: width 0.35s ease, opacity 0.35s ease, transform 0.35s ease;
+  flex-shrink: 0;
 }
 
 .sidebar-card.expanded {
   width: 600px;
-}
-
-.sidebar-card {
-  transition: width 0.35s ease, opacity 0.35s ease, transform 0.35s ease;
-  flex-shrink: 0;
 }
 
 .sidebar-card.collapsed {
@@ -645,10 +685,20 @@ export default {
 .card-body {
   padding: 20px;
   overflow-y: auto;
+  flex: 1;
+  padding-bottom: 24px;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.card-body::-webkit-scrollbar {
+  width: 0;
+  height: 0;
 }
 .sidebar-footer-fixed {
   padding: 16px;
   border-top: 1px solid #eee;
+  margin-top: auto;
+  background: #fff;
 }
 .download-btn {
   width: 100%;
@@ -660,13 +710,16 @@ export default {
   cursor: pointer;
 }
 
-/* PREVIEW */
 .preview-card-wrap {
   flex: 1;
   background: #fff;
   border-radius: 16px;
   display: flex;
   flex-direction: column;
+  transition: flex 0.35s ease;
+}
+.preview-card-wrap.expanded {
+  flex: 1 1 100%;
 }
 .preview-header {
   padding: 16px 20px;
@@ -683,14 +736,6 @@ export default {
   margin: 0 auto;
 }
 
-.preview-card-wrap {
-  transition: flex 0.35s ease;
-}
-
-.preview-card-wrap.expanded {
-  flex: 1 1 100%;
-}
-
 .show-sidebar-btn {
   position: fixed;
   top: 50px;
@@ -704,24 +749,6 @@ export default {
   cursor: pointer;
 }
 
-.card-body {
-  flex: 1;
-  overflow-y: auto;
-  padding-bottom: 24px;
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-}
-.card-body::-webkit-scrollbar {
-  width: 0;
-  height: 0;
-}
-
-.sidebar-footer-fixed {
-  margin-top: auto;
-  background: #fff;
-}
-
-/* Template Select Button */
 .template-select-btn {
   width: 100%;
   padding: 12px 16px;
@@ -767,7 +794,6 @@ export default {
   transform: translateY(2px);
 }
 
-/* hero-section 반응형 width */
 .hero-section.wide-sidebar {
   width: calc(100vw - 600px);
   margin-left: calc(((calc(100vw - 600px) - 100%) / 2) * -1) !important;
@@ -778,7 +804,6 @@ export default {
   margin-left: 0 !important;
 }
 
-/* hero-waves 반응형 width */
 .hero-waves.wide-sidebar {
   width: calc(100vw - 600px);
 }
@@ -787,88 +812,15 @@ export default {
   width: 100vw !important;
 }
 
-.common-settings {
-  padding: 16px;
-  margin-bottom: 20px;
-  background: #f9fafb;
-  border-radius: 8px;
-  border: 1px solid #e5e7eb;
-}
-
-.checkbox-item {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  cursor: pointer;
-  font-size: 14px;
-  color: #374151;
-}
-
-.checkbox-item input[type="checkbox"] {
-  width: 18px;
-  height: 18px;
-  cursor: pointer;
-  accent-color: #6366f1;
-}
-
-.checkbox-item span {
-  user-select: none;
-}
-/* 공통 설정 섹션 */
-.common-settings {
-  padding: 16px;
-  margin-bottom: 20px;
-  background: #f9fafb;
-  border-radius: 8px;
-  border: 1px solid #e5e7eb;
-}
-
-/* 디바이스 탭 */
-.device-tabs {
-  display: flex;
-  gap: 8px;
-  margin-bottom: 16px;
-  padding: 4px;
-  background: #fff;
-  border-radius: 8px;
-  border: 1px solid #e5e7eb;
-}
-
-.device-tabs button {
-  flex: 1;
-  padding: 8px 16px;
-  border: none;
-  background: transparent;
-  border-radius: 6px;
-  font-size: 13px;
-  font-weight: 600;
-  color: #6b7280;
-  cursor: pointer;
-  transition: all 0.2s;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-}
-
-.device-tabs button:hover {
-  background: #f3f4f6;
-}
-
-.device-tabs button.active {
-  background: #6366f1;
-  color: #fff;
-}
-
-.device-tabs .tab-icon {
-  font-size: 16px;
-}
-
-/* 배너 설정 */
 .banner-settings {
   display: flex;
   flex-direction: column;
   gap: 12px;
+  padding: 16px;
+  margin-bottom: 20px;
+  background: #f9fafb;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
 }
 
 .checkbox-item {
@@ -898,7 +850,6 @@ export default {
   user-select: none;
 }
 
-/* 섹션 타이틀 간격 조정 */
 .sidebar-section .section-title:not(:first-child) {
   margin-top: 20px;
 }

@@ -1,8 +1,12 @@
 <template>
   <div class="preview-deel">
     <div class="preview-card">
-     
       <div class="preview-body" ref="previewBody" @scroll="handleScroll">
+        <!-- TopBanner (디바이스별) -->
+        <TopBanner v-if="deviceType === 'web' && showTopBanner" />
+        <TopBannerMobile v-if="deviceType === 'mobile' && showTopBanner" />
+
+        <!-- 템플릿 컴포넌트 -->
         <component 
           ref="templateComponent"
           :is="currentComponent"
@@ -19,12 +23,20 @@
           @delete-hotspot="handleDeleteHotspot"
           @clear-highlight="handleClearHighlight"
         />
+
+        <!-- BottomBanner (디바이스별) -->
+        <BottomBanner v-if="deviceType === 'web' && showBottomBanner" />
+        <BottomBannerMobile v-if="deviceType === 'mobile' && showBottomBanner" />
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import TopBanner from './event/common/TopBanner.vue'
+import TopBannerMobile from './event/common/TopBannerMobile.vue'
+import BottomBanner from './event/common/BottomBanner.vue'
+import BottomBannerMobile from './event/common/BottomBannerMobile.vue'
 import EmType1 from '../templates/EmType1.vue'
 import EmType2 from '../templates/em/type-image-link/EmType2.vue'
 import EmType3 from '../templates/event/EmType3.vue'
@@ -33,7 +45,12 @@ import EmType5 from '../templates/em/secret-sale/EmType5.vue'
 import EmTypeImageMap from '../templates/em/type-usemap/EmTypeImageMap.vue'
 
 export default {
+  name: 'PreviewFrame',
   components: {
+    TopBanner,
+    TopBannerMobile,
+    BottomBanner,
+    BottomBannerMobile,
     EmType1,
     EmType2,
     EmType3,
@@ -49,11 +66,11 @@ export default {
       type: String,
       default: 'web'
     },
-    showTopBanner: {  // 👈 추가
+    showTopBanner: {
       type: Boolean,
       default: false
     },
-    showBottomBanner: {  // 👈 추가 (사용은 안하지만 props 에러 방지)
+    showBottomBanner: {
       type: Boolean,
       default: false
     },
@@ -93,7 +110,6 @@ export default {
     }
   },
   mounted() {
-    // window 스크롤 이벤트 리스너 등록
     window.addEventListener('scroll', this.handleWindowScroll, { passive: true })
     this.$nextTick(() => {
       this.updateScrollInfo()
@@ -119,11 +135,9 @@ export default {
       this.updateScrollInfo()
     },
     handleScroll() {
-      // 내부 스크롤 (preview-body)용
       this.updateScrollInfo()
     },
     updateScrollInfo() {
-      // window 기준 스크롤 정보
       this.scrollInfo = {
         scrollTop: window.scrollY || window.pageYOffset,
         viewportHeight: window.innerHeight,
@@ -131,80 +145,69 @@ export default {
       }
       this.$emit('scroll-update', this.scrollInfo)
     },
-    /**
-     * 현재 보이는 영역에서의 상대적 위치를 % 로 계산
-     * @param {number} imageIndex - 이미지 인덱스 (1 또는 2)
-     * @returns {number} - top 위치 (%)
-     */
-    getVisibleTopPosition(imageIndex) {
+    
+    getVisibleTopPosition(groupIndex) {
+      console.log(`🔍 getVisibleTopPosition 호출: Group ${groupIndex}`)
+      
       const templateComponent = this.$refs.templateComponent
-      
       if (!templateComponent) {
-        return 5 // 기본값
+        console.log('⚠️ templateComponent ref 없음')
+        return 10
       }
       
-      // 해당 이미지 컨테이너 찾기
-      const containerRef = templateComponent.$refs[`container${imageIndex}`]
-      if (!containerRef) {
-        return 5
+      const containerRef = `image-container-${groupIndex}`
+      const container = templateComponent.$refs[containerRef]
+      
+      if (!container) {
+        console.log(`⚠️ ${containerRef} ref 없음`)
+        return 10
       }
       
-      const containerRect = containerRef.getBoundingClientRect()
+      const rect = container.getBoundingClientRect()
+      const containerTop = rect.top
+      const containerHeight = rect.height
       const viewportHeight = window.innerHeight
-      const containerHeight = containerRect.height
       
-      if (containerHeight <= 0) return 5
+      let visibleCenter = 0
       
-      // 컨테이너의 상단이 뷰포트 기준으로 어디에 있는지
-      // containerRect.top이 음수면 컨테이너 상단이 화면 위로 벗어남
-      // containerRect.top이 양수면 컨테이너 상단이 화면 안에 있음
-      
-      // 현재 뷰포트에서 보이는 컨테이너 영역의 시작점 (컨테이너 내부 기준)
-      let visibleStartInContainer = 0
-      
-      if (containerRect.top < 0) {
-        // 컨테이너 상단이 화면 위로 벗어난 경우
-        visibleStartInContainer = Math.abs(containerRect.top)
+      if (containerTop < 0 && containerTop + containerHeight > 0) {
+        const visibleHeight = Math.min(containerHeight, containerTop + containerHeight)
+        const visibleTop = Math.abs(containerTop)
+        visibleCenter = (visibleTop + (viewportHeight / 2)) / containerHeight * 100
+      } else if (containerTop >= 0 && containerTop < viewportHeight) {
+        const centerY = viewportHeight / 2
+        const offsetFromCenter = containerTop - centerY
+        visibleCenter = ((containerHeight / 2) - offsetFromCenter) / containerHeight * 100
+      } else if (containerTop >= viewportHeight) {
+        visibleCenter = 10
+      } else {
+        visibleCenter = 90
       }
       
-      // 컨테이너가 완전히 화면 아래에 있으면 기본값
-      if (containerRect.top > viewportHeight) {
-        return 5
-      }
+      visibleCenter = Math.max(0, Math.min(100, visibleCenter))
       
-      // 컨테이너가 완전히 화면 위에 있으면 기본값
-      if (containerRect.bottom < 0) {
-        return 5
-      }
+      console.log(`📊 Group ${groupIndex} 가시 영역:`, {
+        containerTop: containerTop.toFixed(2),
+        containerHeight: containerHeight.toFixed(2),
+        viewportHeight,
+        visibleCenter: visibleCenter.toFixed(2) + '%'
+      })
       
-      // 현재 보이는 영역의 시작점을 % 로 변환
-      let topPercent = (visibleStartInContainer / containerHeight) * 100
-      
-      // 약간의 여유를 두고 배치 (5% ~ 85% 범위)
-      topPercent = Math.max(5, Math.min(85, topPercent + 5))
-      
-      return Math.round(topPercent * 10) / 10
+      return visibleCenter
     },
     
-    /**
-     * ImageMap용 - 특정 rowId의 컨테이너에서 현재 보이는 Y 좌표(px) 계산
-     * @param {number|string} rowId - row의 id
-     * @returns {number} - Y 좌표 (px)
-     */
     getVisibleYPositionForRow(rowId) {
       const templateComponent = this.$refs.templateComponent
       
       if (!templateComponent) {
-        return 50 // 기본값
+        return 50
       }
       
-      // EmTypeImageMap의 ref는 'container_' + row.id 형태
       const containerRef = templateComponent.$refs[`container_${rowId}`]
       if (!containerRef) {
         return 50
       }
       
-      // Vue 2에서 v-for 내의 ref는 배열로 반환될 수 있음
       const container = Array.isArray(containerRef) ? containerRef[0] : containerRef
       if (!container) {
         return 50
@@ -216,32 +219,23 @@ export default {
       
       if (containerHeight <= 0) return 50
       
-      // 현재 뷰포트에서 보이는 컨테이너 영역의 시작점 (컨테이너 내부 기준, px)
       let visibleStartY = 0
       
       if (containerRect.top < 0) {
-        // 컨테이너 상단이 화면 위로 벗어난 경우
         visibleStartY = Math.abs(containerRect.top)
       }
       
-      // 컨테이너가 완전히 화면 아래에 있으면 기본값
       if (containerRect.top > viewportHeight) {
         return 50
       }
       
-      // 컨테이너가 완전히 화면 위에 있으면 하단 근처
       if (containerRect.bottom < 0) {
         return Math.max(50, containerHeight - 100)
       }
       
-      // 약간의 여유를 두고 배치
       return Math.max(50, Math.min(containerHeight - 100, visibleStartY + 50))
     },
     
-    /**
-     * ImageMap의 모든 row에 대한 보이는 Y 위치 반환
-     * @returns {Object} - { rowId: yPosition, ... }
-     */
     getVisiblePositionsForImageMap() {
       const templateComponent = this.$refs.templateComponent
       const result = {}
@@ -287,70 +281,16 @@ export default {
   pointer-events: all;
 }
 
-.preview-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 20px 24px;
-  background: linear-gradient(to bottom, #fafbfc, #f9fafb);
-  border-bottom: 1px solid #f3f4f6;
-}
-
-.preview-info {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-
-.preview-title {
-  margin: 0;
-  font-size: 16px;
-  font-weight: 600;
-  color: #1f2937;
-}
-
-.preview-subtitle {
-  margin: 0;
-  font-size: 12px;
-  color: #6b7280;
-}
-
-.preview-actions {
-  display: flex;
-  gap: 8px;
-}
-
-.action-btn {
-  width: 36px;
-  height: 36px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: #fff;
-  border: 1px solid #e5e7eb;
-  border-radius: 8px;
-  color: #6b7280;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.action-btn:hover {
-  background: #f9fafb;
-  border-color: #d1d5db;
-  color: #1f2937;
-}
-
 .preview-body {
   padding: 25px;
   background: #fff;
   min-height: 500px;
 }
-/* 이벤트템플릿 사이즈  */
+
 .page-event-templates .preview-body {
   width: 960px;
 }
 
-/* 이벤트템플릿 모바일인 경우 */
 .is-mobile .preview-body  {
   padding: 0;
 }

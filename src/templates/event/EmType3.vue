@@ -2,12 +2,12 @@
   <div class="event-preview">
     <!-- TopBanner 조건부 렌더링 -->
     <!-- 상단 배너 (디바이스별) -->
-      <TopBanner 
+      <!-- <TopBanner 
         v-if="deviceType === 'web' && showTopBanner" 
       />
       <TopBannerMobile 
         v-if="deviceType === 'mobile' && showTopBanner" 
-      />
+      /> -->
 
     <!-- 첫 번째 이미지 + 핫스팟 -->
     <div 
@@ -92,12 +92,12 @@
     </div>
 
     <!-- 하단 배너 (디바이스별) -->
-      <BottomBanner 
+      <!-- <BottomBanner 
         v-if="deviceType === 'web' && showBottomBanner" 
       />
       <BottomBannerMobile 
         v-if="deviceType === 'mobile' && showBottomBanner" 
-      />
+      /> -->
   </div>
 </template>
 
