@@ -168,7 +168,7 @@ export default {
       templates: [
         { value: 'em-type-1', name: 'Type 1', icon: '📄', description: '기본 텍스트 템플릿' },
         { value: 'em-type-3', name: 'Image Map', icon: '📦', description: '이벤트 이미지맵 템플릿' },
-        { value: 'em-type-5', name: '비밀특가', icon: '🔥', description: '핫스팟 인터랙티브 템플릿' }
+        // { value: 'em-type-5', name: '비밀특가', icon: '🔥', description: '핫스팟 인터랙티브 템플릿' }
       ]
     }
   },
