@@ -8,6 +8,8 @@
           :is="currentComponent"
           :data="formData"
           :deviceType="deviceType"
+          :show-top-banner="showTopBanner"
+          :show-bottom-banner="showBottomBanner"
           :selectedId="selectedHotspotId"
           :selectedImageInfo="selectedImageInfo"
           :selectedRowInfo="selectedRowInfo"
@@ -46,6 +48,14 @@ export default {
     deviceType: {
       type: String,
       default: 'web'
+    },
+    showTopBanner: {  // 👈 추가
+      type: Boolean,
+      default: false
+    },
+    showBottomBanner: {  // 👈 추가 (사용은 안하지만 props 에러 방지)
+      type: Boolean,
+      default: false
     },
     selectedImageInfo: {
       type: Object,

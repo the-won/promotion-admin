@@ -77,6 +77,16 @@ img {
   border: none;
 }
 
+button {
+  background: none;
+  border: 0;
+  padding: 0;
+  margin: 0;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+}
+
 
 /* ============================================
    Form Group
@@ -637,3 +647,10 @@ img {
 .gap-1 { gap: 4px; }
 .gap-2 { gap: 8px; }
 .gap-3 { gap: 12px; }
+
+
+.preview-body-wrap .banner-howto button img,
+.preview-body-wrap .banner-review button img,
+.preview-body-wrap .banner-kakao-plus button img {
+  width: 100%;
+}

@@ -61,6 +61,28 @@
             </header>
 
             <div class="card-body">
+              
+
+              <!-- 배너 설정 -->
+              <div class="banner-settings">
+                <label class="checkbox-item">
+                  <input 
+                    type="checkbox" 
+                    v-model="bannerSettings[currentDevice].showTopBanner"
+                  >
+                  <span>상단 배너 사용</span>
+                </label>
+                
+                <label class="checkbox-item">
+                  <input 
+                    type="checkbox" 
+                    v-model="bannerSettings[currentDevice].showBottomBanner"
+                  >
+                  <span>하단 배너 사용</span>
+                </label>
+              </div>
+            
+
               <section class="sidebar-section">
                 <button class="template-select-btn" @click="openModal">
                   <span class="btn-icon">📋</span>
@@ -113,6 +135,8 @@
                   :template="selectedTemplate"
                   :formData="formData"
                   :deviceType="currentDevice"
+                  :show-top-banner="bannerSettings[currentDevice].showTopBanner"
+                  :show-bottom-banner="bannerSettings[currentDevice].showBottomBanner"
                   :selectedHotspotId="selectedHotspotId"
                   :selectedHotspotInfo="selectedHotspotInfo"
                   :activeRowId="activeRowId"
@@ -165,11 +189,26 @@ export default {
       visibleTopPositions: { 1: 10, 2: 10 },
       visibleScrollPosition: { scrollTop: 0, viewportHeight: 400 },
       currentDevice: 'web',
+      bannerSettings: {
+        web: {
+          showTopBanner: false,
+          showBottomBanner: false
+        },
+        mobile: {
+          showTopBanner: false,
+          showBottomBanner: false
+        }
+      },
       templates: [
         { value: 'em-type-1', name: 'Type 1', icon: '📄', description: '기본 텍스트 템플릿' },
         { value: 'em-type-3', name: 'Image Map', icon: '📦', description: '이벤트 이미지맵 템플릿' },
         // { value: 'em-type-5', name: '비밀특가', icon: '🔥', description: '핫스팟 인터랙티브 템플릿' }
-      ]
+      ],
+    }
+  },
+  computed: {
+    currentBannerSettings() {
+      return this.bannerSettings[this.currentDevice]
     }
   },
   watch: {
@@ -746,5 +785,121 @@ export default {
 .hero-waves.no-sidebar,
 .hero-waves.no-sidebar.wide-sidebar {
   width: 100vw !important;
+}
+
+.common-settings {
+  padding: 16px;
+  margin-bottom: 20px;
+  background: #f9fafb;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+}
+
+.checkbox-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  color: #374151;
+}
+
+.checkbox-item input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+  accent-color: #6366f1;
+}
+
+.checkbox-item span {
+  user-select: none;
+}
+/* 공통 설정 섹션 */
+.common-settings {
+  padding: 16px;
+  margin-bottom: 20px;
+  background: #f9fafb;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+}
+
+/* 디바이스 탭 */
+.device-tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+  padding: 4px;
+  background: #fff;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+}
+
+.device-tabs button {
+  flex: 1;
+  padding: 8px 16px;
+  border: none;
+  background: transparent;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #6b7280;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.device-tabs button:hover {
+  background: #f3f4f6;
+}
+
+.device-tabs button.active {
+  background: #6366f1;
+  color: #fff;
+}
+
+.device-tabs .tab-icon {
+  font-size: 16px;
+}
+
+/* 배너 설정 */
+.banner-settings {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.checkbox-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  color: #374151;
+  padding: 8px;
+  border-radius: 6px;
+  transition: background 0.2s;
+}
+
+.checkbox-item:hover {
+  background: #f3f4f6;
+}
+
+.checkbox-item input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+  accent-color: #6366f1;
+}
+
+.checkbox-item span {
+  user-select: none;
+}
+
+/* 섹션 타이틀 간격 조정 */
+.sidebar-section .section-title:not(:first-child) {
+  margin-top: 20px;
 }
 </style>

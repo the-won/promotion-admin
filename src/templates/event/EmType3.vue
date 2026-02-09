@@ -1,5 +1,14 @@
 <template>
   <div class="event-preview">
+    <!-- TopBanner 조건부 렌더링 -->
+    <!-- 상단 배너 (디바이스별) -->
+      <TopBanner 
+        v-if="deviceType === 'web' && showTopBanner" 
+      />
+      <TopBannerMobile 
+        v-if="deviceType === 'mobile' && showTopBanner" 
+      />
+
     <!-- 첫 번째 이미지 + 핫스팟 -->
     <div 
       v-if="imageUrl1"
@@ -81,14 +90,27 @@
         </template>
       </div>
     </div>
+
+    <!-- 하단 배너 (디바이스별) -->
+      <BottomBanner 
+        v-if="deviceType === 'web' && showBottomBanner" 
+      />
+      <BottomBannerMobile 
+        v-if="deviceType === 'mobile' && showBottomBanner" 
+      />
   </div>
 </template>
 
 <script>
 import imageHighlightMixin from '../../utils/imageHighlightMixin'
+import TopBanner  from '../../components/event/common/TopBanner.vue'
+import TopBannerMobile   from '../../components/event/common/TopBannerMobile.vue'
+import BottomBanner from '../../components/event/common/BottomBanner.vue';
+import BottomBannerMobile  from '../../components/event/common/BottomBannerMobile.vue';
 
 export default {
   mixins: [imageHighlightMixin],
+  components: { TopBanner, TopBannerMobile, BottomBanner, BottomBannerMobile },
   props: {
     data: {
       type: Object,
@@ -109,6 +131,14 @@ export default {
     deviceType: {
       type: String,
       default: 'web'
+    },
+    showTopBanner: {  // 👈 추가
+      type: Boolean,
+      default: true
+    },
+    showBottomBanner: {  // 👈 추가 (사용은 안하지만 props 에러 방지)
+      type: Boolean,
+      default: false
     }
   },
   data() {
