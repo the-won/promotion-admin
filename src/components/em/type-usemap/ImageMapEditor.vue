@@ -230,7 +230,7 @@
               <label>🔗 생성된 URL</label>
               <input 
                 type="text" 
-                :value="area.href"
+                :value="getDecodedUrl(area.href)"
                 readonly
                 class="form-input url-preview"
                 @click.stop
@@ -523,6 +523,17 @@ export default {
       console.log('\n✅ 모든 핫스팟 URL 업데이트 완료')
       console.log('✅ 부모 컴포넌트에 업데이트된 areas 전달 완료')
       console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n')
+    },
+
+    getDecodedUrl(url) {
+      if (!url) return ''
+      try {
+        // URL 디코딩 (한글 등이 보이도록)
+        return decodeURIComponent(url)
+      } catch (e) {
+        // 디코딩 실패 시 원본 반환
+        return url
+      }
     },
     
     initializeAreas() {
