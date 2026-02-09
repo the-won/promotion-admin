@@ -337,7 +337,7 @@ export default {
 }
 /* 이벤트템플릿 사이즈  */
 .page-event-templates .preview-body {
-  width: 800px;
+  width: 960px;
 }
 
 /* 이벤트템플릿 모바일인 경우 */
