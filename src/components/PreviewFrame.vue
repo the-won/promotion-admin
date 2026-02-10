@@ -40,7 +40,7 @@ import BottomBannerMobile from './event/common/BottomBannerMobile.vue'
 import EmType1 from '../templates/EmType1.vue'
 import EmType2 from '../templates/em/type-image-link/EmType2.vue'
 import EmType3 from '../templates/event/EmType3.vue'
-import EmType4 from '../templates/EmType4.vue'
+import EmType4 from '../templates/em/efamily/EmType4.vue'
 import EmType5 from '../templates/em/secret-sale/EmType5.vue'
 import EmTypeImageMap from '../templates/em/type-usemap/EmTypeImageMap.vue'
 

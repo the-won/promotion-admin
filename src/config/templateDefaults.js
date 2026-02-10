@@ -49,52 +49,7 @@ export const templateDefaults = {
     }
   },
   'em-type-2': {
-    // bannerTitle: {
-    //   label: '배너 타이틀',
-    //   type: 'text',
-    //   value: '배너 타이틀'
-    // },
-    // bannerImage: {
-    //   label: '배너 이미지 URL',
-    //   type: 'url',
-    //   value: 'https://picsum.photos/600/400'
-    // },
-    // description: {
-    //   label: '이벤트 설명',
-    //   type: 'textarea',
-    //   value: '이벤트 설명 내용입니다.',
-    //   rows: 3
-    // },
-    // eventDate: {
-    //   label: '이벤트 날짜',
-    //   type: 'date',
-    //   value: '2025-10-15'
-    // },
-    // actionText: {
-    //   label: '액션 버튼 텍스트',
-    //   type: 'text',
-    //   value: '자세히 보기'
-    // },
-    // actionLink: {
-    //   label: '액션 링크',
-    //   type: 'url',
-    //   value: '#'
-    // },
-    // themeColor: {
-    //   label: '테마 색상',
-    //   type: 'color',
-    //   value: '#ff6b35'
-    // },
-    // bannerOpacity: {
-    //   label: '배너 투명도',
-    //   type: 'range',
-    //   value: 100,
-    //   min: 0,
-    //   max: 100,
-    //   step: 5,
-    //   unit: '%'
-    // },
-
+    
     imageLinkGroups: {
       label: '이미지 링크 그룹',
       type: 'image-link-group',
@@ -102,14 +57,15 @@ export const templateDefaults = {
         {
           id: 1,
           href: 'https://example.com/product1',
-          // linkData: {
-          //   planCode: '',
-          //   productCode: '12345',
-          //   webEventCode: '',
-          //   mobileEventCode: '',
-          //   searchKeyword: '',
-          //   customUrl: ''
-          // },
+          linkType: 'custom',  // 👈 추가
+          linkData: {  // 👈 이미 있음 (Good!)
+            planCode: '',
+            productCode: '',
+            webEventCode: '',
+            mobileEventCode: '',
+            searchKeyword: '',
+            customUrl: 'https://example.com/product1'  // 👈 기본값 추가
+          },
           images: [
             {
               id: 1,
@@ -124,105 +80,33 @@ export const templateDefaults = {
 
           ]
         },
-        // {
-        //   id: 2,
-        //   href: 'https://example.com/product2',
-        //   targetBlank: true,
-        //   images: [
-        //     {
-        //       id: 2,
-        //       url: 'https://via.placeholder.com/630x200',
-        //       alt: '상품 이미지 2'
-        //     },
-        //     {
-        //       id: 3,
-        //       url: 'https://via.placeholder.com/630x150',
-        //       alt: '상품 이미지 3'
-        //     }
-        //   ]
-        // }
       ]
     } 
 
 
   },
   'em-type-3': {
-     hotspotGroup1: {
-      label: '이미지 1 설정',
-      type: 'hotspot-group',
-      value: {
-        webImageUrl: 'https://d2odciwzsa8zjd.cloudfront.net/public/editorImage/202509/8dae3bd8-5e33-4d1c-af7e-3cdbc39b3b1a.png',
-        mobileImageUrl: '',  // 모바일 URL은 필요시 입력
-        hotspots: [
-          {
-            id: 1,
-            text: '지금 신청하기',
-            href: 'https://example.com/apply',
-            alt: '신청하기 버튼',
-            title: '신청하기',
-            position: {
-              left: 30,
-              top: 5,
-              width: 30,
-              height: 10
-            }
-          }
-        ]
-      }
-    },
-    hotspotGroup2: {
-      label: '이미지 2 설정',
-      type: 'hotspot-group',
-      value: {
-        webImageUrl: 'https://d2odciwzsa8zjd.cloudfront.net/public/editorImage/202503/fbca6135-d59d-4be7-b483-6e2577e4e4c3.png',
-        mobileImageUrl: '',  // 모바일 URL은 필요시 입력
-        hotspots: [
-          {
-            id: 2,
-            text: '더 알아보기',
-            href: 'https://example.com/more',
-            alt: '더보기 버튼',
-            title: '더 알아보기',
-            position: {
-              left: 40,
-              top: 5,
-              width: 25,
-              height: 10
-            }
-          }
-        ]
-      }
-    }
+   
+    
   },
   'em-type-4': {
-    headerText: {
-      label: '헤더 텍스트',
-      type: 'text',
-      value: '특별한 이벤트'
-    },
-    backgroundImage: {
-      label: '배경 이미지 URL',
+    headerImage: {
+      label: '상단 이미지 URL',
       type: 'url',
-      value: 'https://d2odciwzsa8zjd.cloudfront.net/public/editorImage/202509/8dae3bd8-5e33-4d1c-af7e-3cdbc39b3b1a.png'
+      value: 'https://www.efamilyshop.co.kr/storage/fud/20250513/visual_20250513162322.jpg'
     },
-    hotspots: {
-      label: '클릭 가능한 버튼 영역',
-      type: 'hotspot-list',
-      value: [
-        {
-          id: 1,
-          text: '지금 신청하기',
-          href: 'https://example.com/apply',
-          alt: '신청하기 버튼',
-          position: {
-            left: 30,
-            top: 70,
-            width: 30,
-            height: 10
-          }
-        }
-      ]
+    headerImageAlt: {
+      label: '상단 이미지 대체 텍스트',
+      type: 'text',
+      value: '대체텍스트를 작성하세요'
     },
+    headerImageHref: {
+       label: '상단 이미지 url',
+      type: 'text',
+      value: 'https://happy.efamilyshop.co.kr/shop/intro/index.view?redirect=%2Fshop%2Fevent%2FeventDetail.view%3FpageNo%3D1%26eventId%3D3515'
+    },
+
+
     footerText: {
       label: '푸터 텍스트',
       type: 'text',
