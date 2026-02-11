@@ -15,6 +15,15 @@
       @update:row1Products="localData.row1Products = $event"
       @update:row3Products="localData.row3Products = $event"
     />
+    <!-- 이패밀리샵 템플릿일 경우 통합 업로드 표시 -->
+    <EfamilyExcelUploader
+      v-if="template === 'em-type-4'"
+      :productGroups="localData.productGroups"
+      :banners="localData.banners"
+      @update:header="updateHeader"
+      @update:productGroups="localData.productGroups = $event"
+      @update:banners="localData.banners = $event"
+    />
 
     <div class="form-fields" :class="{ expanded: sidebarExpanded }">
       <div 
@@ -144,6 +153,18 @@
           @active-image-change="handleActiveImageChange"
         />
 
+        <!-- 👇 Product Group List Editor (추가) -->
+        <ProductGroupListEditor
+          v-else-if="config.type === 'product-group-list'"
+          v-model="localData[key]"
+        />
+
+        <!-- 👇 Banner List Editor (추가) -->
+        <BannerListEditor
+          v-else-if="config.type === 'banner-list'"
+          v-model="localData[key]"
+        />
+
         <!-- Image Map Editor -->
         <ImageMapEditor
           v-else-if="config.type === 'image-map-rows'"
@@ -185,6 +206,9 @@ import HotdealExcelUploader from './em/secret-sale/HotdealExcelUploader.vue'
 import DatePicker from './DatePicker.vue'
 import ImageLinkGroupEditor from './em/type-image-link/ImageLinkGroupEditor.vue'
 import ImageMapEditor from './em/type-usemap/ImageMapEditor.vue'
+import ProductGroupListEditor from './em/efamily/ProductGroupListEditor.vue'
+import BannerListEditor from './em/efamily/BannerListEditor.vue'
+import EfamilyExcelUploader from './em/efamily/EfamilyExcelUploader.vue'
 
 export default {
   components: { 
@@ -195,7 +219,10 @@ export default {
     HotdealExcelUploader,
     DatePicker,
     ImageLinkGroupEditor, 
-    ImageMapEditor
+    ImageMapEditor,
+    ProductGroupListEditor,
+    BannerListEditor,
+    EfamilyExcelUploader
   },
   props: [
     'template', 
@@ -247,7 +274,14 @@ export default {
   },
   methods: {
     isFullWidthField(type) {
-      const fullWidthTypes = ['hotspot-group', 'image-link-group', 'image-map-rows', 'textarea']
+      const fullWidthTypes = [
+        'hotspot-group', 
+        'image-link-group', 
+        'image-map-rows', 
+        'textarea', 
+        'product-group-list',
+        'banner-list' 
+      ]
       return fullWidthTypes.includes(type)
     },
     
@@ -267,7 +301,6 @@ export default {
     
     handleSelectHotspotImage(info) {
       console.log('🖼️ 이미지 영역 선택됨:', info)
-      // 이미지 컨테이너를 선택하기 위한 특별한 이벤트
       this.$emit('select-hotspot-image', info)
     },
     
@@ -298,6 +331,12 @@ export default {
         return this.visibleTopPositions[index] || 10
       }
       return 10
+    },
+    
+    updateHeader(headerData) {
+      this.localData.headerImageCode = headerData.headerImageCode
+      this.localData.headerImage = headerData.headerImage
+      this.localData.headerImageAlt = headerData.headerImageAlt
     }
   }
 }

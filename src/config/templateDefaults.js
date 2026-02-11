@@ -90,6 +90,13 @@ export const templateDefaults = {
     
   },
   'em-type-4': {
+    // 전역 도메인
+    globalDomain: {
+      label: '도메인',
+      type: 'text',
+      placeholder: 'sema, www, happy, victory 등',
+      value: 'sema'
+    },
     headerImage: {
       label: '상단 이미지 URL',
       type: 'url',
@@ -100,18 +107,135 @@ export const templateDefaults = {
       type: 'text',
       value: '대체텍스트를 작성하세요'
     },
-    headerImageHref: {
-       label: '상단 이미지 url',
+    headerImageCode: {
+      label: '상단 이미지 링크 - 상품코드',
       type: 'text',
-      value: 'https://happy.efamilyshop.co.kr/shop/intro/index.view?redirect=%2Fshop%2Fevent%2FeventDetail.view%3FpageNo%3D1%26eventId%3D3515'
+      value: '3515'
     },
 
-
-    footerText: {
-      label: '푸터 텍스트',
-      type: 'text',
-      value: '© 2025 회사명 All rights reserved.'
-    }
+    productGroups: {
+      label: '상품 그룹',
+      type: 'product-group-list',
+      value: [
+        {
+          id: 1,
+          titleImage: {
+            url: 'http://www.efamilyshop.co.kr/storage/fud/20250414/tit_01_20250414144147.jpg',
+            alt: '지금이 운동할 시기!'
+          },
+          rows: [
+            {
+              id: 101,
+              products: [
+                { 
+                  productCode: 'GD2024183099', 
+                  imageUrl: 'http://www.efamilyshop.co.kr/storage/fud/20250414/item_01_1_20250414144147.jpg', 
+                  imageAlt: '프로-스펙스 밸런스쿠션 33cm 자세교정 스트레칭 돌기' 
+                },
+                { 
+                  productCode: '', 
+                  imageUrl: 'http://www.efamilyshop.co.kr/storage/fud/20250414/item_01_2_20250414144147.jpg', 
+                  imageAlt: '프로-스펙스 땅콩 마사지볼 실리콘재질 NON-SLIP' 
+                },
+                { 
+                  productCode: '', 
+                  imageUrl: 'http://www.efamilyshop.co.kr/storage/fud/20250414/item_01_3_20250414144147.jpg', 
+                  imageAlt: '프로-스펙스 안티버스트 짐볼 55cm 스트레칭 요가 임산부' 
+                }
+              ]
+            },
+            {
+              id: 102,
+              products: [
+                { 
+                  productCode: '', 
+                  imageUrl: 'http://www.efamilyshop.co.kr/storage/fud/20250414/item_01_4_20250414144147.jpg', 
+                  imageAlt: '프로-스펙스 S라인체중계 디지털 저울 다이어트' 
+                },
+                { 
+                  productCode: '', 
+                  imageUrl: 'http://www.efamilyshop.co.kr/storage/fud/20250414/item_01_5_20250414144147.jpg', 
+                  imageAlt: '프로-스펙스 멀티 짐볼 65cm  스트레칭 요가 임산부' 
+                },
+                { 
+                  productCode: '', 
+                  imageUrl: 'http://www.efamilyshop.co.kr/storage/fud/20250414/item_01_6_20250414144147.jpg', 
+                  imageAlt: '( Ez-Hula Fit ) 스마트 훌라후프 / 조립식 홈트 스마트 실내 뱃살 다이어트' 
+                }
+              ]
+            }
+          ]
+        },
+        {
+          id: 2,
+          titleImage: {
+            url: 'https://www.efamilyshop.co.kr/storage/fud/20250513/tit_02_20250513162322.jpg',
+            alt: '지금이 운동할 시기!'
+          },
+          rows: [
+            {
+              id: 101,
+              products: [
+                { 
+                  productCode: 'G9', 
+                  imageUrl: 'https://www.efamilyshop.co.kr/storage/fud/20250513/item_02_1_20250513162322.jpg', 
+                  imageAlt: '' 
+                },
+                { 
+                  productCode: '', 
+                  imageUrl: 'https://www.efamilyshop.co.kr/storage/fud/20250513/item_02_2_20250513162322.jpg', 
+                  imageAlt: '' 
+                },
+                { 
+                  productCode: '', 
+                  imageUrl: 'https://www.efamilyshop.co.kr/storage/fud/20250513/item_02_3_20250513162322.jpg', 
+                  imageAlt: '' 
+                }
+              ]
+            },
+            {
+              id: 102,
+              products: [
+                { 
+                  productCode: '', 
+                  imageUrl: 'https://www.efamilyshop.co.kr/storage/fud/20250513/item_02_4_20250513162322.jpg', 
+                  imageAlt: '' 
+                },
+                { 
+                  productCode: '', 
+                  imageUrl: 'https://www.efamilyshop.co.kr/storage/fud/20250513/item_02_5_20250513162322.jpg', 
+                  imageAlt: '' 
+                },
+                { 
+                  productCode: '', 
+                  imageUrl: 'https://www.efamilyshop.co.kr/storage/fud/20250513/item_02_6_20250513162322.jpg', 
+                  imageAlt: '' 
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    banners: {
+      label: '하단 배너',
+      type: 'banner-list',
+      value: [
+        {
+          id: 1,
+          eventCode: '3664',
+          imageUrl: 'http://www.efamilyshop.co.kr/storage/fud/20250910/bn_01_20250910134541.jpg',
+          imageAlt: '주방가전&용품 기획전'
+        },
+        {
+          id: 2,
+          eventCode: '3662',
+          imageUrl: 'http://www.efamilyshop.co.kr/storage/fud/20250910/bn_02_20250910134541.jpg',
+          imageAlt: '맞춤선물 기획전'
+        }
+      ]
+    },
+    
   },
 
   'em-type-5': {
