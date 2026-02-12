@@ -107,7 +107,7 @@
                     <tr>
                       <td style="vertical-align:text-top; padding-top:5px;">&middot;</td>
                       <td style="padding:3px; line-height:18px;">
-                        본 메일은 <a :href="`https://${globalDomain}.efamilyshop.co.kr/shop/front/member/mypage03`" target="_blank"><span style="font-weight:bold; color:#ff4d16;">2025년 9월 10일</span></a> 기준 회원님의 이패밀리샵 이메일 수신 동의 여부를 확인한 결과, 수신에 동의하였기에 발송됩니다.
+                        본 메일은 <a :href="`https://${globalDomain}.efamilyshop.co.kr/shop/front/member/mypage03`" target="_blank"><span style="font-weight:bold; color:#ff4d16;">{{ getFormattedDate() }}</span></a> 기준 회원님의 이패밀리샵 이메일 수신 동의 여부를 확인한 결과, 수신에 동의하였기에 발송됩니다.
                       </td>
                     </tr>
                     <tr>
@@ -183,7 +183,7 @@ export default {
       const code = this.data.headerImageCode
       if (!code) return '#'
       const domain = this.globalDomain
-      return `https://${domain}.efamilyshop.co.kr/shop/intro/index.view?eventId=${code}&redirect=%2Fshop%2Fevent%2FeventDetail.view&pageNo=1`
+      return `https://${domain}.efamilyshop.co.kr/shop/event/eventDetail.view?pageNo=1&eventId=${code}`
     },
     
     buildProductUrl(productCode) {
@@ -196,6 +196,11 @@ export default {
       if (!eventCode) return '#'
       const domain = this.globalDomain
       return `https://${domain}.efamilyshop.co.kr/shop/event/eventDetail.view?pageNo=1&eventId=${eventCode}`
+    },
+    getFormattedDate() {
+      if (!this.data.sendDate) return ''
+      const { year, month, day } = this.data.sendDate
+      return `${year}년 ${parseInt(month)}월 ${parseInt(day)}일`
     }
   },
   mounted() {

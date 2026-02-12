@@ -94,8 +94,17 @@ export const templateDefaults = {
     globalDomain: {
       label: '도메인',
       type: 'text',
-      placeholder: 'sema, www, happy, victory 등',
-      value: 'sema'
+      placeholder: 'www, sema, happy, victory 등',
+      value: 'www'
+    },
+    sendDate: {
+      label: '발송일 기준',
+      type: 'date-picker',
+      value: {
+        year: '2026',
+        month: '01',
+        day: '01'
+      }
     },
     headerImage: {
       label: '상단 이미지 URL',
@@ -252,7 +261,7 @@ export const templateDefaults = {
       label: '발송일 기준',
       type: 'date-picker',
       value: {
-        year: '2025',
+        year: '2026',
         month: '01',
         day: '01'
       }

@@ -1,5 +1,8 @@
 export function generateEmType4Html(data) {
-  const domain = data.globalDomain || 'sema'
+  const domain = data.globalDomain || 'www'
+
+  const sendDate = data.sendDate || { year: '2026', month: '01', day: '01' }
+  const formattedDate = `${sendDate.year}년 ${parseInt(sendDate.month)}월 ${parseInt(sendDate.day)}일`
   
   // 상품 그룹 HTML 생성
   const productGroupsHtml = (data.productGroups || []).map((group, groupIndex) => {
@@ -102,7 +105,7 @@ export function generateEmType4Html(data) {
     <!-- 상단 이미지 -->
     <tr>
       <td style="font-size:0; vertical-align:top;">
-        <a target="_blank" href="https://${domain}.efamilyshop.co.kr/shop/intro/index.view?eventId=${data.headerImageCode}&redirect=%2Fshop%2Fevent%2FeventDetail.view&pageNo=1">
+        <a target="_blank" href="https://${domain}.efamilyshop.co.kr/shop/event/eventDetail.view?pageNo=1&eventId=${data.headerImageCode}">
           <img src="${data.headerImage}" alt="${data.headerImageAlt}" width="770" border="0" />
         </a>
       </td>
@@ -129,7 +132,7 @@ export function generateEmType4Html(data) {
                   <tr>
                     <td style="vertical-align:text-top; padding-top:5px;">&middot;</td>
                     <td style="padding:3px; line-height:18px;">
-                      본 메일은 <a href="https://${domain}.efamilyshop.co.kr/shop/front/member/mypage03" target="_blank"><span style="font-weight:bold; color:#ff4d16;">2025년 9월 10일</span></a> 기준 회원님의 이패밀리샵 이메일 수신 동의 여부를 확인한 결과, 수신에 동의하였기에 발송됩니다.
+                      본 메일은 <a href="https://${domain}.efamilyshop.co.kr/shop/front/member/mypage03" target="_blank"><span style="font-weight:bold; color:#ff4d16;">${formattedDate}</span></a> 기준 회원님의 이패밀리샵 이메일 수신 동의 여부를 확인한 결과, 수신에 동의하였기에 발송됩니다.
                     </td>
                   </tr>
                   <tr>

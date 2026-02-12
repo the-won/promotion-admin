@@ -2,9 +2,9 @@
   <div class="hotdeal-excel-uploader">
     <div class="upload-card">
       <div class="upload-header">
-        <h4>📊 화끈딜 상품 일괄 업로드</h4>
+        <h4>최저가보상<br> 상품 일괄 업로드</h4>
         <button @click="downloadTemplate" class="template-btn">
-          📥 엑셀 템플릿 다운로드
+          엑셀 템플릿 다운로드
         </button>
       </div>
 
@@ -430,25 +430,25 @@ export default {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 20px;
+  padding: 10px;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: white;
 }
 
 .upload-header h4 {
   margin: 0;
-  font-size: 18px;
+  font-size: 12px;
   font-weight: bold;
 }
 
 .template-btn {
-  padding: 8px 16px;
+  padding: 5px 8px;
   background: rgba(255, 255, 255, 0.2);
   color: white;
   border: 1px solid rgba(255, 255, 255, 0.3);
   border-radius: 6px;
   cursor: pointer;
-  font-size: 14px;
+  font-size: 12px;
   font-weight: 600;
   transition: all 0.2s;
   backdrop-filter: blur(10px);
@@ -460,7 +460,7 @@ export default {
 }
 
 .upload-body {
-  padding: 20px;
+  padding: 10px;
 }
 
 /* 탭 선택 */
@@ -475,12 +475,12 @@ export default {
 
 .tab-btn {
   flex: 1;
-  padding: 10px 16px;
+  padding: 8px 10px;
   background: transparent;
   border: none;
   border-radius: 6px;
   cursor: pointer;
-  font-size: 14px;
+  font-size: 11px;
   font-weight: 600;
   color: #6b7280;
   transition: all 0.2s;
@@ -504,10 +504,10 @@ export default {
   border: 2px solid #e5e7eb;
   border-radius: 12px;
   font-family: 'Consolas', 'Monaco', monospace;
-  font-size: 13px;
+  font-size: 11px;
   line-height: 1.6;
   resize: vertical;
-  min-height: 300px;
+  min-height: 100px;
   transition: all 0.2s;
 }
 
@@ -526,7 +526,7 @@ export default {
   background: #f0f9ff;
   border: 1px solid #bae6fd;
   border-radius: 8px;
-  padding: 16px;
+  padding: 10px;
   margin-bottom: 20px;
 }
 
@@ -534,14 +534,14 @@ export default {
   margin: 0 0 12px 0;
   font-weight: 600;
   color: #0369a1;
-  font-size: 14px;
+  font-size: 12px;
 }
 
 .info-list {
   margin: 0;
   padding-left: 20px;
   color: #0c4a6e;
-  font-size: 13px;
+  font-size: 11px;
   line-height: 1.8;
 }
 
@@ -585,17 +585,17 @@ export default {
 .upload-text {
   margin: 0;
   color: #6b7280;
-  font-size: 14px;
+  font-size: 11px;
 }
 
 .select-btn {
-  padding: 10px 24px;
+  padding: 6px 18px;
   background: #6366f1;
   color: white;
   border: none;
-  border-radius: 8px;
+  border-radius: 6px;
   cursor: pointer;
-  font-size: 14px;
+  font-size: 11px;
   font-weight: 600;
   transition: all 0.2s;
 }
@@ -617,7 +617,7 @@ export default {
 }
 
 .success-icon {
-  font-size: 24px;
+  font-size: 14px;
 }
 
 .success-text {
@@ -636,7 +636,7 @@ export default {
   border: none;
   border-radius: 50%;
   cursor: pointer;
-  font-size: 16px;
+  font-size: 13px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -656,7 +656,7 @@ export default {
   border: none;
   border-radius: 8px;
   cursor: pointer;
-  font-size: 16px;
+  font-size: 12px;
   font-weight: bold;
   margin-top: 16px;
   transition: all 0.2s;
@@ -704,7 +704,7 @@ export default {
 }
 
 .result-icon {
-  font-size: 24px;
+  font-size: 14px;
   margin: 0;
 }
 
