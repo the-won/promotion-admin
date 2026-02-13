@@ -285,9 +285,14 @@ export default {
     }
   },
   methods: {
+    // 고유 ID 생성 (템플릿 간 충돌 방지)
+    generateId(prefix = 'id') {
+      return `${prefix}_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
+    },
+    
     createNewGroup() {
       return {
-        id: Date.now(),
+        id: this.generateId('grp'),
         
         // 링크 타입 및 데이터
         linkType: 'custom',
@@ -303,7 +308,7 @@ export default {
         href: 'https://example.com',
         images: [
           {
-            id: Date.now() + 1,
+            id: this.generateId('img'),
             url: '',
             alt: ''
           }
@@ -313,7 +318,7 @@ export default {
     
     createNewImage() {
       return {
-        id: Date.now(),
+        id: this.generateId('img'),
         url: '',
         alt: ''
       }

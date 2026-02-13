@@ -117,7 +117,7 @@ export default {
       default: 'web'
     },
     selectedId: {
-      type: Number,
+      type: [Number, String],
       default: null
     },
     selectedHotspotInfo: {

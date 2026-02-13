@@ -43,6 +43,7 @@ import EmType3 from '../templates/event/EmType3.vue'
 import EmType4 from '../templates/em/efamily/EmType4.vue'
 import EmType5 from '../templates/em/secret-sale/EmType5.vue'
 import EmTypeImageMap from '../templates/em/type-usemap/EmTypeImageMap.vue'
+import CouponBenefit from '../templates/em/coupon-benefit/Coupon.vue'
 
 export default {
   name: 'PreviewFrame',
@@ -104,7 +105,9 @@ export default {
         'em-type-3': 'EmType3',
         'em-type-4': 'EmType4',
         'em-type-5': 'EmType5',
-        'em-type-imagemap': 'EmTypeImageMap'
+        'em-type-imagemap': 'EmTypeImageMap',
+        'em-type-coupon' : 'EmType2',
+        'em-type-letter' : 'EmTypeImageMap'
       }
       return map[this.template] || 'EmType1'
     }

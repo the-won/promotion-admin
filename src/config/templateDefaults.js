@@ -49,41 +49,46 @@ export const templateDefaults = {
     }
   },
   'em-type-2': {
-    
+    sendDate: {
+      label: '발송일 기준',
+      type: 'date-picker',
+      value: {
+        year: '2026',
+        month: '01',
+        day: '01'
+      }
+    },
     imageLinkGroups: {
       label: '이미지 링크 그룹',
       type: 'image-link-group',
       value: [
         {
-          id: 1,
+          id: 'grp_t2_001',
           href: 'https://example.com/product1',
-          linkType: 'custom',  // 👈 추가
-          linkData: {  // 👈 이미 있음 (Good!)
+          linkType: 'custom',
+          linkData: {
             planCode: '',
             productCode: '',
             webEventCode: '',
             mobileEventCode: '',
             searchKeyword: '',
-            customUrl: 'https://example.com/product1'  // 👈 기본값 추가
+            customUrl: 'https://example.com/product1'
           },
           images: [
             {
-              id: 1,
+              id: 'img_t2_001',
               url: 'https://org-i.benepia.co.kr/ckeditor/2025/12/11/BB588B647500.Tomcat_117654295328570.jpg',
               alt: '상품 이미지 1'
             },
             {
-              id: 2,
+              id: 'img_t2_002',
               url: 'https://org-i.benepia.co.kr/ckeditor/2025/12/11/BB588B647500.Tomcat_117654296464950.jpg',
               alt: '상품 이미지 1'
             },
-
           ]
         },
       ]
     } 
-
-
   },
   'em-type-3': {
     hotspotGroup1: {
@@ -91,10 +96,10 @@ export const templateDefaults = {
       type: 'hotspot-group',
       value: {
         webImageUrl: 'https://d2odciwzsa8zjd.cloudfront.net/public/editorImage/202509/8dae3bd8-5e33-4d1c-af7e-3cdbc39b3b1a.png',
-        mobileImageUrl: '',  // 모바일 URL은 필요시 입력
+        mobileImageUrl: '',
         hotspots: [
           {
-            id: 1,
+            id: 'hs_t3g1_001',
             text: '지금 신청하기',
             href: 'https://example.com/apply',
             alt: '신청하기 버튼',
@@ -114,10 +119,10 @@ export const templateDefaults = {
       type: 'hotspot-group',
       value: {
         webImageUrl: 'https://d2odciwzsa8zjd.cloudfront.net/public/editorImage/202503/fbca6135-d59d-4be7-b483-6e2577e4e4c3.png',
-        mobileImageUrl: '',  // 모바일 URL은 필요시 입력
+        mobileImageUrl: '',
         hotspots: [
           {
-            id: 2,
+            id: 'hs_t3g2_001',
             text: '더 알아보기',
             href: 'https://example.com/more',
             alt: '더보기 버튼',
@@ -132,10 +137,8 @@ export const templateDefaults = {
         ]
       }
     }
-    
   },
   'em-type-4': {
-    // 전역 도메인
     globalDomain: {
       label: '도메인',
       type: 'text',
@@ -166,20 +169,19 @@ export const templateDefaults = {
       type: 'text',
       value: '3515'
     },
-
     productGroups: {
       label: '상품 그룹',
       type: 'product-group-list',
       value: [
         {
-          id: 1,
+          id: 'pg_t4_001',
           titleImage: {
             url: 'http://www.efamilyshop.co.kr/storage/fud/20250414/tit_01_20250414144147.jpg',
             alt: '지금이 운동할 시기!'
           },
           rows: [
             {
-              id: 101,
+              id: 'row_t4_001',
               products: [
                 { 
                   productCode: 'GD2024183099', 
@@ -199,7 +201,7 @@ export const templateDefaults = {
               ]
             },
             {
-              id: 102,
+              id: 'row_t4_002',
               products: [
                 { 
                   productCode: '', 
@@ -221,14 +223,14 @@ export const templateDefaults = {
           ]
         },
         {
-          id: 2,
+          id: 'pg_t4_002',
           titleImage: {
             url: 'https://www.efamilyshop.co.kr/storage/fud/20250513/tit_02_20250513162322.jpg',
             alt: '지금이 운동할 시기!'
           },
           rows: [
             {
-              id: 101,
+              id: 'row_t4_003',
               products: [
                 { 
                   productCode: 'G9', 
@@ -248,7 +250,7 @@ export const templateDefaults = {
               ]
             },
             {
-              id: 102,
+              id: 'row_t4_004',
               products: [
                 { 
                   productCode: '', 
@@ -276,22 +278,21 @@ export const templateDefaults = {
       type: 'banner-list',
       value: [
         {
-          id: 1,
+          id: 'bn_t4_001',
           eventCode: '3664',
           imageUrl: 'http://www.efamilyshop.co.kr/storage/fud/20250910/bn_01_20250910134541.jpg',
           imageAlt: '주방가전&용품 기획전'
         },
         {
-          id: 2,
+          id: 'bn_t4_002',
           eventCode: '3662',
           imageUrl: 'http://www.efamilyshop.co.kr/storage/fud/20250910/bn_02_20250910134541.jpg',
           imageAlt: '맞춤선물 기획전'
         }
       ]
     },
-    
   },
-
+  // 최저가보상
   'em-type-5': {
     companyType: {
       label: '도메인',
@@ -326,19 +327,19 @@ export const templateDefaults = {
       type: 'hotdeal-row1-list',
       value: [
         {
-          id: 1,
+          id: 'r1_t5_001',
           productId: '',
           imageUrl: 'https://org-i.benepia.co.kr/ckeditor/2026/01/14/8B63F328B909.Tomcat_117683659390510.jpg',
           imageAlt: ''
         },
         {
-          id: 2,
+          id: 'r1_t5_002',
           productId: '',
           imageUrl: 'https://org-i.benepia.co.kr/ckeditor/2026/01/14/8B63F328B909.Tomcat_117683659732240.jpg',
           imageAlt: ''
         },
         {
-          id: 3,
+          id: 'r1_t5_003',
           productId: '',
           imageUrl: 'https://org-i.benepia.co.kr/ckeditor/2026/01/14/8B63F328B909.Tomcat_117683659880240.jpg',
           imageAlt: ''
@@ -350,7 +351,7 @@ export const templateDefaults = {
       type: 'hotdeal-row3-list',
       value: [
         {
-          id: 1,
+          id: 'r3_t5_001',
           products: [
             { productId: '', imageUrl: 'https://org-i.benepia.co.kr/ckeditor/2026/01/14/8B63F328B909.Tomcat_117683660127530.jpg', imageAlt: '' },
             { productId: '', imageUrl: 'https://org-i.benepia.co.kr/ckeditor/2026/01/14/8B63F328B909.Tomcat_117683660315160.jpg', imageAlt: '' },
@@ -358,7 +359,7 @@ export const templateDefaults = {
           ]
         },
         {
-          id: 2,
+          id: 'r3_t5_002',
           products: [
             { productId: '', imageUrl: 'https://org-i.benepia.co.kr/ckeditor/2026/01/14/8B63F328B909.Tomcat_117683660668020.jpg', imageAlt: '' },
             { productId: '', imageUrl: 'https://org-i.benepia.co.kr/ckeditor/2026/01/14/8B63F328B909.Tomcat_117683660833360.jpg', imageAlt: '' },
@@ -366,7 +367,7 @@ export const templateDefaults = {
           ]
         },
         {
-          id: 3,
+          id: 'r3_t5_003',
           products: [
             { productId: '', imageUrl: 'https://org-i.benepia.co.kr/ckeditor/2026/01/14/8B63F328B909.Tomcat_117683661348310.jpg', imageAlt: '' },
             { productId: '', imageUrl: 'https://org-i.benepia.co.kr/ckeditor/2026/01/14/8B63F328B909.Tomcat_117683661060470.jpg', imageAlt: '' },
@@ -377,13 +378,9 @@ export const templateDefaults = {
     }
   },
   
-  // templateDefaults.js 파일에 추가할 내용
-  // 새로운 템플릿 타입 (예: em-type-7) 또는 기존 타입에 추가
-
-  // templateDefaults.js 파일에 추가할 내용
-
+  // 이미지맵 템플릿형
   'em-type-imagemap': {
-     companyType: {
+    companyType: {
       label: '도메인',
       type: 'select',
       value: 'normal',
@@ -405,8 +402,8 @@ export const templateDefaults = {
       label: '이미지 행 목록',
       type: 'image-map-rows',
       value: [
-         {
-          id: 1,
+        {
+          id: 'imr_map_001',
           imageUrl: 'https://org-i.benepia.co.kr/ckeditor/2025/12/11/BB588B647500.Tomcat_117654295328570.jpg',
           width: 720,
           height: 280,
@@ -414,7 +411,7 @@ export const templateDefaults = {
           mapName: 'mapContents01'
         },
         {
-          id: 2,
+          id: 'imr_map_002',
           imageUrl: 'http://org-i.benepia.co.kr/ckeditor/2025/12/11/BB588B647500.Tomcat_117654296464950.jpg',
           width: 720,
           height: 1478,
@@ -422,7 +419,7 @@ export const templateDefaults = {
           mapName: 'mapContents02'
         },
         {
-          id: 3,
+          id: 'imr_map_003',
           imageUrl: 'http://org-i.benepia.co.kr/ckeditor/2025/12/11/BB588B647500.Tomcat_117654297755070.jpg',
           width: 720,
           height: 1155,
@@ -430,7 +427,7 @@ export const templateDefaults = {
           mapName: 'mapContents03'
         },
         {
-          id: 4,
+          id: 'imr_map_004',
           imageUrl: 'https://org-i.benepia.co.kr/ckeditor/2025/12/11/BB588B647500.Tomcat_117654297899630.jpg',
           width: 720,
           height: 1461,
@@ -438,7 +435,7 @@ export const templateDefaults = {
           mapName: 'mapContents04'
         },
         {
-          id: 5,
+          id: 'imr_map_005',
           imageUrl: 'https://org-i.benepia.co.kr/ckeditor/2025/08/11/866100976AD2.Tomcat_117548786243380.jpg',
           width: 720,
           height: 250,
@@ -446,12 +443,12 @@ export const templateDefaults = {
           mapName: 'mapContents05'
         },
         {
-          id: 6,
+          id: 'imr_map_006',
           imageUrl: 'https://org-i.benepia.co.kr/ckeditor/2025/08/11/866100976AD2.Tomcat_117548786439870.jpg',
           width: 720,
           height: 453,
           imageAlt: '[News02] 겨울에 즐기는 따뜻한 홈파티',
-          mapName: 'mapContents02'
+          mapName: 'mapContents06'
         }
       ]
     },
@@ -460,29 +457,213 @@ export const templateDefaults = {
       type: 'image-map-areas',
       value: [
         {
-          id: 1,
-          rowId: 2,
+          id: 'ima_map_001',
+          rowId: 'imr_map_002',
           href: 'https://example.com/beauty',
           alt: '홀리데이 뷰티 기프트 기획전',
           coords: { x1: 60, y1: 349, x2: 660, y2: 853 }
         },
         {
-          id: 2,
-          rowId: 2,
+          id: 'ima_map_002',
+          rowId: 'imr_map_002',
           href: 'https://example.com/health',
           alt: '베스트 건강가전 선물 기획전',
           coords: { x1: 60, y1: 893, x2: 660, y2: 1397 }
         },
         {
-          id: 3,
-          rowId: 3,
+          id: 'ima_map_003',
+          rowId: 'imr_map_003',
           href: 'https://example.com/tree',
           alt: '크리스마스 트리 기획전',
           coords: { x1: 411, y1: 397, x2: 639, y2: 624 }
         },
         {
-          id: 4,
-          rowId: 3,
+          id: 'ima_map_004',
+          rowId: 'imr_map_003',
+          href: 'https://example.com/food',
+          alt: '홈파티 간편식 기획전',
+          coords: { x1: 77, y1: 686, x2: 305, y2: 914 }
+        }
+      ]
+    }
+  },
+  // 쿠폰혜택
+  'em-type-coupon': {
+    sendDate: {
+      label: '발송일 기준',
+      type: 'date-picker',
+      value: {
+        year: '2026',
+        month: '01',
+        day: '01'
+      }
+    },
+    imageLinkGroups: {
+      label: '이미지 링크 그룹',
+      type: 'image-link-group',
+      value: [
+        {
+          id: 'grp_cpn_001',
+          href: 'https://example.com/product1',
+          linkType: 'custom',
+          linkData: {
+            planCode: '',
+            productCode: '',
+            webEventCode: '',
+            mobileEventCode: '',
+            searchKeyword: '',
+            customUrl: 'https://example.com/product1'
+          },
+          images: [
+            {
+              id: 'img_cpn_001',
+              url: 'http://10.71.101.60:13305/Promotion/2025%EB%85%84/20251031_BENEPRO-3522_11%EC%9B%94%20%EC%BF%A0%ED%8F%B0%ED%98%9C%ED%83%9D%20EM/EM/images/img_top_benepia.jpg',
+              alt: '11월 혜택이 쏟아진다! 쿠폰혜택'
+            },
+            {
+              id: 'img_cpn_002',
+              url: 'http://10.71.101.60:13305/Promotion/2025%EB%85%84/20251031_BENEPRO-3522_11%EC%9B%94%20%EC%BF%A0%ED%8F%B0%ED%98%9C%ED%83%9D%20EM/EM/images/img_01.jpg',
+              alt: '브랜드 한정 특가/진행중인 이벤트/놓치면 아까운 여행 특집/인기급상승 e쿠폰 - 자세히 보기'
+            },
+          ]
+        },
+      ]
+    } 
+  },
+  // 베네레터
+  'em-type-letter': {
+    companyType: {
+      label: '도메인',
+      type: 'select',
+      value: 'normal',
+      options: [
+        { value: 'normal', label: 'TOBE' },
+        { value: 'hynix', label: 'HYNIX' }
+      ]
+    },
+    sendDate: {
+      label: '발송일 기준',
+      type: 'date-picker',
+      value: {
+        year: '2026',
+        month: '01',
+        day: '01'
+      }
+    },
+    imageMapRows: {
+      label: '이미지 행 목록',
+      type: 'image-map-rows',
+      value: [
+        {
+          id: 'imr_ltr_001',
+          imageUrl: 'https://org-i.benepia.co.kr/ckeditor/2025/12/11/BB588B647500.Tomcat_117654295328570.jpg',
+          width: 720,
+          height: 280,
+          imageAlt: '[',
+          mapName: ''
+        },
+        {
+          id: 'imr_ltr_002',
+          imageUrl: 'http://org-i.benepia.co.kr/ckeditor/2025/12/11/BB588B647500.Tomcat_117654296464950.jpg',
+          width: 720,
+          height: 1478,
+          imageAlt: '[News01] 따뜻한 진심을 담은 연말 선물',
+          mapName: 'mapContents01'
+        },
+        {
+          id: 'imr_ltr_003',
+          imageUrl: 'http://org-i.benepia.co.kr/ckeditor/2025/12/11/BB588B647500.Tomcat_117654297755070.jpg',
+          width: 720,
+          height: 1155,
+          imageAlt: '[News02] 겨울에 즐기는 따뜻한 홈파티',
+          mapName: 'mapContents02'
+        },
+        {
+          id: 'imr_ltr_004',
+          imageUrl: 'https://org-i.benepia.co.kr/ckeditor/2025/12/11/BB588B647500.Tomcat_117654297899630.jpg',
+          width: 720,
+          height: 1461,
+          imageAlt: '',
+          mapName: 'mapContents03'
+        },
+        {
+          id: 'imr_ltr_005',
+          imageUrl: 'https://org-i.benepia.co.kr/ckeditor/2025/12/11/BB588B647500.Tomcat_117654298063530.jpg',
+          width: 720,
+          height: 1082,
+          imageAlt: '',
+          mapName: 'mapContents04'
+        },
+        {
+          id: 'imr_ltr_006',
+          imageUrl: 'https://org-i.benepia.co.kr/ckeditor/2025/12/11/BB588B647500.Tomcat_117654298209700.jpg',
+          width: 720,
+          height: 1826,
+          imageAlt: '',
+          mapName: 'mapContents05'
+        },
+        {
+          id: 'imr_ltr_007',
+          imageUrl: 'https://org-i.benepia.co.kr/ckeditor/2025/12/11/BB588B647500.Tomcat_117654298339750.jpg',
+          width: 720,
+          height: 786,
+          imageAlt: '',
+          mapName: 'mapContents06'
+        },
+        {
+          id: 'imr_ltr_008',
+          imageUrl: 'https://org-i.benepia.co.kr/ckeditor/2025/12/11/BB588B647500.Tomcat_117654298491240.jpg',
+          width: 720,
+          height: 491,
+          imageAlt: '',
+          mapName: 'mapContents07'
+        },
+         {
+          id: 'imr_ltr_009',
+          imageUrl: 'https://org-i.benepia.co.kr/ckeditor/2025/08/11/866100976AD2.Tomcat_117548786243380.jpg',
+          width: 720,
+          height: 250,
+          imageAlt: '',
+          mapName: 'mapContents08'
+        },
+        {
+          id: 'imr_ltr_010',
+          imageUrl: 'https://org-i.benepia.co.kr/ckeditor/2025/08/11/866100976AD2.Tomcat_117548786439870.jpg',
+          width: 720,
+          height: 453,
+          imageAlt: '',
+          mapName: ''
+        }
+      ]
+    },
+    imageMapAreas: {
+      label: '핫스팟 목록',
+      type: 'image-map-areas',
+      value: [
+        {
+          id: 'ima_ltr_001',
+          rowId: 'imr_ltr_002',
+          href: 'https://example.com/beauty',
+          alt: '홀리데이 뷰티 기프트 기획전',
+          coords: { x1: 60, y1: 349, x2: 660, y2: 853 }
+        },
+        {
+          id: 'ima_ltr_002',
+          rowId: 'imr_ltr_002',
+          href: 'https://example.com/health',
+          alt: '베스트 건강가전 선물 기획전',
+          coords: { x1: 60, y1: 893, x2: 660, y2: 1397 }
+        },
+        {
+          id: 'ima_ltr_003',
+          rowId: 'imr_ltr_003',
+          href: 'https://example.com/tree',
+          alt: '크리스마스 트리 기획전',
+          coords: { x1: 411, y1: 397, x2: 639, y2: 624 }
+        },
+        {
+          id: 'ima_ltr_004',
+          rowId: 'imr_ltr_003',
           href: 'https://example.com/food',
           alt: '홈파티 간편식 기획전',
           coords: { x1: 77, y1: 686, x2: 305, y2: 914 }
