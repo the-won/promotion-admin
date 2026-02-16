@@ -125,8 +125,8 @@ export default {
     handleSelectHotspot(id) {
       this.$emit('select-hotspot', id)
     },
-    handleUpdateHotspot(hotspot, hotspotsKey) {
-      this.$emit('update-hotspot', hotspot, hotspotsKey)
+    handleUpdateHotspot(hotspot, hotspotsKey, imageIndex) {
+      this.$emit('update-hotspot', hotspot, hotspotsKey, imageIndex)
     },
     handleDeleteHotspot(id) {
       this.$emit('delete-hotspot', id)
@@ -159,7 +159,8 @@ export default {
       }
       
       const containerRef = `image-container-${groupIndex}`
-      const container = templateComponent.$refs[containerRef]
+      const rawRef = templateComponent.$refs[containerRef]
+      const container = Array.isArray(rawRef) ? rawRef[0] : rawRef
       
       if (!container) {
         console.log(`⚠️ ${containerRef} ref 없음`)

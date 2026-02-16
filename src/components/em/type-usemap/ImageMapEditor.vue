@@ -96,8 +96,12 @@
           <div 
             v-for="(area, areaIndex) in getAreasForRow(row.id)" 
             :key="area.id"
+            :ref="'area-card-' + area.id"
             class="card selectable card-nested"
-            :class="{ 'selected': selectedAreaId === area.id }"
+            :class="{ 
+              'selected': selectedAreaId === area.id,
+              'flash-highlight': flashingAreaId === area.id
+            }"
             @click="selectArea(area.id)"
           >
             <div class="card-header card-header-sm">
@@ -302,7 +306,8 @@ export default {
       localAreas: [],
       activeRowId: null,
       rowWatchers: [],
-      globalVendor: 'normal'  // 전역 벤더 설정
+      globalVendor: 'normal',
+      flashingAreaId: null
     }
   },
   created() {
@@ -381,6 +386,12 @@ export default {
       // 부모의 companyType이 변경되면 globalVendor도 동기화
       if (newVal !== this.globalVendor) {
         this.globalVendor = newVal
+      }
+    },
+    // 프리뷰에서 핫스팟 클릭 → 사이드바 카드 스크롤 + 하이라이트
+    selectedAreaId(newId) {
+      if (newId != null) {
+        this.scrollToAreaCard(newId)
       }
     }
   },
@@ -739,6 +750,21 @@ export default {
 
     selectArea(areaId) {
       this.$emit('select-area', areaId)
+    },
+
+    scrollToAreaCard(areaId) {
+      this.$nextTick(() => {
+        const refKey = 'area-card-' + areaId
+        const cardEl = this.$refs[refKey]
+        if (!cardEl) return
+        const el = Array.isArray(cardEl) ? cardEl[0] : cardEl
+        if (!el) return
+
+        el.scrollIntoView({ behavior: 'smooth', block: 'center' })
+
+        this.flashingAreaId = areaId
+        setTimeout(() => { this.flashingAreaId = null }, 1500)
+      })
     }
   }
 }
@@ -769,6 +795,23 @@ export default {
 
 .card-nested {
   background: var(--color-bg, #fff);
+}
+
+/* 프리뷰에서 클릭 시 깜빡임 효과 */
+.card-nested.flash-highlight {
+  animation: flashPulse 0.5s ease-in-out 3;
+}
+
+@keyframes flashPulse {
+  0%, 100% {
+    border-color: var(--color-primary, #5568f8);
+    box-shadow: 0 0 0 3px rgba(85, 104, 248, 0.1);
+  }
+  50% {
+    border-color: #f59e0b;
+    box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.3);
+    background: rgba(245, 158, 11, 0.08);
+  }
 }
 
 .card-header-sm {

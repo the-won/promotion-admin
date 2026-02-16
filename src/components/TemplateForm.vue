@@ -128,7 +128,7 @@
           v-model="localData[key]"
         />
 
-        <!-- Hotspot Group Editor (이미지 + 핫스팟 통합) -->
+        <!-- Hotspot Group Editor (단일 그룹) -->
         <HotspotGroupEditor
           v-else-if="config.type === 'hotspot-group'"
           v-model="localData[key]"
@@ -137,6 +137,19 @@
           :selectedId="selectedHotspotId"
           :selectedHotspotInfo="selectedHotspotInfo"
           :visibleTopPosition="getVisibleTopForKey(key)"
+          :sidebarExpanded="sidebarExpanded"
+          @select="handleSelectHotspot"
+          @select-hotspot="handleSelectHotspotWithInfo"
+          @select-image="handleSelectHotspotImage"
+        />
+
+        <!-- Hotspot Group Editor (동적 N개 이미지+핫스팟) -->
+        <HotspotGroupEditor
+          v-else-if="config.type === 'hotspot-group-list'"
+          v-model="localData[key]"
+          :deviceType="currentDevice"
+          :selectedId="selectedHotspotId"
+          :selectedHotspotInfo="selectedHotspotInfo"
           :sidebarExpanded="sidebarExpanded"
           @select="handleSelectHotspot"
           @select-hotspot="handleSelectHotspotWithInfo"
@@ -245,7 +258,9 @@ export default {
   computed: {
     hasHotspotGroup() {
       if (!this.templateConfig) return false
-      return Object.values(this.templateConfig).some(config => config.type === 'hotspot-group')
+      return Object.values(this.templateConfig).some(
+        config => config.type === 'hotspot-group' || config.type === 'hotspot-group-list'
+      )
     }
   },
   created() {
@@ -276,6 +291,7 @@ export default {
     isFullWidthField(type) {
       const fullWidthTypes = [
         'hotspot-group', 
+        'hotspot-group-list',
         'image-link-group', 
         'image-map-rows', 
         'textarea', 
@@ -286,7 +302,7 @@ export default {
     },
     
     isHideLabelField(type) {
-      return ['hotspot-group'].includes(type)
+      return ['hotspot-group', 'hotspot-group-list'].includes(type)
     },
     
     handleSelectHotspot(id) {

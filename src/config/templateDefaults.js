@@ -91,51 +91,41 @@ export const templateDefaults = {
     } 
   },
   'em-type-3': {
-    hotspotGroup1: {
-      label: '이미지 1 설정',
-      type: 'hotspot-group',
-      value: {
-        webImageUrl: 'https://d2odciwzsa8zjd.cloudfront.net/public/editorImage/202509/8dae3bd8-5e33-4d1c-af7e-3cdbc39b3b1a.png',
-        mobileImageUrl: '',
-        hotspots: [
-          {
-            id: 'hs_t3g1_001',
-            text: '지금 신청하기',
-            href: 'https://example.com/apply',
-            alt: '신청하기 버튼',
-            title: '신청하기',
-            position: {
-              left: 30,
-              top: 5,
-              width: 30,
-              height: 10
+    hotspotGroups: {
+      label: '이미지 + 핫스팟 그룹',
+      type: 'hotspot-group-list',
+      value: [
+        {
+          id: 'hg_t3_001',
+          webImageUrl: 'https://d2odciwzsa8zjd.cloudfront.net/public/editorImage/202509/8dae3bd8-5e33-4d1c-af7e-3cdbc39b3b1a.png',
+          mobileImageUrl: '',
+          hotspots: [
+            {
+              id: 'hs_t3_001',
+              text: '지금 신청하기',
+              href: 'https://example.com/apply',
+              alt: '신청하기 버튼',
+              title: '신청하기',
+              position: { left: 30, top: 5, width: 30, height: 10 }
             }
-          }
-        ]
-      }
-    },
-    hotspotGroup2: {
-      label: '이미지 2 설정',
-      type: 'hotspot-group',
-      value: {
-        webImageUrl: 'https://d2odciwzsa8zjd.cloudfront.net/public/editorImage/202503/fbca6135-d59d-4be7-b483-6e2577e4e4c3.png',
-        mobileImageUrl: '',
-        hotspots: [
-          {
-            id: 'hs_t3g2_001',
-            text: '더 알아보기',
-            href: 'https://example.com/more',
-            alt: '더보기 버튼',
-            title: '더 알아보기',
-            position: {
-              left: 40,
-              top: 5,
-              width: 25,
-              height: 10
+          ]
+        },
+        {
+          id: 'hg_t3_002',
+          webImageUrl: 'https://d2odciwzsa8zjd.cloudfront.net/public/editorImage/202503/fbca6135-d59d-4be7-b483-6e2577e4e4c3.png',
+          mobileImageUrl: '',
+          hotspots: [
+            {
+              id: 'hs_t3_002',
+              text: '더 알아보기',
+              href: 'https://example.com/more',
+              alt: '더보기 버튼',
+              title: '더 알아보기',
+              position: { left: 40, top: 5, width: 25, height: 10 }
             }
-          }
-        ]
-      }
+          ]
+        }
+      ]
     }
   },
   'em-type-4': {
@@ -560,7 +550,7 @@ export const templateDefaults = {
           width: 720,
           height: 280,
           imageAlt: '[',
-          mapName: ''
+          mapName: 'mapContents01'
         },
         {
           id: 'imr_ltr_002',
@@ -568,7 +558,7 @@ export const templateDefaults = {
           width: 720,
           height: 1478,
           imageAlt: '[News01] 따뜻한 진심을 담은 연말 선물',
-          mapName: 'mapContents01'
+          mapName: 'mapContents02'
         },
         {
           id: 'imr_ltr_003',
@@ -576,7 +566,7 @@ export const templateDefaults = {
           width: 720,
           height: 1155,
           imageAlt: '[News02] 겨울에 즐기는 따뜻한 홈파티',
-          mapName: 'mapContents02'
+          mapName: 'mapContents03'
         },
         {
           id: 'imr_ltr_004',
@@ -584,7 +574,7 @@ export const templateDefaults = {
           width: 720,
           height: 1461,
           imageAlt: '',
-          mapName: 'mapContents03'
+          mapName: 'mapContents04'
         },
         {
           id: 'imr_ltr_005',
@@ -592,7 +582,7 @@ export const templateDefaults = {
           width: 720,
           height: 1082,
           imageAlt: '',
-          mapName: 'mapContents04'
+          mapName: 'mapContents05'
         },
         {
           id: 'imr_ltr_006',
@@ -600,7 +590,7 @@ export const templateDefaults = {
           width: 720,
           height: 1826,
           imageAlt: '',
-          mapName: 'mapContents05'
+          mapName: 'mapContents06'
         },
         {
           id: 'imr_ltr_007',
@@ -667,7 +657,50 @@ export const templateDefaults = {
           href: 'https://example.com/food',
           alt: '홈파티 간편식 기획전',
           coords: { x1: 77, y1: 686, x2: 305, y2: 914 }
-        }
+        },
+        {
+          id: 'ima_ltr_005',
+          rowId: 'imr_ltr_004',
+          href: '',
+          alt: '',
+          coords: { x1: 61, y1: 348, x2: 661, y2: 670 }
+        },
+        {
+          id: 'ima_ltr_006',
+          rowId: 'imr_ltr_005',
+          href: '',
+          alt: '',
+          coords: { x1: 58, y1: 349, x2: 661, y2: 1012 }
+        },
+        {
+          id: 'ima_ltr_007',
+          rowId: 'imr_ltr_006',
+          href: '',
+          alt: '',
+          coords: { x1: 45, y1: 498, x2: 679, y2: 748 }
+        },
+        {
+          id: 'ima_ltr_008',
+          rowId: 'imr_ltr_007',
+          href: '',
+          alt: '',
+          coords: { x1: 27, y1: 147, x2: 688, y2: 329 }
+        },
+        {
+          id: 'ima_ltr_009',
+          rowId: 'imr_ltr_008',
+          href: '',
+          alt: '',
+          coords: { x1: 98, y1: 198, x2: 220, y2: 262 }
+        },
+        {
+          id: 'ima_ltr_010',
+          rowId: 'imr_ltr_009',
+          href: '',
+          alt: '',
+          coords: { x1: 31, y1: 28, x2: 690, y2: 207 }
+        },
+      
       ]
     }
   }

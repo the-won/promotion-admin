@@ -1,103 +1,47 @@
 <template>
   <div class="event-preview">
-    <!-- TopBanner 조건부 렌더링 -->
-    <!-- 상단 배너 (디바이스별) -->
-      <!-- <TopBanner 
-        v-if="deviceType === 'web' && showTopBanner" 
-      />
-      <TopBannerMobile 
-        v-if="deviceType === 'mobile' && showTopBanner" 
-      /> -->
-
-    <!-- 첫 번째 이미지 + 핫스팟 -->
+    <!-- 동적 이미지 + 핫스팟 그룹 -->
     <div 
-      v-if="imageUrl1"
-      :ref="`image-container-1`"
+      v-for="(group, groupIdx) in hotspotGroups" 
+      :key="group.id"
+      :ref="`image-container-${groupIdx + 1}`"
       class="image-container"
       :class="{ 
-        'image-container-highlighted': activeImageIndex === 1 || isImageContainerActive(1)
+        'image-container-highlighted': activeImageIndex === (groupIdx + 1) || isImageContainerActive(groupIdx + 1)
       }"
-      @mousedown="handleContainerClick($event, 1)"
+      @mousedown="handleContainerClick($event, groupIdx + 1)"
     >
       <img 
-        :src="imageUrl1" 
+        v-if="getImageUrl(group)"
+        :src="getImageUrl(group)" 
         class="background-image"
         alt="Background"
-        @load="onImageLoad(1)"
+        @load="onImageLoad(groupIdx + 1)"
         @dragstart.prevent
       />
       
       <div
-        v-for="hotspot in hotspots1"
+        v-for="hotspot in group.hotspots"
         :key="hotspot.id"
         :ref="`hotspot-${hotspot.id}`"
         class="draggable-hotspot"
         :class="{ 
           selected: selectedId === hotspot.id,
-          'highlight-hotspot': isHotspotActive(hotspot.id, 1)
+          'highlight-hotspot': isHotspotActive(hotspot.id, groupIdx + 1)
         }"
         :style="getHotspotStyle(hotspot)"
-        @mousedown="startDrag($event, hotspot, 1)"
+        @mousedown="startDrag($event, hotspot, groupIdx + 1)"
       >
         <span class="label">{{ hotspot.text }}</span>
         
         <template v-if="selectedId === hotspot.id">
-          <div class="resize-handle nw" @mousedown.stop="startResize($event, hotspot, 'nw', 1)"></div>
-          <div class="resize-handle ne" @mousedown.stop="startResize($event, hotspot, 'ne', 1)"></div>
-          <div class="resize-handle sw" @mousedown.stop="startResize($event, hotspot, 'sw', 1)"></div>
-          <div class="resize-handle se" @mousedown.stop="startResize($event, hotspot, 'se', 1)"></div>
+          <div class="resize-handle nw" @mousedown.stop="startResize($event, hotspot, 'nw', groupIdx + 1)"></div>
+          <div class="resize-handle ne" @mousedown.stop="startResize($event, hotspot, 'ne', groupIdx + 1)"></div>
+          <div class="resize-handle sw" @mousedown.stop="startResize($event, hotspot, 'sw', groupIdx + 1)"></div>
+          <div class="resize-handle se" @mousedown.stop="startResize($event, hotspot, 'se', groupIdx + 1)"></div>
         </template>
       </div>
     </div>
-
-    <!-- 두 번째 이미지 + 핫스팟 -->
-    <div 
-      v-if="imageUrl2"
-      :ref="`image-container-2`"
-      class="image-container"
-      :class="{ 
-        'image-container-highlighted': activeImageIndex === 2 || isImageContainerActive(2)
-      }"
-      @mousedown="handleContainerClick($event, 2)"
-    >
-      <img 
-        :src="imageUrl2" 
-        class="background-image"
-        alt="Background 2"
-        @load="onImageLoad(2)"
-        @dragstart.prevent
-      />
-      
-      <div
-        v-for="hotspot in hotspots2"
-        :key="hotspot.id"
-        :ref="`hotspot-${hotspot.id}`"
-        class="draggable-hotspot"
-        :class="{ 
-          selected: selectedId === hotspot.id,
-          'highlight-hotspot': isHotspotActive(hotspot.id, 2)
-        }"
-        :style="getHotspotStyle(hotspot)"
-        @mousedown="startDrag($event, hotspot, 2)"
-      >
-        <span class="label">{{ hotspot.text }}</span>
-        
-        <template v-if="selectedId === hotspot.id">
-          <div class="resize-handle nw" @mousedown.stop="startResize($event, hotspot, 'nw', 2)"></div>
-          <div class="resize-handle ne" @mousedown.stop="startResize($event, hotspot, 'ne', 2)"></div>
-          <div class="resize-handle sw" @mousedown.stop="startResize($event, hotspot, 'sw', 2)"></div>
-          <div class="resize-handle se" @mousedown.stop="startResize($event, hotspot, 'se', 2)"></div>
-        </template>
-      </div>
-    </div>
-
-    <!-- 하단 배너 (디바이스별) -->
-      <!-- <BottomBanner 
-        v-if="deviceType === 'web' && showBottomBanner" 
-      />
-      <BottomBannerMobile 
-        v-if="deviceType === 'mobile' && showBottomBanner" 
-      /> -->
   </div>
 </template>
 
@@ -150,36 +94,13 @@ export default {
       startX: 0,
       startY: 0,
       initialPos: null,
-      containerRects: {
-        1: null,
-        2: null
-      }
+      containerRects: {}
     }
   },
   computed: {
-    // 현재 디바이스에 따른 이미지 URL (모바일 URL 없으면 웹 URL fallback)
-    imageUrl1() {
-      const group = this.data.hotspotGroup1
-      if (!group) return null
-      if (this.deviceType === 'mobile') {
-        return group.mobileImageUrl || group.webImageUrl
-      }
-      return group.webImageUrl
-    },
-    imageUrl2() {
-      const group = this.data.hotspotGroup2
-      if (!group) return null
-      if (this.deviceType === 'mobile') {
-        return group.mobileImageUrl || group.webImageUrl
-      }
-      return group.webImageUrl
-    },
-    // 핫스팟 데이터
-    hotspots1() {
-      return this.data.hotspotGroup1?.hotspots || []
-    },
-    hotspots2() {
-      return this.data.hotspotGroup2?.hotspots || []
+    // 핫스팟 그룹 배열
+    hotspotGroups() {
+      return this.data.hotspotGroups || []
     }
   },
   mounted() {
@@ -240,6 +161,14 @@ export default {
       }
     },
     
+    getImageUrl(group) {
+      if (!group) return null
+      if (this.deviceType === 'mobile') {
+        return group.mobileImageUrl || group.webImageUrl
+      }
+      return group.webImageUrl
+    },
+    
     onImageLoad(imageIndex) {
       this.$nextTick(() => {
         this.updateContainerRect(imageIndex)
@@ -249,22 +178,25 @@ export default {
     updateContainerRect(imageIndex) {
       if (imageIndex) {
         const ref = this.$refs[`image-container-${imageIndex}`]
-        if (ref) {
-          const rect = ref.getBoundingClientRect()
-          this.containerRects[imageIndex] = {
+        const el = Array.isArray(ref) ? ref[0] : ref
+        if (el) {
+          const rect = el.getBoundingClientRect()
+          this.$set(this.containerRects, imageIndex, {
             width: rect.width,
             height: rect.height
-          }
+          })
         }
       } else {
-        [1, 2].forEach(idx => {
-          const ref = this.$refs[`image-container-${idx}`]
-          if (ref) {
-            const rect = ref.getBoundingClientRect()
-            this.containerRects[idx] = {
+        // 모든 그룹 업데이트
+        this.hotspotGroups.forEach((_, idx) => {
+          const ref = this.$refs[`image-container-${idx + 1}`]
+          const el = Array.isArray(ref) ? ref[0] : ref
+          if (el) {
+            const rect = el.getBoundingClientRect()
+            this.$set(this.containerRects, idx + 1, {
               width: rect.width,
               height: rect.height
-            }
+            })
           }
         })
       }
@@ -325,7 +257,7 @@ export default {
       newLeft = Math.max(0, Math.min(100 - this.currentHotspot.position.width, newLeft))
       newTop = Math.max(0, Math.min(100 - this.currentHotspot.position.height, newTop))
       
-      const groupKey = `hotspotGroup${this.currentImageIndex}`
+      const groupKey = `hotspotGroups`
       
       this.$emit('update-hotspot', {
         ...this.currentHotspot,
@@ -334,7 +266,7 @@ export default {
           left: newLeft,
           top: newTop
         }
-      }, groupKey)
+      }, groupKey, this.currentImageIndex)
     },
     
     stopDrag() {
@@ -395,12 +327,12 @@ export default {
       newPos.left = Math.max(0, Math.min(100 - newPos.width, newPos.left))
       newPos.top = Math.max(0, Math.min(100 - newPos.height, newPos.top))
       
-      const groupKey = `hotspotGroup${this.currentImageIndex}`
+      const groupKey = `hotspotGroups`
       
       this.$emit('update-hotspot', {
         ...this.currentHotspot,
         position: newPos
-      }, groupKey)
+      }, groupKey, this.currentImageIndex)
     },
     
     stopResize() {

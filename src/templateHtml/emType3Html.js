@@ -123,8 +123,10 @@ export function generateEmType3Html(data) {
               <td>
           <![endif]-->
           <table role="presentation" class="email-container" width="600" cellpadding="0" cellspacing="0" border="0" style="background-color: #ffffff; max-width: 600px; margin: 0 auto;">
-${generateImageSection(data.backgroundImage1, data.hotspots1)}
-${generateImageSection(data.backgroundImage2, data.hotspots2)}
+${(data.hotspotGroups || []).map(group => {
+  const imageUrl = group.webImageUrl || group.mobileImageUrl
+  return generateImageSection(imageUrl, group.hotspots)
+}).join('\n')}
           </table>
           <!--[if mso]>
               </td>

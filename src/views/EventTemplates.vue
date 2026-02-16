@@ -275,25 +275,17 @@ export default {
     updateVisiblePositions() {
       const previewFrame = this.$refs.previewFrame
       if (!previewFrame) {
-        console.log('⚠️ previewFrame ref 없음')
         return
       }
       
       if (typeof previewFrame.getVisibleTopPosition === 'function') {
-        const pos1 = previewFrame.getVisibleTopPosition(1)
-        const pos2 = previewFrame.getVisibleTopPosition(2)
-        
-        this.visibleTopPositions = {
-          1: pos1,
-          2: pos2
+        // 동적 그룹 수에 맞게 위치 계산
+        const groupCount = (this.formData.hotspotGroups && this.formData.hotspotGroups.length) || 2
+        const positions = {}
+        for (let i = 1; i <= groupCount; i++) {
+          positions[i] = previewFrame.getVisibleTopPosition(i)
         }
-        
-        console.log('📍 스크롤 위치 업데이트:', {
-          group1: pos1,
-          group2: pos2
-        })
-      } else {
-        console.log('⚠️ getVisibleTopPosition 메서드 없음')
+        this.visibleTopPositions = positions
       }
       
       if (typeof previewFrame.getVisiblePositionsForImageMap === 'function') {
@@ -365,7 +357,33 @@ export default {
       this.activeImageIndex = imageIndex
     },
     
-    handleUpdateHotspot(updatedHotspot, groupKey) {
+    handleUpdateHotspot(updatedHotspot, groupKey, imageIndex) {
+      // hotspotGroups 배열 구조 (em-type-3)
+      if (groupKey === 'hotspotGroups' && Array.isArray(this.formData.hotspotGroups) && imageIndex) {
+        const group = this.formData.hotspotGroups[imageIndex - 1]
+        if (group && group.hotspots) {
+          const index = group.hotspots.findIndex(h => h.id === updatedHotspot.id)
+          if (index !== -1) {
+            this.$set(group.hotspots, index, updatedHotspot)
+            return
+          }
+        }
+      }
+
+      // hotspotGroups 배열 - imageIndex 없이 전체 탐색
+      if (Array.isArray(this.formData.hotspotGroups)) {
+        for (const group of this.formData.hotspotGroups) {
+          if (group && group.hotspots) {
+            const index = group.hotspots.findIndex(h => h.id === updatedHotspot.id)
+            if (index !== -1) {
+              this.$set(group.hotspots, index, updatedHotspot)
+              return
+            }
+          }
+        }
+      }
+      
+      // 기존 hotspotGroup1/2 구조 fallback
       if (groupKey && this.formData[groupKey] && this.formData[groupKey].hotspots) {
         const index = this.formData[groupKey].hotspots.findIndex(h => h.id === updatedHotspot.id)
         if (index !== -1) {
@@ -391,6 +409,21 @@ export default {
     },
     
     handleDeleteHotspot(id) {
+      // hotspotGroups 배열 구조 (em-type-3)
+      if (Array.isArray(this.formData.hotspotGroups)) {
+        for (const group of this.formData.hotspotGroups) {
+          if (group && group.hotspots) {
+            const index = group.hotspots.findIndex(h => h.id === id)
+            if (index !== -1) {
+              group.hotspots.splice(index, 1)
+              this.selectedHotspotId = null
+              return
+            }
+          }
+        }
+      }
+
+      // 기존 hotspotGroup1/2 구조 fallback
       const groupKeys = ['hotspotGroup1', 'hotspotGroup2']
       for (const key of groupKeys) {
         if (this.formData[key] && this.formData[key].hotspots) {
