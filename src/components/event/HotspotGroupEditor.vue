@@ -37,8 +37,12 @@
       <div 
         v-for="(hotspot, index) in localData.hotspots" 
         :key="hotspot.id" 
+        :ref="'card-' + hotspot.id"
         class="card selectable"
-        :class="{ selected: selectedId === hotspot.id }"
+        :class="{ 
+          selected: selectedId === hotspot.id,
+          'flash-highlight': flashingId === hotspot.id 
+        }"
         @click="selectHotspot(hotspot.id)"
       >
         <!-- Card Header -->
@@ -139,7 +143,8 @@ export default {
         webImageUrl: '',
         mobileImageUrl: '',
         hotspots: []
-      }
+      },
+      flashingId: null
     }
   },
   computed: {
@@ -169,8 +174,11 @@ export default {
       },
       deep: true
     },
-    visibleTopPosition(newVal) {
-      console.log(`📊 Group ${this.groupIndex} - visibleTopPosition 업데이트:`, newVal)
+    // 🔑 프리뷰에서 핫스팟 클릭 → 사이드바 카드 스크롤 + 하이라이트
+    selectedId(newId) {
+      if (newId != null) {
+        this.scrollToCard(newId)
+      }
     }
   },
   methods: {
@@ -196,22 +204,95 @@ export default {
       }
     },
     
-    addHotspot() {
-      const newId = Date.now()
+    /**
+     * 🔑 이미지 컨테이너 DOM 요소를 확실하게 찾는 메서드
+     * 
+     * EmType3.vue 구조:
+     *   .image-container (ref="container1")  ← groupIndex 1
+     *   .image-container (ref="container2")  ← groupIndex 2
+     * 
+     * 방법: 모든 .image-container를 수집 → groupIndex로 접근
+     */
+    findImageContainer() {
+      const idx = this.groupIndex // 1-based
       
-      // 현재 보이는 스크롤 위치 가져오기
-      let baseTop = this.visibleTopPosition || 10
+      // 방법 1: 모든 image-container를 찾아서 index로 접근 (가장 확실)
+      const allContainers = document.querySelectorAll('.image-container')
+      if (allContainers.length >= idx) {
+        return allContainers[idx - 1]
+      }
       
-      console.log('🎯 핫스팟 추가 위치 계산:', {
+      // 방법 2: preview-body 안에서 찾기
+      const previewBody = document.querySelector('.preview-body')
+      if (previewBody) {
+        const containers = previewBody.querySelectorAll('.image-container')
+        if (containers.length >= idx) {
+          return containers[idx - 1]
+        }
+      }
+      
+      // 방법 3: data 속성으로 찾기
+      const byData = document.querySelector(`[data-group-index="${idx}"]`)
+      if (byData) return byData
+      
+      return null
+    },
+    
+    /**
+     * 🔑 추가 버튼 클릭 시점에 실시간으로 뷰포트 대비 위치 계산
+     */
+    getRealtimeVisibleTop() {
+      const container = this.findImageContainer()
+      
+      if (!container) {
+        console.warn('⚠️ 이미지 컨테이너를 찾을 수 없음, fallback 30%')
+        return 30
+      }
+      
+      const rect = container.getBoundingClientRect()
+      const containerHeight = rect.height
+      
+      if (containerHeight <= 0) {
+        return 30
+      }
+      
+      // 뷰포트 중앙이 컨테이너의 어디(%)에 해당하는지
+      const viewportCenter = window.innerHeight / 2
+      const posInContainer = viewportCenter - rect.top
+      let topPercent = (posInContainer / containerHeight) * 100
+      
+      // 컨테이너가 화면 밖에 있는 경우 처리
+      if (rect.top > window.innerHeight) {
+        // 컨테이너가 완전히 아래에 있음 → 상단에 배치
+        topPercent = 10
+      } else if (rect.bottom < 0) {
+        // 컨테이너가 완전히 위에 있음 → 하단에 배치
+        topPercent = 80
+      }
+      
+      // 범위 제한 (5% ~ 85%)
+      topPercent = Math.max(5, Math.min(85, topPercent))
+      
+      console.log('📐 위치 계산:', {
         groupIndex: this.groupIndex,
-        visibleTopPosition: this.visibleTopPosition,
-        baseTop: baseTop,
-        currentHotspotsCount: this.localData.hotspots.length
+        containerTop: Math.round(rect.top),
+        containerHeight: Math.round(containerHeight),
+        viewportCenter: Math.round(viewportCenter),
+        result: Math.round(topPercent) + '%'
       })
       
-      // 여러 개 추가할 때 겹치지 않도록 오프셋 적용
-      const offsetTop = (this.localData.hotspots.length * 8) % 40
-      const finalTop = Math.min(85, Math.max(5, baseTop + offsetTop))
+      return Math.round(topPercent * 10) / 10
+    },
+    
+    addHotspot() {
+      const newId = `hs_${Date.now()}_${Math.random().toString(36).substr(2, 6)}`
+      
+      // ✅ 추가 버튼 클릭 시점에 실시간으로 위치 계산
+      const baseTop = this.getRealtimeVisibleTop()
+      
+      // 같은 위치에 겹치지 않도록 작은 랜덤 오프셋 (±2%)
+      const randomOffset = (Math.random() - 0.5) * 4
+      const finalTop = Math.max(5, Math.min(85, baseTop + randomOffset))
       
       const newHotspot = {
         id: newId,
@@ -220,18 +301,21 @@ export default {
         alt: `버튼 ${this.localData.hotspots.length + 1}`,
         title: `버튼 ${this.localData.hotspots.length + 1}`,
         position: {
-          left: 10 + (this.localData.hotspots.length * 5) % 60,
-          top: finalTop,
+          left: 10 + Math.round(Math.random() * 30),
+          top: Math.round(finalTop * 10) / 10,
           width: 20,
           height: 10
         }
       }
       
-      console.log('✅ 새 핫스팟 생성:', newHotspot)
+      console.log('✅ 새 핫스팟:', {
+        id: newHotspot.id,
+        top: newHotspot.position.top + '%',
+        left: newHotspot.position.left + '%'
+      })
       
       this.localData.hotspots.push(newHotspot)
       
-      // 핫스팟 선택 및 스크롤
       this.$nextTick(() => {
         this.$emit('select', newId)
         this.$emit('select-hotspot', { hotspotId: newId, groupIndex: this.groupIndex })
@@ -249,14 +333,40 @@ export default {
     },
     
     selectHotspot(id) {
-      console.log('🎯 핫스팟 선택됨:', { hotspotId: id, groupIndex: this.groupIndex })
       this.$emit('select', id)
       this.$emit('select-hotspot', { hotspotId: id, groupIndex: this.groupIndex })
     },
     
     selectImage() {
-      console.log('🖼️ 이미지 영역 선택됨:', { groupIndex: this.groupIndex })
       this.$emit('select-image', { groupIndex: this.groupIndex })
+    },
+    
+    /**
+     * 🔑 해당 카드로 스크롤 이동 + 깜빡임 효과
+     */
+    scrollToCard(hotspotId) {
+      this.$nextTick(() => {
+        const refKey = 'card-' + hotspotId
+        const cardEl = this.$refs[refKey]
+        
+        if (!cardEl) return
+        
+        // v-for ref는 배열로 반환됨
+        const el = Array.isArray(cardEl) ? cardEl[0] : cardEl
+        if (!el) return
+        
+        // 부드럽게 스크롤 이동
+        el.scrollIntoView({ 
+          behavior: 'smooth', 
+          block: 'center' 
+        })
+        
+        // 깜빡임 효과
+        this.flashingId = hotspotId
+        setTimeout(() => {
+          this.flashingId = null
+        }, 1500)
+      })
     }
   }
 }
@@ -395,6 +505,24 @@ export default {
   border-color: #6366f1;
   box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
   background: rgba(99, 102, 241, 0.02);
+}
+
+/* 🔑 프리뷰에서 클릭 시 깜빡임 효과 */
+.card.flash-highlight {
+  animation: flashPulse 0.5s ease-in-out 3;
+}
+
+@keyframes flashPulse {
+  0%, 100% {
+    border-color: #6366f1;
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+    background: rgba(99, 102, 241, 0.02);
+  }
+  50% {
+    border-color: #f59e0b;
+    box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.3);
+    background: rgba(245, 158, 11, 0.08);
+  }
 }
 
 .card-header {
