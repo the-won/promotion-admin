@@ -205,6 +205,13 @@
           v-else-if="config.type === 'hotdeal-row3-list'"
           v-model="localData[key]"
         />
+
+        <!-- Privacy Section Editor -->
+        <PrivacySectionEditor
+          v-else-if="config.type === 'privacy-section-list'"
+          v-model="localData[key]"
+          :sidebarExpanded="sidebarExpanded"
+        />
       </div>
     </div>
   </div>
@@ -222,6 +229,7 @@ import ImageMapEditor from './em/type-usemap/ImageMapEditor.vue'
 import ProductGroupListEditor from './em/efamily/ProductGroupListEditor.vue'
 import BannerListEditor from './em/efamily/BannerListEditor.vue'
 import EfamilyExcelUploader from './em/efamily/EfamilyExcelUploader.vue'
+import PrivacySectionEditor from './privacy/PrivacySectionEditor.vue'
 
 export default {
   components: { 
@@ -235,7 +243,8 @@ export default {
     ImageMapEditor,
     ProductGroupListEditor,
     BannerListEditor,
-    EfamilyExcelUploader
+    EfamilyExcelUploader,
+    PrivacySectionEditor
   },
   props: [
     'template', 
@@ -296,13 +305,14 @@ export default {
         'image-map-rows', 
         'textarea', 
         'product-group-list',
-        'banner-list' 
+        'banner-list',
+        'privacy-section-list'
       ]
       return fullWidthTypes.includes(type)
     },
     
     isHideLabelField(type) {
-      return ['hotspot-group', 'hotspot-group-list'].includes(type)
+      return ['hotspot-group', 'hotspot-group-list', 'privacy-section-list'].includes(type)
     },
     
     handleSelectHotspot(id) {

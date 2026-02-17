@@ -1,4 +1,7 @@
+import { privacyPolicyDefaults } from './privacyDefaults.js'
+
 export const templateDefaults = {
+  'privacy-policy': privacyPolicyDefaults,
   'em-type-1': {
     title: {
       label: '이벤트 타이틀',

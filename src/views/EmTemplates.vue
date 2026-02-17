@@ -186,7 +186,8 @@ export default {
         { value: 'em-type-letter', name: '베네레터', icon: '', description: '베네레터 템플릿' },
         { value: 'em-type-4', name: '이패밀리샵', icon: '📰', description: '이패밀리샵 템플릿' },
         { value: 'em-type-5', name: '비밀특가', icon: '🔥', description: '핫스팟 인터랙티브 템플릿' },
-        { value: 'em-type-imagemap', name: 'Use Map', icon: '🗺️', description: '이미지맵 템플릿' }
+        { value: 'em-type-imagemap', name: 'Use Map', icon: '🗺️', description: '이미지맵 템플릿' },
+        { value: 'privacy-policy', name: '개인정보처리방침', icon: '🔒', description: '테이블 기반 약관' }
       ]
     }
   },

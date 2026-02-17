@@ -65,6 +65,12 @@ export default {
           name: 'Image Map',
           desc: '이미지맵 사용',
           icon: '🗺️'
+        },
+        {
+          value: 'privacy-policy',
+          name: '개인정보처리방침',
+          desc: '테이블 기반 약관',
+          icon: '🔒'
         }
       ]
     }
