@@ -32,7 +32,7 @@
         :style="getHotspotStyle(hotspot)"
         @mousedown="startDrag($event, hotspot, groupIdx + 1)"
       >
-        <span class="label">{{ hotspot.text }}</span>
+        <span class="label">버튼 {{ group.hotspots.indexOf(hotspot) + 1 }}</span>
         
         <template v-if="selectedId === hotspot.id">
           <div class="resize-handle nw" @mousedown.stop="startResize($event, hotspot, 'nw', groupIdx + 1)"></div>

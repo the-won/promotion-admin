@@ -41,13 +41,13 @@
 
       <!-- 핫스팟 목록 헤더 -->
       <div class="section-header">
-        <h4>핫스팟 목록 ({{ group.hotspots.length }}개)</h4>
+        <h4>버튼 목록 ({{ group.hotspots.length }}개)</h4>
         <button @click="addHotspot(groupIdx)" class="btn btn-success">추가</button>
       </div>
 
       <!-- Empty State -->
       <div v-if="group.hotspots.length === 0" class="empty-state">
-        핫스팟을 추가하세요.
+        버튼을 추가하세요.
       </div>
 
       <!-- 핫스팟 카드 -->
@@ -64,13 +64,8 @@
           @click="selectHotspot(hotspot.id, groupIdx + 1)"
         >
           <div class="card-header">
-            <span class="card-title">{{ hotspot.text || `핫스팟 ${hsIdx + 1}` }}</span>
+            <span class="card-title">버튼 {{ hsIdx + 1 }}</span>
             <button @click.stop="removeHotspot(groupIdx, hotspot.id)" class="btn btn-danger btn-sm">삭제</button>
-          </div>
-
-          <div class="form-group">
-            <label>라벨 텍스트</label>
-            <input type="text" v-model="hotspot.text" placeholder="버튼 텍스트" class="form-input" @click.stop />
           </div>
 
           <div class="form-group">
@@ -81,11 +76,6 @@
           <div class="form-group">
             <label>대체 텍스트 (alt)</label>
             <input type="text" v-model="hotspot.alt" placeholder="이미지 설명" class="form-input" @click.stop />
-          </div>
-
-          <div class="form-group">
-            <label>타이틀 (title)</label>
-            <input type="text" v-model="hotspot.title" placeholder="툴팁 텍스트" class="form-input" @click.stop />
           </div>
         </div>
       </div>
@@ -246,10 +236,8 @@ export default {
 
       this.localGroups[groupIdx].hotspots.push({
         id: newId,
-        text: `버튼 ${this.localGroups[groupIdx].hotspots.length + 1}`,
         href: 'https://example.com',
         alt: `버튼 ${this.localGroups[groupIdx].hotspots.length + 1}`,
-        title: `버튼 ${this.localGroups[groupIdx].hotspots.length + 1}`,
         position: {
           left: 10 + Math.round(Math.random() * 30),
           top: Math.round(finalTop * 10) / 10,
