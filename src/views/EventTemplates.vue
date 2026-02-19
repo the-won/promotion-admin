@@ -317,7 +317,10 @@ export default {
     },
     
     handleDownload() {
-      downloadHtml(this.selectedTemplate, this.formData)
+      console.log('🔍 다운로드 시작')
+      console.log('📱 currentDevice:', this.currentDevice)
+      console.log('📋 selectedTemplate:', this.selectedTemplate)
+      downloadHtml(this.selectedTemplate, this.formData, this.currentDevice)
     },
     
     handleSelectHotspot(id) {

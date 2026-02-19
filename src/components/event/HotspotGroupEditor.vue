@@ -37,6 +37,19 @@
             @click.stop
           />
         </div>
+        <div class="form-group">
+          <label>
+            {{ deviceType === 'mobile' ? '📱 모바일' : '🖥️ 웹' }} 이미지 대체텍스트 (스크린리더용)
+          </label>
+          <input 
+            type="text" 
+            :value="getImageAlt(group)"
+            @input="updateImageAlt(groupIdx, $event.target.value)"
+            placeholder="이미지 설명"
+            class="form-input"
+            @click.stop
+          />
+        </div>
       </div>
 
       <!-- 핫스팟 목록 헤더 -->
@@ -69,13 +82,25 @@
           </div>
 
           <div class="form-group">
+            <label class="checkbox-label">
+              <input 
+                type="checkbox" 
+                v-model="hotspot.useLink"
+                class="form-checkbox"
+                @click.stop
+              />
+              <span>링크로 사용 (a 태그)</span>
+            </label>
+          </div>
+
+          <div v-if="hotspot.useLink" class="form-group">
             <label>링크 URL (href)</label>
             <input type="url" v-model="hotspot.href" placeholder="https://example.com" class="form-input" @click.stop />
           </div>
 
           <div class="form-group">
-            <label>대체 텍스트 (alt)</label>
-            <input type="text" v-model="hotspot.alt" placeholder="이미지 설명" class="form-input" @click.stop />
+            <label>대체텍스트 (스크린리더용)</label>
+            <input type="text" v-model="hotspot.alt" placeholder="버튼 설명" class="form-input" @click.stop />
           </div>
         </div>
       </div>
@@ -173,12 +198,30 @@ export default {
       }
     },
 
+    // ── 이미지 Alt ──
+    getImageAlt(group) {
+      if (this.deviceType === 'mobile') {
+        return group.mobileImageAlt || group.webImageAlt || ''
+      }
+      return group.webImageAlt || ''
+    },
+
+    updateImageAlt(groupIdx, alt) {
+      if (this.deviceType === 'mobile') {
+        this.localGroups[groupIdx].mobileImageAlt = alt
+      } else {
+        this.localGroups[groupIdx].webImageAlt = alt
+      }
+    },
+
     // ── 그룹 관리 ──
     createNewGroup() {
       return {
         id: this.generateId('hg'),
         webImageUrl: '',
+        webImageAlt: '',
         mobileImageUrl: '',
+        mobileImageAlt: '',
         hotspots: []
       }
     },
@@ -236,6 +279,7 @@ export default {
 
       this.localGroups[groupIdx].hotspots.push({
         id: newId,
+        useLink: false,
         href: 'https://example.com',
         alt: `버튼 ${this.localGroups[groupIdx].hotspots.length + 1}`,
         position: {
@@ -486,5 +530,21 @@ export default {
 .btn-add-group:hover {
   background: rgba(99, 102, 241, 0.05);
   border-color: #6366f1;
+}
+
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  font-size: 12px;
+  color: #374151;
+}
+
+.form-checkbox {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+  accent-color: #6366f1;
 }
 </style>

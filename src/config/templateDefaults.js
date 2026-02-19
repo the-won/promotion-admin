@@ -101,29 +101,35 @@ export const templateDefaults = {
         {
           id: 'hg_t3_001',
           webImageUrl: 'http://10.71.101.60:13305/Promotion/2025%EB%85%84/20251229_BENEPRO-3607_[%EC%BB%A4%EB%A8%B8%EC%8A%A4%EC%82%AC%EC%97%85]%20%ED%81%B4%EB%9E%98%EC%8A%A4101%20%EC%8B%A0%EB%85%84%20%ED%94%84%EB%A1%9C%EB%AA%A8%EC%85%98/pc/images/img_contents01.jpg',
+          webImageAlt: '웹 이미지 설명',
           mobileImageUrl: '',
+          mobileImageAlt: '',
           hotspots: [
             {
               id: 'hs_t3_001',
+              useLink: false,
               href: 'https://example.com/apply',
               alt: '신청하기 버튼',
               position: { left: 30, top: 5, width: 30, height: 10 }
             }
           ]
         },
-        // {
-        //   id: 'hg_t3_002',
-        //   webImageUrl: 'https://d2odciwzsa8zjd.cloudfront.net/public/editorImage/202503/fbca6135-d59d-4be7-b483-6e2577e4e4c3.png',
-        //   mobileImageUrl: '',
-        //   hotspots: [
-        //     {
-        //       id: 'hs_t3_002',
-        //       href: 'https://example.com/more',
-        //       alt: '더보기 버튼',
-        //       position: { left: 40, top: 5, width: 25, height: 10 }
-        //     }
-        //   ]
-        // }
+        {
+          id: 'hg_t3_002',
+          webImageUrl: 'https://d2odciwzsa8zjd.cloudfront.net/public/editorImage/202503/fbca6135-d59d-4be7-b483-6e2577e4e4c3.png',
+          webImageAlt: '웹 이미지 설명',
+          mobileImageUrl: '',
+          mobileImageAlt: '',
+          hotspots: [
+            {
+              id: 'hs_t3_002',
+              useLink: false,
+              href: 'https://example.com/more',
+              alt: '더보기 버튼',
+              position: { left: 40, top: 5, width: 25, height: 10 }
+            }
+          ]
+        }
       ]
     }
   },
