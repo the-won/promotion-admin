@@ -5,7 +5,7 @@
       <div class="form-group">
         <label>🏢 벤더 타입 (전체 핫스팟 적용)</label>
         <select 
-          v-model="globalVendor" 
+          :value="companyType"
           @change="handleVendorChange"
           class="form-input vendor-select"
         >
@@ -30,7 +30,7 @@
       @click="selectRow(row.id, rowIndex)"
     >
       <div class="card-header">
-        <span class="card-title">행 {{ rowIndex + 1 }}</span>
+        <span class="card-title">이미지 행 {{ rowIndex + 1 }}</span>
         <button @click.stop="removeRow(row.id)" class="btn btn-danger btn-sm">행 삭제</button>
       </div>
 
@@ -158,7 +158,7 @@
             <!-- 이벤트 입력 -->
             <div v-if="area.linkType === 'event'" class="link-inputs">
               <!-- 일반: 웹 + 모바일 코드 둘 다 -->
-              <div v-if="globalVendor === 'normal'">
+              <div v-if="companyType === 'normal'">
                 <div class="form-group">
                   <label>웹 이벤트 코드</label>
                   <input 
@@ -306,16 +306,12 @@ export default {
       localAreas: [],
       activeRowId: null,
       rowWatchers: [],
-      globalVendor: 'normal',
       flashingAreaId: null
     }
   },
   created() {
     this.localRows = this.rows ? JSON.parse(JSON.stringify(this.rows)) : []
     this.localAreas = this.areas ? JSON.parse(JSON.stringify(this.areas)) : []
-    
-    // companyType props로 globalVendor 초기화
-    this.globalVendor = this.companyType || 'normal'
   },
   mounted() {
     // 각 row의 imageUrl 변경 감지
@@ -363,12 +359,6 @@ export default {
       },
       deep: true
     },
-    globalVendor(val) {
-      // 전역 벤더 변경 시 부모에 전달
-      this.$emit('update:vendor', val)
-      // companyType도 함께 업데이트
-      this.$emit('update:companyType', val)
-    },
     'selectedRowInfo.timestamp'(newVal) {
       console.log('👀 selectedRowInfo 타임스탬프 변경됨:', newVal)
       
@@ -380,12 +370,6 @@ export default {
           // 2초 후 하이라이트 제거
           this.startHighlightTimer(2000)
         })
-      }
-    },
-    companyType(newVal) {
-      // 부모의 companyType이 변경되면 globalVendor도 동기화
-      if (newVal !== this.globalVendor) {
-        this.globalVendor = newVal
       }
     },
     // 프리뷰에서 핫스팟 클릭 → 사이드바 카드 스크롤 + 하이라이트
@@ -406,7 +390,7 @@ export default {
       }
 
       const { linkType, linkData } = area
-      const vendorType = this.globalVendor  // 전역 벤더 사용
+      const vendorType = this.companyType  // companyType props 사용
       
       console.log('linkType:', linkType, 'linkData:', linkData, 'vendor:', vendorType)
 
@@ -512,28 +496,31 @@ export default {
       }
     },
     
-    handleVendorChange() {
-      console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━')
-      console.log('🔄 벤더 변경됨:', this.globalVendor)
-      console.log('📊 전체 핫스팟 수:', this.localAreas.length)
+    handleVendorChange(event) {
+      const newValue = event.target.value
       
-      // 모든 핫스팟의 URL 재생성
-      this.localAreas.forEach((area, index) => {
-        console.log(`\n핫스팟 ${index + 1}:`)
-        console.log('  - linkType:', area.linkType)
-        console.log('  - 변경 전 href:', area.href)
+      // 부모에게 companyType 변경 알림
+      this.$emit('update:companyType', newValue)
+      
+      // companyType이 변경되면 모든 핫스팟의 URL 재생성
+      this.$nextTick(() => {
+        this.localAreas.forEach((area, index) => {
+          console.log(`\n핫스팟 ${index + 1}:`)
+          console.log('  - linkType:', area.linkType)
+          console.log('  - 변경 전 href:', area.href)
+          
+          this.updateAreaUrl(area)
+          
+          console.log('  - 변경 후 href:', area.href)
+        })
         
-        this.updateAreaUrl(area)
+        // 명시적으로 부모에게 업데이트된 areas 전달
+        this.$emit('update:areas', JSON.parse(JSON.stringify(this.localAreas)))
         
-        console.log('  - 변경 후 href:', area.href)
+        console.log('\n✅ 모든 핫스팟 URL 업데이트 완료')
+        console.log('✅ 부모 컴포넌트에 업데이트된 areas 전달 완료')
+        console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n')
       })
-      
-      // 🆕 명시적으로 부모에게 업데이트된 areas 전달
-      this.$emit('update:areas', JSON.parse(JSON.stringify(this.localAreas)))
-      
-      console.log('\n✅ 모든 핫스팟 URL 업데이트 완료')
-      console.log('✅ 부모 컴포넌트에 업데이트된 areas 전달 완료')
-      console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n')
     },
 
     getDecodedUrl(url) {

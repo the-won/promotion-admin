@@ -43,7 +43,6 @@ import EmType3 from '../templates/event/EmType3.vue'
 import EmType4 from '../templates/em/efamily/EmType4.vue'
 import EmType5 from '../templates/em/secret-sale/EmType5.vue'
 import EmTypeImageMap from '../templates/em/type-usemap/EmTypeImageMap.vue'
-import CouponBenefit from '../templates/em/coupon-benefit/Coupon.vue'
 import PrivacyPreview from '../templates/privacy/PrivacyPreview.vue'
 
 export default {
