@@ -113,29 +113,43 @@ export const templateDefaults = {
           hotspots: [
             {
               id: 'hs_t3_001',
-              useLink: false,
-              href: 'https://example.com/apply',
               alt: '신청하기 버튼',
-              position: { left: 30, top: 5, width: 30, height: 10 }
+              position: { left: 30, top: 5, width: 30, height: 10 },
+              web: {
+                linkType: 'plan',
+                useLink: false,
+                linkData: { code: '', webEventCode: '', mobileEventCode: '', webPartnerCode: '', mobilePartnerCode: '', returnUrl: '', url: '', couponType: 'single', couponCodes: '', keyword: '' }
+              },
+              mobile: {
+                linkType: 'plan',
+                linkData: { code: '', webEventCode: '', mobileEventCode: '', webPartnerCode: '', mobilePartnerCode: '', returnUrl: '', url: '', couponType: 'single', couponCodes: '', keyword: '' }
+              }
             }
           ]
         },
-        // {
-        //   id: 'hg_t3_002',
-        //   webImageUrl: 'https://d2odciwzsa8zjd.cloudfront.net/public/editorImage/202503/fbca6135-d59d-4be7-b483-6e2577e4e4c3.png',
-        //   webImageAlt: '웹 이미지 설명',
-        //   mobileImageUrl: '',
-        //   mobileImageAlt: '',
-        //   hotspots: [
-        //     {
-        //       id: 'hs_t3_002',
-        //       useLink: false,
-        //       href: 'https://example.com/more',
-        //       alt: '더보기 버튼',
-        //       position: { left: 40, top: 5, width: 25, height: 10 }
-        //     }
-        //   ]
-        // }
+        {
+          id: 'hg_t3_002',
+          webImageUrl: 'https://d2odciwzsa8zjd.cloudfront.net/public/editorImage/202503/fbca6135-d59d-4be7-b483-6e2577e4e4c3.png',
+          webImageAlt: '웹 이미지 설명',
+          mobileImageUrl: '',
+          mobileImageAlt: '',
+          hotspots: [
+            {
+              id: 'hs_t3_002',
+              alt: '더보기 버튼',
+              position: { left: 40, top: 5, width: 25, height: 10 },
+              web: {
+                linkType: 'plan',
+                useLink: false,
+                linkData: { code: '', webEventCode: '', mobileEventCode: '', webPartnerCode: '', mobilePartnerCode: '', returnUrl: '', url: '', couponType: 'single', couponCodes: '', keyword: '' }
+              },
+              mobile: {
+                linkType: 'plan',
+                linkData: { code: '', webEventCode: '', mobileEventCode: '', webPartnerCode: '', mobilePartnerCode: '', returnUrl: '', url: '', couponType: 'single', couponCodes: '', keyword: '' }
+              }
+            }
+          ]
+        }
       ]
     }
   },

@@ -30,13 +30,148 @@ export function generateEventMapHtml(data, deviceType = 'web', options = {}) {
     return group.webImageAlt || ''
   }
   
+  // 핫스팟 액션 생성 (웹/모바일 분기)
+  const buildHotspotAttrs = (hotspot) => {
+    const cfg = deviceType === 'mobile' ? hotspot.mobile : hotspot.web
+    // 구버전 호환 (useLink/href 방식)
+    if (!cfg) {
+      const useLink = hotspot.useLink !== false
+      const href = hotspot.href || '#'
+      return useLink
+        ? { tag: 'a', action: `href="${href}"`, extra: 'target="_blank"' }
+        : { tag: 'button', action: '', extra: '' }
+    }
+    const { linkType, useLink, linkData } = cfg
+    if (!linkData) return { tag: 'button', action: '', extra: '' }
+
+    if (deviceType === 'web') {
+      switch (linkType) {
+        case 'plan': {
+          const code = linkData.code || ''
+          const action = code ? `onclick="goDisp('${code}');"` : ''
+          return useLink
+            ? { tag: 'a', action, extra: '' }
+            : { tag: 'button', action, extra: '' }
+        }
+        case 'product': {
+          const code = linkData.code || ''
+          const action = code ? `onclick="goProdDetail('${code}');"` : ''
+          return useLink
+            ? { tag: 'a', action, extra: '' }
+            : { tag: 'button', action, extra: '' }
+        }
+        case 'event': {
+          const code = linkData.webEventCode || ''
+          const url = `/frnt/eventzone/eventZoneView.do?evtTypCd=1&evtNo=${code}`
+          return useLink
+            ? { tag: 'a', action: code ? `href="${url}"` : '', extra: '' }
+            : { tag: 'button', action: code ? `onclick="window.open('${url}');"` : '', extra: '' }
+        }
+        case 'partner': {
+          const code = linkData.webPartnerCode || ''
+          const ret = linkData.returnUrl || ''
+          const url = ret
+            ? `/frnt/partnersite/partnerSite.do?coopCoCd=${code}&returnUrl=${ret}`
+            : `/frnt/partnersite/partnerSite.do?coopCoCd=${code}`
+          return useLink
+            ? { tag: 'a', action: code ? `href="${url}"` : '', extra: 'target="_blank"' }
+            : { tag: 'button', action: code ? `onclick="window.open('${url}');"` : '', extra: '' }
+        }
+        case 'external': {
+          const url = linkData.url || ''
+          const action = url ? `onclick="window.open('${url}');"` : ''
+          return useLink
+            ? { tag: 'a', action, extra: '' }
+            : { tag: 'button', action, extra: '' }
+        }
+        case 'brand_ecoupon': {
+          const code = linkData.code || ''
+          const action = code ? `onclick="goECouponProdDetail('${code}');"` : ''
+          return useLink
+            ? { tag: 'a', action, extra: '' }
+            : { tag: 'button', action, extra: '' }
+        }
+        case 'search': {
+          const kw = linkData.keyword || ''
+          return {
+            tag: 'button',
+            action: kw ? `onclick="window.open('/search/searchList.do?srchLocChck=header&srchTxt=' + encodeURIComponent('${kw}'),'_blank');"` : '',
+            extra: ''
+          }
+        }
+        case 'custom': {
+          const url = linkData.url || ''
+          const action = url ? `onclick="window.open('${url}');"` : ''
+          return useLink
+            ? { tag: 'a', action, extra: '' }
+            : { tag: 'button', action, extra: '' }
+        }
+        default:
+          return { tag: 'button', action: '', extra: '' }
+      }
+    } else {
+      // mobile
+      switch (linkType) {
+        case 'plan': {
+          const code = linkData.code || ''
+          return { tag: 'button', action: code ? `onclick="handleInternalUrl('/main/planDetail.bene?dpPlanNo=${code}');"` : '' }
+        }
+        case 'product': {
+          const code = linkData.code || ''
+          return { tag: 'button', action: code ? `onclick="handleInternalUrl('/disp/detailView.bene?prdId=${code}');"` : '' }
+        }
+        case 'event': {
+          const code = linkData.mobileEventCode || ''
+          return { tag: 'button', action: code ? `onclick="handleInternalUrl('/disp/eventDetailView.bene?dispAreaSeq=${code}');"` : '' }
+        }
+        case 'partner': {
+          const code = linkData.mobilePartnerCode || ''
+          const ret = linkData.returnUrl || ''
+          return { tag: 'button', action: code ? `onclick="goPartnerPage('${code}','${ret}');"` : '' }
+        }
+        case 'external': {
+          const url = linkData.url || ''
+          return { tag: 'button', action: url ? `onclick="goExternalUrl('${url}');"` : '' }
+        }
+        case 'brand_ecoupon': {
+          const code = linkData.code || ''
+          return { tag: 'button', action: code ? `onclick="handleInternalUrl('/disp/eCouponStoreMain.bene?brdId=${code}');"` : '' }
+        }
+        case 'brand_store': {
+          const code = linkData.code || ''
+          return { tag: 'button', action: code ? `onclick="AppBrandDetail('${code}');"` : '' }
+        }
+        case 'coupon': {
+          const type = linkData.couponType || 'single'
+          const codes = (linkData.couponCodes || '').split(',').map(s => s.trim()).filter(Boolean)
+          let fn = ''
+          if (type === 'single' && codes[0]) fn = `goNewEvtCpnDown('${codes[0]}');`
+          else if (type === 'multi' && codes.length) fn = `goNewMultiEvtCpnDown(${codes.map(c => `'${c}'`).join(', ')});`
+          else if (type === 'brgg_single' && codes[0]) fn = `goNewEvtBrggCpnDown('${codes[0]}');`
+          else if (type === 'brgg_multi' && codes.length) fn = `goNewMultiEvtBrggCpnDown(${codes.map(c => `'${c}'`).join(', ')});`
+          return { tag: 'button', action: fn ? `onclick="${fn}"` : '' }
+        }
+        case 'search': {
+          const kw = linkData.keyword || ''
+          return { tag: 'button', action: kw ? `onclick="callAppProcess('benepia://search_link?url='+encodeURIComponent('/searchResult.bene?srchTxt='+encodeURIComponent('${kw}')));"` : '' }
+        }
+        case 'custom': {
+          const url = linkData.url || ''
+          return { tag: 'button', action: url ? `onclick="handleInternalUrl('${url}');"` : '' }
+        }
+        default:
+          return { tag: 'button', action: '' }
+      }
+    }
+  }
+
   // 각 이미지 섹션 생성 (핫스팟 포함)
   const generateImageSection = (group) => {
     const imageUrl = getImageUrl(group)
     const imageAlt = getImageAlt(group)
-    
+
     if (!imageUrl) return ''
-    
+
     // 핫스팟이 없으면 단순 이미지
     if (!group.hotspots || !Array.isArray(group.hotspots) || group.hotspots.length === 0) {
       return `
@@ -46,29 +181,32 @@ export function generateEventMapHtml(data, deviceType = 'web', options = {}) {
                 alt=""
               />`
     }
-    
+
     // 핫스팟 오버레이 생성
     const hotspotOverlays = group.hotspots.map((hotspot, index) => {
       const pos = hotspot.position || { left: 0, top: 0, width: 20, height: 10 }
-      const useLink = hotspot.useLink !== false
-      const href = hotspot.href || '#'
       const alt = hotspot.alt || ''
-      
+      const { tag, action, extra = '' } = buildHotspotAttrs(hotspot)
+
       const style = `position: absolute; left: ${pos.left}%; top: ${pos.top}%; width: ${pos.width}%; height: ${pos.height}%; display: block; z-index: ${10 + index}; text-decoration: none; border: none; background: transparent; padding: 0; cursor: pointer; font-size: 0; line-height: 0;`
-      
-      if (useLink) {
+
+      if (tag === 'a') {
         return `
-              <a href="${href}" target="_blank" onclick="gaEvtAction('${gaPrefix}', '${pageTitle}', '${alt}')" style="${style}">
+              <a ${action}${extra ? ' ' + extra : ''} onclick="gaEvtAction('${gaPrefix}', '${pageTitle}', '${alt}')" style="${style}" target="_blank">
                 ${alt ? `<span class="sr-only">${alt}</span>` : ''}
               </a>`
       } else {
+        const existingOnclick = action ? action.replace(/^onclick="/, '').replace(/"$/, '') : ''
+        const combined = existingOnclick
+          ? `onclick="${existingOnclick} gaEvtAction('${gaPrefix}', '${pageTitle}', '${alt}');"`
+          : `onclick="gaEvtAction('${gaPrefix}', '${pageTitle}', '${alt}');"`
         return `
-              <button type="button" onclick="gaEvtAction('${gaPrefix}', '${pageTitle}', '${alt}')" style="${style}">
+              <button type="button" ${combined} style="${style}">
                 ${alt ? `<span class="sr-only">${alt}</span>` : ''}
               </button>`
       }
     }).join('\n')
-    
+
     return `
           <div style="position: relative;">
             ${imageAlt ? `<div class="sr-only">${imageAlt}</div>` : ''}

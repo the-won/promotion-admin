@@ -81,23 +81,218 @@
             <button @click.stop="removeHotspot(groupIdx, hotspot.id)" class="btn btn-danger btn-sm">삭제</button>
           </div>
 
+          <!-- 링크 타입 셀렉트 (deviceType별 분리) -->
           <div class="form-group">
+            <label>링크 타입</label>
+            <select
+              :value="getHotspotConfig(hotspot).linkType"
+              @change="onLinkTypeChange(hotspot, $event.target.value)"
+              class="form-input"
+              @click.stop
+            >
+              <option
+                v-for="lt in currentLinkTypes"
+                :key="lt.value"
+                :value="lt.value"
+              >{{ lt.label }}</option>
+            </select>
+          </div>
+
+          <!-- 기획전 / 상품 / 브랜드e쿠폰 / 브랜드매장결제 : 코드 단일 입력 -->
+          <div v-if="['plan','product','brand_ecoupon','brand_store'].includes(getHotspotConfig(hotspot).linkType)" class="form-group">
+            <label>{{ codeLabelMap[getHotspotConfig(hotspot).linkType] }}</label>
+            <input
+              type="text"
+              :value="getHotspotConfig(hotspot).linkData.code"
+              @input="updateLinkData(hotspot, 'code', $event.target.value)"
+              placeholder="코드 입력"
+              class="form-input"
+              @click.stop
+            />
+          </div>
+
+          <!-- 기획전 / 상품 / 브랜드e쿠폰 : 웹에서 a/button 선택 (brand_store 제외) -->
+          <div v-if="deviceType === 'web' && ['plan','product','brand_ecoupon'].includes(getHotspotConfig(hotspot).linkType)" class="form-group">
             <label class="checkbox-label">
-              <input 
-                type="checkbox" 
-                v-model="hotspot.useLink"
+              <input
+                type="checkbox"
+                :checked="getHotspotConfig(hotspot).useLink"
+                @change="onUseLinkChange(hotspot, $event.target.checked)"
                 class="form-checkbox"
                 @click.stop
               />
-              <span>링크로 사용 (a 태그)</span>
+              <span>a 태그 사용 (미체크 시 button)</span>
             </label>
           </div>
 
-          <div v-if="hotspot.useLink" class="form-group">
-            <label>링크 URL (href)</label>
-            <input type="url" v-model="hotspot.href" placeholder="https://example.com" class="form-input" @click.stop />
+          <!-- 이벤트 : 웹/모바일 코드 분리 -->
+          <template v-if="getHotspotConfig(hotspot).linkType === 'event'">
+            <div v-if="deviceType === 'web'" class="form-group">
+              <label>웹 이벤트 코드</label>
+              <input
+                type="text"
+                :value="getHotspotConfig(hotspot).linkData.webEventCode"
+                @input="updateLinkData(hotspot, 'webEventCode', $event.target.value)"
+                placeholder="웹 이벤트 코드"
+                class="form-input"
+                @click.stop
+              />
+            </div>
+            <div v-if="deviceType === 'mobile'" class="form-group">
+              <label>모바일 이벤트 코드</label>
+              <input
+                type="text"
+                :value="getHotspotConfig(hotspot).linkData.mobileEventCode"
+                @input="updateLinkData(hotspot, 'mobileEventCode', $event.target.value)"
+                placeholder="모바일 이벤트 코드"
+                class="form-input"
+                @click.stop
+              />
+            </div>
+            <!-- 웹에서 a/button 선택 -->
+            <div v-if="deviceType === 'web'" class="form-group">
+              <label class="checkbox-label">
+                <input
+                  type="checkbox"
+                  :checked="getHotspotConfig(hotspot).useLink"
+                  @change="onUseLinkChange(hotspot, $event.target.checked)"
+                  class="form-checkbox"
+                  @click.stop
+                />
+                <span>a 태그 사용 (미체크 시 button)</span>
+              </label>
+            </div>
+          </template>
+
+          <!-- 파트너사 : 웹/모바일 코드 분리 + returnUrl -->
+          <template v-if="getHotspotConfig(hotspot).linkType === 'partner'">
+            <div v-if="deviceType === 'web'" class="form-group">
+              <label>웹 제휴사 코드</label>
+              <input
+                type="text"
+                :value="getHotspotConfig(hotspot).linkData.webPartnerCode"
+                @input="updateLinkData(hotspot, 'webPartnerCode', $event.target.value)"
+                placeholder="웹 제휴사 코드"
+                class="form-input"
+                @click.stop
+              />
+            </div>
+            <div v-if="deviceType === 'mobile'" class="form-group">
+              <label>모바일 제휴사 코드</label>
+              <input
+                type="text"
+                :value="getHotspotConfig(hotspot).linkData.mobilePartnerCode"
+                @input="updateLinkData(hotspot, 'mobilePartnerCode', $event.target.value)"
+                placeholder="모바일 제휴사 코드"
+                class="form-input"
+                @click.stop
+              />
+            </div>
+            <div class="form-group">
+              <label>returnUrl <span class="optional-label">(선택)</span></label>
+              <input
+                type="text"
+                :value="getHotspotConfig(hotspot).linkData.returnUrl"
+                @input="updateLinkData(hotspot, 'returnUrl', $event.target.value)"
+                placeholder="/frnt/..."
+                class="form-input"
+                @click.stop
+              />
+            </div>
+            <!-- 웹에서 a/button 선택 -->
+            <div v-if="deviceType === 'web'" class="form-group">
+              <label class="checkbox-label">
+                <input
+                  type="checkbox"
+                  :checked="getHotspotConfig(hotspot).useLink"
+                  @change="onUseLinkChange(hotspot, $event.target.checked)"
+                  class="form-checkbox"
+                  @click.stop
+                />
+                <span>a 태그 사용 (미체크 시 button)</span>
+              </label>
+            </div>
+          </template>
+
+          <!-- 외부URL / 기타 -->
+          <template v-if="['external','custom'].includes(getHotspotConfig(hotspot).linkType)">
+            <div class="form-group">
+              <label>URL</label>
+              <input
+                type="url"
+                :value="getHotspotConfig(hotspot).linkData.url"
+                @input="updateLinkData(hotspot, 'url', $event.target.value)"
+                placeholder="https://example.com"
+                class="form-input"
+                @click.stop
+              />
+            </div>
+            <!-- 웹에서 a/button 선택 -->
+            <div v-if="deviceType === 'web'" class="form-group">
+              <label class="checkbox-label">
+                <input
+                  type="checkbox"
+                  :checked="getHotspotConfig(hotspot).useLink"
+                  @change="onUseLinkChange(hotspot, $event.target.checked)"
+                  class="form-checkbox"
+                  @click.stop
+                />
+                <span>a 태그 사용 (미체크 시 button)</span>
+              </label>
+            </div>
+          </template>
+
+          <!-- 쿠폰 (모바일 전용) -->
+          <template v-if="getHotspotConfig(hotspot).linkType === 'coupon'">
+            <div class="form-group">
+              <label>쿠폰 타입</label>
+              <select
+                :value="getHotspotConfig(hotspot).linkData.couponType"
+                @change="updateLinkData(hotspot, 'couponType', $event.target.value)"
+                class="form-input"
+                @click.stop
+              >
+                <option v-for="ct in couponTypes" :key="ct.value" :value="ct.value">{{ ct.label }}</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>
+                쿠폰번호
+                <span v-if="['multi','brgg_multi'].includes(getHotspotConfig(hotspot).linkData.couponType)" class="optional-label">(콤마로 구분)</span>
+              </label>
+              <input
+                type="text"
+                :value="getHotspotConfig(hotspot).linkData.couponCodes"
+                @input="updateLinkData(hotspot, 'couponCodes', $event.target.value)"
+                :placeholder="['multi','brgg_multi'].includes(getHotspotConfig(hotspot).linkData.couponType) ? '코드1,코드2' : '쿠폰번호'"
+                class="form-input"
+                @click.stop
+              />
+            </div>
+          </template>
+
+          <!-- 검색어 -->
+          <div v-if="getHotspotConfig(hotspot).linkType === 'search'" class="form-group">
+            <label>검색어</label>
+            <input
+              type="text"
+              :value="getHotspotConfig(hotspot).linkData.keyword"
+              @input="updateLinkData(hotspot, 'keyword', $event.target.value)"
+              placeholder="예: 커피"
+              class="form-input"
+              @click.stop
+            />
           </div>
 
+          <!-- 미리보기 -->
+          <div class="link-preview">
+            <div class="preview-row">
+              <span class="preview-device-label">{{ deviceType === 'web' ? '웹' : '모바일' }}</span>
+              <code class="preview-code">{{ getPreview(hotspot) }}</code>
+            </div>
+          </div>
+
+          <!-- 대체텍스트 -->
           <div class="form-group">
             <label>대체텍스트 (스크린리더용)</label>
             <input type="text" v-model="hotspot.alt" placeholder="버튼 설명" class="form-input" @click.stop />
@@ -116,6 +311,15 @@
 </template>
 
 <script>
+import {
+  WEB_LINK_TYPES,
+  MOBILE_LINK_TYPES,
+  COUPON_TYPES,
+  createEmptyLinkData,
+  buildWebAction,
+  buildMobileAction,
+} from '../../utils/hotspotLinkBuilder.js'
+
 export default {
   name: 'HotspotGroupEditor',
   props: {
@@ -143,7 +347,19 @@ export default {
   data() {
     return {
       localGroups: [],
-      flashingId: null
+      flashingId: null,
+      couponTypes: COUPON_TYPES,
+      codeLabelMap: {
+        plan: '기획전 코드',
+        product: '상품 코드',
+        brand_ecoupon: '브랜드 코드',
+        brand_store: '브랜드 코드',
+      }
+    }
+  },
+  computed: {
+    currentLinkTypes() {
+      return this.deviceType === 'mobile' ? MOBILE_LINK_TYPES : WEB_LINK_TYPES
     }
   },
   created() {
@@ -170,7 +386,6 @@ export default {
       },
       deep: true
     },
-    // 프리뷰에서 핫스팟 클릭 → 사이드바 카드 스크롤 + 하이라이트
     selectedId(newId) {
       if (newId != null) {
         this.scrollToCard(newId)
@@ -182,14 +397,12 @@ export default {
       return `${prefix}_${Date.now()}_${Math.random().toString(36).substr(2, 6)}`
     },
 
-    // ── 이미지 URL ──
+    // ── 이미지 URL / Alt ──
     getImageUrl(group) {
-      if (this.deviceType === 'mobile') {
-        return group.mobileImageUrl || group.webImageUrl
-      }
-      return group.webImageUrl
+      return this.deviceType === 'mobile'
+        ? (group.mobileImageUrl || group.webImageUrl)
+        : group.webImageUrl
     },
-
     updateImageUrl(groupIdx, url) {
       if (this.deviceType === 'mobile') {
         this.localGroups[groupIdx].mobileImageUrl = url
@@ -197,20 +410,60 @@ export default {
         this.localGroups[groupIdx].webImageUrl = url
       }
     },
-
-    // ── 이미지 Alt ──
     getImageAlt(group) {
-      if (this.deviceType === 'mobile') {
-        return group.mobileImageAlt || group.webImageAlt || ''
-      }
-      return group.webImageAlt || ''
+      return this.deviceType === 'mobile'
+        ? (group.mobileImageAlt || group.webImageAlt || '')
+        : (group.webImageAlt || '')
     },
-
     updateImageAlt(groupIdx, alt) {
       if (this.deviceType === 'mobile') {
         this.localGroups[groupIdx].mobileImageAlt = alt
       } else {
         this.localGroups[groupIdx].webImageAlt = alt
+      }
+    },
+
+    // ── 링크 설정 접근 (현재 deviceType 기준) ──
+    getHotspotConfig(hotspot) {
+      const key = this.deviceType // 'web' | 'mobile'
+      if (!hotspot[key]) {
+        this.$set(hotspot, key, {
+          linkType: this.deviceType === 'mobile' ? 'plan' : 'plan',
+          useLink: false,
+          linkData: createEmptyLinkData()
+        })
+      }
+      return hotspot[key]
+    },
+
+    onLinkTypeChange(hotspot, newType) {
+      const cfg = this.getHotspotConfig(hotspot)
+      cfg.linkType = newType
+      cfg.linkData = createEmptyLinkData()
+      cfg.useLink = false
+    },
+
+    onUseLinkChange(hotspot, checked) {
+      const cfg = this.getHotspotConfig(hotspot)
+      cfg.useLink = checked
+    },
+
+    updateLinkData(hotspot, field, value) {
+      const cfg = this.getHotspotConfig(hotspot)
+      this.$set(cfg.linkData, field, value)
+    },
+
+    // ── 미리보기 ──
+    getPreview(hotspot) {
+      const cfg = hotspot[this.deviceType]
+      if (!cfg) return '(없음)'
+      if (this.deviceType === 'web') {
+        const r = buildWebAction(cfg)
+        if (!r.action) return '(없음)'
+        return `<${r.tag} ${r.action}${r.extra ? ' ' + r.extra : ''}>`
+      } else {
+        const r = buildMobileAction(cfg)
+        return r.action ? `<${r.tag} ${r.action}>` : '(없음)'
       }
     },
 
@@ -225,31 +478,23 @@ export default {
         hotspots: []
       }
     },
-
     addGroup() {
       this.localGroups.push(this.createNewGroup())
     },
-
     removeGroup(groupId) {
       if (this.localGroups.length <= 1) return
       const index = this.localGroups.findIndex(g => g.id === groupId)
-      if (index !== -1) {
-        this.localGroups.splice(index, 1)
-      }
+      if (index !== -1) this.localGroups.splice(index, 1)
     },
 
     // ── 핫스팟 관리 ──
     findImageContainer(groupIndex) {
       const allContainers = document.querySelectorAll('.image-container')
-      if (allContainers.length >= groupIndex) {
-        return allContainers[groupIndex - 1]
-      }
+      if (allContainers.length >= groupIndex) return allContainers[groupIndex - 1]
       const previewBody = document.querySelector('.preview-body')
       if (previewBody) {
         const containers = previewBody.querySelectorAll('.image-container')
-        if (containers.length >= groupIndex) {
-          return containers[groupIndex - 1]
-        }
+        if (containers.length >= groupIndex) return containers[groupIndex - 1]
       }
       return null
     },
@@ -257,16 +502,12 @@ export default {
     getRealtimeVisibleTop(groupIndex) {
       const container = this.findImageContainer(groupIndex)
       if (!container) return 30
-
       const rect = container.getBoundingClientRect()
       if (rect.height <= 0) return 30
-
       const viewportCenter = window.innerHeight / 2
       let topPercent = ((viewportCenter - rect.top) / rect.height) * 100
-
       if (rect.top > window.innerHeight) topPercent = 10
       else if (rect.bottom < 0) topPercent = 80
-
       return Math.round(Math.max(5, Math.min(85, topPercent)) * 10) / 10
     },
 
@@ -277,16 +518,24 @@ export default {
       const randomOffset = (Math.random() - 0.5) * 4
       const finalTop = Math.max(5, Math.min(85, baseTop + randomOffset))
 
+      const defaultLinkData = createEmptyLinkData()
       this.localGroups[groupIdx].hotspots.push({
         id: newId,
-        useLink: false,
-        href: 'https://example.com',
         alt: `버튼 ${this.localGroups[groupIdx].hotspots.length + 1}`,
         position: {
           left: 10 + Math.round(Math.random() * 30),
           top: Math.round(finalTop * 10) / 10,
           width: 20,
           height: 10
+        },
+        web: {
+          linkType: 'plan',
+          useLink: false,
+          linkData: { ...defaultLinkData }
+        },
+        mobile: {
+          linkType: 'plan',
+          linkData: { ...defaultLinkData }
         }
       })
 
@@ -301,9 +550,7 @@ export default {
       const index = hotspots.findIndex(h => h.id === hotspotId)
       if (index !== -1) {
         hotspots.splice(index, 1)
-        if (this.selectedId === hotspotId) {
-          this.$emit('select', null)
-        }
+        if (this.selectedId === hotspotId) this.$emit('select', null)
       }
     },
 
@@ -311,16 +558,13 @@ export default {
     setActiveImage(groupIndex) {
       this.$emit('active-image-change', groupIndex)
     },
-
     selectImage(groupIndex) {
       this.$emit('select-image', { groupIndex })
     },
-
     selectHotspot(hotspotId, groupIndex) {
       this.$emit('select', hotspotId)
       this.$emit('select-hotspot', { hotspotId, groupIndex })
     },
-
     scrollToCard(hotspotId) {
       this.$nextTick(() => {
         const refKey = 'card-' + hotspotId
@@ -328,9 +572,7 @@ export default {
         if (!cardEl) return
         const el = Array.isArray(cardEl) ? cardEl[0] : cardEl
         if (!el) return
-
         el.scrollIntoView({ behavior: 'smooth', block: 'center' })
-
         this.flashingId = hotspotId
         setTimeout(() => { this.flashingId = null }, 1500)
       })
@@ -546,5 +788,44 @@ export default {
   height: 16px;
   cursor: pointer;
   accent-color: #6366f1;
+}
+
+.optional-label {
+  font-weight: 400;
+  color: #9ca3af;
+  font-size: 11px;
+}
+
+.link-preview {
+  margin: 8px 0 10px;
+  padding: 8px 10px;
+  background: #f1f5f9;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+}
+
+.preview-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.preview-device-label {
+  flex-shrink: 0;
+  font-size: 11px;
+  font-weight: 700;
+  color: #6366f1;
+  background: #eef2ff;
+  border-radius: 4px;
+  padding: 2px 6px;
+  margin-top: 1px;
+}
+
+.preview-code {
+  font-size: 11px;
+  color: #374151;
+  word-break: break-all;
+  line-height: 1.5;
+  font-family: 'Consolas', 'Monaco', monospace;
 }
 </style>
