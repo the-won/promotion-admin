@@ -20,7 +20,7 @@ export const templateHtmlGenerators = {
 }
 
 // 템플릿 HTML 생성
-export function generateTemplateHtml(templateName, data, deviceType = 'web') {
+export function generateTemplateHtml(templateName, data, deviceType = 'web', options = {}) {
   const generator = templateHtmlGenerators[templateName]
   
   if (!generator) {
@@ -28,5 +28,5 @@ export function generateTemplateHtml(templateName, data, deviceType = 'web') {
     return '<p>Template not found</p>'
   }
   
-  return generator(data, deviceType)
+  return generator(data, deviceType, options)
 }

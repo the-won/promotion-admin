@@ -1,11 +1,11 @@
 import { generateTemplateHtml } from '../templateHtml/index.js'
 
-export function downloadHtml(templateName, formData, deviceType = 'web') {
+export function downloadHtml(templateName, formData, deviceType = 'web', options = {}) {
   console.log('📥 downloadHtml 호출')
   console.log('  templateName:', templateName)
   console.log('  deviceType:', deviceType)
   
-  const emailHtml = generateTemplateHtml(templateName, formData, deviceType)
+  const emailHtml = generateTemplateHtml(templateName, formData, deviceType, options)
   
   console.log('✅ HTML 생성 완료')
   

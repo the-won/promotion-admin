@@ -1,4 +1,6 @@
-export function generateEventMapHtml(data, deviceType = 'web') {
+export function generateEventMapHtml(data, deviceType = 'web', options = {}) {
+  const showTopBanner = !!options.showTopBanner
+  const showBottomBanner = !!options.showBottomBanner
   
   // deviceType에 따라 이미지 URL 선택
   const getImageUrl = (group) => {
@@ -71,7 +73,7 @@ export function generateEventMapHtml(data, deviceType = 'web') {
 <head>
 <meta charset="UTF-8">
 <meta name="author" content="SKMNS">
-<title>APP 클래스101 신년 프로모션 | 베네피아</title>
+<title>APP 프로모션 | 베네피아</title>
 <meta http-equiv='Content-Type' content='text/html; charset=utf-8'>
 <meta name='viewport' content='initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no'/>
 <link rel="stylesheet" type="text/css" href="https://m.benepia.co.kr/resources/benepia/css/base.css">
@@ -88,6 +90,18 @@ a {-webkit-tap-highlight-color:rgba(0,0,0,0); -webkit-tap-highlight-color: trans
 .evt-wrap button {position:relative; z-index:8; display:block; width:100%;}
 .evt-wrap .floated-button {position:absolute; top:0; left:0%; height: 0; overflow:hidden; text-indent:-5000px; outline: none; 
     /* background-color: rgba(0, 255, 0, 0.483); */
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
 }
 
 /**********************
@@ -140,7 +154,7 @@ a {-webkit-tap-highlight-color:rgba(0,0,0,0); -webkit-tap-highlight-color: trans
 
 <body> 
 <div class="evt-wrap">
-	<!-- 상단배너(개인결제유도) -->
+	${showTopBanner ? `<!-- 상단배너(개인결제유도) -->
 	<div class="scrolling-words-container">
 		<ul class="scrolling-words">
 			<li><button type="button" onclick="handleInternalUrl('/main/mainHotDeal.bene'); gaEvtAction('MO_프로모션', '클래스101 신년 프로모션', '상단배너(개인결제유도)');"><span>우리회사 복지몰 <strong class="col-orange">베네피아</strong></span></a></li>
@@ -185,8 +199,8 @@ a {-webkit-tap-highlight-color:rgba(0,0,0,0); -webkit-tap-highlight-color: trans
 		titles[index].classList.add("words-in");
 	}
 	animateText();
-	</script>
-	<!-- //상단배너(개인결제유도) -->
+	<\/script>
+	<!-- //상단배너(개인결제유도) -->` : ''}
 
 	<!-- 상단 -->
 	<div class="evt-cnt">
@@ -214,7 +228,7 @@ a {-webkit-tap-highlight-color:rgba(0,0,0,0); -webkit-tap-highlight-color: trans
 	</div>
 	<!-- // 꼭 확인하세요 -->
 
-	<!-- 배너 - 활용백서 -->
+	${showBottomBanner ? `<!-- 배너 - 활용백서 -->
 	<div class="evt-cnt banner-howto" id="section_howto">
 		<a href="/disp/eventUsesWhiteNew.bene" onclick="gaEvtAction('MO_프로모션', '클래스101 신년 프로모션', '배너(활용백서)')" style="width:100%"><img src="https://www.benepia.co.kr/event/2023/07/0726_kakao_friends/images/banner_info_mo_20250904.jpg" alt="베네피아 활용백서"></a>
 	</div>
@@ -228,7 +242,7 @@ a {-webkit-tap-highlight-color:rgba(0,0,0,0); -webkit-tap-highlight-color: trans
 	<div class="evt-cnt banner-kakao-plus" id="section_kakao">
 		<button type="button" onclick="AppWeblink('https://pf.kakao.com/_mxbBkT'); gaEvtAction('MO_프로모션', '클래스101 신년 프로모션', '배너(카카오톡 플러스 친구)');" style="width:100%"><img src="https://www.benepia.co.kr/event/2023/07/0726_kakao_friends/images/banner_kakao_plus_mo_20240306.jpg" alt="베네피아와 카카오톡 친구해요"></button>
 	</div>
-	<!-- // 배너 - 카카오톡 플러스 친구 -->
+	<!-- // 배너 - 카카오톡 플러스 친구 -->` : ''}
 </div>
 
 </body>
@@ -241,7 +255,7 @@ a {-webkit-tap-highlight-color:rgba(0,0,0,0); -webkit-tap-highlight-color: trans
 <head>
 <meta charset="UTF-8">
 <meta name="author" content="SKMNS">
-<title>WEB 클래스101 신년 프로모션 | 베네피아</title>
+<title>WEB 프로모션 | 베네피아</title>
 <link rel="stylesheet" type="text/css" href="https://newfront.benepia.co.kr/resources/css/evt_common.css">
 <style>
 .evt-wrap {width: 1080px; font-family: 'Pretendard', sans-serif;font-size: 24px;}
@@ -308,7 +322,7 @@ a {-webkit-tap-highlight-color: rgba(0,0,0,0); -webkit-tap-highlight-color: tran
 </head>
 <body>
 <div class="evt-wrap">
-	<div class="scrolling-words-container">
+	${showTopBanner ? `<div class="scrolling-words-container">
 		<ul class="scrolling-words">
 			<li><button type="button" onclick="window.open('/frnt/pointmall/pointmall.do?returnUrl=/main/hotDeal.bene');"><span>우리회사 복지몰 <strong class="col-orange">베네피아</strong></span></button></li>
 			<li><button type="button" onclick="window.open('/frnt/pointmall/pointmall.do?returnUrl=/main/hotDeal.bene');"><span>비교검색 끝 <strong class="col-red">최저가보상</strong></span></button></li>
@@ -349,7 +363,7 @@ a {-webkit-tap-highlight-color: rgba(0,0,0,0); -webkit-tap-highlight-color: tran
 		titles[index].classList.add("words-in");
 	}
 	animateText();
-	</script>
+	<\/script>` : ''}
 
 	<div class="evt-cnt">
 		<div class="hide">
@@ -368,7 +382,7 @@ a {-webkit-tap-highlight-color: rgba(0,0,0,0); -webkit-tap-highlight-color: tran
 		</ul>
 	</div>
 
-	<div class="evt-cnt banner-howto" id="section_howto">
+	${showBottomBanner ? `<div class="evt-cnt banner-howto" id="section_howto">
 		<button type="button" onclick="window.open('/frnt/event/eventUsesWhiteNew.do');"><img src="https://www.benepia.co.kr/event/2023/07/0726_kakao_friends/images/banner_info_pc_20250904.jpg?date=20250910172538" alt="베네피아 활용백서"></button>
 	</div>
 	<div class="evt-cnt banner-review" id="section_review">
@@ -376,7 +390,7 @@ a {-webkit-tap-highlight-color: rgba(0,0,0,0); -webkit-tap-highlight-color: tran
 	</div>
 	<div class="evt-cnt banner-kakao-plus" id="section_kakao">
 		<button type="button" onclick="window.open('https://pf.kakao.com/_mxbBkT');"><img src="https://www.benepia.co.kr/event/2023/07/0726_kakao_friends/images/banner_kakao_plus_pc_20240306.jpg?date=20250910172538" alt="베네피아와 카카오톡 친구해요"></button>
-	</div>
+	</div>` : ''}
 
 </div>
 

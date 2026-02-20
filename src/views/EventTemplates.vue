@@ -62,13 +62,22 @@
 
             <div class="card-body">
               <!-- 배너 설정 -->
-              <div class="banner-settings">
+              <section class="banner-settings">
                 <label class="checkbox-item">
                   <input 
                     type="checkbox" 
                     v-model="bannerSettings[currentDevice].showTopBanner"
+                 notice="bannerSettings[currentDevice].showNotice"
                   >
-                  <span>상단 배너 사용</span>
+                  <span>상단배너 사용</span>
+                </label>
+
+                <label class="checkbox-item">
+                  <input 
+                    type="checkbox" 
+                    v-model="bannerSettings[currentDevice].showNotice"
+                  >
+                  <span>공지사항 사용</span>
                 </label>
                 
                 <label class="checkbox-item">
@@ -76,9 +85,9 @@
                     type="checkbox" 
                     v-model="bannerSettings[currentDevice].showBottomBanner"
                   >
-                  <span>하단 배너 사용</span>
+                  <span>하단배너 사용</span>
                 </label>
-              </div>
+              </section>
 
               <section class="sidebar-section">
                 <button class="template-select-btn" @click="openModal">
@@ -133,6 +142,7 @@
                   :formData="formData"
                   :deviceType="currentDevice"
                   :show-top-banner="bannerSettings[currentDevice].showTopBanner"
+                  :show-notice="bannerSettings[currentDevice].showNotice"
                   :show-bottom-banner="bannerSettings[currentDevice].showBottomBanner"
                   :selectedHotspotId="selectedHotspotId"
                   :selectedHotspotInfo="selectedHotspotInfo"
@@ -189,10 +199,12 @@ export default {
       bannerSettings: {
         web: {
           showTopBanner: false,
+          showNotice: false,
           showBottomBanner: false
         },
         mobile: {
           showTopBanner: false,
+          showNotice: false,
           showBottomBanner: false
         }
       },
@@ -317,10 +329,13 @@ export default {
     },
     
     handleDownload() {
-      console.log('🔍 다운로드 시작')
-      console.log('📱 currentDevice:', this.currentDevice)
-      console.log('📋 selectedTemplate:', this.selectedTemplate)
-      downloadHtml(this.selectedTemplate, this.formData, this.currentDevice)
+      const bannerOptions = {
+        showTopBanner: this.bannerSettings[this.currentDevice].showTopBanner,
+        showNotice: this.bannerSettings[this.currentDevice].showNotice,
+        showBottomBanner: this.bannerSettings[this.currentDevice].showBottomBanner
+      }
+      console.log('🎌 bannerOptions:', bannerOptions)
+      downloadHtml(this.selectedTemplate, this.formData, this.currentDevice, bannerOptions)
     },
     
     handleSelectHotspot(id) {
