@@ -355,7 +355,7 @@ export default {
   position: relative;
   width: 100%;
   user-select: none;
-  margin-bottom: 20px;
+  /* margin-bottom: 20px; */
   transition: all 0.3s ease;
 }
 

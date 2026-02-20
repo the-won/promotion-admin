@@ -94,6 +94,12 @@ export const templateDefaults = {
     } 
   },
   'em-type-3': {
+    pageTitle: {
+      label: '페이지 타이틀',
+      type: 'text',
+      placeholder: '클래스101 신년 프로모션',
+      value: '클래스101 신년 프로모션'
+    },
     hotspotGroups: {
       label: '이미지 + 핫스팟 그룹',
       type: 'hotspot-group-list',
@@ -114,22 +120,22 @@ export const templateDefaults = {
             }
           ]
         },
-        {
-          id: 'hg_t3_002',
-          webImageUrl: 'https://d2odciwzsa8zjd.cloudfront.net/public/editorImage/202503/fbca6135-d59d-4be7-b483-6e2577e4e4c3.png',
-          webImageAlt: '웹 이미지 설명',
-          mobileImageUrl: '',
-          mobileImageAlt: '',
-          hotspots: [
-            {
-              id: 'hs_t3_002',
-              useLink: false,
-              href: 'https://example.com/more',
-              alt: '더보기 버튼',
-              position: { left: 40, top: 5, width: 25, height: 10 }
-            }
-          ]
-        }
+        // {
+        //   id: 'hg_t3_002',
+        //   webImageUrl: 'https://d2odciwzsa8zjd.cloudfront.net/public/editorImage/202503/fbca6135-d59d-4be7-b483-6e2577e4e4c3.png',
+        //   webImageAlt: '웹 이미지 설명',
+        //   mobileImageUrl: '',
+        //   mobileImageAlt: '',
+        //   hotspots: [
+        //     {
+        //       id: 'hs_t3_002',
+        //       useLink: false,
+        //       href: 'https://example.com/more',
+        //       alt: '더보기 버튼',
+        //       position: { left: 40, top: 5, width: 25, height: 10 }
+        //     }
+        //   ]
+        // }
       ]
     }
   },

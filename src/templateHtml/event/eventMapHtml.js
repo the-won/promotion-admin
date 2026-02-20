@@ -1,7 +1,19 @@
 export function generateEventMapHtml(data, deviceType = 'web', options = {}) {
   const showTopBanner = !!options.showTopBanner
   const showBottomBanner = !!options.showBottomBanner
-  
+  const showNotice = !!options.showNotice
+  const noticeTitle = options.noticeTitle || '꼭 확인하세요'
+  const noticeItems = Array.isArray(options.noticeItems) ? options.noticeItems : []
+	const pageTitle = data.pageTitle || '프로모션'
+	const gaPrefix = deviceType === 'mobile' ? 'MO_프로모션' : 'PC_프로모션'
+
+  // 공지사항 HTML 생성 헬퍼
+  const generateNoticeHtml = () => {
+    if (!showNotice || noticeItems.length === 0) return ''
+    const liItems = noticeItems.map(item => '<li>' + item + '</li>').join('\n\t\t\t')
+    return '<div class="evt-cnt cnt-notice">\n\t\t<h2>' + noticeTitle + '</h2>\n\t\t<ul class="evt-notice-list">\n\t\t\t' + liItems + '\n\t\t</ul>\n\t</div>'
+  }
+
   // deviceType에 따라 이미지 URL 선택
   const getImageUrl = (group) => {
     if (deviceType === 'mobile') {
@@ -46,12 +58,12 @@ export function generateEventMapHtml(data, deviceType = 'web', options = {}) {
       
       if (useLink) {
         return `
-              <a href="${href}" target="_blank" style="${style}">
+              <a href="${href}" target="_blank" onclick="gaEvtAction('${gaPrefix}', '${pageTitle}', '${alt}')" style="${style}">
                 ${alt ? `<span class="sr-only">${alt}</span>` : ''}
               </a>`
       } else {
         return `
-              <button type="button" style="${style}">
+              <button type="button" onclick="gaEvtAction('${gaPrefix}', '${pageTitle}', '${alt}')" style="${style}">
                 ${alt ? `<span class="sr-only">${alt}</span>` : ''}
               </button>`
       }
@@ -73,7 +85,7 @@ export function generateEventMapHtml(data, deviceType = 'web', options = {}) {
 <head>
 <meta charset="UTF-8">
 <meta name="author" content="SKMNS">
-<title>APP 프로모션 | 베네피아</title>
+<title>APP ${pageTitle} | 베네피아</title>
 <meta http-equiv='Content-Type' content='text/html; charset=utf-8'>
 <meta name='viewport' content='initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no'/>
 <link rel="stylesheet" type="text/css" href="https://m.benepia.co.kr/resources/benepia/css/base.css">
@@ -83,14 +95,6 @@ export function generateEventMapHtml(data, deviceType = 'web', options = {}) {
 .evt-wrap {width:100%; font-size:2.222222222222vw; font-family:'Pretendard', '맑은 고딕', 'Droid Sans', AppleSDGothicNeo, Helvetica,sans-serif;}
 .evt-wrap .hide {position:absolute; top:0; left:0; width:100%; height:100%; opacity:0; text-indent:-9999px; z-index:0; overflow:hidden;}
 .evt-wrap .evt-cnt {position:relative; background-color: #ffffff;}
-
-/* event common */
-a {-webkit-tap-highlight-color:rgba(0,0,0,0); -webkit-tap-highlight-color: transparent;}
-.evt-wrap a,
-.evt-wrap button {position:relative; z-index:8; display:block; width:100%;}
-.evt-wrap .floated-button {position:absolute; top:0; left:0%; height: 0; overflow:hidden; text-indent:-5000px; outline: none; 
-    /* background-color: rgba(0, 255, 0, 0.483); */
-}
 
 .sr-only {
   position: absolute;
@@ -102,6 +106,14 @@ a {-webkit-tap-highlight-color:rgba(0,0,0,0); -webkit-tap-highlight-color: trans
   clip: rect(0, 0, 0, 0);
   white-space: nowrap;
   border-width: 0;
+}
+
+/* event common */
+a {-webkit-tap-highlight-color:rgba(0,0,0,0); -webkit-tap-highlight-color: transparent;}
+.evt-wrap a,
+.evt-wrap button {position:relative; z-index:8; display:block; width:100%;}
+.evt-wrap .floated-button {position:absolute; top:0; left:0%; height: 0; overflow:hidden; text-indent:-5000px; outline: none; 
+    /* background-color: rgba(0, 255, 0, 0.483); */
 }
 
 /**********************
@@ -157,11 +169,11 @@ a {-webkit-tap-highlight-color:rgba(0,0,0,0); -webkit-tap-highlight-color: trans
 	${showTopBanner ? `<!-- 상단배너(개인결제유도) -->
 	<div class="scrolling-words-container">
 		<ul class="scrolling-words">
-			<li><button type="button" onclick="handleInternalUrl('/main/mainHotDeal.bene'); gaEvtAction('MO_프로모션', '클래스101 신년 프로모션', '상단배너(개인결제유도)');"><span>우리회사 복지몰 <strong class="col-orange">베네피아</strong></span></a></li>
-			<li><button type="button" onclick="handleInternalUrl('/main/mainHotDeal.bene'); gaEvtAction('MO_프로모션', '클래스101 신년 프로모션', '상단배너(개인결제유도)');"><span>비교검색 끝 <strong class="col-red">최저가보상</strong></span></a></li>
-			<li><button type="button" onclick="handleInternalUrl('/main/mainHotDeal.bene'); gaEvtAction('MO_프로모션', '클래스101 신년 프로모션', '상단배너(개인결제유도)');"><span>17시 전 주문하면 <strong class="col-blue">오늘출발</strong> <img src="https://www.benepia.co.kr/event/cm/topBnrPersPayInd/mobile/images/ico_delivery.png" alt="" style="width: 7.45vw;"></span></a></li>
-			<li><button type="button" onclick="handleInternalUrl('/main/mainHotDeal.bene'); gaEvtAction('MO_프로모션', '클래스101 신년 프로모션', '상단배너(개인결제유도)');"><span>놓치면 아까운 <strong class="col-orange2">여행딜특가</strong></span></a></li>
-			<li><button type="button" onclick="handleInternalUrl('/main/mainHotDeal.bene'); gaEvtAction('MO_프로모션', '클래스101 신년 프로모션', '상단배너(개인결제유도)');"><span> <img src="https://www.benepia.co.kr/event/cm/topBnrPersPayInd/mobile/images/ico_pay2.png" alt="" style="width: 25.45vw;"> <strong>100% 안전결제</strong></span></a></li>
+			<li><button type="button" onclick="handleInternalUrl('/main/mainHotDeal.bene'); gaEvtAction('MO_프로모션', '${pageTitle}', '상단배너(개인결제유도)');"><span>우리회사 복지몰 <strong class="col-orange">베네피아</strong></span></a></li>
+			<li><button type="button" onclick="handleInternalUrl('/main/mainHotDeal.bene'); gaEvtAction('MO_프로모션', '${pageTitle}', '상단배너(개인결제유도)');"><span>비교검색 끝 <strong class="col-red">최저가보상</strong></span></a></li>
+			<li><button type="button" onclick="handleInternalUrl('/main/mainHotDeal.bene'); gaEvtAction('MO_프로모션', '${pageTitle}', '상단배너(개인결제유도)');"><span>17시 전 주문하면 <strong class="col-blue">오늘출발</strong> <img src="https://www.benepia.co.kr/event/cm/topBnrPersPayInd/mobile/images/ico_delivery.png" alt="" style="width: 7.45vw;"></span></a></li>
+			<li><button type="button" onclick="handleInternalUrl('/main/mainHotDeal.bene'); gaEvtAction('MO_프로모션', '${pageTitle}', '상단배너(개인결제유도)');"><span>놓치면 아까운 <strong class="col-orange2">여행딜특가</strong></span></a></li>
+			<li><button type="button" onclick="handleInternalUrl('/main/mainHotDeal.bene'); gaEvtAction('MO_프로모션', '${pageTitle}', '상단배너(개인결제유도)');"><span> <img src="https://www.benepia.co.kr/event/cm/topBnrPersPayInd/mobile/images/ico_pay2.png" alt="" style="width: 25.45vw;"> <strong>100% 안전결제</strong></span></a></li>
 		</ul>
 	</div>
 	<script>
@@ -218,29 +230,22 @@ a {-webkit-tap-highlight-color:rgba(0,0,0,0); -webkit-tap-highlight-color: trans
 	<!-- // e쿠폰 -->
 
 	<!-- 꼭 확인하세요 -->
-	<div class="evt-cnt cnt-notice">
-		<h2>꼭 확인하세요</h2>
-		<ul class="evt-notice-list">
-			<li>이용권 할인은 베네피아에서 e쿠폰 구매 시에만 적용됩니다.</li>
-			<li>구매하신 e쿠폰은 ‘마이페이지 > 나의 e쿠폰함’에서 확인하실 수 있습니다.</li>
-			<li>본 이벤트는 제휴사의 사정에 의해 예고 없이 중단 또는 변경될 수 있습니다.</li>
-		</ul>
-	</div>
+	${generateNoticeHtml()}
 	<!-- // 꼭 확인하세요 -->
 
 	${showBottomBanner ? `<!-- 배너 - 활용백서 -->
 	<div class="evt-cnt banner-howto" id="section_howto">
-		<a href="/disp/eventUsesWhiteNew.bene" onclick="gaEvtAction('MO_프로모션', '클래스101 신년 프로모션', '배너(활용백서)')" style="width:100%"><img src="https://www.benepia.co.kr/event/2023/07/0726_kakao_friends/images/banner_info_mo_20250904.jpg" alt="베네피아 활용백서"></a>
+		<a href="/disp/eventUsesWhiteNew.bene" onclick="gaEvtAction('MO_프로모션', '${pageTitle}', '배너(활용백서)')" style="width:100%"><img src="https://www.benepia.co.kr/event/2023/07/0726_kakao_friends/images/banner_info_mo_20250904.jpg" alt="베네피아 활용백서"></a>
 	</div>
 	<!-- // 배너 - 활용백서 -->
 	<!-- 배너 - 리뷰 혜택 -->
 	<div class="evt-cnt banner-review" id="section_review">
-		<button type="button" onclick="handleInternalUrl('/frnt/mypage/reviewWritableList.bene'); gaEvtAction('MO_프로모션', '클래스101 신년 프로모션', '배너(리뷰 혜택)');" style="width:100%"><img src="https://www.benepia.co.kr/event/2023/07/0726_kakao_friends/images/banner_review_mo_20240306.jpg" alt="리뷰쓰고 혜택받자!"></button>
+		<button type="button" onclick="handleInternalUrl('/frnt/mypage/reviewWritableList.bene'); gaEvtAction('MO_프로모션', '${pageTitle}', '배너(리뷰 혜택)');" style="width:100%"><img src="https://www.benepia.co.kr/event/2023/07/0726_kakao_friends/images/banner_review_mo_20240306.jpg" alt="리뷰쓰고 혜택받자!"></button>
 	</div>
 	<!-- // 배너 - 리뷰 혜택 -->
 	<!-- 배너 - 카카오톡 플러스 친구 -->
 	<div class="evt-cnt banner-kakao-plus" id="section_kakao">
-		<button type="button" onclick="AppWeblink('https://pf.kakao.com/_mxbBkT'); gaEvtAction('MO_프로모션', '클래스101 신년 프로모션', '배너(카카오톡 플러스 친구)');" style="width:100%"><img src="https://www.benepia.co.kr/event/2023/07/0726_kakao_friends/images/banner_kakao_plus_mo_20240306.jpg" alt="베네피아와 카카오톡 친구해요"></button>
+		<button type="button" onclick="AppWeblink('https://pf.kakao.com/_mxbBkT'); gaEvtAction('MO_프로모션', '${pageTitle}', '배너(카카오톡 플러스 친구)');" style="width:100%"><img src="https://www.benepia.co.kr/event/2023/07/0726_kakao_friends/images/banner_kakao_plus_mo_20240306.jpg" alt="베네피아와 카카오톡 친구해요"></button>
 	</div>
 	<!-- // 배너 - 카카오톡 플러스 친구 -->` : ''}
 </div>
@@ -255,7 +260,7 @@ a {-webkit-tap-highlight-color:rgba(0,0,0,0); -webkit-tap-highlight-color: trans
 <head>
 <meta charset="UTF-8">
 <meta name="author" content="SKMNS">
-<title>WEB 프로모션 | 베네피아</title>
+<title>WEB ${pageTitle} | 베네피아</title>
 <link rel="stylesheet" type="text/css" href="https://newfront.benepia.co.kr/resources/css/evt_common.css">
 <style>
 .evt-wrap {width: 1080px; font-family: 'Pretendard', sans-serif;font-size: 24px;}
@@ -324,11 +329,11 @@ a {-webkit-tap-highlight-color: rgba(0,0,0,0); -webkit-tap-highlight-color: tran
 <div class="evt-wrap">
 	${showTopBanner ? `<div class="scrolling-words-container">
 		<ul class="scrolling-words">
-			<li><button type="button" onclick="window.open('/frnt/pointmall/pointmall.do?returnUrl=/main/hotDeal.bene');"><span>우리회사 복지몰 <strong class="col-orange">베네피아</strong></span></button></li>
-			<li><button type="button" onclick="window.open('/frnt/pointmall/pointmall.do?returnUrl=/main/hotDeal.bene');"><span>비교검색 끝 <strong class="col-red">최저가보상</strong></span></button></li>
-			<li><button type="button" onclick="window.open('/frnt/pointmall/pointmall.do?returnUrl=/main/hotDeal.bene');"><span>17시 전 주문하면 <strong class="col-blue">오늘출발</strong> <img src="https://www.benepia.co.kr/event/cm/topBnrPersPayInd/pc/images/ico_delivery.png" alt="" style="width: 43px; margin-top: 3px;"></span></button></li>
-			<li><button type="button" onclick="window.open('/frnt/pointmall/pointmall.do?returnUrl=/main/hotDeal.bene');"><span>놓치면 아까운 <strong class="col-orange2">여행딜특가</strong></span></button></li>
-			<li><button type="button" onclick="window.open('/frnt/pointmall/pointmall.do?returnUrl=/main/hotDeal.bene');"><span> <img src="https://www.benepia.co.kr/event/cm/topBnrPersPayInd/pc/images/ico_pay2.png" alt="" style="width: 182px;"> <strong>100% 안전결제</strong></span></button></li>
+			<li class=""><button type="button" onclick="window.open('/frnt/pointmall/pointmall.do?returnUrl=/main/hotDeal.bene'); gaEvtAction('PC_프로모션', '${pageTitle}', '상단배너(개인결제유도)');"><span>우리회사 복지몰 <strong class="col-orange">베네피아</strong></span></button></li>
+			<li class="words-in"><button type="button" onclick="window.open('/frnt/pointmall/pointmall.do?returnUrl=/main/hotDeal.bene'); gaEvtAction('PC_프로모션', '${pageTitle}', '상단배너(개인결제유도)');"><span>비교검색 끝 <strong class="col-red">최저가보상</strong></span></button></li>
+			<li class=""><button type="button" onclick="window.open('/frnt/pointmall/pointmall.do?returnUrl=/main/hotDeal.bene'); gaEvtAction('PC_프로모션', '${pageTitle}', '상단배너(개인결제유도)');"><span>17시 전 주문하면 <strong class="col-blue">오늘출발</strong> <img src="https://www.benepia.co.kr/event/cm/topBnrPersPayInd/pc/images/ico_delivery.png" alt="" style="width: 43px; margin-top: 3px;"></span></button></li>
+			<li class=""><button type="button" onclick="window.open('/frnt/pointmall/pointmall.do?returnUrl=/main/hotDeal.bene'); gaEvtAction('PC_프로모션', '${pageTitle}', '상단배너(개인결제유도)');"><span>놓치면 아까운 <strong class="col-orange2">여행딜특가</strong></span></button></li>
+			<li class=""><button type="button" onclick="window.open('/frnt/pointmall/pointmall.do?returnUrl=/main/hotDeal.bene'); gaEvtAction('PC_프로모션', '${pageTitle}', '상단배너(개인결제유도)');"><span> <img src="https://www.benepia.co.kr/event/cm/topBnrPersPayInd/pc/images/ico_pay2.png" alt="" style="width: 182px;"> <strong>100% 안전결제</strong></span></button></li>
 		</ul>
 	</div>
 	<script>
@@ -373,14 +378,7 @@ a {-webkit-tap-highlight-color: rgba(0,0,0,0); -webkit-tap-highlight-color: tran
 		${(data.hotspotGroups || []).map(group => generateImageSection(group)).join('\n')}
 	</div>
 
-	<div class="evt-cnt cnt-notice">
-		<h2>꼭 확인하세요</h2>
-		<ul class="evt-notice-list">
-			<li>이용권 할인은 베네피아에서 e쿠폰 구매 시에만 적용됩니다.</li>
-			<li>구매하신 e쿠폰은 '마이페이지 > 나의 e쿠폰함'에서 확인하실 수 있습니다.</li>
-			<li>본 이벤트는 제휴사의 사정에 의해 예고 없이 중단 또는 변경될 수 있습니다.</li>
-		</ul>
-	</div>
+	${generateNoticeHtml()}
 
 	${showBottomBanner ? `<div class="evt-cnt banner-howto" id="section_howto">
 		<button type="button" onclick="window.open('/frnt/event/eventUsesWhiteNew.do');"><img src="https://www.benepia.co.kr/event/2023/07/0726_kakao_friends/images/banner_info_pc_20250904.jpg?date=20250910172538" alt="베네피아 활용백서"></button>
