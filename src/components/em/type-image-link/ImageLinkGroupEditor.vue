@@ -623,6 +623,7 @@ export default {
   outline: 2px solid #6366f1;
   outline-offset: 1px;
   animation: cardPulse 1.5s ease-in-out infinite;
+  cursor: pointer;
 }
 
 @keyframes cardPulse {

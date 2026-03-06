@@ -776,8 +776,22 @@ export default {
 }
 
 .card-active {
-  border-color: var(--color-primary, #5568f8);
-  box-shadow: 0 0 0 3px rgba(85, 104, 248, 0.1);
+  background: #f0f4ff !important;
+  outline: 2px solid #6366f1;
+  outline-offset: 1px;
+  animation: cardPulse 1.5s ease-in-out infinite;
+  cursor: pointer;
+}
+
+@keyframes cardPulse {
+  0%, 100% {
+    outline-color: #6366f1;
+    box-shadow: 0 2px 8px rgba(99, 102, 241, 0.3);
+  }
+  50% {
+    outline-color: #818cf8;
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.5);
+  }
 }
 
 .card-nested {
@@ -875,10 +889,10 @@ export default {
 
 /* 링크 입력 영역 */
 .link-inputs {
-  padding: 12px;
+  padding: 10px;
   background: #f9fafb;
   border: 1px solid #e5e7eb;
-  border-radius: 8px;
+  border-radius: 6px;
   margin-bottom: 12px;
 }
 
