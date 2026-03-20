@@ -1,9 +1,9 @@
 <template>
   <div class="image-map-editor">
-    <!-- 🆕 전역 벤더 선택 (상단) -->
+    <!-- 전역 벤더 선택 (상단) -->
     <div class="global-vendor-selector">
       <div class="form-group">
-        <label>🏢 벤더 타입 (전체 핫스팟 적용)</label>
+        <label>벤더 타입 (전체 핫스팟 적용)</label>
         <select 
           :value="companyType"
           @change="handleVendorChange"
@@ -776,7 +776,7 @@ export default {
 }
 
 .card-active {
-  background: #f0f4ff !important;
+  background: #f0f4ff;
   outline: 2px solid #6366f1;
   outline-offset: 1px;
   animation: cardPulse 1.5s ease-in-out infinite;
@@ -906,7 +906,7 @@ export default {
 
 /* URL 미리보기 */
 .url-preview {
-  background: #f3f4f6 !important;
+  background: #f3f4f6;
   color: #6b7280;
   font-size: 11px;
   font-family: monospace;
@@ -914,7 +914,7 @@ export default {
 }
 
 .url-preview:focus {
-  background: #fff !important;
+  background: #fff;
   color: #111827;
 }
 
@@ -926,7 +926,7 @@ export default {
 }
 
 /* 전역 벤더 선택 영역 */
-.global-vendor-selector {
+/* .global-vendor-selector {
   padding: 16px;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   border-radius: 8px;
@@ -935,17 +935,17 @@ export default {
 
 .global-vendor-selector .form-group {
   margin-bottom: 0;
-}
+} */
 
 .global-vendor-selector label {
   color: #fff;
   font-weight: 600;
-  font-size: 14px;
+  font-size: 13px;
   margin-bottom: 8px;
   display: block;
 }
 
-.vendor-select {
+/* .vendor-select {
   width: 100%;
   max-width: 200px;
   font-weight: 600;
@@ -967,7 +967,7 @@ export default {
   outline: none;
   border-color: #fff;
   box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.2);
-}
+} */
 
 .vendor-divider {
   border: none;

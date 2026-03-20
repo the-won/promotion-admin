@@ -60,7 +60,7 @@
               <td :style="{ background: '#f2f2f2', padding: '18px 9px' }"><table style="TEXT-ALIGN: left" cellSpacing="0" cellPadding="0" width="100%" border="0">
                 <tbody>
                   <tr>
-                  <td :style="`font-size: 12px; font-family: '돋움',dotum,sans-serif; color: #5b5b5b`"> · 본 메일은 2025년 12월 11일 기준 회원님의 베네피아 이메일 수신 동의 여부를 확인한 결과, 수신에 동의하였기에 발송됩니다.</td>
+                  <td :style="`font-size: 12px; font-family: '돋움',dotum,sans-serif; color: #5b5b5b`"> · 본 메일은 {{ getFormattedDate() }} 기준 회원님의 베네피아 이메일 수신 동의 여부를 확인한 결과, 수신에 동의하였기에 발송됩니다.</td>
                   </tr> 
                   <tr>
                   <td :style="`font-size: 12px; font-family: '돋움',dotum,sans-serif; color: #5b5b5b; padding-top: 4px`"> · 베네피아 메일을 수신을 원하지 않으시면, <a style="color: #21a7e5; TEXT-DECORATION: none" href="https://$:domain:$.benepia.co.kr/mail/rcvMailYn/rcvMailYn.do?encMailId=$:enc_mail_id:$&encMbrId=$:enc_mbr_id:$" target="_blank" title="새창열림"><strong>[수신거부]</strong></a>를 클릭해주시기 바랍니다. (If you don`t want this of information or <br />
@@ -112,6 +112,11 @@ export default {
     scrollToImage(groupId, imageId) {
       const refKey = `image-${groupId}-${imageId}`
       this.scrollToImageByRef(refKey)
+    },
+    getFormattedDate() {
+      if (!this.data.sendDate) return ''
+      const { year, month, day } = this.data.sendDate
+      return `${year}년 ${parseInt(month)}월 ${parseInt(day)}일`
     }
   },
   

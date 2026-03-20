@@ -573,14 +573,14 @@ export default {
 <style scoped>
 /* 기존 스타일 전체 유지 */
 :root {
-  --sidebar-wid: 300px;
+  --sidebar-wid: 320px;
 }
 .em-templates {
-  padding-left: 300px;
+  padding-left: 320px;
   transition: padding-left 0.35s ease;
 }
 .em-templates.wide-sidebar {
-  padding-left: 600px;
+  padding-left: 640px;
 }
 .em-templates.no-sidebar,
 .em-templates.no-sidebar.wide-sidebar {
@@ -598,8 +598,8 @@ export default {
 
 .hero-section {
   filter: saturate(180%);
-  width: calc(100vw - 300px);
-  margin-left: calc(((calc(100vw - 300px) - 100%) / 2) * -1) !important;
+  width: calc(100vw - 320px);
+  margin-left: calc(((calc(100vw - 320px) - 100%) / 2) * -1) !important;
   transition: width 0.35s ease, margin-left 0.35s ease;
   height: 550px !important;
   position: relative;
@@ -625,7 +625,7 @@ export default {
 }
 .hero-waves {
   display: block;
-  width: calc(100vw - 300px);
+  width: calc(100vw - 320px);
   height: 60px;
   transition: width 0.35s ease;
   z-index: 5;
@@ -732,7 +732,7 @@ export default {
 }
 
 .sidebar-card {
-  width: 300px;
+  width: 320px;
   background: #fff;
   display: flex;
   flex-direction: column;
@@ -747,7 +747,7 @@ export default {
 }
 
 .sidebar-card.expanded {
-  width: 600px;
+  width: 640px;
 }
 
 .sidebar-card.collapsed {
@@ -913,8 +913,8 @@ export default {
 }
 
 .hero-section.wide-sidebar {
-  width: calc(100vw - 600px);
-  margin-left: calc(((calc(100vw - 600px) - 100%) / 2) * -1) !important;
+  width: calc(100vw - 640px);
+  margin-left: calc(((calc(100vw - 640px) - 100%) / 2) * -1) !important;
 }
 .hero-section.no-sidebar,
 .hero-section.no-sidebar.wide-sidebar {
@@ -923,7 +923,7 @@ export default {
 }
 
 .hero-waves.wide-sidebar {
-  width: calc(100vw - 600px);
+  width: calc(100vw - 640px);
 }
 .hero-waves.no-sidebar,
 .hero-waves.no-sidebar.wide-sidebar {

@@ -11,8 +11,8 @@
   /* 서브 컬러 */
   --color-success: #4ade80;
   --color-success-hover: #3dd070;
-  --color-danger: #f87171;
-  --color-danger-hover: #ef4444;
+  --color-danger: #1a1a1a;
+  --color-danger-hover: #252525;
   
   /* 그레이스케일 */
   --color-text: #2d3748;
@@ -44,7 +44,7 @@
   --btn-font-size: 13px;
   --btn-padding: 10px 18px;
   --btn-padding-sm: 7px 14px;
-  --btn-radius: 8px;
+  --btn-radius: 6px;
   
   /* 카드 */
   --card-radius: 6px;
@@ -55,6 +55,9 @@
   /* 트랜지션 */
   --transition-fast: 0.15s ease;
   --transition-normal: 0.2s ease;
+
+  /* 다크테마 */
+  --color-text-bray : rgba(255, 255, 255, 0.9);
 }
 
 /* Reset & Base */
@@ -67,6 +70,9 @@ html, body {
 }
 body {
   overflow-x: hidden;
+  font-family: "Pretendard", -apple-system, BlinkMacSystemFont, system-ui,
+    Roboto, "Helvetica Neue", "Segoe UI", "Apple SD Gothic Neo",
+    "Noto Sans KR", sans-serif;
 }
 * {
   box-sizing: border-box;
@@ -92,7 +98,7 @@ button {
    Form Group
    ============================================ */
 .form-group {
-  margin-bottom: var(--form-gap);
+  margin-bottom: 3px;
 }
 
 .form-group:last-child {
@@ -675,24 +681,190 @@ button {
 }
 
 
-.dark-mode .card-body {
-    background: rgba(255, 255, 255, 0.05);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 12px;
-  padding: 20px;
-}
-.dark-mode .card {
-  background: rgba(255, 255, 255, 0.05);
-  backdrop-filter: blur(30px);
-  -webkit-backdrop-filter: blur(30px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 12px;
-  padding: 20px;
+.dark-mode .sidebar-card {
+  background: #1a1d29;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 1000;
+  border-right: 1px solid rgba(255, 255, 255, 0.1);
 
-  
+ /* 핵심: 상단에 맺히는 하얀색/보라색 둥근 느낌 */
+  box-shadow: 
+    inset 0 1px 2px rgba(255, 255, 255, 0.3), /* 1. 맨 위쪽 흰색 엣지 하이라이트 */
+    inset 0 10px 20px rgba(255, 255, 255, 0.05), /* 2. 상단에서 은은하게 퍼지는 흰 빛 */
+    0 20px 40px rgba(0, 0, 0, 0.6); /* 3. 외부 그림자 */
 }
+.dark-mode .sidebar-card::after {
+ content: "";
+  position: absolute;
+  top: 0;
+  left: 10%;
+  right: 10%;
+  height: 1px;
+  background: linear-gradient(to right, transparent, rgba(255,255,255,0.4), transparent);
+}
+.dark-mode .section-title {
+  color: #fff;
+  opacity: 0.9;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.dark-mode .form-label {
+  font-size: 12px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.9);
+}
+.dark-mode .form-input,
+.dark-mode .form-textarea {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #fff;
+  font-family: inherit;
+  transition: all 0.2s;
+  cursor: pointer;
+  padding: 8px 10px;
+}
+.dark-mode .form-select,
+.dark-mode select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+
+  /* width: 100%; */
+  /* padding: 10px 40px 10px 12px; */
+
+  background-color: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.15);
+  /* border-radius: 6px; */
+
+  color: #fff;
+  font-family: inherit;
+  /* font-size: 14px; */
+
+  /* 화살표 */
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='white' viewBox='0 0 16 16'%3E%3Cpath d='M1.5 5l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 10px;
+}
+/* focus */
+.dark-mode .form-select:focus,
+.dark-mode .form-input:focus {
+  outline: none;
+  border-color: rgba(255,255,255,0.35);
+}
+
+/* option 스타일 (일부 브라우저만 적용) */
+.dark-mode .form-select option,
+.dark-mode .form-input option {
+  background: #1e1e1e;
+  color: #fff;
+}
+.dark-mode .color-picker {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+.dark-mode .sidebar-footer-fixed {
+  background: #1a1d29;
+  border-color: rgba(255, 255, 255, 0.1);
+}
+.dark-mode .template-select-btn {
+  background: rgba(102, 126, 234, 0.15);
+  box-shadow: none;
+}
+.dark-mode .template-select-btn:hover {
+  transform: translateY(0);
+  box-shadow: none;
+}
+.dark-mode .link-inputs {
+  background-color: inherit;
+  border: none;
+}
+.dark-mode .url-preview {
+  background-color: inherit;
+}
+.dark-mode .url-preview:focus {
+  background-color: inherit;
+  color: #fff;
+}
+.dark-mode .images-section,
+.dark-mode .image-settings {
+  /* background: #172025; */
+  /* background: linear-gradient(145deg, #302759, #172025); */
+  background: none;
+}
+.dark-mode .section-header h5 {
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 12px;
+  font-weight: 500;
+}
+.dark-mode .card-nested.card-active {
+  background-color: inherit;
+  outline-color: #fff;
+  animation: cardPulseDark 1.5s ease-in-out infinite;
+}
+.dark-mode .text-muted,
+.dark-mode .form-group label,
+.dark-mode .card-title,
+.dark-mode .help-text {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.dark-mode .card-active {
+   background-color: inherit;
+  outline-color: #fff;
+  animation: cardPulseDark 1.5s ease-in-out infinite;
+}
+
+.dark-mode .card.selectable.selected {
+  border-color: #fff;
+  /* background: var(--color-primary-light); */
+  background: inherit;
+  box-shadow: 0 0 0 3px rgba(85, 104, 248, 0.1);
+}
+
+@keyframes cardPulseDark {
+  0%, 100% {
+    outline-color: #fff;
+    box-shadow: 0 2px 8px rgba(99, 102, 241, 0.3);
+  }
+  50% {
+    outline-color: #fff;
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.5);
+  }
+}
+
+.dark-mode .card, 
+.dark-mode .image-map-editor {
+  background: rgba(255, 255, 255, 0.05);
+ 
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  /* border-radius: 12px; */
+  padding: 15px;
+}
+.dark-mode .card .form-group + .form-group {
+  /* margin-top: 10px; */
+}
+.dark-mode .empty-state {
+  background-color: inherit;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 /* 아코디언 섹션 헤더 */
 .accordion-header {
   background: rgba(255, 255, 255, 0.03);

@@ -80,13 +80,18 @@ export const templateDefaults = {
           images: [
             {
               id: 'img_t2_001',
-              url: 'https://org-i.benepia.co.kr/ckeditor/2025/12/11/BB588B647500.Tomcat_117654295328570.jpg',
+              url: 'http://10.71.101.60:13305/Promotion/2026%EB%85%84/20260102_BENEDR-26289_[%EB%B3%B5%EC%A7%80%EC%A0%9C%ED%9C%B4]%20%EC%84%B8%EC%9D%B4%ED%94%84%EB%8B%A5%20EM/EM/images/img_em_02.jpg',
               alt: '상품 이미지 1'
             },
             {
               id: 'img_t2_002',
-              url: 'https://org-i.benepia.co.kr/ckeditor/2025/12/11/BB588B647500.Tomcat_117654296464950.jpg',
-              alt: '상품 이미지 1'
+              url: 'http://10.71.101.60:13305/Promotion/2026%EB%85%84/20260102_BENEDR-26289_[%EB%B3%B5%EC%A7%80%EC%A0%9C%ED%9C%B4]%20%EC%84%B8%EC%9D%B4%ED%94%84%EB%8B%A5%20EM/EM/images/img_em_06.jpg',
+              alt: '상품 이미지 2'
+            },
+            {
+              id: 'img_t2_003',
+              url: 'http://10.71.101.60:13305/Promotion/2026%EB%85%84/20260102_BENEDR-26289_[%EB%B3%B5%EC%A7%80%EC%A0%9C%ED%9C%B4]%20%EC%84%B8%EC%9D%B4%ED%94%84%EB%8B%A5%20EM/EM/images/img_em_07.jpg',
+              alt: '상품 이미지 3'
             },
           ]
         },
