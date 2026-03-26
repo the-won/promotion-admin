@@ -4,10 +4,10 @@
     <div 
       v-for="(group, groupIdx) in localGroups" 
       :key="group.id" 
-      class="group-section"
+      class="image-map-editor"
     >
-      <div class="group-header">
-        <span class="group-title">📌 이미지 {{ groupIdx + 1 }}</span>
+      <div class="card-header">
+        <span class="card-title">이미지 {{ groupIdx + 1 }}</span>
         <button 
           v-if="localGroups.length > 1"
           @click="removeGroup(group.id)" 
@@ -26,7 +26,7 @@
       >
         <div class="form-group">
           <label>
-            {{ deviceType === 'mobile' ? '📱 모바일' : '🖥️ 웹' }} 이미지 URL
+            {{ deviceType === 'mobile' ? '모바일' : '웹' }} 이미지 URL
           </label>
           <input 
             type="url" 
@@ -39,7 +39,7 @@
         </div>
         <div class="form-group">
           <label>
-            {{ deviceType === 'mobile' ? '📱 모바일' : '🖥️ 웹' }} 이미지 대체텍스트 (스크린리더용)
+            {{ deviceType === 'mobile' ? '모바일' : '웹' }} 이미지 대체텍스트 (스크린리더용)
           </label>
           <input 
             type="text" 
@@ -99,7 +99,7 @@
           </div>
 
           <!-- 기획전 / 상품 / 브랜드e쿠폰 / 브랜드매장결제 : 코드 단일 입력 -->
-          <div v-if="['plan','product','brand_ecoupon','brand_store'].includes(getHotspotConfig(hotspot).linkType)" class="form-group">
+          <div v-if="['plan','product','brand_ecoupon','brand_store'].includes(getHotspotConfig(hotspot).linkType)" class="form-group link-inputs">
             <label>{{ codeLabelMap[getHotspotConfig(hotspot).linkType] }}</label>
             <input
               type="text"
@@ -217,7 +217,7 @@
           <!-- 외부URL / 기타 -->
           <template v-if="['external','custom'].includes(getHotspotConfig(hotspot).linkType)">
             <div class="form-group">
-              <label>URL</label>
+              <label>전체 URL</label>
               <input
                 type="url"
                 :value="getHotspotConfig(hotspot).linkData.url"
@@ -586,13 +586,13 @@ export default {
   width: 100%;
 }
 
-.group-section {
+/* .group-section {
   margin-bottom: 20px;
   padding: 16px;
   border: 1px solid #e5e7eb;
   border-radius: 10px;
   background: #fafbfc;
-}
+} */
 
 .group-header {
   display: flex;
@@ -636,7 +636,7 @@ export default {
   color: #1f2937;
 }
 
-.form-group {
+/* .form-group {
   margin-bottom: 10px;
 }
 
@@ -646,9 +646,9 @@ export default {
   font-weight: 600;
   color: #374151;
   margin-bottom: 4px;
-}
+} */
 
-.form-input {
+/* .form-input {
   width: 100%;
   padding: 8px 12px;
   border: 1px solid #e5e7eb;
@@ -662,7 +662,7 @@ export default {
   outline: none;
   border-color: #6366f1;
   box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
-}
+} */
 
 .btn {
   padding: 8px 16px;
@@ -737,25 +737,25 @@ export default {
   }
 }
 
-.card-header {
+/* .card-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 10px;
   padding-bottom: 8px;
   border-bottom: 1px solid #f3f4f6;
-}
+} */
 
-.card-title {
+/* .card-title {
   font-size: 13px;
   font-weight: 600;
   color: #1f2937;
-}
+} */
 
-.add-group-section {
+/* .add-group-section {
   text-align: center;
   padding: 8px 0;
-}
+} */
 
 .btn-add-group {
   width: 100%;

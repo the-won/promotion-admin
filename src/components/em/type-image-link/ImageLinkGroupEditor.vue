@@ -579,43 +579,7 @@ export default {
   margin: 20px 0;
 }
 
-/* 링크 입력 영역 */
-.link-inputs {
-  padding: 12px;
-  background: #f9fafb;
-  border: 1px solid #e5e7eb;
-  border-radius: 8px;
-  margin-bottom: 12px;
-}
 
-.link-inputs .form-group {
-  margin-bottom: 8px;
-}
-
-.link-inputs .form-group:last-child {
-  margin-bottom: 0;
-}
-
-/* URL 미리보기 */
-.url-preview {
-  background: #f3f4f6;
-  color: #6b7280;
-  font-size: 11px;
-  font-family: monospace;
-  cursor: text;
-}
-
-.url-preview:focus {
-  background: #fff;
-  color: #111827;
-}
-
-.help-text {
-  display: block;
-  margin-top: 4px;
-  font-size: 11px;
-  color: #6b7280;
-}
 
 /* 이미지 카드 하이라이트만 적용 (그룹 카드는 제외) */
 .card-nested.card-active {

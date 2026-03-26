@@ -123,6 +123,52 @@ button {
 }
 
 
+/* 링크 입력 영역 */
+.link-inputs {
+  padding: 12px;
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  margin-bottom: 12px;
+}
+
+.link-inputs .form-group {
+  margin-bottom: 8px;
+}
+
+.link-inputs .form-group:last-child {
+  margin-bottom: 0;
+}
+
+/* URL 미리보기 */
+.url-preview {
+  background: #f3f4f6;
+  color: #6b7280;
+  font-size: 11px;
+  font-family: monospace;
+  cursor: text;
+}
+
+.url-preview:focus {
+  background: #fff;
+  color: #111827;
+}
+
+.help-text {
+  display: block;
+  margin-top: 4px;
+  font-size: 11px;
+  color: #6b7280;
+}
+
+.image-map-editor {
+  padding: 16px;
+  background: var(--color-bg-secondary, #f5f6fa);
+  border-radius: var(--card-radius, 10px);
+}
+
+
+
 /* ============================================
    Form Input / Select / Textarea
    ============================================ */
@@ -705,7 +751,7 @@ button {
   height: 1px;
   background: linear-gradient(to right, transparent, rgba(255,255,255,0.4), transparent);
 }
-.dark-mode .section-title {
+.dark-mode .sidebar-card .section-title {
   color: #fff;
   opacity: 0.9;
   text-transform: uppercase;
@@ -782,6 +828,10 @@ button {
   background-color: inherit;
   border: none;
 }
+.dark-mode .title-image-section {
+  background-color: inherit;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
 .dark-mode .url-preview {
   background-color: inherit;
 }
@@ -795,6 +845,7 @@ button {
   /* background: linear-gradient(145deg, #302759, #172025); */
   background: none;
 }
+.dark-mode .section-header h4,
 .dark-mode .section-header h5 {
   color: rgba(255, 255, 255, 0.9);
   font-size: 12px;
@@ -813,7 +864,7 @@ button {
 }
 
 .dark-mode .card-active {
-   background-color: inherit;
+  background-color: inherit;
   outline-color: #fff;
   animation: cardPulseDark 1.5s ease-in-out infinite;
 }
@@ -852,18 +903,36 @@ button {
   color: rgba(255, 255, 255, 0.9);
 }
 
+/* 상품 일괄 업로드 */
+.dark-mode .upload-card,
+.dark-mode .paste-area {
+  background-color: inherit;
+  border: 2px solid rgba(255, 255, 255, 0.1);
+}
+.dark-mode .paste-area:focus {
+  background-color: inherit;
+   border: 3px solid rgba(255, 255, 255, 0.1);
+}
+
+.dark-mode .tab-selector {
+  background-color: inherit;
+}
 
 
 
+/* 개인정보처리방침 */
+.dark-mode .section-card,
+.dark-mode .table-card,
+.dark-mode .row-card {
+  background-color: inherit;
+}
 
 
 
-
-
-
-
-
-
+/* 이벤트 프로모션 */
+.dark-mode .group-section {
+  background-color: inherit;
+}
 
 /* 아코디언 섹션 헤더 */
 .accordion-header {

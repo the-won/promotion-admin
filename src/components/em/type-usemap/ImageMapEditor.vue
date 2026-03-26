@@ -758,11 +758,6 @@ export default {
 </script>
 
 <style scoped>
-.image-map-editor {
-  padding: 16px;
-  background: var(--color-bg-secondary, #f5f6fa);
-  border-radius: var(--card-radius, 10px);
-}
 
 .image-settings {
   background: var(--color-bg-tertiary, #eceef2);

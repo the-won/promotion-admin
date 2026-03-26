@@ -31,12 +31,12 @@
           </svg>
         </button>
        
-        <button class="icon-btn notification-btn">
+        <!-- <button class="icon-btn notification-btn">
           <span class="notification-badge">2</span>
         </button>
         <div class="user-avatar">
           <img src="https://i.pravatar.cc/40?img=12" alt="User" />
-        </div>
+        </div> -->
       </div>
     </header>
 
