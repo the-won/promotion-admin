@@ -9,10 +9,10 @@
   --color-primary-light: #eef0ff;
   
   /* 서브 컬러 */
-  --color-success: #4ade80;
-  --color-success-hover: #3dd070;
-  --color-danger: #1a1a1a;
-  --color-danger-hover: #252525;
+  --color-success: #059669;
+  --color-success-hover: #047857;
+  --color-danger: #dc2626;
+  --color-danger-hover: #b91c1c;
   
   /* 그레이스케일 */
   --color-text: #2d3748;
@@ -774,32 +774,41 @@ button {
 }
 .dark-mode .form-select,
 .dark-mode select {
-  appearance: none;
+  /* appearance: none;
   -webkit-appearance: none;
-  -moz-appearance: none;
-
-  /* width: 100%; */
-  /* padding: 10px 40px 10px 12px; */
-
   background-color: rgba(255,255,255,0.05);
   border: 1px solid rgba(255,255,255,0.15);
-  /* border-radius: 6px; */
-
   color: #fff;
   font-family: inherit;
-  /* font-size: 14px; */
 
-  /* 화살표 */
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='white' viewBox='0 0 16 16'%3E%3Cpath d='M1.5 5l6 6 6-6'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-position: right 12px center;
-  background-size: 10px;
+  background-size: 10px; */
+  color: rgba(255, 255, 255, 0.9);
+  background-color: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.15);
+  transition: all 0.2s ease;
+}
+.dark-mode .form-select::after,
+.dark-mode select::after {
+  content: '';
+    position: absolute;
+    right: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    border: 5px solid transparent;
+    border-top-color: #888;
+    pointer-events: none;
 }
 /* focus */
 .dark-mode .form-select:focus,
 .dark-mode .form-input:focus {
   outline: none;
-  border-color: rgba(255,255,255,0.35);
+  /* border-color: rgba(255,255,255,0.35); */
+
+    border-color: rgba(255,255,255,0.9);
+    box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.25)
 }
 
 /* option 스타일 (일부 브라우저만 적용) */
