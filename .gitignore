@@ -4,3 +4,5 @@
 /.idea  
 *.log  
 *.log.*   
+
+/image-upload-server/node_modules

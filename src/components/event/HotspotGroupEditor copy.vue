@@ -26,7 +26,7 @@
       >
         <div class="form-group">
           <label>
-            {{ deviceType === 'mobile' ? '📱 모바일' : '🖥️ 웹' }} 이미지 URL
+            {{ deviceType === 'mobile' ? '모바일' : '웹' }} 이미지 URL
           </label>
           <input 
             type="url" 
@@ -37,41 +37,9 @@
             @click.stop
           />
         </div>
-
-        <!-- 이미지 업로드 -->
         <div class="form-group">
           <label>
-            📤 {{ deviceType === 'mobile' ? '모바일' : '웹' }} 이미지 업로드
-          </label>
-          <div class="upload-wrapper">
-            <input 
-              type="file" 
-              :id="`upload-${deviceType}-${groupIdx}`"
-              accept="image/*"
-              @change="handleImageUpload(groupIdx, $event)"
-              class="file-input"
-              @click.stop
-            />
-            <label 
-              :for="`upload-${deviceType}-${groupIdx}`"
-              class="upload-button"
-            >
-              <span class="upload-icon">📁</span>
-              <span class="upload-text">파일 선택</span>
-            </label>
-            <span 
-              v-if="getUploadedFileName(group)"
-              class="file-name"
-            >
-              {{ getUploadedFileName(group) }}
-            </span>
-          </div>
-          <small class="help-text">※ 이미지 업로드 시 URL이 자동으로 생성됩니다</small>
-        </div>
-
-        <div class="form-group">
-          <label>
-            {{ deviceType === 'mobile' ? '📱 모바일' : '🖥️ 웹' }} 이미지 대체텍스트 (스크린리더용)
+            {{ deviceType === 'mobile' ? '모바일' : '웹' }} 이미지 대체텍스트 (스크린리더용)
           </label>
           <input 
             type="text" 
@@ -455,52 +423,6 @@ export default {
       }
     },
 
-    // ── 이미지 업로드 ──
-    handleImageUpload(groupIdx, event) {
-      const file = event.target.files[0]
-      if (!file) return
-
-      // 파일 타입 체크
-      if (!file.type.startsWith('image/')) {
-        alert('이미지 파일만 업로드 가능합니다.')
-        return
-      }
-
-      // 파일 크기 체크 (5MB)
-      if (file.size > 5 * 1024 * 1024) {
-        alert('파일 크기는 5MB 이하여야 합니다.')
-        return
-      }
-
-      // FileReader로 Base64 변환
-      const reader = new FileReader()
-      reader.onload = (e) => {
-        const base64Url = e.target.result
-        
-        // 파일명 저장
-        if (this.deviceType === 'mobile') {
-          this.$set(this.localGroups[groupIdx], 'mobileImageFileName', file.name)
-        } else {
-          this.$set(this.localGroups[groupIdx], 'webImageFileName', file.name)
-        }
-
-        // URL 업데이트 (실제로는 서버에 업로드 후 URL을 받아와야 함)
-        // 여기서는 임시로 Base64 URL 사용
-        this.updateImageUrl(groupIdx, base64Url)
-        
-        console.log('📤 이미지 업로드:', file.name, '크기:', (file.size / 1024).toFixed(2), 'KB')
-      }
-      reader.readAsDataURL(file)
-    },
-
-    getUploadedFileName(group) {
-      if (this.deviceType === 'mobile') {
-        return group.mobileImageFileName || ''
-      } else {
-        return group.webImageFileName || ''
-      }
-    },
-
     // ── 링크 설정 접근 (현재 deviceType 기준) ──
     getHotspotConfig(hotspot) {
       const key = this.deviceType // 'web' | 'mobile'
@@ -551,10 +473,8 @@ export default {
         id: this.generateId('hg'),
         webImageUrl: '',
         webImageAlt: '',
-        webImageFileName: '',
         mobileImageUrl: '',
         mobileImageAlt: '',
-        mobileImageFileName: '',
         hotspots: []
       }
     },
@@ -666,6 +586,14 @@ export default {
   width: 100%;
 }
 
+/* .group-section {
+  margin-bottom: 20px;
+  padding: 16px;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  background: #fafbfc;
+} */
+
 .group-header {
   display: flex;
   justify-content: space-between;
@@ -707,6 +635,34 @@ export default {
   font-weight: 700;
   color: #1f2937;
 }
+
+/* .form-group {
+  margin-bottom: 10px;
+}
+
+.form-group label {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  color: #374151;
+  margin-bottom: 4px;
+} */
+
+/* .form-input {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  font-size: 13px;
+  transition: all 0.2s;
+  box-sizing: border-box;
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: #6366f1;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+} */
 
 .btn {
   padding: 8px 16px;
@@ -781,6 +737,26 @@ export default {
   }
 }
 
+/* .card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #f3f4f6;
+} */
+
+/* .card-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: #1f2937;
+} */
+
+/* .add-group-section {
+  text-align: center;
+  padding: 8px 0;
+} */
+
 .btn-add-group {
   width: 100%;
   padding: 12px;
@@ -851,64 +827,5 @@ export default {
   word-break: break-all;
   line-height: 1.5;
   font-family: 'Consolas', 'Monaco', monospace;
-}
-
-/* 이미지 업로드 스타일 */
-.upload-wrapper {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.file-input {
-  display: none;
-}
-
-.upload-button {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 8px 14px;
-  background: #6366f1;
-  color: white;
-  border-radius: 6px;
-  font-size: 12px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s;
-  user-select: none;
-}
-
-.upload-button:hover {
-  background: #4f46e5;
-  box-shadow: 0 2px 8px rgba(99, 102, 241, 0.3);
-}
-
-.upload-button:active {
-  transform: scale(0.98);
-}
-
-.upload-icon {
-  font-size: 14px;
-}
-
-.upload-text {
-  font-size: 12px;
-}
-
-.file-name {
-  font-size: 11px;
-  color: #6b7280;
-  max-width: 200px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.help-text {
-  display: block;
-  margin-top: 4px;
-  font-size: 11px;
-  color: #9ca3af;
 }
 </style>

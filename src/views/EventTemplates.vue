@@ -215,7 +215,9 @@
 import TemplateForm from '../components/TemplateForm.vue'
 import PreviewFrame from '../components/PreviewFrame.vue'
 import TemplateSelectModal from '../modals/TemplateSelectModal.vue'
-import { downloadHtml } from '../utils/downloadHtml'
+// import { downloadHtml } from '../utils/downloadHtml'
+// 새로운: imageDownloadHtml.js (이미지 분리용)
+import { imageDownloadHtml } from '../utils/imageDownloadHtml'
 import { templateDefaults } from '../config/templateDefaults'
 
 export default {
@@ -389,7 +391,7 @@ export default {
       return templateDefaults[templateName]
     },
     
-    handleDownload() {
+    async handleDownload() {
       console.log('🔍 다운로드 시작')
       console.log('📱 currentDevice:', this.currentDevice)
       console.log('📋 selectedTemplate:', this.selectedTemplate)
@@ -402,7 +404,8 @@ export default {
         noticeItems: settings.noticeItems
       }
       console.log('🎌 bannerOptions:', bannerOptions)
-      downloadHtml(this.selectedTemplate, this.formData, this.currentDevice, bannerOptions)
+      // downloadHtml(this.selectedTemplate, this.formData, this.currentDevice, bannerOptions)
+       await imageDownloadHtml(this.selectedTemplate, this.formData, this.currentDevice, bannerOptions)
     },
     
     handleSelectHotspot(id) {

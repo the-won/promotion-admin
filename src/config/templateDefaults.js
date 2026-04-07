@@ -99,6 +99,12 @@ export const templateDefaults = {
     } 
   },
   'em-type-3': {
+    folderName: {
+      label: 'Zip 폴더 이름',
+      type: 'text',
+      placeholder: '폴더명을 적어주세요',
+      value: ''
+    },
     pageTitle: {
       label: '페이지 타이틀',
       type: 'text',
