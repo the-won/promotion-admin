@@ -4,6 +4,7 @@ import { generateEventMapHtml } from './event/eventMapHtml.js'
 import { generateEmType4Html } from './em/efamily/emType4Html.js'
 import { generateEmType5Html } from './em/secret-sale/emType5Html.js'
 import { generateFullEmailHtml } from './em/type-usemap/ImageMapHtml.js'
+import { generateFullEmailHtml2 } from './em/type-usemap/ImageMapHtml2.js'
 import { generatePrivacyHtml } from './privacy/privacyHtml.js'
 
 // 템플릿별 HTML 생성 함수 매핑
@@ -14,6 +15,7 @@ export const templateHtmlGenerators = {
   'em-type-4': generateEmType4Html,
   'em-type-5': generateEmType5Html,
   'em-type-imagemap': generateFullEmailHtml,
+  'em-type-imagemap2': generateFullEmailHtml2,
   'em-type-letter' : generateFullEmailHtml,
   'em-type-coupon' : generateEmType2Html,
   'privacy-policy': generatePrivacyHtml

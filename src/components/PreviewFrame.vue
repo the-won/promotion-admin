@@ -54,6 +54,7 @@ import EmType3 from '../templates/event/EmType3.vue'
 import EmType4 from '../templates/em/efamily/EmType4.vue'
 import EmType5 from '../templates/em/secret-sale/EmType5.vue'
 import EmTypeImageMap from '../templates/em/type-usemap/EmTypeImageMap.vue'
+import EmTypeImageMap2 from '../templates/em/type-usemap/EmTypeImageMap2.vue'
 import PrivacyPreview from '../templates/privacy/PrivacyPreview.vue'
 
 export default {
@@ -69,6 +70,7 @@ export default {
     EmType4,
     EmType5,
     EmTypeImageMap,
+    EmTypeImageMap2,
     PrivacyPreview
   },
   props: {
@@ -129,6 +131,7 @@ export default {
         'em-type-4': 'EmType4',
         'em-type-5': 'EmType5',
         'em-type-imagemap': 'EmTypeImageMap',
+        'em-type-imagemap2': 'EmTypeImageMap2',
         'em-type-coupon' : 'EmType2',
         'em-type-letter' : 'EmTypeImageMap',
         'privacy-policy': 'PrivacyPreview'
