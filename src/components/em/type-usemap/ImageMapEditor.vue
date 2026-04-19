@@ -38,12 +38,27 @@
       <div class="image-settings">
         <div class="form-group">
           <label>이미지 URL</label>
-          <input 
-            type="url" 
-            v-model="row.imageUrl"
-            placeholder="http://example.com/image.jpg"
-            class="form-input"
-          />
+          <div class="image-input-wrapper">
+            <input
+              type="url"
+              v-model="row.imageUrl"
+              placeholder="http://example.com/image.jpg"
+              class="form-input"
+            />
+            <input
+              type="file"
+              :id="`upload-em-${row.id}`"
+              accept="image/*"
+              @change="handleFileSelect($event, row)"
+              class="file-input-hidden"
+            />
+            <label :for="`upload-em-${row.id}`" class="btn-file">
+              📁 파일 선택
+            </label>
+          </div>
+          <div v-if="row._uploadedFileName" class="file-info">
+            ✓ {{ row._uploadedFileName }}
+          </div>
         </div>
 
         <div class="form-row">
@@ -629,14 +644,25 @@ export default {
     
     handleFileSelect(event, row) {
       const file = event.target.files[0]
-      if (file && file.type.startsWith('image/')) {
-        const reader = new FileReader()
-        reader.onload = (e) => {
-          // Base64 데이터 URL로 변환하여 이미지 URL로 사용
-          row.imageUrl = e.target.result
-        }
-        reader.readAsDataURL(file)
+      if (!file) return
+
+      if (!file.type.startsWith('image/')) {
+        alert('이미지 파일만 업로드 가능합니다.')
+        return
       }
+
+      if (file.size > 5 * 1024 * 1024) {
+        alert('파일 크기는 5MB 이하여야 합니다.')
+        return
+      }
+
+      const reader = new FileReader()
+      reader.onload = (e) => {
+        row.imageUrl = e.target.result
+        this.$set(row, '_uploadedFileName', file.name)
+        console.log('📤 이미지 업로드:', file.name, '크기:', (file.size / 1024).toFixed(2), 'KB')
+      }
+      reader.readAsDataURL(file)
     },
     
     getAreasForRow(rowId) {
@@ -823,6 +849,10 @@ export default {
 
 .image-input-wrapper .form-input {
   flex: 1;
+}
+
+.file-input-hidden {
+  display: none;
 }
 
 .btn-file {

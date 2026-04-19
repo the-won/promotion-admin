@@ -178,9 +178,27 @@
           v-model="localData[key]"
         />
 
-        <!-- Image Map Editor -->
+        <!-- Image Map Editor (usemap - 파일 업로드 지원) -->
         <ImageMapEditor
           v-else-if="config.type === 'image-map-rows'"
+          :rows="localData.imageMapRows"
+          :areas="localData.imageMapAreas"
+          :companyType="localData.companyType"
+          :selectedAreaId="selectedHotspotId"
+          :selectedRowInfo="selectedRowInfo"
+          :visibleScrollPosition="visibleScrollPosition"
+          :sidebarExpanded="sidebarExpanded"
+          @update:rows="localData.imageMapRows = $event"
+          @update:areas="localData.imageMapAreas = $event"
+          @update:companyType="localData.companyType = $event"
+          @select-area="handleSelectHotspot"
+          @select-row="handleSelectRow"
+          @clear-highlight="handleClearRowHighlight"
+        />
+
+        <!-- Image Map Editor2 (usemap2 - URL 입력 전용) -->
+        <ImageMapEditor2
+          v-else-if="config.type === 'image-map-rows-2'"
           :rows="localData.imageMapRows"
           :areas="localData.imageMapAreas"
           :companyType="localData.companyType"
@@ -228,6 +246,7 @@ import HotdealExcelUploader from './em/secret-sale/HotdealExcelUploader.vue'
 import DatePicker from './DatePicker.vue'
 import ImageLinkGroupEditor from './em/type-image-link/ImageLinkGroupEditor.vue'
 import ImageMapEditor from './em/type-usemap/ImageMapEditor.vue'
+import ImageMapEditor2 from './em/type-usemap/ImageMapEditor2.vue'
 import ProductGroupListEditor from './em/efamily/ProductGroupListEditor.vue'
 import BannerListEditor from './em/efamily/BannerListEditor.vue'
 import EfamilyExcelUploader from './em/efamily/EfamilyExcelUploader.vue'
@@ -243,6 +262,7 @@ export default {
     DatePicker,
     ImageLinkGroupEditor, 
     ImageMapEditor,
+    ImageMapEditor2,
     ProductGroupListEditor,
     BannerListEditor,
     EfamilyExcelUploader,

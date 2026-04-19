@@ -75,8 +75,8 @@ export async function imageDownloadHtml(templateName, formData, deviceType = 'we
     }
     
     // 4. HTML 파일 추가
-    const htmlFilename = deviceType === 'mobile' ? 'm.event.html' : 'event.html'
-    zip.file(htmlFilename, processedHtml)
+    const defaultHtmlFilename = options.htmlFilename || (deviceType === 'mobile' ? 'm.event.html' : 'event.html')
+    zip.file(defaultHtmlFilename, processedHtml)
     
     console.log(`📦 ZIP 생성 완료: HTML 1개, 이미지 ${imageMap.size}개`)
     

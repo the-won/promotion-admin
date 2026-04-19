@@ -159,6 +159,7 @@ import TemplateForm from '../components/TemplateForm.vue'
 import PreviewFrame from '../components/PreviewFrame.vue'
 import TemplateSelectModal from '../modals/TemplateSelectModal.vue'
 import { downloadHtml } from '../utils/downloadHtml'
+import { imageDownloadHtml } from '../utils/ImageDownloadHtml'
 import { templateDefaults } from '../config/templateDefaults'
 
 export default {
@@ -260,8 +261,12 @@ export default {
     getTemplateConfig(templateName) {
       return templateDefaults[templateName]
     },
-    handleDownload() {
-      downloadHtml(this.selectedTemplate, this.formData)
+    async handleDownload() {
+      if (this.selectedTemplate === 'em-type-imagemap') {
+        await imageDownloadHtml(this.selectedTemplate, this.formData, 'web', { htmlFilename: 'em.html' })
+      } else {
+        downloadHtml(this.selectedTemplate, this.formData)
+      }
     },
     handleSelectHotspot(id) {
       this.selectedHotspotId = id
