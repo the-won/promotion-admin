@@ -190,13 +190,28 @@
 
             <div class="form-group">
               <label>이미지 URL</label>
-              <input 
-                type="url" 
-                v-model="image.url"
-                placeholder="https://cdn.example.com/image.jpg"
-                class="form-input"
-                @click.stop
-              />
+              <div class="image-input-wrapper">
+                <input
+                  type="url"
+                  v-model="image.url"
+                  placeholder="https://cdn.example.com/image.jpg"
+                  class="form-input"
+                  @click.stop
+                />
+                <input
+                  type="file"
+                  :id="`upload-img-${image.id}`"
+                  accept="image/*"
+                  @change="handleImageUpload($event, image)"
+                  class="file-input-hidden"
+                />
+                <label :for="`upload-img-${image.id}`" class="btn-file" @click.stop>
+                  📁 파일 선택
+                </label>
+              </div>
+              <div v-if="image._uploadedFileName" class="file-info">
+                ✓ {{ image._uploadedFileName }}
+              </div>
             </div>
 
             <div class="form-group">
@@ -285,6 +300,29 @@ export default {
     }
   },
   methods: {
+    handleImageUpload(event, image) {
+      const file = event.target.files[0]
+      if (!file) return
+
+      if (!file.type.startsWith('image/')) {
+        alert('이미지 파일만 업로드 가능합니다.')
+        return
+      }
+
+      if (file.size > 5 * 1024 * 1024) {
+        alert('파일 크기는 5MB 이하여야 합니다.')
+        return
+      }
+
+      const reader = new FileReader()
+      reader.onload = (e) => {
+        image.url = e.target.result
+        this.$set(image, '_uploadedFileName', file.name)
+        console.log('📤 이미지 업로드:', file.name, '크기:', (file.size / 1024).toFixed(2), 'KB')
+      }
+      reader.readAsDataURL(file)
+    },
+
     // 고유 ID 생성 (템플릿 간 충돌 방지)
     generateId(prefix = 'id') {
       return `${prefix}_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
@@ -599,5 +637,51 @@ export default {
     outline-color: #818cf8;
     box-shadow: 0 4px 12px rgba(99, 102, 241, 0.5);
   }
+}
+
+.image-input-wrapper {
+  display: flex;
+  gap: 6px;
+  align-items: stretch;
+}
+
+.image-input-wrapper .form-input {
+  flex: 1;
+}
+
+.file-input-hidden {
+  display: none;
+}
+
+.btn-file {
+  padding: 6px 12px;
+  background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+  box-shadow: 0 2px 4px rgba(99, 102, 241, 0.2);
+  display: inline-flex;
+  align-items: center;
+}
+
+.btn-file:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(99, 102, 241, 0.3);
+}
+
+.file-info {
+  margin-top: 6px;
+  padding: 6px 10px;
+  background: #f0fdf4;
+  border: 1px solid #86efac;
+  border-radius: 4px;
+  color: #16a34a;
+  font-size: 11px;
+  font-weight: 500;
 }
 </style>
