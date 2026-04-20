@@ -90,13 +90,14 @@ export async function imageDownloadHtml(templateName, formData, deviceType = 'we
     // 7. 파일명 생성 및 다운로드
     const timestamp = Date.now()
     const prefix = deviceType === 'mobile' ? 'm.' : ''
-    
+    const companySuffix = formData.companyType === 'hynix' ? '_hynix' : formData.companyType === 'normal' ? '_tobe' : ''
+
     // folderName이 있으면 사용, 없으면 templateName_timestamp 사용
     let zipFilename
     if (formData.folderName && formData.folderName.trim()) {
-      zipFilename = `${prefix}${formData.folderName.trim()}.zip`
+      zipFilename = `${prefix}${formData.folderName.trim()}${companySuffix}.zip`
     } else {
-      zipFilename = `${prefix}${templateName}_${timestamp}.zip`
+      zipFilename = `${prefix}${templateName}_${timestamp}${companySuffix}.zip`
     }
     
     saveAs(zipBlob, zipFilename)
