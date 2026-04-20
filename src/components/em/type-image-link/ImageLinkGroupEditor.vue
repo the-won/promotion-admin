@@ -639,49 +639,4 @@ export default {
   }
 }
 
-.image-input-wrapper {
-  display: flex;
-  gap: 6px;
-  align-items: stretch;
-}
-
-.image-input-wrapper .form-input {
-  flex: 1;
-}
-
-.file-input-hidden {
-  display: none;
-}
-
-.btn-file {
-  padding: 6px 12px;
-  background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
-  color: #fff;
-  border: none;
-  border-radius: 6px;
-  font-size: 12px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s;
-  white-space: nowrap;
-  box-shadow: 0 2px 4px rgba(99, 102, 241, 0.2);
-  display: inline-flex;
-  align-items: center;
-}
-
-.btn-file:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 4px 8px rgba(99, 102, 241, 0.3);
-}
-
-.file-info {
-  margin-top: 6px;
-  padding: 6px 10px;
-  background: #f0fdf4;
-  border: 1px solid #86efac;
-  border-radius: 4px;
-  color: #16a34a;
-  font-size: 11px;
-  font-weight: 500;
-}
 </style>
