@@ -231,6 +231,7 @@
           v-else-if="config.type === 'privacy-section-list'"
           v-model="localData[key]"
           :sidebarExpanded="sidebarExpanded"
+          @active-section="$emit('active-section-index', $event)"
         />
       </div>
     </div>

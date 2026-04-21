@@ -7,7 +7,7 @@
       :class="{ 'section-collapsed': section._collapsed }"
     >
       <!-- 섹션 헤더 -->
-      <div class="section-header" @click="toggleCollapse(sIdx)">
+      <div class="section-header" @click="toggleCollapse(sIdx); focusSection(sIdx)">
         <div class="section-header-left">
           <span class="section-badge">{{ sIdx + 1 }}</span>
           <input 
@@ -235,7 +235,14 @@ export default {
   methods: {
     // ── 섹션 ──
     toggleCollapse(idx) {
+      const willExpand = this.localSections[idx]._collapsed
       this.$set(this.localSections[idx], '_collapsed', !this.localSections[idx]._collapsed)
+      if (willExpand) {
+        this.$emit('active-section', idx)
+      }
+    },
+    focusSection(idx) {
+      this.$emit('active-section', idx)
     },
     addSection() {
       this.localSections.push({

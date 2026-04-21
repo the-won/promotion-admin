@@ -7,7 +7,7 @@
         <TopBannerMobile v-if="deviceType === 'mobile' && showTopBanner" />
 
         <!-- 템플릿 컴포넌트 -->
-        <component 
+        <component
           ref="templateComponent"
           :is="currentComponent"
           :data="formData"
@@ -18,6 +18,7 @@
           :selectedImageInfo="selectedImageInfo"
           :selectedRowInfo="selectedRowInfo"
           :selectedHotspotInfo="selectedHotspotInfo"
+          :activeIndex="activeIndex"
           @select-hotspot="handleSelectHotspot"
           @update-hotspot="handleUpdateHotspot"
           @delete-hotspot="handleDeleteHotspot"
@@ -111,6 +112,10 @@ export default {
     selectedHotspotInfo: {
       type: Object,
       default: () => ({ hotspotId: null, groupIndex: null })
+    },
+    activeIndex: {
+      type: Number,
+      default: null
     }
   },
   data() {

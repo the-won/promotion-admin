@@ -31,7 +31,7 @@
                 <td>
                   <div 
                     class="image-container"
-                    :class="{ 'image-container-highlighted': activeRowId === row.id }"
+                    :class="{ 'image-container-highlighted': activeRowId === row.id || (selectedRowInfo && selectedRowInfo.rowId === row.id) }"
                     :ref="'container_' + row.id"
                     :style="{ width: row.width + 'px', position: 'relative' }"
                     @mousedown="handleContainerClick($event, row)"

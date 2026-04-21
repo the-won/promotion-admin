@@ -20,10 +20,12 @@
     <div v-if="data.introText" class="preview-intro" v-html="nl2br(data.introText)"></div>
 
     <!-- 섹션 렌더링 -->
-    <div 
-      v-for="(section, sIdx) in sections" 
-      :key="section.id" 
+    <div
+      v-for="(section, sIdx) in sections"
+      :key="section.id"
+      :ref="'section-' + sIdx"
       class="preview-section"
+      :class="{ 'is-active-section': sIdx === activeIndex }"
     >
       <h2 class="section-title">{{ sIdx + 1 }}. {{ section.heading }}</h2>
 
@@ -85,11 +87,27 @@ export default {
     data: {
       type: Object,
       required: true
+    },
+    activeIndex: {
+      type: Number,
+      default: null
     }
   },
   computed: {
     sections() {
       return this.data.sections || []
+    }
+  },
+  watch: {
+    activeIndex(idx) {
+      if (idx === null || idx === undefined) return
+      this.$nextTick(() => {
+        const ref = this.$refs['section-' + idx]
+        const el = Array.isArray(ref) ? ref[0] : ref
+        if (el) {
+          el.scrollIntoView({ behavior: 'smooth', block: 'center' })
+        }
+      })
     }
   },
   methods: {
@@ -171,6 +189,20 @@ export default {
 /* 섹션 */
 .preview-section {
   margin-bottom: 28px;
+  border-radius: 4px;
+  transition: outline 0.2s ease, box-shadow 0.2s ease;
+}
+
+.preview-section.is-active-section {
+  outline: 2px solid #6366f1;
+  box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.15);
+  animation: section-pulse 0.4s ease;
+}
+
+@keyframes section-pulse {
+  0%   { box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.4); }
+  70%  { box-shadow: 0 0 0 8px rgba(99, 102, 241, 0); }
+  100% { box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.15); }
 }
 
 .section-title {
