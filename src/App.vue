@@ -19,6 +19,9 @@
         <router-link to="/event-templates" class="nav-link">
           Event Templates
         </router-link>
+        <router-link to="/item-templates" class="nav-link">
+          Item Templates
+        </router-link>
         <router-link to="/settings" class="nav-link">
           Settings
         </router-link>
@@ -77,6 +80,22 @@ export default {
   z-index: 100;
   transition: left 0.35s ease, width 0.35s ease;
   /* background: linear-gradient(to bottom, #c7b8ea 0%, rgba(199, 184, 234, 0.95) 100%); */
+}
+
+/* Sidebar 상태에 따른 Header 조정 - Item Templates 페이지 */
+body.page-item-templates:not(.sidebar-closed) .app-header {
+  left: 300px;
+  width: calc(100% - 300px);
+}
+
+body.page-item-templates.sidebar-expanded .app-header {
+  left: 600px;
+  width: calc(100% - 600px);
+}
+
+body.page-item-templates.sidebar-closed .app-header {
+  left: 0;
+  width: 100%;
 }
 
 /* Sidebar 상태에 따른 Header 조정 - EM Templates 페이지에서만 */

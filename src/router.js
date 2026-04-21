@@ -3,6 +3,7 @@ import VueRouter from 'vue-router'
 import Home from './views/Home.vue'
 import EmTemplates from './views/EmTemplates.vue'
 import EventTemplates from './views/EventTemplates.vue'
+import ItemTemplates from './views/ItemTemplates.vue'
 import Settings from './views/Settings.vue'
 
 Vue.use(VueRouter)
@@ -26,6 +27,11 @@ const routes = [
     path: '/event-templates',
     name: 'EventTemplates',
     component: EventTemplates
+  },
+  {
+    path: '/item-templates',
+    name: 'ItemTemplates',
+    component: ItemTemplates
   },
   {
     path: '/settings',

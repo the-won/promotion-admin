@@ -64,20 +64,25 @@
             <button @click="addTable(sIdx)" class="btn btn-success btn-xs">+ 테이블</button>
           </div>
 
-          <div 
-            v-for="(table, tIdx) in section.tables" 
-            :key="table.id" 
+          <div
+            v-for="(table, tIdx) in section.tables"
+            :key="table.id"
             class="table-card"
           >
-            <div class="table-card-header">
-              <input 
-                type="text" 
-                v-model="table.caption" 
+            <div class="table-card-header" @click="toggleTableCollapse(sIdx, tIdx)">
+              <span class="table-badge">T{{ tIdx + 1 }}</span>
+              <input
+                type="text"
+                v-model="table.caption"
                 placeholder="테이블 제목 (예: [필수] 개인정보 수집/이용)"
                 class="caption-input"
+                @click.stop
               />
-              <button @click="removeTable(sIdx, tIdx)" class="btn btn-danger btn-xs">테이블 삭제</button>
+              <span class="table-row-count">{{ table.rows.length }}행</span>
+              <button @click.stop="removeTable(sIdx, tIdx)" class="btn btn-danger btn-xs">삭제</button>
+              <span class="collapse-icon">{{ table._collapsed ? '▸' : '▾' }}</span>
             </div>
+            <div v-show="!table._collapsed" class="table-card-body">
 
             <!-- 프리셋 선택 -->
             <div class="preset-row">
@@ -143,13 +148,14 @@
 
             <!-- 테이블 하단 메모 -->
             <div class="table-note-row">
-              <input 
-                type="text" 
-                v-model="table.note" 
+              <input
+                type="text"
+                v-model="table.note"
                 placeholder="하단 메모 (선택)"
                 class="form-input form-input-sm"
               />
             </div>
+            </div><!-- /v-show collapse -->
           </div>
         </div>
       </div>
@@ -211,7 +217,13 @@ export default {
       handler(val) {
         const cleaned = val.map(s => {
           const { _collapsed, ...rest } = s
-          return rest
+          return {
+            ...rest,
+            tables: (rest.tables || []).map(t => {
+              const { _collapsed: _tc, ...tRest } = t
+              return tRest
+            })
+          }
         })
         if (JSON.stringify(cleaned) !== JSON.stringify(this.value)) {
           this.$emit('input', JSON.parse(JSON.stringify(cleaned)))
@@ -255,6 +267,10 @@ export default {
     },
 
     // ── 테이블 ──
+    toggleTableCollapse(sIdx, tIdx) {
+      const table = this.localSections[sIdx].tables[tIdx]
+      this.$set(table, '_collapsed', !table._collapsed)
+    },
     addTable(sIdx) {
       this.localSections[sIdx].tables.push({
         id: uid('tbl'),
@@ -262,7 +278,8 @@ export default {
         preset: 'collect-3',
         columns: [...PRESETS['collect-3']],
         rows: [{ id: uid('row'), cells: PRESETS['collect-3'].map(() => '') }],
-        note: ''
+        note: '',
+        _collapsed: false
       })
     },
     removeTable(sIdx, tIdx) {
@@ -316,26 +333,28 @@ export default {
 
 /* ── 섹션 카드 ── */
 .section-card {
-  margin-bottom: 12px;
+  margin-bottom: 14px;
   border: 1px solid #e5e7eb;
-  border-radius: 10px;
+  border-radius: 12px;
   background: #fafbfc;
   overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04);
 }
 
 .section-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 10px 14px;
-  background: #f3f4f6;
+  padding: 12px 14px;
+  background: linear-gradient(to right, #f9fafb, #f3f4f6);
   cursor: pointer;
   gap: 8px;
   user-select: none;
+  border-bottom: 1px solid #e5e7eb;
 }
 
 .section-header:hover {
-  background: #ebedf0;
+  background: linear-gradient(to right, #f0f2ff, #ebedf0);
 }
 
 .section-header-left {
@@ -491,33 +510,71 @@ export default {
 
 /* ── 테이블 카드 ── */
 .table-card {
-  margin-bottom: 12px;
-  border: 1px solid #d1d5db;
+  margin-bottom: 10px;
+  border: 1px solid #c7d2fe;
   border-radius: 8px;
-  padding: 12px;
   background: #fff;
+  overflow: hidden;
 }
 
 .table-card-header {
   display: flex;
-  justify-content: space-between;
   align-items: center;
   gap: 8px;
-  margin-bottom: 8px;
+  padding: 8px 12px;
+  background: #eef2ff;
+  cursor: pointer;
+  user-select: none;
+  transition: background 0.15s;
+}
+
+.table-card-header:hover {
+  background: #e0e7ff;
+}
+
+.table-badge {
+  width: 22px;
+  height: 22px;
+  border-radius: 4px;
+  background: #6366f1;
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.table-row-count {
+  font-size: 11px;
+  color: #6366f1;
+  font-weight: 600;
+  background: #e0e7ff;
+  padding: 2px 7px;
+  border-radius: 10px;
+  white-space: nowrap;
 }
 
 .caption-input {
   flex: 1;
-  padding: 6px 10px;
-  border: 1px solid #e5e7eb;
-  border-radius: 6px;
+  padding: 4px 8px;
+  border: 1px solid transparent;
+  border-radius: 4px;
   font-size: 13px;
   font-weight: 600;
+  background: transparent;
+  color: #1f2937;
 }
 
 .caption-input:focus {
   outline: none;
   border-color: #6366f1;
+  background: #fff;
+}
+
+.table-card-body {
+  padding: 12px;
 }
 
 .preset-row {
