@@ -191,8 +191,20 @@ export function generateEventMapHtml(data, deviceType = 'web', options = {}) {
       const style = `position: absolute; left: ${pos.left}%; top: ${pos.top}%; width: ${pos.width}%; height: ${pos.height}%; display: block; z-index: ${10 + index}; text-decoration: none; border: none; background: transparent; padding: 0; cursor: pointer; font-size: 0; line-height: 0;`
 
       if (tag === 'a') {
+        // href가 없으면 href="#" 추가
+        const hasHref = action.includes('href=') || extra.includes('href=')
+        const hrefAttr = hasHref ? '' : 'href="#"'
+
+        // action 안의 onclick 추출 후 gaEvtAction과 병합
+        const onclickMatch = action.match(/onclick="([^"]*)"/)
+        const existingOnclick = onclickMatch ? onclickMatch[1].trim() : ''
+        const actionWithoutOnclick = action.replace(/onclick="[^"]*"/, '').trim()
+        const combinedOnclick = existingOnclick
+          ? `onclick="${existingOnclick} gaEvtAction('${gaPrefix}', '${pageTitle}', '${alt}');"`
+          : `onclick="gaEvtAction('${gaPrefix}', '${pageTitle}', '${alt}');"`
+
         return `
-              <a ${action}${extra ? ' ' + extra : ''} onclick="gaEvtAction('${gaPrefix}', '${pageTitle}', '${alt}')" style="${style}" target="_blank">
+              <a ${hrefAttr} ${actionWithoutOnclick}${extra ? ' ' + extra : ''} ${combinedOnclick} style="${style}" target="_blank">
                 ${alt ? `<span class="sr-only">${alt}</span>` : ''}
               </a>`
       } else {

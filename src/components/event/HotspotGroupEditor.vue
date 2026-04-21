@@ -43,30 +43,22 @@
           <label>
             📤 {{ deviceType === 'mobile' ? '모바일' : '웹' }} 이미지 업로드
           </label>
-          <div class="upload-wrapper">
-            <input 
-              type="file" 
+          <div class="image-input-wrapper">
+            <input
+              type="file"
               :id="`upload-${deviceType}-${groupIdx}`"
               accept="image/*"
               @change="handleImageUpload(groupIdx, $event)"
-              class="file-input"
+              class="file-input-hidden"
               @click.stop
             />
-            <label 
-              :for="`upload-${deviceType}-${groupIdx}`"
-              class="upload-button"
-            >
-              <span class="upload-icon">📁</span>
-              <span class="upload-text">파일 선택</span>
+            <label :for="`upload-${deviceType}-${groupIdx}`" class="btn-file">
+              📁 파일 선택
             </label>
-            <span 
-              v-if="getUploadedFileName(group)"
-              class="file-name"
-            >
-              {{ getUploadedFileName(group) }}
+            <span v-if="getUploadedFileName(group)" class="file-info">
+              ✓ {{ getUploadedFileName(group) }}
             </span>
           </div>
-          <small class="help-text">※ 이미지 업로드 시 URL이 자동으로 생성됩니다</small>
         </div>
 
         <div class="form-group">
@@ -853,62 +845,4 @@ export default {
   font-family: 'Consolas', 'Monaco', monospace;
 }
 
-/* 이미지 업로드 스타일 */
-.upload-wrapper {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.file-input {
-  display: none;
-}
-
-.upload-button {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 8px 14px;
-  background: #6366f1;
-  color: white;
-  border-radius: 6px;
-  font-size: 12px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s;
-  user-select: none;
-}
-
-.upload-button:hover {
-  background: #4f46e5;
-  box-shadow: 0 2px 8px rgba(99, 102, 241, 0.3);
-}
-
-.upload-button:active {
-  transform: scale(0.98);
-}
-
-.upload-icon {
-  font-size: 14px;
-}
-
-.upload-text {
-  font-size: 12px;
-}
-
-.file-name {
-  font-size: 11px;
-  color: #6b7280;
-  max-width: 200px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.help-text {
-  display: block;
-  margin-top: 4px;
-  font-size: 11px;
-  color: #9ca3af;
-}
 </style>
