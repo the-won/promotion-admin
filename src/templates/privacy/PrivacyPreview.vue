@@ -1,76 +1,138 @@
 <template>
-  <div class="privacy-preview">
+  <div class="term_page">
     <!-- 제목 -->
-    <div class="preview-title-area">
-      <h1 class="preview-main-title">{{ data.title || '개인정보 처리방침' }}</h1>
-      <p v-if="data.subtitle" class="preview-subtitle">{{ data.subtitle }}</p>
+    <div class="term_page_tit_area">
+      <h1 class="tit pointRe">{{ data.title || '개인정보 처리방침' }}</h1>
+      <p v-if="data.subtitle" class="tit_date">{{ data.subtitle }}</p>
     </div>
 
     <!-- 목차 -->
-    <div v-if="sections.length > 0" class="preview-toc">
-      <ul>
-        <li v-for="(section, idx) in sections" :key="'toc-'+section.id">
-          <span class="toc-num">{{ idx + 1 }}.</span>
-          <span>{{ section.heading }}</span>
-        </li>
-      </ul>
-    </div>
-
-    <!-- 안내문 -->
-    <div v-if="data.introText" class="preview-intro" v-html="nl2br(data.introText)"></div>
-
-    <!-- 섹션 렌더링 -->
-    <div
-      v-for="(section, sIdx) in sections"
-      :key="section.id"
-      :ref="'section-' + sIdx"
-      class="preview-section"
-      :class="{ 'is-active-section': sIdx === activeIndex }"
-    >
-      <h2 class="section-title">{{ sIdx + 1 }}. {{ section.heading }}</h2>
-
-      <!-- 본문 -->
-      <div v-if="section.bodyText" class="section-body" v-html="nl2br(section.bodyText)"></div>
-
-      <!-- 테이블 -->
-      <div v-for="table in section.tables" :key="table.id" class="preview-table-wrap">
-        <p v-if="table.caption" class="table-caption" v-html="table.caption"></p>
-        
-        <!-- 행태정보 (key-value) 테이블 -->
-        <table v-if="table.preset === 'behavior-kv'" class="preview-table kv-table">
-          <tbody>
-            <tr v-for="row in table.rows" :key="row.id">
-              <th scope="col" v-html="nl2br(row.cells[0] || '')"></th>
-              <td v-html="nl2br(row.cells[1] || '')"></td>
-            </tr>
-          </tbody>
-        </table>
-
-        <!-- 일반 테이블 -->
-        <table v-else class="preview-table">
-          <colgroup>
-            <col v-for="(c, ci) in table.columns" :key="ci" :style="{ width: (100/table.columns.length) + '%' }">
-          </colgroup>
-          <thead>
-            <tr>
-              <th v-for="(col, ci) in table.columns" :key="ci" scope="col">{{ col }}</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="row in table.rows" :key="row.id">
-              <td v-for="(cell, ci) in row.cells" :key="ci" v-html="nl2br(cell)"></td>
-            </tr>
-          </tbody>
-        </table>
-
-        <p v-if="table.note" class="table-note-text">{{ table.note }}</p>
+    <div v-if="sections.length > 0" class="terms_list2">
+      <div class="tit_list">
+        <ul>
+          <li v-for="(section, idx) in sections" :key="'toc-'+section.id">
+            <span class="toc-num">{{ idx + 1 }}.</span>
+            <a :href="'#' + sectionAnchorId(idx)">{{ section.heading }}</a>
+          </li>
+        </ul>
       </div>
 
-      <!-- 목록 -->
-      <ul v-if="section.listItems && section.listItems.length > 0" class="section-list">
-        <li v-for="(item, iIdx) in section.listItems" :key="iIdx" v-html="nl2br(item)"></li>
-      </ul>
+      <!-- 안내문 -->
+      <div v-if="data.introText" class="brownBox" v-html="nl2br(data.introText)"></div>
     </div>
+
+    
+
+    <!-- 섹션 렌더링 -->
+    <div class="agree_box proConBox">
+      <div class="privacy-terms">
+        <div class="terms-contents">
+          <div
+            v-for="(section, sIdx) in sections"
+            :key="section.id"
+            :ref="'section-' + sIdx"
+            :id="sectionAnchorId(sIdx)"
+            class="box"
+            :class="{ 'is-active-section': sIdx === activeIndex }"
+          >
+            <h2 class="tit">{{ sIdx + 1 }}. {{ section.heading }}</h2>
+
+            <!-- 본문 -->
+            <p v-if="section.bodyText" class="section-body" v-html="nl2br(section.bodyText)"></p>
+
+            <!-- 테이블 -->
+            <div v-for="table in section.tables" :key="table.id" class="table-card">
+              <p v-if="table.caption" class="table-caption" v-html="table.caption"></p>
+              
+              <!-- 행태정보 (key-value) 테이블 -->
+              <table v-if="table.preset === 'behavior-kv'" class="kv-table">
+                <tbody>
+                  <tr v-for="row in table.rows" :key="row.id">
+                    <th scope="col" v-html="nl2br(row.cells[0] || '')"></th>
+                    <td v-html="nl2br(row.cells[1] || '')"></td>
+                  </tr>
+                </tbody>
+              </table>
+
+              <!-- 일반 테이블 -->
+              <table v-else class="">
+                <colgroup>
+                  <col v-for="(c, ci) in table.columns" :key="ci" :style="{ width: (100/table.columns.length) + '%' }">
+                </colgroup>
+                <thead>
+                  <tr>
+                    <th v-for="(col, ci) in table.columns" :key="ci" scope="col">{{ col }}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="row in table.rows" :key="row.id">
+                    <td v-for="(cell, ci) in row.cells" :key="ci" v-html="nl2br(cell)"></td>
+                  </tr>
+                </tbody>
+              </table>
+
+              <p v-if="table.note" class="table-note-text">{{ table.note }}</p>
+            </div>
+
+            <!-- 목록 -->
+            <template v-for="(group, gIdx) in getSectionListGroups(section)">
+              <p
+                v-if="group.preBodyText"
+                :key="`section-${sIdx}-group-${gIdx}-pre`"
+                class="section-body"
+                v-html="nl2br(group.preBodyText)"
+              ></p>
+              <ul
+                v-if="normalizedListItems(group.items).length > 0"
+                :key="`section-${sIdx}-group-${gIdx}`"
+                :class="group.type || 'term-list2'"
+              >
+                <li v-for="(item, iIdx) in normalizedListItems(group.items)" :key="iIdx">
+                  <span v-html="nl2br(item.text)"></span>
+                  <ul v-if="item.children && item.children.length > 0" class="term-list">
+                    <li v-for="(child, cIdx) in item.children" :key="`${iIdx}-${cIdx}`" v-html="nl2br(child)"></li>
+                  </ul>
+                </li>
+              </ul>
+              <p
+                v-if="group.postBodyText"
+                :key="`section-${sIdx}-group-${gIdx}-post`"
+                class="section-body"
+                v-html="nl2br(group.postBodyText)"
+              ></p>
+            </template>
+
+            <p v-if="section.extraBodyText" class="section-body" v-html="nl2br(section.extraBodyText)"></p>
+
+            <div
+              v-for="(sub, subIdx) in (section.subBlocks || [])"
+              :key="sub.id || `sub-${subIdx}`"
+              class="sub-block"
+            >
+              <h3 v-if="sub.title" class="sub-block-title" v-html="nl2br(sub.title)"></h3>
+              <p v-if="sub.bodyText" class="section-body" v-html="nl2br(sub.bodyText)"></p>
+              <ul
+                v-if="normalizedListItems(sub.listItems).length > 0"
+                :class="sub.listType || 'term-list2'"
+              >
+                <li v-for="(item, iIdx) in normalizedListItems(sub.listItems)" :key="`sub-${subIdx}-${iIdx}`">
+                  <span v-html="nl2br(item.text)"></span>
+                  <ul v-if="item.children && item.children.length > 0" class="term-list">
+                    <li
+                      v-for="(child, cIdx) in item.children"
+                      :key="`sub-${subIdx}-${iIdx}-${cIdx}`"
+                      v-html="nl2br(child)"
+                    ></li>
+                  </ul>
+                </li>
+              </ul>
+              <p v-if="sub.extraBodyText" class="section-body" v-html="nl2br(sub.extraBodyText)"></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
 
     <!-- 부칙 -->
     <div v-if="data.effectiveDate" class="preview-section">
@@ -110,10 +172,75 @@ export default {
       })
     }
   },
+  mounted() {
+    this.ensurePrivacyTermCss()
+  },
+  beforeDestroy() {
+    this.removePrivacyTermCss()
+  },
   methods: {
     nl2br(text) {
       if (!text) return ''
       return text.replace(/\n/g, '<br>')
+    },
+    sectionAnchorId(idx) {
+      return `id${String(idx + 1).padStart(2, '0')}`
+    },
+    normalizedListItems(listItems) {
+      if (!Array.isArray(listItems)) return []
+      return listItems.map((item) => {
+        if (typeof item === 'string') {
+          return { text: item, children: [] }
+        }
+        return {
+          text: item && item.text ? item.text : '',
+          children: Array.isArray(item && item.children) ? item.children : []
+        }
+      })
+    },
+    getSectionListGroups(section) {
+      const groups = section && Array.isArray(section.listGroups) ? section.listGroups : []
+      if (groups.length > 0) return groups
+      return [
+        {
+          type: (section && section.listType) || 'term-list2',
+          items: (section && section.listItems) || [],
+          preBodyText: '',
+          postBodyText: (section && section.extraBodyText) || ''
+        }
+      ]
+    },
+    ensurePrivacyTermCss() {
+      if (typeof document === 'undefined') return
+
+      const links = [
+        {
+          id: 'privacy-base-css-2017',
+          href: 'https://skmns.benepia.co.kr/resources/css/2017/base.2017.css?ver=18'
+        },
+        {
+          id: 'privacy-term-css-2017',
+          href: 'https://skmns.benepia.co.kr/resources/css/2017/privacy_term.css'
+        }
+      ]
+
+      links.forEach(({ id, href }) => {
+        const existing = document.getElementById(id)
+        if (existing) return
+
+        const link = document.createElement('link')
+        link.id = id
+        link.rel = 'stylesheet'
+        link.href = href
+        document.head.appendChild(link)
+      })
+    },
+    removePrivacyTermCss() {
+      if (typeof document === 'undefined') return
+      ;['privacy-base-css-2017', 'privacy-term-css-2017'].forEach((id) => {
+        const el = document.getElementById(id)
+        if (el && el.parentNode) el.parentNode.removeChild(el)
+      })
     }
   }
 }
@@ -174,6 +301,7 @@ export default {
   margin-right: 4px;
 }
 
+
 /* 안내문 */
 .preview-intro {
   margin-bottom: 24px;
@@ -187,13 +315,15 @@ export default {
 }
 
 /* 섹션 */
-.preview-section {
+.preview-section,
+.box {
   margin-bottom: 28px;
   border-radius: 4px;
   transition: outline 0.2s ease, box-shadow 0.2s ease;
 }
 
-.preview-section.is-active-section {
+.preview-section.is-active-section,
+.box.is-active-section {
   outline: 2px solid #6366f1;
   box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.15);
   animation: section-pulse 0.4s ease;
@@ -214,11 +344,11 @@ export default {
   border-bottom: 1px solid #e5e7eb;
 }
 
-.section-body {
+/* .section-body {
   font-size: 14px;
   line-height: 1.8;
   margin-bottom: 16px;
-}
+} */
 
 .section-list {
   padding-left: 20px;
@@ -234,6 +364,19 @@ export default {
 /* 테이블 */
 .preview-table-wrap {
   margin-bottom: 20px;
+}
+.table-card + .table-card {
+  margin-top: 20px;
+}
+
+.sub-block + .sub-block {
+  margin-top: 14px;
+}
+
+.sub-block-title {
+  margin: 0 0 8px;
+  font-size: 13px;
+  font-weight: 700;
 }
 
 .table-caption {
@@ -274,10 +417,10 @@ export default {
   white-space: nowrap;
 }
 
-.table-note-text {
+/* .table-note-text {
   font-size: 13px;
   color: #dc2626;
   font-weight: 600;
   margin: 4px 0 0;
-}
+} */
 </style>

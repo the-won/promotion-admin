@@ -4,7 +4,7 @@
       v-for="(section, sIdx) in localSections" 
       :key="section.id" 
       class="section-card"
-      :class="{ 'section-collapsed': section._collapsed }"
+      :class="{ 'section-collapsed': section._collapsed, 'is-selected': sIdx === selectedSectionIndex }"
     >
       <!-- 섹션 헤더 -->
       <div class="section-header" @click="toggleCollapse(sIdx); focusSection(sIdx)">
@@ -40,20 +40,93 @@
           ></textarea>
         </div>
 
-        <!-- 목록 항목 -->
+        <!-- 목록 그룹 -->
         <div class="subsection">
           <div class="subsection-header">
-            <label>목록 항목 ({{ section.listItems.length }}개)</label>
-            <button @click="addListItem(sIdx)" class="btn btn-success btn-xs">+ 항목</button>
+            <label>목록 그룹 ({{ section.listGroups.length }}개)</label>
+            <button @click="addListGroup(sIdx)" class="btn btn-success btn-xs">+ 목록 그룹</button>
           </div>
-          <div v-for="(item, iIdx) in section.listItems" :key="'li-'+iIdx" class="list-item-row">
-            <textarea
-              v-model="section.listItems[iIdx]"
-              rows="2"
-              class="form-textarea flex-1"
-              placeholder="목록 항목 내용"
-            ></textarea>
-            <button @click="removeListItem(sIdx, iIdx)" class="btn btn-danger btn-xs btn-icon">✕</button>
+
+          <div v-for="(group, gIdx) in section.listGroups" :key="group.id || `group-${gIdx}`" class="list-group-card">
+            <div class="subsection-header">
+              <strong>그룹 {{ gIdx + 1 }} ({{ group.type }})</strong>
+              <div class="list-actions">
+                <button
+                  type="button"
+                  class="btn btn-ghost btn-xs"
+                  :class="{ 'btn-active': group.type === 'term-list2' }"
+                  @click="setListType(sIdx, gIdx, 'term-list2')"
+                >
+                  term-list2
+                </button>
+                <button
+                  type="button"
+                  class="btn btn-ghost btn-xs"
+                  :class="{ 'btn-active': group.type === 'term-list' }"
+                  @click="setListType(sIdx, gIdx, 'term-list')"
+                >
+                  term-list
+                </button>
+                <button @click="addListItem(sIdx, gIdx)" class="btn btn-success btn-xs">+ 항목</button>
+                <button @click="removeListGroup(sIdx, gIdx)" class="btn btn-danger btn-xs">그룹 삭제</button>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label>그룹 앞 본문</label>
+              <textarea
+                v-model="group.preBodyText"
+                rows="2"
+                class="form-textarea"
+                placeholder="이 그룹 리스트 앞에 들어갈 본문"
+              ></textarea>
+            </div>
+
+            <div v-for="(item, iIdx) in group.items" :key="'li-'+gIdx+'-'+iIdx" class="list-item-row">
+              <textarea
+                :value="getListItemText(group.items[iIdx])"
+                @input="updateListItemText(sIdx, gIdx, iIdx, $event.target.value)"
+                rows="2"
+                class="form-textarea flex-1"
+                placeholder="목록 항목 내용"
+              ></textarea>
+              <button @click="removeListItem(sIdx, gIdx, iIdx)" class="btn btn-danger btn-xs btn-icon">✕</button>
+            </div>
+
+            <div
+              v-for="(item, iIdx) in group.items"
+              :key="'nested-'+gIdx+'-'+iIdx"
+              class="nested-list-wrap"
+            >
+              <div class="nested-list-header">
+                <span>하위 term-list ({{ getNestedChildren(item).length }}개)</span>
+                <button @click="addNestedListItem(sIdx, gIdx, iIdx)" class="btn btn-ghost btn-xs">+ 하위 항목</button>
+              </div>
+              <div
+                v-for="(child, cIdx) in getNestedChildren(item)"
+                :key="'nested-item-'+gIdx+'-'+iIdx+'-'+cIdx"
+                class="nested-list-row"
+              >
+                <textarea
+                  :value="child"
+                  @input="updateNestedListItem(sIdx, gIdx, iIdx, cIdx, $event.target.value)"
+                  rows="2"
+                  class="form-textarea flex-1"
+                  placeholder="하위 항목 내용 (term-list)"
+                ></textarea>
+                <button @click="removeNestedListItem(sIdx, gIdx, iIdx, cIdx)" class="btn btn-danger btn-xs btn-icon">✕</button>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label>그룹 뒤 본문</label>
+              <textarea
+                v-model="group.postBodyText"
+                rows="2"
+                class="form-textarea"
+                placeholder="이 그룹 리스트 뒤에 들어갈 본문"
+              ></textarea>
+            </div>
           </div>
         </div>
 
@@ -181,6 +254,35 @@ function uid(prefix) {
   return prefix + '_' + Date.now() + '_' + (++_uid)
 }
 
+function normalizeSection(section) {
+  const listItems = Array.isArray(section && section.listItems) ? section.listItems : []
+  const listGroups = Array.isArray(section && section.listGroups) && section.listGroups.length > 0
+    ? section.listGroups.map((group) => ({
+      id: group.id || uid('lgrp'),
+      type: group.type || 'term-list2',
+      items: Array.isArray(group.items) ? group.items : [],
+      preBodyText: group.preBodyText || '',
+      postBodyText: group.postBodyText || ''
+    }))
+    : [{
+      id: uid('lgrp'),
+      type: (section && section.listType) || 'term-list2',
+      items: listItems,
+      preBodyText: '',
+      postBodyText: section && section.extraBodyText ? section.extraBodyText : ''
+    }]
+  return {
+    ...section,
+    bodyText: section && section.bodyText ? section.bodyText : '',
+    listItems,
+    listGroups,
+    listType: (section && section.listType) || 'term-list2',
+    extraBodyText: section && section.extraBodyText ? section.extraBodyText : '',
+    subBlocks: Array.isArray(section && section.subBlocks) ? section.subBlocks : [],
+    tables: Array.isArray(section && section.tables) ? section.tables : []
+  }
+}
+
 export default {
   name: 'PrivacySectionEditor',
   props: {
@@ -189,12 +291,13 @@ export default {
   },
   data() {
     return {
-      localSections: []
+      localSections: [],
+      selectedSectionIndex: null
     }
   },
   created() {
     this.localSections = this.value && this.value.length > 0
-      ? JSON.parse(JSON.stringify(this.value)).map(s => ({ ...s, _collapsed: false }))
+      ? JSON.parse(JSON.stringify(this.value)).map(s => ({ ...normalizeSection(s), _collapsed: true }))
       : []
   },
   watch: {
@@ -206,8 +309,8 @@ export default {
         })
         if (JSON.stringify(newVal) !== JSON.stringify(cleaned)) {
           this.localSections = (newVal || []).map((s, i) => ({
-            ...JSON.parse(JSON.stringify(s)),
-            _collapsed: this.localSections[i] ? this.localSections[i]._collapsed : false
+            ...normalizeSection(JSON.parse(JSON.stringify(s))),
+            _collapsed: this.localSections[i] ? this.localSections[i]._collapsed : true
           }))
         }
       },
@@ -242,6 +345,7 @@ export default {
       }
     },
     focusSection(idx) {
+      this.selectedSectionIndex = idx
       this.$emit('active-section', idx)
     },
     addSection() {
@@ -251,7 +355,15 @@ export default {
         bodyText: '',
         tables: [],
         listItems: [],
-        _collapsed: false
+        listGroups: [{
+          id: uid('lgrp'),
+          type: 'term-list2',
+          items: []
+        }],
+        listType: 'term-list2',
+        extraBodyText: '',
+        subBlocks: [],
+        _collapsed: true
       })
     },
     removeSection(idx) {
@@ -266,13 +378,71 @@ export default {
     },
 
     // ── 목록 ──
-    addListItem(sIdx) {
-      this.localSections[sIdx].listItems.push('')
+    addListGroup(sIdx) {
+      this.localSections[sIdx].listGroups.push({
+        id: uid('lgrp'),
+        type: 'term-list2',
+        items: [],
+        preBodyText: '',
+        postBodyText: ''
+      })
     },
-    removeListItem(sIdx, iIdx) {
-      this.localSections[sIdx].listItems.splice(iIdx, 1)
+    removeListGroup(sIdx, gIdx) {
+      this.localSections[sIdx].listGroups.splice(gIdx, 1)
     },
-
+    addListItem(sIdx, gIdx) {
+      this.localSections[sIdx].listGroups[gIdx].items.push('')
+    },
+    removeListItem(sIdx, gIdx, iIdx) {
+      this.localSections[sIdx].listGroups[gIdx].items.splice(iIdx, 1)
+    },
+    setListType(sIdx, gIdx, listType) {
+      this.$set(this.localSections[sIdx].listGroups[gIdx], 'type', listType)
+    },
+    getListItemText(item) {
+      return typeof item === 'string' ? item : (item && item.text) || ''
+    },
+    getNestedChildren(item) {
+      if (!item || typeof item === 'string') return []
+      return Array.isArray(item.children) ? item.children : []
+    },
+    updateListItemText(sIdx, gIdx, iIdx, text) {
+      const current = this.localSections[sIdx].listGroups[gIdx].items[iIdx]
+      if (typeof current === 'string') {
+        this.$set(this.localSections[sIdx].listGroups[gIdx].items, iIdx, text)
+        return
+      }
+      this.$set(this.localSections[sIdx].listGroups[gIdx].items, iIdx, {
+        ...(current || {}),
+        text
+      })
+    },
+    addNestedListItem(sIdx, gIdx, iIdx) {
+      const current = this.localSections[sIdx].listGroups[gIdx].items[iIdx]
+      const normalized = typeof current === 'string'
+        ? { text: current, children: [] }
+        : { ...(current || {}), children: Array.isArray(current && current.children) ? current.children : [] }
+      normalized.children.push('')
+      this.$set(this.localSections[sIdx].listGroups[gIdx].items, iIdx, normalized)
+    },
+    updateNestedListItem(sIdx, gIdx, iIdx, cIdx, text) {
+      const current = this.localSections[sIdx].listGroups[gIdx].items[iIdx]
+      const normalized = typeof current === 'string'
+        ? { text: current, children: [] }
+        : { ...(current || {}), children: Array.isArray(current && current.children) ? [...current.children] : [] }
+      normalized.children[cIdx] = text
+      this.$set(this.localSections[sIdx].listGroups[gIdx].items, iIdx, normalized)
+    },
+    removeNestedListItem(sIdx, gIdx, iIdx, cIdx) {
+      const current = this.localSections[sIdx].listGroups[gIdx].items[iIdx]
+      if (typeof current === 'string') return
+      const children = Array.isArray(current.children) ? [...current.children] : []
+      children.splice(cIdx, 1)
+      this.$set(this.localSections[sIdx].listGroups[gIdx].items, iIdx, {
+        ...current,
+        children
+      })
+    },
     // ── 테이블 ──
     toggleTableCollapse(sIdx, tIdx) {
       const table = this.localSections[sIdx].tables[tIdx]
@@ -341,11 +511,16 @@ export default {
 /* ── 섹션 카드 ── */
 .section-card {
   margin-bottom: 14px;
-  border: 1px solid #e5e7eb;
+  border: 1px solid var(--color-border, #2c3440);
   border-radius: 12px;
-  background: #fafbfc;
+  background: var(--color-bg-secondary, #0f1720);
   overflow: hidden;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.25);
+}
+
+.section-card.is-selected {
+  border-left: 3px solid #6366f1;
+  box-shadow: 0 0 0 1px rgba(99, 102, 241, 0.35), 0 4px 14px rgba(0, 0, 0, 0.32);
 }
 
 .section-header {
@@ -353,15 +528,19 @@ export default {
   justify-content: space-between;
   align-items: center;
   padding: 12px 14px;
-  background: linear-gradient(to right, #f9fafb, #f3f4f6);
+  background: var(--color-bg-tertiary, #121a24);
   cursor: pointer;
   gap: 8px;
   user-select: none;
-  border-bottom: 1px solid #e5e7eb;
+  border-bottom: 1px solid var(--color-border, #2c3440);
+}
+
+.section-card.is-selected .section-header {
+  background: rgba(99, 102, 241, 0.12);
 }
 
 .section-header:hover {
-  background: linear-gradient(to right, #f0f2ff, #ebedf0);
+  background: #1a2430;
 }
 
 .section-header-left {
@@ -393,6 +572,10 @@ export default {
   flex-shrink: 0;
 }
 
+.section-card.is-selected .section-badge {
+  background: #4f46e5;
+}
+
 .heading-input {
   flex: 1;
   min-width: 0;
@@ -402,13 +585,13 @@ export default {
   font-size: 13px;
   font-weight: 600;
   background: transparent;
-  color: #1f2937;
+  color: var(--color-text, #e6edf3);
 }
 
 .heading-input:focus {
   outline: none;
-  border-color: #6366f1;
-  background: #fff;
+  border-color: var(--color-primary, #6366f1);
+  background: rgba(255, 255, 255, 0.06);
 }
 
 .collapse-icon {
@@ -513,6 +696,50 @@ export default {
 
 .list-item-row .flex-1 {
   flex: 1;
+}
+
+.list-actions {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.list-group-card {
+  margin-bottom: 10px;
+  padding: 8px;
+  border: 1px solid #dbe1ea;
+  border-radius: 8px;
+}
+
+.nested-list-wrap {
+  margin: 6px 0 10px 0;
+  padding: 8px;
+  border: 1px dashed #d1d5db;
+  border-radius: 6px;
+}
+
+.nested-list-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+  font-size: 11px;
+  color: #6b7280;
+  font-weight: 600;
+}
+
+.nested-list-row {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 6px;
+}
+
+.btn-active {
+  background: #4f46e5;
+  color: #fff;
+  border: 1px solid #312e81;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.2);
 }
 
 /* ── 테이블 카드 ── */

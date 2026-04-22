@@ -9,6 +9,52 @@ export function generatePrivacyHtml(data) {
     return text.replace(/\n/g, '<br>')
   }
 
+  const normalizeListItems = (listItems) => {
+    if (!Array.isArray(listItems)) return []
+    return listItems.map((item) => {
+      if (typeof item === 'string') {
+        return { text: item, children: [] }
+      }
+      return {
+        text: item && item.text ? item.text : '',
+        children: Array.isArray(item && item.children) ? item.children : []
+      }
+    })
+  }
+
+  const listStyleByType = (listType) => {
+    if (listType === 'term-list') {
+      return 'list-style:none;margin:0 0 16px;padding-left:15px;text-indent:-15px;'
+    }
+    return 'list-style:none;margin:0 0 16px;padding-left:20px;text-indent:-20px;'
+  }
+
+  const renderList = (listItems, listType) => {
+    const normalized = normalizeListItems(listItems)
+    if (!normalized.length) return ''
+
+    const items = normalized.map((item) => {
+      const children = (item.children || []).map((child) =>
+        `<li style="list-style:none;line-height:1.5em;margin:3px 0 3px 18px;padding-left:15px;text-indent:-15px;">${nl2br(child)}</li>`
+      ).join('\n')
+      const nestedHtml = children ? `<ul style="list-style:none;margin:4px 0 0;padding:0;">${children}</ul>` : ''
+      return `<li style="list-style:none;line-height:1.5em;margin:3px 0 3px 18px;">${nl2br(item.text)}${nestedHtml}</li>`
+    }).join('\n')
+
+    return `<ul style="${listStyleByType(listType)}">${items}</ul>`
+  }
+
+  const getSectionListGroups = (section) => {
+    const groups = Array.isArray(section && section.listGroups) ? section.listGroups : []
+    if (groups.length > 0) return groups
+    return [{
+      type: (section && section.listType) || 'term-list2',
+      items: Array.isArray(section && section.listItems) ? section.listItems : [],
+      preBodyText: '',
+      postBodyText: section && section.extraBodyText ? section.extraBodyText : ''
+    }]
+  }
+
   // ── 일반 테이블 ──
   const generateNormalTable = (table) => {
     const colWidth = Math.floor(100 / table.columns.length)
@@ -79,11 +125,29 @@ export function generatePrivacyHtml(data) {
       section.tables.forEach(t => { html += generateTable(t) })
     }
 
-    if (section.listItems && section.listItems.length > 0) {
-      const items = section.listItems.map(item =>
-        `<li style="margin-bottom:10px;font-size:14px;line-height:1.7;">${nl2br(item)}</li>`
-      ).join('\n')
-      html += `<ul style="padding-left:20px;margin:0 0 16px;">${items}</ul>`
+    getSectionListGroups(section).forEach((group) => {
+      if (group.preBodyText) {
+        html += `<p style="font-size:14px;line-height:1.8;margin:0 0 16px;">${nl2br(group.preBodyText)}</p>`
+      }
+      html += renderList(group.items, group.type || 'term-list2')
+      if (group.postBodyText) {
+        html += `<p style="font-size:14px;line-height:1.8;margin:0 0 16px;">${nl2br(group.postBodyText)}</p>`
+      }
+    })
+
+    if (Array.isArray(section.subBlocks) && section.subBlocks.length > 0) {
+      section.subBlocks.forEach((sub) => {
+        if (sub.title) {
+          html += `<h3 style="font-size:13px;font-weight:700;color:#111;margin:0 0 8px;">${nl2br(sub.title)}</h3>`
+        }
+        if (sub.bodyText) {
+          html += `<p style="font-size:14px;line-height:1.8;margin:0 0 16px;">${nl2br(sub.bodyText)}</p>`
+        }
+        html += renderList(sub.listItems, sub.listType || 'term-list2')
+        if (sub.extraBodyText) {
+          html += `<p style="font-size:14px;line-height:1.8;margin:0 0 16px;">${nl2br(sub.extraBodyText)}</p>`
+        }
+      })
     }
 
     html += `</div>`
