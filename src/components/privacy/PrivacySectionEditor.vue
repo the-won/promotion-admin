@@ -4,6 +4,7 @@
       v-for="(section, sIdx) in localSections" 
       :key="section.id" 
       class="section-card"
+      :data-editor-section-index="sIdx"
       :class="{ 'section-collapsed': section._collapsed, 'is-selected': sIdx === selectedSectionIndex }"
     >
       <!-- 섹션 헤더 -->
@@ -30,7 +31,7 @@
       <div v-show="!section._collapsed" class="section-body">
         
         <!-- 본문 텍스트 -->
-        <div class="form-group">
+        <div class="form-group" data-editor-part="bodyText">
           <label>본문 텍스트</label>
           <textarea
             v-model="section.bodyText"
@@ -60,6 +61,8 @@
             v-for="(block, bIdx) in (section.contentBlocks || [])"
             :key="'cb-' + block.type + '-' + (block.id || bIdx)"
             class="content-block-wrap"
+            :data-editor-cb-type="block.type"
+            :data-editor-cb-id="block.id || ''"
           >
             <div class="content-block-chrome" @click.stop>
               <span class="content-block-kind">{{
@@ -209,6 +212,7 @@
                     v-for="(row, rIdx) in section.tables[tableIndex(sIdx, block.id)].rows"
                     :key="row.id"
                     class="row-card"
+                    :data-editor-row-index="rIdx"
                   >
                     <div class="row-card-top">
                       <span class="row-num">{{ rIdx + 1 }}</span>
@@ -231,7 +235,12 @@
                       </div>
                     </div>
                     <div class="row-fields" :class="'cols-' + Math.min(section.tables[tableIndex(sIdx, block.id)].columns.length, 4)">
-                      <div v-for="(col, ci) in section.tables[tableIndex(sIdx, block.id)].columns" :key="ci" class="row-field">
+                      <div
+                        v-for="(col, ci) in section.tables[tableIndex(sIdx, block.id)].columns"
+                        :key="ci"
+                        class="row-field"
+                        :data-editor-col-index="ci"
+                      >
                         <label>{{ col }}</label>
                         <textarea
                           v-model="row.cells[ci]"
@@ -244,7 +253,7 @@
                   </div>
                 </div>
 
-                <div class="table-note-row">
+                <div class="table-note-row" data-editor-part="tableNote">
                   <input
                     type="text"
                     v-model="section.tables[tableIndex(sIdx, block.id)].note"
@@ -266,7 +275,7 @@
           </div>
         </div>
 
-        <div class="form-group post-after-tables">
+        <div class="form-group post-after-tables" data-editor-part="postBody">
           <label>맨 아래 추가 본문 (구성 전체 이후)</label>
           <textarea
             v-model="section.postBodyText"
@@ -353,7 +362,8 @@ export default {
   name: 'PrivacySectionEditor',
   props: {
     value: { type: Array, default: () => [] },
-    sidebarExpanded: { type: Boolean, default: false }
+    sidebarExpanded: { type: Boolean, default: false },
+    privacyPreviewFocus: { type: Object, default: null }
   },
   data() {
     return {
@@ -399,6 +409,13 @@ export default {
         }
       },
       deep: true
+    },
+    privacyPreviewFocus: {
+      handler(v) {
+        if (!v || v.formField) return
+        this.applyPrivacyPreviewFocus(v)
+      },
+      deep: true
     }
   },
   methods: {
@@ -413,6 +430,80 @@ export default {
     focusSection(idx) {
       this.selectedSectionIndex = idx
       this.$emit('active-section', idx)
+    },
+    flashEditorTarget(el) {
+      if (!el) return
+      el.classList.add('privacy-editor-flash')
+      setTimeout(() => el.classList.remove('privacy-editor-flash'), 1600)
+    },
+    applyPrivacyPreviewFocus(v) {
+      if (typeof v.sectionIndex !== 'number') return
+      const sIdx = v.sectionIndex
+      if (sIdx < 0 || sIdx >= this.localSections.length) return
+      this.$set(this.localSections[sIdx], '_collapsed', false)
+      this.selectedSectionIndex = sIdx
+      this.$emit('active-section', sIdx)
+      this.$nextTick(() => {
+        const root = this.$el
+        if (!root) return
+        const card = root.querySelector(`[data-editor-section-index="${sIdx}"]`)
+        if (!card) return
+        let target = null
+        const part = v.part
+        const bid = v.blockId
+        if (part === 'heading') {
+          target = card.querySelector('.section-header .heading-input')
+        } else if (part === 'bodyText') {
+          target = card.querySelector('[data-editor-part="bodyText"] textarea')
+        } else if (part === 'postBody') {
+          target = card.querySelector('[data-editor-part="postBody"] textarea')
+        } else if (part === 'listGroup' && bid) {
+          target = card.querySelector(`[data-editor-cb-type="listGroup"][data-editor-cb-id="${bid}"]`)
+        } else if (part === 'tableNote' && bid) {
+          const tableWrap = card.querySelector(`[data-editor-cb-type="table"][data-editor-cb-id="${bid}"]`)
+          target = tableWrap && tableWrap.querySelector('[data-editor-part="tableNote"] input')
+        } else if (part === 'table' && bid) {
+          const tableWrap = card.querySelector(`[data-editor-cb-type="table"][data-editor-cb-id="${bid}"]`)
+          if (tableWrap && typeof v.columnIndex === 'number') {
+            const rowIdx = typeof v.rowIndex === 'number' && v.rowIndex >= 0 ? v.rowIndex : 0
+            let colTa = tableWrap.querySelector(
+              `.row-card[data-editor-row-index="${rowIdx}"] .row-field[data-editor-col-index="${v.columnIndex}"] textarea`
+            )
+            if (!colTa) {
+              colTa = tableWrap.querySelector(
+                `.row-card .row-field[data-editor-col-index="${v.columnIndex}"] textarea`
+              )
+            }
+            target = colTa || tableWrap
+          } else {
+            target = tableWrap
+          }
+        } else if (part === 'streamBody' && bid) {
+          target = card.querySelector(`[data-editor-cb-type="body"][data-editor-cb-id="${bid}"]`)
+        } else if (part === 'subBlock') {
+          target = card
+        }
+        if (target) {
+          target.scrollIntoView({ behavior: 'smooth', block: 'center' })
+          let focusEl = null
+          if (target.matches && target.matches('input, textarea')) focusEl = target
+          else focusEl = target.querySelector('textarea, input, .caption-input')
+          if (focusEl && focusEl.focus) focusEl.focus()
+          let flashEl = null
+          if (part === 'subBlock') flashEl = card
+          else if (part === 'heading') flashEl = card.querySelector('.section-header')
+          else if (part === 'table' && focusEl && focusEl.closest) {
+            flashEl = focusEl.closest('.row-card') || focusEl.closest('.row-field')
+          } else if (part === 'tableNote' && focusEl && focusEl.closest) {
+            flashEl = focusEl.closest('[data-editor-part="tableNote"]') || focusEl
+          } else {
+            flashEl = (target.closest && target.closest('.content-block-wrap')) ||
+              (target.closest && target.closest('[data-editor-part]')) ||
+              target
+          }
+          this.flashEditorTarget(flashEl || target)
+        }
+      })
     },
     addSection() {
       const gid = uid('lgrp')
@@ -1139,5 +1230,15 @@ export default {
 .btn-add-section:hover {
   background: rgba(99,102,241,0.05);
   border-color: #6366f1;
+}
+
+.privacy-editor-flash {
+  outline: 2px solid #6366f1;
+  outline-offset: 2px;
+  animation: privacyEditorFlash 1.5s ease;
+}
+@keyframes privacyEditorFlash {
+  from { outline-color: #6366f1; }
+  to { outline-color: transparent; }
 }
 </style>

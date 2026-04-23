@@ -74,6 +74,7 @@
                   v-model="formData"
                   :templateConfig="getTemplateConfig(selectedTemplate)"
                   :sidebarExpanded="sidebarExpanded"
+                  :privacy-preview-focus="privacyPreviewFocus"
                   @active-section-index="activePreviewIndex = $event"
                 />
               </section>
@@ -103,6 +104,7 @@
                   :formData="formData"
                   deviceType="web"
                   :activeIndex="activePreviewIndex"
+                  @privacy-preview-focus="privacyPreviewFocus = $event"
                 />
               </div>
             </div>
@@ -139,6 +141,7 @@ export default {
       sidebarExpanded: false,
       isModalOpen: false,
       activePreviewIndex: null,
+      privacyPreviewFocus: null,
       templates: [
         { value: 'privacy-policy', name: '개인정보처리방침', icon: '', description: '테이블 기반 약관' }
       ]

@@ -31,6 +31,7 @@
         :key="key" 
         class="form-group"
         :class="{ 'full-width': isFullWidthField(config.type) }"
+        :data-privacy-form-field="key"
       >
         <label v-if="!isHideLabelField(config.type)" class="form-label">{{ config.label }}</label>
         
@@ -231,6 +232,7 @@
           v-else-if="config.type === 'privacy-section-list'"
           v-model="localData[key]"
           :sidebarExpanded="sidebarExpanded"
+          :privacy-preview-focus="privacyPreviewFocus"
           @active-section="$emit('active-section-index', $event)"
         />
       </div>
@@ -276,7 +278,8 @@ export default {
     'selectedHotspotId', 
     'visibleTopPositions', 
     'visibleScrollPosition', 
-    'sidebarExpanded'
+    'sidebarExpanded',
+    'privacyPreviewFocus'
   ],
   data() {
     return { 
@@ -317,9 +320,28 @@ export default {
     },
     currentDevice(newVal) {
       this.$emit('device-change', newVal)
+    },
+    privacyPreviewFocus: {
+      handler(v) {
+        if (!v || this.template !== 'privacy-policy') return
+        if (!v.formField) return
+        this.$nextTick(() => this.scrollPrivacyFormFieldIntoView(v.formField))
+      },
+      deep: true
     }
   },
   methods: {
+    scrollPrivacyFormFieldIntoView(fieldKey) {
+      const root = this.$el
+      if (!root || !fieldKey) return
+      const wrap = root.querySelector(`[data-privacy-form-field="${fieldKey}"]`)
+      if (!wrap) return
+      wrap.scrollIntoView({ behavior: 'smooth', block: 'center' })
+      const focusable = wrap.querySelector('input, textarea, select')
+      if (focusable) focusable.focus()
+      wrap.classList.add('privacy-form-field-flash')
+      setTimeout(() => wrap.classList.remove('privacy-form-field-flash'), 1600)
+    },
     isFullWidthField(type) {
       const fullWidthTypes = [
         'hotspot-group', 
@@ -589,5 +611,15 @@ export default {
   font-weight: 600;
   font-size: 11px;
   color: var(--color-primary, #5568f8);
+}
+
+.privacy-form-field-flash {
+  animation: privacyFormFlash 1.5s ease;
+  outline: 2px solid #6366f1;
+  outline-offset: 2px;
+}
+@keyframes privacyFormFlash {
+  from { outline-color: #6366f1; }
+  to { outline-color: transparent; }
 }
 </style>

@@ -23,6 +23,7 @@
           @update-hotspot="handleUpdateHotspot"
           @delete-hotspot="handleDeleteHotspot"
           @clear-highlight="handleClearHighlight"
+          @privacy-preview-focus="$emit('privacy-preview-focus', $event)"
         />
 
          <!-- 공지사항 -->

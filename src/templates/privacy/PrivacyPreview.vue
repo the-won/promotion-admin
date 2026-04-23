@@ -2,8 +2,13 @@
   <div class="term_page">
     <!-- 제목 -->
     <div class="term_page_tit_area">
-      <h1 class="tit pointRe">{{ data.title || '개인정보 처리방침' }}</h1>
-      <p v-if="data.subtitle" class="tit_date">{{ data.subtitle }}</p>
+      <h1 class="tit pointRe privacy-preview-focusable" title="클릭 시 설정으로 이동" @click.stop="emitPrivacyFocus({ formField: 'title' })">{{ data.title || '개인정보 처리방침' }}</h1>
+      <p
+        v-if="data.subtitle"
+        class="tit_date privacy-preview-focusable"
+        title="클릭 시 설정으로 이동"
+        @click.stop="emitPrivacyFocus({ formField: 'subtitle' })"
+      >{{ data.subtitle }}</p>
     </div>
 
     <!-- 목차 -->
@@ -18,7 +23,13 @@
       </div>
 
       <!-- 안내문 -->
-      <div v-if="data.introText" class="brownBox" v-html="nl2br(data.introText)"></div>
+      <div
+        v-if="data.introText"
+        class="brownBox privacy-preview-focusable"
+        title="클릭 시 설정으로 이동"
+        @click.stop="emitPrivacyFocus({ formField: 'introText' })"
+        v-html="nl2br(data.introText)"
+      ></div>
     </div>
 
     
@@ -35,16 +46,25 @@
             class="box"
             :class="{ 'is-active-section': sIdx === activeIndex }"
           >
-            <h2 class="tit">{{ sIdx + 1 }}. {{ section.heading }}</h2>
+            <h2 class="tit privacy-preview-focusable" title="클릭 시 설정으로 이동" @click.stop="emitPrivacyFocus({ sectionIndex: sIdx, part: 'heading' })">{{ sIdx + 1 }}. {{ section.heading }}</h2>
 
             <!-- 본문 -->
-            <p v-if="section.bodyText" class="section-body" v-html="nl2br(section.bodyText)"></p>
+            <p
+              v-if="section.bodyText"
+              class="section-body privacy-preview-focusable"
+              title="클릭 시 설정으로 이동"
+              @click.stop="emitPrivacyFocus({ sectionIndex: sIdx, part: 'bodyText' })"
+              v-html="nl2br(section.bodyText)"
+            ></p>
 
             <template v-for="(piece, pi) in sectionMainStream(section)">
               <ul
                 v-if="piece.type === 'listGroup' && normalizedListItems(piece.group.items).length > 0"
                 :key="`section-${sIdx}-stream-${pi}-lg-${piece.group.id || pi}`"
+                class="privacy-preview-focusable"
                 :class="piece.group.type || 'term-list2'"
+                title="클릭 시 설정으로 이동"
+                @click.stop="emitPrivacyFocus({ sectionIndex: sIdx, part: 'listGroup', blockId: piece.group.id })"
               >
                 <li v-for="(item, iIdx) in normalizedListItems(piece.group.items)" :key="iIdx">
                   <span v-html="nl2br(item.text)"></span>
@@ -58,13 +78,30 @@
                 :key="`section-${sIdx}-stream-${pi}-tbl-${piece.table.id}`"
                 class="table-card"
               >
-                <p v-if="piece.table.caption" class="table-caption" v-html="piece.table.caption"></p>
+                <p
+                  v-if="piece.table.caption"
+                  class="table-caption privacy-preview-focusable"
+                  title="클릭 시 표 제목(캡션) 설정으로 이동"
+                  @click.stop="emitPrivacyFocus({ sectionIndex: sIdx, part: 'table', blockId: piece.table.id })"
+                  v-html="piece.table.caption"
+                ></p>
 
                 <table v-if="piece.table.preset === 'behavior-kv'" class="kv-table">
                   <tbody>
-                    <tr v-for="row in piece.table.rows" :key="row.id">
-                      <th scope="col" v-html="nl2br(row.cells[0] || '')"></th>
-                      <td v-html="nl2br(row.cells[1] || '')"></td>
+                    <tr v-for="(row, rIdx) in piece.table.rows" :key="row.id">
+                      <th
+                        scope="col"
+                        class="privacy-preview-focusable"
+                        title="클릭 시 해당 행·열 입력으로 이동"
+                        @click.stop="emitPrivacyFocus({ sectionIndex: sIdx, part: 'table', blockId: piece.table.id, columnIndex: 0, rowIndex: rIdx })"
+                        v-html="nl2br(row.cells[0] || '')"
+                      ></th>
+                      <td
+                        class="privacy-preview-focusable"
+                        title="클릭 시 해당 행·열 입력으로 이동"
+                        @click.stop="emitPrivacyFocus({ sectionIndex: sIdx, part: 'table', blockId: piece.table.id, columnIndex: 1, rowIndex: rIdx })"
+                        v-html="nl2br(row.cells[1] || '')"
+                      ></td>
                     </tr>
                   </tbody>
                 </table>
@@ -75,36 +112,61 @@
                   </colgroup>
                   <thead>
                     <tr>
-                      <th v-for="(col, ci) in piece.table.columns" :key="ci" scope="col">{{ col }}</th>
+                      <th
+                        v-for="(col, ci) in piece.table.columns"
+                        :key="ci"
+                        scope="col"
+                        class="privacy-preview-focusable"
+                        title="클릭 시 해당 열 1행 입력으로 이동"
+                        @click.stop="emitPrivacyFocus({ sectionIndex: sIdx, part: 'table', blockId: piece.table.id, columnIndex: ci, rowIndex: 0 })"
+                      >{{ col }}</th>
                     </tr>
                   </thead>
                   <tbody>
-                    <tr v-for="row in piece.table.rows" :key="row.id">
-                      <td v-for="(cell, ci) in row.cells" :key="ci" v-html="nl2br(cell)"></td>
+                    <tr v-for="(row, rIdx) in piece.table.rows" :key="row.id">
+                      <td
+                        v-for="(cell, ci) in row.cells"
+                        :key="ci"
+                        class="privacy-preview-focusable"
+                        title="클릭 시 해당 행·열 입력으로 이동"
+                        @click.stop="emitPrivacyFocus({ sectionIndex: sIdx, part: 'table', blockId: piece.table.id, columnIndex: ci, rowIndex: rIdx })"
+                        v-html="nl2br(cell)"
+                      ></td>
                     </tr>
                   </tbody>
                 </table>
 
-                <h3 v-if="piece.table.note" class="table-note-text">{{ piece.table.note }}</h3>
+                <h3
+                  v-if="piece.table.note"
+                  class="table-note-text privacy-preview-focusable"
+                  title="클릭 시 표 하단 메모 설정으로 이동"
+                  @click.stop="emitPrivacyFocus({ sectionIndex: sIdx, part: 'tableNote', blockId: piece.table.id })"
+                >{{ piece.table.note }}</h3>
               </div>
               <p
                 v-else-if="piece.type === 'body'"
                 :key="`section-${sIdx}-stream-${pi}-body-${piece.id || pi}`"
-                class="section-body"
+                class="section-body privacy-preview-focusable"
+                title="클릭 시 설정으로 이동"
+                @click.stop="emitPrivacyFocus({ sectionIndex: sIdx, part: 'streamBody', blockId: piece.id })"
                 v-html="nl2br(piece.text || '')"
               ></p>
             </template>
 
             <p
               v-if="effectiveSectionPostBody(section)"
-              class="section-body"
+              class="section-body privacy-preview-focusable"
+              title="클릭 시 설정으로 이동"
+              @click.stop="emitPrivacyFocus({ sectionIndex: sIdx, part: 'postBody' })"
               v-html="nl2br(effectiveSectionPostBody(section))"
             ></p>
 
             <div
               v-for="(sub, subIdx) in (section.subBlocks || [])"
               :key="sub.id || `sub-${subIdx}`"
-              class="sub-block"
+              class="sub-block privacy-preview-focusable"
+              title="클릭 시 해당 섹션 설정으로 이동"
+              @click.stop="emitPrivacyFocus({ sectionIndex: sIdx, part: 'subBlock', subIndex: subIdx })"
             >
               <h3 v-if="sub.title" class="sub-block-title" v-html="nl2br(sub.title)"></h3>
               <p v-if="sub.bodyText" class="section-body" v-html="nl2br(sub.bodyText)"></p>
@@ -132,7 +194,12 @@
     
 
     <!-- 부칙 -->
-    <div v-if="data.effectiveDate" class="preview-section">
+    <div
+      v-if="data.effectiveDate"
+      class="preview-section privacy-preview-focusable"
+      title="클릭 시 설정으로 이동"
+      @click.stop="emitPrivacyFocus({ formField: 'effectiveDate' })"
+    >
       <h2 class="section-title">부칙</h2>
       <p>본 개인정보처리방침은 {{ data.effectiveDate }}부터 시행합니다.</p>
     </div>
@@ -148,6 +215,7 @@ import { getPrivacySectionRenderStream } from '../../utils/privacySectionContent
 
 export default {
   name: 'PrivacyPreview',
+  emits: ['privacy-preview-focus'],
   props: {
     data: {
       type: Object,
@@ -228,6 +296,12 @@ export default {
       ;['privacy-base-css-2017', 'privacy-term-css-2017'].forEach((id) => {
         const el = document.getElementById(id)
         if (el && el.parentNode) el.parentNode.removeChild(el)
+      })
+    },
+    emitPrivacyFocus(payload) {
+      this.$emit('privacy-preview-focus', {
+        ...payload,
+        requestId: Date.now()
       })
     }
   }
@@ -396,6 +470,14 @@ export default {
   padding: 10px 12px;
   vertical-align: top;
   color: #374151;
+}
+
+.privacy-preview-focusable {
+  cursor: pointer;
+}
+.privacy-preview-focusable:hover {
+  outline: 1px dashed rgba(99, 102, 241, 0.45);
+  outline-offset: 2px;
 }
 
 /* key-value 테이블 (행태정보) */
