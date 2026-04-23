@@ -2,57 +2,17 @@
  * 개인정보처리방침 HTML 생성기
  * data.sections 배열을 순회하며 전체 HTML 문서 생성
  */
+import {
+  effectivePrivacySectionPostBody,
+  renderPrivacyListHtml
+} from '../../utils/privacySectionLists.js'
+import { getPrivacySectionRenderStream } from '../../utils/privacySectionContentBlocks.js'
+
 export function generatePrivacyHtml(data) {
 
   const nl2br = (text) => {
     if (!text) return ''
     return text.replace(/\n/g, '<br>')
-  }
-
-  const normalizeListItems = (listItems) => {
-    if (!Array.isArray(listItems)) return []
-    return listItems.map((item) => {
-      if (typeof item === 'string') {
-        return { text: item, children: [] }
-      }
-      return {
-        text: item && item.text ? item.text : '',
-        children: Array.isArray(item && item.children) ? item.children : []
-      }
-    })
-  }
-
-  const listStyleByType = (listType) => {
-    if (listType === 'term-list') {
-      return 'list-style:none;margin:0 0 16px;padding-left:15px;text-indent:-15px;'
-    }
-    return 'list-style:none;margin:0 0 16px;padding-left:20px;text-indent:-20px;'
-  }
-
-  const renderList = (listItems, listType) => {
-    const normalized = normalizeListItems(listItems)
-    if (!normalized.length) return ''
-
-    const items = normalized.map((item) => {
-      const children = (item.children || []).map((child) =>
-        `<li style="list-style:none;line-height:1.5em;margin:3px 0 3px 18px;padding-left:15px;text-indent:-15px;">${nl2br(child)}</li>`
-      ).join('\n')
-      const nestedHtml = children ? `<ul style="list-style:none;margin:4px 0 0;padding:0;">${children}</ul>` : ''
-      return `<li style="list-style:none;line-height:1.5em;margin:3px 0 3px 18px;">${nl2br(item.text)}${nestedHtml}</li>`
-    }).join('\n')
-
-    return `<ul style="${listStyleByType(listType)}">${items}</ul>`
-  }
-
-  const getSectionListGroups = (section) => {
-    const groups = Array.isArray(section && section.listGroups) ? section.listGroups : []
-    if (groups.length > 0) return groups
-    return [{
-      type: (section && section.listType) || 'term-list2',
-      items: Array.isArray(section && section.listItems) ? section.listItems : [],
-      preBodyText: '',
-      postBodyText: section && section.extraBodyText ? section.extraBodyText : ''
-    }]
   }
 
   // ── 일반 테이블 ──
@@ -121,19 +81,20 @@ export function generatePrivacyHtml(data) {
       html += `<p style="font-size:14px;line-height:1.8;margin:0 0 16px;">${nl2br(section.bodyText)}</p>`
     }
 
-    if (section.tables && section.tables.length > 0) {
-      section.tables.forEach(t => { html += generateTable(t) })
-    }
-
-    getSectionListGroups(section).forEach((group) => {
-      if (group.preBodyText) {
-        html += `<p style="font-size:14px;line-height:1.8;margin:0 0 16px;">${nl2br(group.preBodyText)}</p>`
-      }
-      html += renderList(group.items, group.type || 'term-list2')
-      if (group.postBodyText) {
-        html += `<p style="font-size:14px;line-height:1.8;margin:0 0 16px;">${nl2br(group.postBodyText)}</p>`
+    getPrivacySectionRenderStream(section).forEach((piece) => {
+      if (piece.type === 'listGroup') {
+        html += renderPrivacyListHtml(piece.group.items, piece.group.type || 'term-list2', nl2br)
+      } else if (piece.type === 'table') {
+        html += generateTable(piece.table)
+      } else if (piece.type === 'body') {
+        html += `<p style="font-size:14px;line-height:1.8;margin:0 0 16px;">${nl2br(piece.text || '')}</p>`
       }
     })
+
+    const postAfterLists = effectivePrivacySectionPostBody(section)
+    if (postAfterLists) {
+      html += `<p style="font-size:14px;line-height:1.8;margin:0 0 16px;">${nl2br(postAfterLists)}</p>`
+    }
 
     if (Array.isArray(section.subBlocks) && section.subBlocks.length > 0) {
       section.subBlocks.forEach((sub) => {
@@ -143,7 +104,7 @@ export function generatePrivacyHtml(data) {
         if (sub.bodyText) {
           html += `<p style="font-size:14px;line-height:1.8;margin:0 0 16px;">${nl2br(sub.bodyText)}</p>`
         }
-        html += renderList(sub.listItems, sub.listType || 'term-list2')
+        html += renderPrivacyListHtml(sub.listItems, sub.listType || 'term-list2', nl2br)
         if (sub.extraBodyText) {
           html += `<p style="font-size:14px;line-height:1.8;margin:0 0 16px;">${nl2br(sub.extraBodyText)}</p>`
         }

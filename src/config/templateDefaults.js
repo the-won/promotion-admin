@@ -86,7 +86,7 @@ export const templateDefaults = {
             {
               id: 'img_t2_001',
               url: '',
-              alt: '상품 이미지 1'
+              alt: ''
             },
           
           ]

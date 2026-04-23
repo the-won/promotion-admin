@@ -40,69 +40,66 @@
             <!-- 본문 -->
             <p v-if="section.bodyText" class="section-body" v-html="nl2br(section.bodyText)"></p>
 
-            <!-- 테이블 -->
-            <div v-for="table in section.tables" :key="table.id" class="table-card">
-              <p v-if="table.caption" class="table-caption" v-html="table.caption"></p>
-              
-              <!-- 행태정보 (key-value) 테이블 -->
-              <table v-if="table.preset === 'behavior-kv'" class="kv-table">
-                <tbody>
-                  <tr v-for="row in table.rows" :key="row.id">
-                    <th scope="col" v-html="nl2br(row.cells[0] || '')"></th>
-                    <td v-html="nl2br(row.cells[1] || '')"></td>
-                  </tr>
-                </tbody>
-              </table>
-
-              <!-- 일반 테이블 -->
-              <table v-else class="">
-                <colgroup>
-                  <col v-for="(c, ci) in table.columns" :key="ci" :style="{ width: (100/table.columns.length) + '%' }">
-                </colgroup>
-                <thead>
-                  <tr>
-                    <th v-for="(col, ci) in table.columns" :key="ci" scope="col">{{ col }}</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr v-for="row in table.rows" :key="row.id">
-                    <td v-for="(cell, ci) in row.cells" :key="ci" v-html="nl2br(cell)"></td>
-                  </tr>
-                </tbody>
-              </table>
-
-              <p v-if="table.note" class="table-note-text">{{ table.note }}</p>
-            </div>
-
-            <!-- 목록 -->
-            <template v-for="(group, gIdx) in getSectionListGroups(section)">
-              <p
-                v-if="group.preBodyText"
-                :key="`section-${sIdx}-group-${gIdx}-pre`"
-                class="section-body"
-                v-html="nl2br(group.preBodyText)"
-              ></p>
+            <template v-for="(piece, pi) in sectionMainStream(section)">
               <ul
-                v-if="normalizedListItems(group.items).length > 0"
-                :key="`section-${sIdx}-group-${gIdx}`"
-                :class="group.type || 'term-list2'"
+                v-if="piece.type === 'listGroup' && normalizedListItems(piece.group.items).length > 0"
+                :key="`section-${sIdx}-stream-${pi}-lg-${piece.group.id || pi}`"
+                :class="piece.group.type || 'term-list2'"
               >
-                <li v-for="(item, iIdx) in normalizedListItems(group.items)" :key="iIdx">
+                <li v-for="(item, iIdx) in normalizedListItems(piece.group.items)" :key="iIdx">
                   <span v-html="nl2br(item.text)"></span>
                   <ul v-if="item.children && item.children.length > 0" class="term-list">
                     <li v-for="(child, cIdx) in item.children" :key="`${iIdx}-${cIdx}`" v-html="nl2br(child)"></li>
                   </ul>
                 </li>
               </ul>
+              <div
+                v-else-if="piece.type === 'table'"
+                :key="`section-${sIdx}-stream-${pi}-tbl-${piece.table.id}`"
+                class="table-card"
+              >
+                <p v-if="piece.table.caption" class="table-caption" v-html="piece.table.caption"></p>
+
+                <table v-if="piece.table.preset === 'behavior-kv'" class="kv-table">
+                  <tbody>
+                    <tr v-for="row in piece.table.rows" :key="row.id">
+                      <th scope="col" v-html="nl2br(row.cells[0] || '')"></th>
+                      <td v-html="nl2br(row.cells[1] || '')"></td>
+                    </tr>
+                  </tbody>
+                </table>
+
+                <table v-else class="">
+                  <colgroup>
+                    <col v-for="(c, ci) in piece.table.columns" :key="ci" :style="{ width: (100/piece.table.columns.length) + '%' }">
+                  </colgroup>
+                  <thead>
+                    <tr>
+                      <th v-for="(col, ci) in piece.table.columns" :key="ci" scope="col">{{ col }}</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr v-for="row in piece.table.rows" :key="row.id">
+                      <td v-for="(cell, ci) in row.cells" :key="ci" v-html="nl2br(cell)"></td>
+                    </tr>
+                  </tbody>
+                </table>
+
+                <h3 v-if="piece.table.note" class="table-note-text">{{ piece.table.note }}</h3>
+              </div>
               <p
-                v-if="group.postBodyText"
-                :key="`section-${sIdx}-group-${gIdx}-post`"
+                v-else-if="piece.type === 'body'"
+                :key="`section-${sIdx}-stream-${pi}-body-${piece.id || pi}`"
                 class="section-body"
-                v-html="nl2br(group.postBodyText)"
+                v-html="nl2br(piece.text || '')"
               ></p>
             </template>
 
-            <p v-if="section.extraBodyText" class="section-body" v-html="nl2br(section.extraBodyText)"></p>
+            <p
+              v-if="effectiveSectionPostBody(section)"
+              class="section-body"
+              v-html="nl2br(effectiveSectionPostBody(section))"
+            ></p>
 
             <div
               v-for="(sub, subIdx) in (section.subBlocks || [])"
@@ -143,6 +140,12 @@
 </template>
 
 <script>
+import {
+  normalizePrivacyListItems,
+  effectivePrivacySectionPostBody
+} from '../../utils/privacySectionLists.js'
+import { getPrivacySectionRenderStream } from '../../utils/privacySectionContentBlocks.js'
+
 export default {
   name: 'PrivacyPreview',
   props: {
@@ -187,28 +190,13 @@ export default {
       return `id${String(idx + 1).padStart(2, '0')}`
     },
     normalizedListItems(listItems) {
-      if (!Array.isArray(listItems)) return []
-      return listItems.map((item) => {
-        if (typeof item === 'string') {
-          return { text: item, children: [] }
-        }
-        return {
-          text: item && item.text ? item.text : '',
-          children: Array.isArray(item && item.children) ? item.children : []
-        }
-      })
+      return normalizePrivacyListItems(listItems)
     },
-    getSectionListGroups(section) {
-      const groups = section && Array.isArray(section.listGroups) ? section.listGroups : []
-      if (groups.length > 0) return groups
-      return [
-        {
-          type: (section && section.listType) || 'term-list2',
-          items: (section && section.listItems) || [],
-          preBodyText: '',
-          postBodyText: (section && section.extraBodyText) || ''
-        }
-      ]
+    sectionMainStream(section) {
+      return getPrivacySectionRenderStream(section)
+    },
+    effectiveSectionPostBody(section) {
+      return effectivePrivacySectionPostBody(section)
     },
     ensurePrivacyTermCss() {
       if (typeof document === 'undefined') return
@@ -412,9 +400,9 @@ export default {
 
 /* key-value 테이블 (행태정보) */
 .kv-table th {
-  text-align: left;
+  /* text-align: left;
   width: 30%;
-  white-space: nowrap;
+  white-space: nowrap; */
 }
 
 /* .table-note-text {
