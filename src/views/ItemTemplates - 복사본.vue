@@ -39,10 +39,7 @@
       <div class="content-container">
         <div class="content-grid">
           <!-- SIDEBAR -->
-          <aside
-            class="sidebar-card"
-            :class="[sidebarTemplateLayoutClass, { collapsed: !sidebarOpen, expanded: sidebarExpanded }]"
-          >
+          <aside class="sidebar-card" :class="{ collapsed: !sidebarOpen, expanded: sidebarExpanded }">
             <header class="card-header">
               <button class="width-toggle-btn" @click="toggleSidebarWidth" title="너비 조절">
                 <svg v-if="!sidebarExpanded" width="16" height="16" viewBox="0 0 16 16" fill="none">
@@ -204,12 +201,6 @@ export default {
     selectedTemplateLabel() {
       const t = this.templates.find((x) => x.value === this.selectedTemplate)
       return t ? t.name : this.selectedTemplate
-    },
-    /** 폼 영역 스타일 분기: 개인정보처리방침(privacy-policy) 템플릿일 때 / 그 외 */
-    sidebarTemplateLayoutClass() {
-      return this.selectedTemplate === 'privacy-policy'
-        ? 'sidebar-card--template-privacy-policy'
-        : 'sidebar-card--template-default'
     }
   }
 }

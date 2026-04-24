@@ -1022,7 +1022,7 @@ export default {
 .content-block-wrap {
   margin-bottom: 12px;
   padding: 8px 10px;
-  border: 1px solid #e2e8f0;
+  border: 1px solid #6b7280;
   border-radius: 10px;
   /* background: #f8fafc; */
 }
