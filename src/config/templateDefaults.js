@@ -72,7 +72,7 @@ export const templateDefaults = {
       value: [
         {
           id: 'grp_t2_001',
-          href: 'https://example.com/product1',
+          href: '',
           linkType: 'custom',
           linkData: {
             planCode: '',
@@ -80,12 +80,12 @@ export const templateDefaults = {
             webEventCode: '',
             mobileEventCode: '',
             searchKeyword: '',
-            customUrl: 'https://example.com/product1'
+            customUrl: ''
           },
           images: [
             {
               id: 'img_t2_001',
-              url: '',
+              url: 'https://picsum.photos/id/20/720/300',
               alt: ''
             },
           
@@ -431,7 +431,7 @@ export const templateDefaults = {
       value: [
         {
           id: 'imr_map_001',
-          imageUrl: '',
+          imageUrl: 'https://picsum.photos/id/9/720/300',
           width: 720,
           height: 0,
           imageAlt: '',

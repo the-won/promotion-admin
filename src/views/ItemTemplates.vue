@@ -220,10 +220,8 @@ export default {
   --sidebar-wid: 320px;
 }
 .item-templates {
-  --hero-accent: #5c61d4;
-  --hero-accent-deep: #373c8f;
   padding-left: 320px;
-  transition: padding-left 0.35s ease;
+  transition: padding-left var(--template-layout-duration, 0.35s) var(--template-layout-ease, cubic-bezier(0.4, 0, 0.2, 1));
 }
 .item-templates.wide-sidebar {
   padding-left: 640px;
@@ -235,168 +233,11 @@ export default {
 .main-container {
   max-width: 1200px;
   margin: 0 auto;
-  transition: max-width 0.35s ease;
+  transition: max-width var(--template-layout-duration, 0.35s) var(--template-layout-ease, cubic-bezier(0.4, 0, 0.2, 1));
 }
 .no-sidebar .main-container,
 .no-sidebar.wide-sidebar .main-container {
-  max-width: none !important;
-}
-
-/* HERO — 패딩 기반 낮은 히어로, 그라데이션 + 노이즈 + 글로, 웨이브 없음 */
-.hero-section {
-  width: calc(100vw - 320px);
-  margin-left: calc(((calc(100vw - 320px) - 100%) / 2) * -1) !important;
-  transition: width 0.35s ease, margin-left 0.35s ease;
-  position: relative;
-  overflow: hidden;
-  padding: 28px 24px 32px;
-  border-radius: 0;
-  background:
-    radial-gradient(ellipse 120% 80% at 100% 0%, rgb(92 97 212 / 18%) 0%, transparent 55%),
-    radial-gradient(ellipse 90% 70% at 0% 100%, rgb(67 56 202 / 10%) 0%, transparent 50%),
-    linear-gradient(155deg, #0e111c 0%, #15182c 44%, #121c2e 100%);
-  box-shadow: 0 16px 36px rgb(15 23 42 / 22%);
-}
-.hero-section::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  opacity: 0.36;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-  pointer-events: none;
-  mix-blend-mode: overlay;
-}
-.hero-bg-glow {
-  position: absolute;
-  width: 420px;
-  height: 420px;
-  top: -180px;
-  right: -80px;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgb(99 102 241 / 14%) 0%, rgb(79 70 229 / 8%) 42%, transparent 70%);
-  pointer-events: none;
-  z-index: 0;
-}
-@media (prefers-reduced-motion: no-preference) {
-  .hero-bg-glow {
-    animation: hero-glow-drift 18s ease-in-out infinite alternate;
-  }
-}
-@keyframes hero-glow-drift {
-  from {
-    transform: translate(0, 0) scale(1);
-    opacity: 0.85;
-  }
-  to {
-    transform: translate(-24px, 12px) scale(1.06);
-    opacity: 1;
-  }
-}
-@media (prefers-reduced-motion: reduce) {
-  .hero-bg-glow {
-    animation: none;
-  }
-}
-
-.hero-inner {
-  position: relative;
-  z-index: 1;
-  max-width: 1100px;
-  margin: 0 auto;
-  text-align: left;
-}
-.hero-panel {
-  margin-top: 50px;
-  padding: 22px 24px 20px;
-  border-radius: 16px;
-  background: rgb(255 255 255 / 8%);
-  border: 1px solid rgb(255 255 255 / 12%);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-  box-shadow:
-    0 1px 0 rgb(255 255 255 / 10%) inset,
-    0 18px 44px rgb(0 0 0 / 14%);
-}
-.hero-panel-head {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 16px;
-  flex-wrap: wrap;
-}
-.hero-panel-titles {
-  min-width: 0;
-}
-.hero-eyebrow {
-  margin: 0 0 6px;
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: rgb(226 232 240 / 55%);
-}
-.hero-title {
-  margin: 0;
-  font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
-  font-size: clamp(1.35rem, 2.5vw, 1.75rem);
-  font-weight: 700;
-  letter-spacing: -0.03em;
-  line-height: 1.2;
-  color: #f8fafc;
-}
-.hero-status-chip {
-  flex-shrink: 0;
-  padding: 8px 14px;
-  border-radius: 999px;
-  font-size: 13px;
-  font-weight: 600;
-  color: #eef2ff;
-  background: linear-gradient(135deg, rgb(92 97 212 / 44%) 0%, rgb(55 60 143 / 52%) 100%);
-  border: 1px solid rgb(199 210 254 / 18%);
-  box-shadow: 0 0 0 1px rgb(0 0 0 / 10%);
-}
-.hero-subtitle {
-  margin: 14px 0 18px;
-  max-width: 52ch;
-  font-size: 14px;
-  line-height: 1.55;
-  color: rgb(226 232 240 / 78%);
-}
-
-/* TABS */
-.template-tabs {
-  display: flex;
-  justify-content: flex-start;
-  gap: 8px;
-  flex-wrap: wrap;
-}
-.template-tab {
-  padding: 9px 16px;
-  border-radius: 10px;
-  background: rgb(255 255 255 / 93%);
-  border: 1px solid rgb(255 255 255 / 28%);
-  cursor: pointer;
-  font-weight: 600;
-  font-size: 13px;
-  color: #334155;
-  transition:
-    border-color 0.15s ease,
-    color 0.15s ease,
-    box-shadow 0.15s ease,
-    transform 0.15s ease;
-}
-.template-tab:hover {
-  border-color: rgb(92 97 212 / 38%);
-  color: var(--hero-accent-deep);
-}
-.template-tab.active {
-  border-color: var(--hero-accent);
-  color: var(--hero-accent-deep);
-  box-shadow: 0 0 0 2px rgb(92 97 212 / 14%);
-}
-.template-tab:focus-visible {
-  outline: 2px solid var(--hero-accent);
-  outline-offset: 2px;
+  max-width: 100% !important;
 }
 
 /* LAYOUT */
@@ -421,7 +262,9 @@ export default {
   left: 0;
   box-shadow: 0 1px 2px 0 rgb(0 0 0 / 16%), 0 1px 2px 0 rgb(0 0 0 / 2%);
   z-index: 20;
-  transition: width 0.35s ease, opacity 0.35s ease, transform 0.35s ease;
+  transition:
+    width var(--template-layout-duration, 0.35s) var(--template-layout-ease, cubic-bezier(0.4, 0, 0.2, 1)),
+    opacity var(--template-layout-duration, 0.35s) var(--template-layout-ease, cubic-bezier(0.4, 0, 0.2, 1));
   flex-shrink: 0;
 }
 .sidebar-card.expanded {
@@ -430,7 +273,6 @@ export default {
 .sidebar-card.collapsed {
   width: 0;
   opacity: 0;
-  transform: translateX(-12px);
   pointer-events: none;
   overflow: hidden;
 }
@@ -509,7 +351,7 @@ export default {
   border-radius: 16px;
   display: flex;
   flex-direction: column;
-  transition: flex 0.35s ease;
+  transition: flex var(--template-layout-duration, 0.35s) var(--template-layout-ease, cubic-bezier(0.4, 0, 0.2, 1));
 }
 .preview-card-wrap.expanded {
   flex: 1 1 100%;
@@ -534,17 +376,6 @@ export default {
   background: #fff;
   color: var(--hero-accent-deep);
   cursor: pointer;
-}
-
-/* hero-section 반응형 width */
-.hero-section.wide-sidebar {
-  width: calc(100vw - 640px);
-  margin-left: calc(((calc(100vw - 640px) - 100%) / 2) * -1) !important;
-}
-.hero-section.no-sidebar,
-.hero-section.no-sidebar.wide-sidebar {
-  width: 100vw !important;
-  margin-left: 0 !important;
 }
 
 .template-select-btn {

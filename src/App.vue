@@ -78,19 +78,19 @@ export default {
   left: 0;
   top: 0;
   z-index: 100;
-  transition: left 0.35s ease, width 0.35s ease;
+  transition: left var(--template-layout-duration, 0.35s) var(--template-layout-ease, cubic-bezier(0.4, 0, 0.2, 1)), width var(--template-layout-duration, 0.35s) var(--template-layout-ease, cubic-bezier(0.4, 0, 0.2, 1));
   /* background: linear-gradient(to bottom, #c7b8ea 0%, rgba(199, 184, 234, 0.95) 100%); */
 }
 
 /* Sidebar 상태에 따른 Header 조정 - Item Templates 페이지 */
 body.page-item-templates:not(.sidebar-closed) .app-header {
-  left: 300px;
-  width: calc(100% - 300px);
+  left: 320px;
+  width: calc(100% - 320px);
 }
 
 body.page-item-templates.sidebar-expanded .app-header {
-  left: 600px;
-  width: calc(100% - 600px);
+  left: 640px;
+  width: calc(100% - 640px);
 }
 
 body.page-item-templates.sidebar-closed .app-header {
@@ -100,13 +100,13 @@ body.page-item-templates.sidebar-closed .app-header {
 
 /* Sidebar 상태에 따른 Header 조정 - EM Templates 페이지에서만 */
 body.page-em-templates:not(.sidebar-closed) .app-header {
-  left: 300px;
-  width: calc(100% - 300px);
+  left: 320px;
+  width: calc(100% - 320px);
 }
 
 body.page-em-templates.sidebar-expanded .app-header {
-  left: 600px;
-  width: calc(100% - 600px);
+  left: 640px;
+  width: calc(100% - 640px);
 }
 
 body.page-em-templates.sidebar-closed .app-header {
@@ -116,13 +116,13 @@ body.page-em-templates.sidebar-closed .app-header {
 
 /* Sidebar 상태에 따른 Header 조정 - Event Templates 페이지에서만 */
 body.page-event-templates:not(.sidebar-closed) .app-header {
-  left: 300px;
-  width: calc(100% - 300px);
+  left: 320px;
+  width: calc(100% - 320px);
 }
 
 body.page-event-templates.sidebar-expanded .app-header {
-  left: 600px;
-  width: calc(100% - 600px);
+  left: 640px;
+  width: calc(100% - 640px);
 }
 
 body.page-event-templates.sidebar-closed .app-header {

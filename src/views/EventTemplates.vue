@@ -3,44 +3,37 @@
     <div class="main-container">
       <!-- HERO -->
       <section class="hero-section" :class="{ 'no-sidebar': !sidebarOpen, 'wide-sidebar': sidebarExpanded }">
+        <div class="hero-bg-glow" aria-hidden="true"></div>
         <div class="hero-inner">
-          <div class="hero-title-row">
-            <h1 class="hero-title">Promotion Template Builder</h1>
-            <span class="hero-badge">{{ selectedTemplate }}</span>
-          </div>
-          <p class="hero-subtitle">
-            실시간으로 프로모션 템플릿을 편집하고 미리보기 하세요
-          </p>
-
-          <!-- Template Tabs -->
-          <div class="template-tabs">
-            <button
-              v-for="template in templates"
-              :key="template.value"
-              class="template-tab"
-              :class="{ active: selectedTemplate === template.value }"
-              @click="selectTemplate(template.value)"
-            >
-              <span class="tab-icon">{{ template.icon }}</span>
-              <span class="tab-text">{{ template.name }}</span>
-            </button>
+          <div class="hero-panel">
+            <div class="hero-panel-head">
+              <div class="hero-panel-titles">
+                <p class="hero-eyebrow">프로모션 템플릿</p>
+                <h1 class="hero-title">Promotion Template Builder</h1>
+              </div>
+              <span class="hero-status-chip" title="현재 편집 중인 템플릿">{{ selectedTemplateLabel }}</span>
+            </div>
+            <p class="hero-subtitle">
+              실시간으로 프로모션 템플릿을 편집·미리보기한 뒤 HTML로 내려받을 수 있습니다
+            </p>
+            <div class="template-tabs" role="tablist" aria-label="템플릿 종류">
+              <button
+                v-for="template in templates"
+                :key="template.value"
+                type="button"
+                role="tab"
+                :aria-selected="selectedTemplate === template.value"
+                class="template-tab"
+                :class="{ active: selectedTemplate === template.value }"
+                @click="selectTemplate(template.value)"
+              >
+                <span class="tab-icon">{{ template.icon }}</span>
+                <span class="tab-text">{{ template.name }}</span>
+              </button>
+            </div>
           </div>
         </div>
       </section>
-      <svg class="hero-waves Bsection2" :class="{ 'no-sidebar': !sidebarOpen, 'wide-sidebar': sidebarExpanded }" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 24 150 28 " preserveAspectRatio="none">
-        <defs>
-          <path id="wave-path" d="M-160 44c30 0 58-18 88-18s 58 18 88 18 58-18 88-18 58 18 88 18 v44h-352z"></path>
-        </defs>
-        <g class="wave1">
-          <use xlink:href="#wave-path" x="50" y="3" fill="rgba(32,32,32, .1)"></use>
-        </g>
-        <g class="wave2">
-          <use xlink:href="#wave-path" x="50" y="0" fill="rgba(32,32,32, .2)"></use>
-        </g>
-        <g class="wave3">
-          <use xlink:href="#wave-path" x="50" y="9" fill="#202020"></use>
-        </g>
-      </svg>
 
       <!-- CONTENT -->
       <div class="content-container">
@@ -270,6 +263,10 @@ export default {
   computed: {
     currentBannerSettings() {
       return this.bannerSettings[this.currentDevice]
+    },
+    selectedTemplateLabel() {
+      const t = this.templates.find((x) => x.value === this.selectedTemplate)
+      return t ? t.name : this.selectedTemplate
     }
   },
   watch: {
@@ -580,7 +577,7 @@ export default {
 }
 .em-templates {
   padding-left: 320px;
-  transition: padding-left 0.35s ease;
+  transition: padding-left var(--template-layout-duration, 0.35s) var(--template-layout-ease, cubic-bezier(0.4, 0, 0.2, 1));
 }
 .em-templates.wide-sidebar {
   padding-left: 640px;
@@ -592,137 +589,11 @@ export default {
 .main-container {
   max-width: 1200px;
   margin: 0 auto;
-  transition: max-width 0.35s ease;
+  transition: max-width var(--template-layout-duration, 0.35s) var(--template-layout-ease, cubic-bezier(0.4, 0, 0.2, 1));
 }
 .no-sidebar .main-container,
 .no-sidebar.wide-sidebar .main-container {
-  max-width: none !important;
-}
-
-.hero-section {
-  filter: saturate(180%);
-  width: calc(100vw - 320px);
-  margin-left: calc(((calc(100vw - 320px) - 100%) / 2) * -1) !important;
-  transition: width 0.35s ease, margin-left 0.35s ease;
-  height: 550px !important;
-  position: relative;
-  background-attachment: fixed;
-  background-size: cover;
-  background-repeat: no-repeat;
-  background-position: 50% -175px;
-  background-image: url("https://blog.kakaocdn.net/dna/chZ3BL/btrIzFMbJ4r/AAAAAAAAAAAAAAAAAAAAABENuT3xPS7CJMvqaXXBeDrNUpAzW1mo5v_bn74HoZYO/img.png?credential=yqXZFxpELC7KVnFOS48ylbz2pIh7yKj8&expires=1769871599&allow_ip=&allow_referer=&signature=nzR1osduT8%2FrzQVkwuLlHHE2AgE%3D");
-  --thumbnail-blur: 0px;
-}
-.page-event-templates .hero-section {
-  background-image: url("https://blog.kakaocdn.net/dna/UaYQ5/btrRsI8MzIU/AAAAAAAAAAAAAAAAAAAAABfaHWg00nnltrWiN0Zdzd1MZnD_1xIPY6TAjkkkQ6dk/img.webp?credential=yqXZFxpELC7KVnFOS48ylbz2pIh7yKj8&expires=1772290799&allow_ip=&allow_referer=&signature=oHmqgXYoi3ZUah3ugSfW3spmzhU%3D");
-}
-.hero-section::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  top: 0;
-  left: 0;
-  right: 0;
-  background-color: rgb(14 17 31 / 50%);
-  backdrop-filter: blur(0);
-}
-.hero-waves {
-  display: block;
-  width: calc(100vw - 320px);
-  height: 60px;
-  transition: width 0.35s ease;
-  z-index: 5;
-  position: absolute;
-  right: 0;
-  top: 490px;
-}
-
-.wave1 use {
-  fill: rgba(255, 255, 255, 0.1);
-  animation: move-forever1 10s linear infinite;
-  animation-delay: -2s;
-}
-
-.wave2 use {
-  fill: rgba(255, 255, 255, 0.2);
-  animation: move-forever2 8s linear infinite;
-  animation-delay: -2s;
-}
-
-.wave3 use {
-  fill: rgba(255, 255, 255, 1);
-  animation: move-forever3 6s linear infinite;
-  animation-delay: -2s;
-}
-
-@keyframes move-forever1 {
-  0% { transform: translate(85px, 0%); }
-  100% { transform: translate(-90px, 0%); }
-}
-
-@keyframes move-forever2 {
-  0% { transform: translate(-90px, 0%); }
-  100% { transform: translate(85px, 0%); }
-}
-
-@keyframes move-forever3 {
-  0% { transform: translate(-90px, 0%); }
-  100% { transform: translate(85px, 0%); }
-}
-
-.hero-inner {
-  padding-top: 200px;
-  text-align: center;
-  z-index: 3;
-}
-.hero-title-row {
-  position: relative;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 12px;
-  z-index: 5;
-}
-.hero-title {
-  font-family: "MaplestoryLight";
-  font-size: 42px;
-  font-weight: 800;
-  color: #fff;
-}
-.hero-badge {
-  background: #6366f1;
-  color: #fff;
-  padding: 6px 14px;
-  border-radius: 999px;
-  font-size: 13px;
-  font-weight: 600;
-}
-.hero-subtitle {
-  position: relative;
-  margin: 12px 0 32px;
-  color: #fff;
-  z-index: 5;
-}
-
-.template-tabs {
-  position: relative;
-  display: flex;
-  justify-content: center;
-  gap: 10px;
-  flex-wrap: wrap;
-  z-index: 5;
-}
-.template-tab {
-  padding: 10px 20px;
-  border-radius: 12px;
-  background: #fff;
-  border: 2px solid transparent;
-  cursor: pointer;
-  font-weight: 600;
-}
-.template-tab.active {
-  border-color: #6366f1;
-  color: #6366f1;
+  max-width: 100% !important;
 }
 
 .content-container {
@@ -745,7 +616,9 @@ export default {
   left: 0;
   box-shadow: 0 1px 2px 0 rgb(0 0 0 / 16%), 0 1px 2px 0 rgb(0 0 0 / 2%);
   z-index: 20;
-  transition: width 0.35s ease, opacity 0.35s ease, transform 0.35s ease;
+  transition:
+    width var(--template-layout-duration, 0.35s) var(--template-layout-ease, cubic-bezier(0.4, 0, 0.2, 1)),
+    opacity var(--template-layout-duration, 0.35s) var(--template-layout-ease, cubic-bezier(0.4, 0, 0.2, 1));
   flex-shrink: 0;
 }
 
@@ -756,7 +629,6 @@ export default {
 .sidebar-card.collapsed {
   width: 0;
   opacity: 0;
-  transform: translateX(-12px);
   pointer-events: none;
   overflow: hidden;
 }
@@ -837,7 +709,7 @@ export default {
   border-radius: 16px;
   display: flex;
   flex-direction: column;
-  transition: flex 0.35s ease;
+  transition: flex var(--template-layout-duration, 0.35s) var(--template-layout-ease, cubic-bezier(0.4, 0, 0.2, 1));
 }
 .preview-card-wrap.expanded {
   flex: 1 1 100%;
@@ -913,24 +785,6 @@ export default {
 
 .template-select-btn:hover svg {
   transform: translateY(2px);
-}
-
-.hero-section.wide-sidebar {
-  width: calc(100vw - 640px);
-  margin-left: calc(((calc(100vw - 640px) - 100%) / 2) * -1) !important;
-}
-.hero-section.no-sidebar,
-.hero-section.no-sidebar.wide-sidebar {
-  width: 100vw !important;
-  margin-left: 0 !important;
-}
-
-.hero-waves.wide-sidebar {
-  width: calc(100vw - 640px);
-}
-.hero-waves.no-sidebar,
-.hero-waves.no-sidebar.wide-sidebar {
-  width: 100vw !important;
 }
 
 .banner-settings {
