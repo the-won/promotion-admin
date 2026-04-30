@@ -1067,7 +1067,8 @@ button {
 
 .btn-file {
   padding: 6px 12px;
-  background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+  /* background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%); */
+  background-color: var(--color-primary);
   color: #fff;
   border: none;
   border-radius: 6px;
@@ -1082,7 +1083,7 @@ button {
 }
 
 .btn-file:hover {
-  transform: translateY(-1px);
+  /* transform: translateY(-1px); */
   box-shadow: 0 4px 8px rgba(99, 102, 241, 0.3);
 }
 

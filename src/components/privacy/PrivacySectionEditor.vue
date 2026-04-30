@@ -754,7 +754,7 @@ export default {
 .section-header-left {
   display: flex;
   align-items: center;
-  gap: 8px;
+  /* gap: 8px; */
   flex: 1;
   min-width: 0;
 }
@@ -770,7 +770,8 @@ export default {
   width: 24px;
   height: 24px;
   border-radius: 50%;
-  background: #6366f1;
+  /* background: #6366f1; */
+  /* background: #0f1720; */
   color: #fff;
   font-size: 12px;
   font-weight: 700;
@@ -781,7 +782,8 @@ export default {
 }
 
 .section-card.is-selected .section-badge {
-  background: #4f46e5;
+  /* background: #4f46e5; */
+  /* background: #0f1720; */
 }
 
 .heading-input {
@@ -794,6 +796,11 @@ export default {
   font-weight: 600;
   background: transparent;
   color: #e6edf3;
+}
+.heading-input:hover,
+.heading-input:focus {
+  border-color: rgba(255, 255, 255, 0.2);;
+  color: inherit;
 }
 
 /* .heading-input:focus {
@@ -1088,16 +1095,16 @@ export default {
   padding: 4px 8px;
   border: 1px solid transparent;
   border-radius: 4px;
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 600;
   background: transparent;
   color: #fff;
 }
-
+.caption-input:hover,
 .caption-input:focus {
   outline: none;
-  border-color: #6366f1;
-  background: #fff;
+  border-color: rgba(255, 255, 255, 0.2);
+  color: inherit;
 }
 
 .table-card-body {
