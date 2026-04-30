@@ -10,7 +10,7 @@ import { generateTemplateHtml } from '../templateHtml/index.js'
  * @param {object} options - 추가 옵션
  */
 export async function imageDownloadHtml(templateName, formData, deviceType = 'web', options = {}) {
-  console.log('📦 imageDownloadHtml 호출')
+  console.log('imageDownloadHtml 호출')
   console.log('  templateName:', templateName)
   console.log('  deviceType:', deviceType)
   
@@ -78,7 +78,7 @@ export async function imageDownloadHtml(templateName, formData, deviceType = 'we
     const defaultHtmlFilename = options.htmlFilename || (deviceType === 'mobile' ? 'm.event.html' : 'event.html')
     zip.file(defaultHtmlFilename, processedHtml)
     
-    console.log(`📦 ZIP 생성 완료: HTML 1개, 이미지 ${imageMap.size}개`)
+    console.log(`ZIP 생성 완료: HTML 1개, 이미지 ${imageMap.size}개`)
     
     // 6. ZIP Blob 생성
     const zipBlob = await zip.generateAsync({ 

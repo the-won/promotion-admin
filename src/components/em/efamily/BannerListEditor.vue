@@ -16,7 +16,7 @@
         class="card"
       >
         <div class="card-header card-header-orange">
-          <span class="card-title">🎯 배너 {{ index + 1 }}</span>
+          <span class="card-title">배너 {{ index + 1 }}</span>
           <button 
             @click="removeBanner(index)" 
             class="btn btn-danger btn-sm"

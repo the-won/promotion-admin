@@ -17,7 +17,7 @@
     >
       <!-- 그룹 헤더 -->
       <div class="group-header">
-        <span class="group-title">📦 상품 그룹 {{ groupIndex + 1 }}</span>
+        <span class="group-title">상품 그룹 {{ groupIndex + 1 }}</span>
         <button 
           @click="removeGroup(group.id)" 
           class="btn btn-danger btn-sm"
@@ -61,7 +61,7 @@
           class="card"
         >
           <div class="card-header card-header-orange">
-            <span class="card-title">🛍️ 상품 행 {{ rowIndex + 1 }} (3개)</span>
+            <span class="card-title">상품 행 {{ rowIndex + 1 }} (3개)</span>
             <button 
               @click="removeRow(group.id, row.id)" 
               class="btn btn-danger btn-sm"

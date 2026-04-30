@@ -365,7 +365,7 @@ export default {
     },
     
     handleSelectHotspotWithInfo(info) {
-      console.log('🎯 핫스팟 정보 선택됨:', info)
+      console.log('핫스팟 정보 선택됨:', info)
       this.selectedHotspotInfo = info
       this.$emit('select-hotspot-info', info)
     },
