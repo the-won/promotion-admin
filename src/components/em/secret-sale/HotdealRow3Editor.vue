@@ -175,11 +175,5 @@ export default {
   margin-top: 16px;
 }
 
-.card-header-orange {
-  border-bottom-color: #ff6b35;
-}
 
-.card-header-orange .card-title {
-  color: #ff6b35;
-}
 </style>

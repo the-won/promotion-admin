@@ -318,7 +318,7 @@ export default {
       reader.onload = (e) => {
         image.url = e.target.result
         this.$set(image, '_uploadedFileName', file.name)
-        console.log('📤 이미지 업로드:', file.name, '크기:', (file.size / 1024).toFixed(2), 'KB')
+        console.log('이미지 업로드:', file.name, '크기:', (file.size / 1024).toFixed(2), 'KB')
       }
       reader.readAsDataURL(file)
     },

@@ -332,7 +332,8 @@ export default {
   align-items: center;
   margin-bottom: 16px;
   padding: 12px 16px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  /* background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); */
+  background-color: #1b223a;
   border-radius: 8px;
 }
 

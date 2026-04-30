@@ -26,7 +26,7 @@
       >
         <div class="form-group">
           <label>
-            {{ deviceType === 'mobile' ? '📱 모바일' : '🖥️ 웹' }} 이미지 URL
+            {{ deviceType === 'mobile' ? '모바일' : '웹' }} 이미지 URL
           </label>
           <input 
             type="url" 
@@ -41,7 +41,7 @@
         <!-- 이미지 업로드 -->
         <div class="form-group">
           <label>
-            📤 {{ deviceType === 'mobile' ? '모바일' : '웹' }} 이미지 업로드
+            {{ deviceType === 'mobile' ? '모바일' : '웹' }} 이미지 업로드
           </label>
           <div class="image-input-wrapper">
             <input
@@ -63,7 +63,7 @@
 
         <div class="form-group">
           <label>
-            {{ deviceType === 'mobile' ? '📱 모바일' : '🖥️ 웹' }} 이미지 대체텍스트 (스크린리더용)
+            {{ deviceType === 'mobile' ? '모바일' : '웹' }} 이미지 대체텍스트 (스크린리더용)
           </label>
           <input 
             type="text" 
@@ -480,7 +480,7 @@ export default {
         // 여기서는 임시로 Base64 URL 사용
         this.updateImageUrl(groupIdx, base64Url)
         
-        console.log('📤 이미지 업로드:', file.name, '크기:', (file.size / 1024).toFixed(2), 'KB')
+        console.log('이미지 업로드:', file.name, '크기:', (file.size / 1024).toFixed(2), 'KB')
       }
       reader.readAsDataURL(file)
     },

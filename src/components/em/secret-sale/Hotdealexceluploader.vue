@@ -430,8 +430,8 @@ export default {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 10px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 15px 10px;
+  background-color: #1b223a; 
   color: white;
 }
 
@@ -456,7 +456,6 @@ export default {
 
 .template-btn:hover {
   background: rgba(255, 255, 255, 0.3);
-  transform: translateY(-1px);
 }
 
 .upload-body {

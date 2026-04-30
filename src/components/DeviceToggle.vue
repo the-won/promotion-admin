@@ -6,7 +6,7 @@
       :class="{ active: value === 'web' }"
       @click="$emit('input', 'web')"
     >
-      🖥️ 웹
+      웹
     </button>
     <button 
       type="button"
@@ -14,7 +14,7 @@
       :class="{ active: value === 'mobile' }"
       @click="$emit('input', 'mobile')"
     >
-      📱 모바일
+      모바일
     </button>
   </div>
 </template>
