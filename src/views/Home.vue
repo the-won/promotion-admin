@@ -42,16 +42,6 @@ export default {
 .coming-soon-icon {
   font-size: 80px;
   margin-bottom: 24px;
-  animation: bounce 2s ease infinite;
-}
-
-@keyframes bounce {
-  0%, 100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-20px);
-  }
 }
 
 .coming-soon h2 {
@@ -96,6 +86,19 @@ export default {
   50% {
     opacity: 1;
     transform: scale(1.2);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .coming-soon {
+    animation: none;
+  }
+  .coming-soon-icon {
+    animation: none;
+  }
+  .progress-dots span {
+    animation: none;
+    opacity: 1;
   }
 }
 </style>

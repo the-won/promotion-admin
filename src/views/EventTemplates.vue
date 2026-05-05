@@ -41,7 +41,7 @@
           <!-- SIDEBAR -->
           <aside class="sidebar-card" :class="{ collapsed: !sidebarOpen, expanded: sidebarExpanded }">
             <header class="card-header">
-              <button class="width-toggle-btn" @click="toggleSidebarWidth" title="너비 조절">
+              <button class="width-toggle-btn" @click="toggleSidebarWidth" :aria-label="sidebarExpanded ? '너비 좁히기' : '너비 넓히기'" title="너비 조절">
                 <svg v-if="!sidebarExpanded" width="16" height="16" viewBox="0 0 16 16" fill="none">
                   <path d="M1 8H15M15 8L11 4M15 8L11 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                 </svg>
@@ -50,7 +50,7 @@
                 </svg>
               </button>
               <h3 class="card-title">템플릿 설정</h3>
-              <button class="close-btn" @click="toggleSidebar">✕</button>
+              <button class="close-btn" @click="toggleSidebar" aria-label="사이드바 닫기">✕</button>
             </header>
 
             <div class="card-body">
@@ -725,14 +725,14 @@ export default {
 
 .show-sidebar-btn {
   position: fixed;
-  top: 50px;
+  top: 72px;
   padding: 6px 12px;
   font-size: 13px;
   font-weight: 600;
-  border-radius: 8px;
-  border: 1px solid #6366f1;
+  border-radius: 3px;
+  border: 1px solid var(--color-primary, #0071e3);
   background: #fff;
-  color: #6366f1;
+  color: var(--color-primary, #0071e3);
   cursor: pointer;
 }
 

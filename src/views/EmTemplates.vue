@@ -27,7 +27,6 @@
                 :class="{ active: selectedTemplate === template.value }"
                 @click="selectTemplate(template.value)"
               >
-                <span class="tab-icon">{{ template.icon }}</span>
                 <span class="tab-text">{{ template.name }}</span>
               </button>
             </div>
@@ -41,7 +40,7 @@
           <!-- SIDEBAR -->
           <aside class="sidebar-card" :class="{ collapsed: !sidebarOpen, expanded: sidebarExpanded }">
             <header class="card-header">
-              <button class="width-toggle-btn" @click="toggleSidebarWidth" title="너비 조절">
+              <button class="width-toggle-btn" @click="toggleSidebarWidth" :aria-label="sidebarExpanded ? '너비 좁히기' : '너비 넓히기'" title="너비 조절">
                 <svg v-if="!sidebarExpanded" width="16" height="16" viewBox="0 0 16 16" fill="none">
                   <path d="M1 8H15M15 8L11 4M15 8L11 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                 </svg>
@@ -50,7 +49,7 @@
                 </svg>
               </button>
               <h3 class="card-title">템플릿 설정</h3>
-              <button class="close-btn" @click="toggleSidebar">✕</button>
+              <button class="close-btn" @click="toggleSidebar" aria-label="사이드바 닫기">✕</button>
             </header>
 
             <div class="card-body">
@@ -174,14 +173,14 @@ export default {
       visibleScrollPosition: { scrollTop: 0, viewportHeight: 400 },
       currentDevice: 'web',
       templates: [
-        { value: 'em-type-1', name: 'Type 1', icon: '', description: '기본 텍스트 템플릿' },
-        { value: 'em-type-2', name: 'Image Link', icon: '', description: '이미지 중심 템플릿' },
-        { value: 'em-type-imagemap', name: 'Use Map', icon: '', description: '이미지맵 템플릿' },
-        { value: 'em-type-imagemap2', name: 'Use Map2', icon: '', description: '이미지맵 템플릿2' },
-        { value: 'em-type-coupon', name: '쿠폰혜택', icon: '', description: '쿠폰혜택 템플릿' },
-        { value: 'em-type-letter', name: '베네레터', icon: '', description: '베네레터 템플릿' },
-        { value: 'em-type-4', name: '이패밀리샵', icon: '', description: '이패밀리샵 템플릿' },
-        { value: 'em-type-5', name: '비밀특가', icon: '', description: '핫스팟 인터랙티브 템플릿' }
+        { value: 'em-type-1', name: 'Type 1', description: '기본 텍스트 템플릿' },
+        { value: 'em-type-2', name: 'Image Link', description: '이미지 중심 템플릿' },
+        { value: 'em-type-imagemap', name: 'Use Map', description: '이미지맵 템플릿' },
+        { value: 'em-type-imagemap2', name: 'Use Map2', description: '이미지맵 템플릿2' },
+        { value: 'em-type-coupon', name: '쿠폰혜택', description: '쿠폰혜택 템플릿' },
+        { value: 'em-type-letter', name: '베네레터', description: '베네레터 템플릿' },
+        { value: 'em-type-4', name: '이패밀리샵', description: '이패밀리샵 템플릿' },
+        { value: 'em-type-5', name: '비밀특가', description: '핫스팟 인터랙티브 템플릿' }
       ]
     }
   },
@@ -199,10 +198,10 @@ export default {
         this.updateVisiblePositions()
       })
     },
-    sidebarOpen(val) {
+    sidebarOpen() {
       this.updateBodyClass()
     },
-    sidebarExpanded(val) {
+    sidebarExpanded() {
       this.updateBodyClass()
     }
   },
@@ -528,7 +527,7 @@ export default {
 
 .show-sidebar-btn {
   position: fixed;
-  top: 50px;
+  top: 72px;
   padding: 6px 12px;
   font-size: 13px;
   font-weight: 600;

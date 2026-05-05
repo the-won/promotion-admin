@@ -106,8 +106,8 @@ export default {
 
 <style scoped>
 .modal-overlay {
-  --modal-accent: #5c61d4;
-  --modal-accent-deep: #373c8f;
+  --modal-accent: var(--blueprint-indigo, #5c61d4);
+  --modal-accent-deep: var(--blueprint-indigo-deep, #373c8f);
   --modal-border: rgb(255 255 255 / 10%);
   --modal-muted: rgb(226 232 240 / 62%);
 
@@ -172,7 +172,7 @@ export default {
   font-weight: 600;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: rgb(226 232 240 / 48%);
+  color: rgb(226 232 240 / 72%);
 }
 
 .modal-title {
