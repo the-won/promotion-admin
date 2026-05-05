@@ -36,13 +36,17 @@
     </div>
 
     <div class="form-fields" :class="{ expanded: sidebarExpanded }">
-      <div
-        v-for="(config, key) in filteredFields"
-        :key="key" 
-        class="form-group"
-        :class="{ 'full-width': isFullWidthField(config.type) }"
-        :data-privacy-form-field="key"
-      >
+      <template v-for="(config, key) in filteredFields">
+        <div v-if="config.type === 'divider'" :key="`d-${key}`" class="form-section-divider">
+          <span>{{ config.label }}</span>
+        </div>
+        <div
+          v-else
+          :key="key"
+          class="form-group"
+          :class="{ 'full-width': isFullWidthField(config.type) }"
+          :data-privacy-form-field="key"
+        >
         <label v-if="!isHideLabelField(config.type)" class="form-label">{{ config.label }}</label>
         
         <!-- Text, URL, Email, Number 등 -->
@@ -245,7 +249,8 @@
           :privacy-preview-focus="privacyPreviewFocus"
           @active-section="$emit('active-section-index', $event)"
         />
-      </div>
+        </div>
+      </template>
     </div>
   </div>
 </template>
@@ -373,13 +378,17 @@ export default {
     },
     isFullWidthField(type) {
       const fullWidthTypes = [
-        'hotspot-group', 
+        'hotspot-group',
         'hotspot-group-list',
-        'image-link-group', 
-        'image-map-rows', 
-        'textarea', 
+        'image-link-group',
+        'image-map-rows',
+        'image-map-rows-2',
+        'image-map-areas',
+        'textarea',
         'product-group-list',
         'banner-list',
+        'hotdeal-row1-list',
+        'hotdeal-row3-list',
         'privacy-section-list'
       ]
       return fullWidthTypes.includes(type)
@@ -496,6 +505,28 @@ export default {
 
 .form-fields.expanded .form-group.full-width {
   grid-column: 1 / -1;
+}
+
+.form-section-divider {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 8px 0 4px;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-text-tertiary, #717175);
+  grid-column: 1 / -1;
+}
+
+.form-section-divider::before,
+.form-section-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--color-border, #d2d2d7);
+  opacity: 0.6;
 }
 
 /* Form Group */

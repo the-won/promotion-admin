@@ -190,6 +190,11 @@ export const templateDefaults = {
         day: '01'
       }
     },
+    _div_t4_header: {
+      type: 'divider',
+      label: '헤더 이미지',
+      tab: '기본'
+    },
     headerImage: {
       label: '상단 이미지 URL',
       type: 'url',
@@ -354,6 +359,11 @@ export const templateDefaults = {
         month: '01',
         day: '01'
       }
+    },
+    _div_t5_header: {
+      type: 'divider',
+      label: '헤더 이미지',
+      tab: '기본'
     },
     headerImage: {
       label: '화끈딜 상단 이미지 URL',
