@@ -1,6 +1,5 @@
 <template>
   <div class="template-form">
-    <h4 class="form-title">템플릿 설정</h4>
 
     <!-- Device Toggle (hotspot-group 타입이 있을 때만 표시) -->
     <div v-if="hasHotspotGroup" class="device-toggle-section">
@@ -25,9 +24,20 @@
       @update:banners="localData.banners = $event"
     />
 
+    <!-- 탭 바 — 언더라인 스타일, 탭이 2개 이상일 때만 표시 -->
+    <div v-if="tabs.length > 1" class="form-tabs">
+      <button
+        v-for="tab in tabs"
+        :key="tab"
+        class="form-tab-btn"
+        :class="{ active: (activeTab || tabs[0]) === tab }"
+        @click="activeTab = tab"
+      >{{ tab }}</button>
+    </div>
+
     <div class="form-fields" :class="{ expanded: sidebarExpanded }">
-      <div 
-        v-for="(config, key) in templateConfig" 
+      <div
+        v-for="(config, key) in filteredFields"
         :key="key" 
         class="form-group"
         :class="{ 'full-width': isFullWidthField(config.type) }"
@@ -282,15 +292,31 @@ export default {
     'privacyPreviewFocus'
   ],
   data() {
-    return { 
+    return {
       localData: {},
       currentDevice: 'web',
+      activeTab: null,
       selectedImageInfo: { groupId: null, imageId: null },
       selectedRowInfo: { rowId: null, rowIndex: null },
       selectedHotspotInfo: { hotspotId: null, groupIndex: null }
     }
   },
   computed: {
+    tabs() {
+      const seen = new Set()
+      return Object.values(this.templateConfig || {})
+        .map(f => f.tab || '기본')
+        .filter(t => !seen.has(t) && seen.add(t))
+    },
+    filteredFields() {
+      if (this.tabs.length <= 1) return this.templateConfig
+      const current = this.activeTab || this.tabs[0]
+      const result = {}
+      Object.entries(this.templateConfig || {}).forEach(([key, config]) => {
+        if ((config.tab || '기본') === current) result[key] = config
+      })
+      return result
+    },
     hasHotspotGroup() {
       if (!this.templateConfig) return false
       return Object.values(this.templateConfig).some(
@@ -317,6 +343,9 @@ export default {
         }
       },
       deep: true
+    },
+    template() {
+      this.activeTab = null
     },
     currentDevice(newVal) {
       this.$emit('device-change', newVal)
@@ -418,13 +447,35 @@ export default {
   width: 100%;
 }
 
-.form-title {
-  margin: 0 0 20px 0;
-  font-size: 12px;
+/* 탭 바 — 언더라인 스타일 */
+.form-tabs {
+  display: flex;
+  border-bottom: 1px solid var(--color-border, #d2d2d7);
+  margin-bottom: 20px;
+}
+
+.form-tab-btn {
+  padding: 10px 16px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-text-secondary, #6e6e73);
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  cursor: pointer;
+  transition: color 0.15s, border-color 0.15s, opacity 0.15s;
+}
+
+.form-tab-btn.active {
+  color: var(--color-primary, #0071e3);
+  border-bottom-color: var(--color-primary, #0071e3);
   font-weight: 600;
-  color: var(--color-text-secondary, #64748b);
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
+}
+
+.form-tab-btn:hover:not(.active) {
+  background: transparent;
+  opacity: 0.75;
 }
 
 .device-toggle-section {
@@ -434,13 +485,13 @@ export default {
 .form-fields {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 20px;
 }
 
 .form-fields.expanded {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 14px 16px;
+  gap: 16px 20px;
 }
 
 .form-fields.expanded .form-group.full-width {
@@ -451,14 +502,15 @@ export default {
 .form-group {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 8px;
   margin-bottom: 0;
 }
 
 .form-label {
-  font-size: 11px;
-  font-weight: 500;
-  color: var(--color-text-secondary, #64748b);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-text-secondary, #6e6e73);
+  margin-bottom: 4px;
 }
 
 /* Color Picker */

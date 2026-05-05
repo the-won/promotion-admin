@@ -463,7 +463,7 @@ export default {
 }
 
 .card-header {
-  padding: 16px 20px;
+  padding: 12px 16px;
   display: flex;
   align-items: center;
   gap: 12px;
@@ -475,19 +475,19 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #f3f4f6;
-  border: 1px solid #e5e7eb;
-  border-radius: 8px;
-  color: #6b7280;
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  color: var(--color-text-secondary, #6e6e73);
   cursor: pointer;
-  transition: all 0.2s;
+  transition: color 0.15s;
   flex-shrink: 0;
 }
 
 .width-toggle-btn:hover {
-  background: #e5e7eb;
-  border-color: #6366f1;
-  color: #6366f1;
+  background: transparent;
+  border-color: transparent;
+  color: var(--color-primary, #0071e3);
 }
 
 .card-title {
@@ -505,7 +505,7 @@ export default {
   margin-bottom: 12px;
 }
 .card-body {
-  padding: 20px;
+  padding: 16px;
   overflow-y: auto;
 }
 .sidebar-footer-fixed {
@@ -515,11 +515,18 @@ export default {
 .download-btn {
   width: 100%;
   padding: 12px;
-  background: #6366f1;
+  background: var(--color-primary, #0071e3);
   color: #fff;
-  border-radius: 10px;
+  border-radius: 3px;
   border: none;
   cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  transition: background 0.15s;
+}
+
+.download-btn:hover {
+  background: var(--color-primary-hover, #0077ed);
 }
 
 /* PREVIEW */
@@ -559,10 +566,10 @@ export default {
   padding: 6px 12px;
   font-size: 13px;
   font-weight: 600;
-  border-radius: 8px;
-  border: 1px solid #6366f1;
+  border-radius: 3px;
+  border: 1px solid var(--color-primary, #0071e3);
   background: #fff;
-  color: #6366f1;
+  color: var(--color-primary, #0071e3);
   cursor: pointer;
 }
 
@@ -586,29 +593,30 @@ export default {
 /* Template Select Button */
 .template-select-btn {
   width: 100%;
-  padding: 12px 16px;
+  padding: 10px 16px;
   margin-bottom: 16px;
   display: flex;
   align-items: center;
   gap: 10px;
-  background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
-  border: none;
-  border-radius: 10px;
-  color: #fff;
-  font-size: 14px;
+  background: transparent;
+  border: 1px solid var(--color-primary, #0071e3);
+  border-radius: 3px;
+  color: var(--color-primary, #0071e3);
+  font-size: 13px;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s;
-  box-shadow: 0 2px 8px rgba(99, 102, 241, 0.25);
+  transition: background 0.15s;
+  box-shadow: none;
 }
 
 .template-select-btn:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.35);
+  background: var(--color-primary-light, rgba(0, 113, 227, 0.08));
+  transform: none;
+  box-shadow: none;
 }
 
 .template-select-btn:active {
-  transform: translateY(0);
+  transform: none;
 }
 
 .template-select-btn .btn-icon {

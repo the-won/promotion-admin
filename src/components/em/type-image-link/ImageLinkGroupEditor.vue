@@ -549,7 +549,6 @@ export default {
 
 .images-section {
   margin-top: 16px;
-  padding: 14px;
   background: var(--color-bg-secondary, #f5f6fa);
   border-radius: var(--form-radius, 8px);
 }
@@ -611,32 +610,45 @@ export default {
   box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.2);
 } */
 
-.vendor-divider {
-  border: none;
-  border-top: 2px solid #e5e7eb;
-  margin: 20px 0;
-}
 
 
 
 /* 이미지 카드 하이라이트만 적용 (그룹 카드는 제외) */
 .card-nested.card-active {
-  background: #f0f4ff;
-  outline: 2px solid #6366f1;
-  outline-offset: 1px;
-  animation: cardPulse 1.5s ease-in-out infinite;
+  position: relative;
+  background: var(--color-primary-light);
+  outline: none;
   cursor: pointer;
 }
-
-@keyframes cardPulse {
-  0%, 100% {
-    outline-color: #6366f1;
-    box-shadow: 0 2px 8px rgba(99, 102, 241, 0.3);
-  }
-  50% {
-    outline-color: #818cf8;
-    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.5);
-  }
+.card-nested.card-active::before {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  padding: 2px;
+  background: conic-gradient(
+    from 0deg,
+    transparent 0%,
+    transparent 68%,
+    rgba(125, 211, 252, 0.4) 78%,
+    #0a84ff 87%,
+    rgba(125, 211, 252, 0.4) 96%,
+    transparent 100%
+  );
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  /* animation: spinBorderLight 2s linear infinite; */
+  pointer-events: none;
+  z-index: 1;
 }
+
+/* @keyframes spinBorderLight {
+  to { transform: rotate(360deg); }
+} */
 
 </style>

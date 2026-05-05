@@ -682,8 +682,8 @@ export default {
 }
 
 .image-url-section:hover {
-  background: rgba(85, 104, 248, 0.05);
-  box-shadow: 0 0 0 2px rgba(85, 104, 248, 0.1);
+  background: rgba(0, 113, 227, 0.05);
+  box-shadow: 0 0 0 2px rgba(0, 113, 227, 0.1);
 }
 
 .section-header {
@@ -738,8 +738,8 @@ export default {
 
 .card {
   padding: 12px;
-  border: 1px solid #e5e7eb;
-  border-radius: 8px;
+  border: 1px solid var(--color-border, #d2d2d7);
+  border-radius: 3px;
   background: white;
   transition: all 0.2s;
 }
@@ -747,14 +747,14 @@ export default {
 .card.selectable { cursor: pointer; }
 
 .card.selectable:hover {
-  border-color: #6366f1;
-  box-shadow: 0 2px 8px rgba(99, 102, 241, 0.15);
+  border-color: #0071e3;
+  box-shadow: 0 2px 8px rgba(0, 113, 227, 0.15);
 }
 
 .card.selected {
-  border-color: #6366f1;
-  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
-  background: rgba(99, 102, 241, 0.02);
+  border-color: #0071e3;
+  box-shadow: 0 0 0 3px rgba(0, 113, 227, 0.1);
+  background: rgba(0, 113, 227, 0.02);
 }
 
 .card.flash-highlight {
@@ -763,8 +763,8 @@ export default {
 
 @keyframes flashPulse {
   0%, 100% {
-    border-color: #6366f1;
-    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+    border-color: #0071e3;
+    box-shadow: 0 0 0 3px rgba(0, 113, 227, 0.1);
   }
   50% {
     border-color: #f59e0b;
@@ -779,15 +779,15 @@ export default {
   font-size: 14px;
   border: 2px dashed #d1d5db;
   background: transparent;
-  color: #6366f1;
-  border-radius: 10px;
+  color: #0071e3;
+  border-radius: 3px;
   cursor: pointer;
   transition: all 0.2s;
 }
 
 .btn-add-group:hover {
-  background: rgba(99, 102, 241, 0.05);
-  border-color: #6366f1;
+  background: rgba(0, 113, 227, 0.05);
+  border-color: #0071e3;
 }
 
 .checkbox-label {
@@ -803,7 +803,7 @@ export default {
   width: 16px;
   height: 16px;
   cursor: pointer;
-  accent-color: #6366f1;
+  accent-color: #0071e3;
 }
 
 .optional-label {
@@ -830,9 +830,9 @@ export default {
   flex-shrink: 0;
   font-size: 11px;
   font-weight: 700;
-  color: #6366f1;
-  background: #eef2ff;
-  border-radius: 4px;
+  color: #0071e3;
+  background: var(--color-primary-light, rgba(0, 113, 227, 0.08));
+  border-radius: 3px;
   padding: 2px 6px;
   margin-top: 1px;
 }
