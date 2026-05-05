@@ -633,12 +633,6 @@ export default {
   overflow: hidden;
 }
 
-.card-header {
-  padding: 16px 20px;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
 
 .width-toggle-btn {
   width: 32px;
@@ -703,7 +697,7 @@ export default {
   cursor: pointer;
 }
 
-.preview-card-wrap {
+/* .preview-card-wrap {
   flex: 1;
   background: #fff;
   border-radius: 16px;
@@ -727,7 +721,7 @@ export default {
 .preview-canvas {
   background: #fff;
   margin: 0 auto;
-}
+} */
 
 .show-sidebar-btn {
   position: fixed;

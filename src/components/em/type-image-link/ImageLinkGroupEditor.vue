@@ -543,28 +543,7 @@ export default {
 </script>
 
 <style scoped>
-.image-link-group-editor {
-  margin-top: 16px;
-}
 
-.images-section {
-  margin-top: 16px;
-  background: var(--color-bg-secondary, #f5f6fa);
-  border-radius: var(--form-radius, 8px);
-}
-
-.card-nested {
-  background: var(--color-bg, #fff);
-}
-
-.card-header-sm {
-  margin-bottom: 10px;
-  padding-bottom: 8px;
-}
-
-.card-header-sm .card-title {
-  font-size: 11px;
-}
 
 /* 전역 벤더 선택 영역 */
 /* .global-vendor-selector {

@@ -462,12 +462,7 @@ export default {
   overflow: hidden;
 }
 
-.card-header {
-  padding: 12px 16px;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
+
 
 .width-toggle-btn {
   width: 32px;
@@ -529,36 +524,7 @@ export default {
   background: var(--color-primary-hover, #0077ed);
 }
 
-/* PREVIEW */
-.preview-card-wrap {
-  flex: 1;
-  background: #fff;
-  border-radius: 16px;
-  display: flex;
-  flex-direction: column;
-}
-.preview-header {
-  padding: 16px 20px;
-  display: flex;
-  justify-content: space-between;
-}
-.preview-body-wrap {
-  flex: 1;
-  display: flex;
-  justify-content: center;
-}
-.preview-canvas {
-  background: #fff;
-  margin: 0 auto;
-}
 
-.preview-card-wrap {
-  transition: flex var(--template-layout-duration, 0.35s) var(--template-layout-ease, cubic-bezier(0.4, 0, 0.2, 1));
-}
-
-.preview-card-wrap.expanded {
-  flex: 1 1 100%;
-}
 
 .show-sidebar-btn {
   position: fixed;

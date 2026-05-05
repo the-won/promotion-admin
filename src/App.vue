@@ -33,13 +33,25 @@
             <path d="M10 3V17M3 10H17" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
           </svg>
         </button>
-       
-        <!-- <button class="icon-btn notification-btn">
-          <span class="notification-badge">2</span>
+
+        <button
+          class="theme-toggle"
+          @click="toggleDarkMode"
+          :title="darkMode ? '라이트 모드로 전환' : '다크 모드로 전환'"
+          :aria-label="darkMode ? '라이트 모드' : '다크 모드'"
+        >
+          <span class="toggle-track" :class="{ active: darkMode }">
+            <span class="toggle-thumb">
+              <svg v-if="darkMode" width="11" height="11" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+              </svg>
+              <svg v-else width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+                <circle cx="12" cy="12" r="4"/>
+                <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/>
+              </svg>
+            </span>
+          </span>
         </button>
-        <div class="user-avatar">
-          <img src="https://i.pravatar.cc/40?img=12" alt="User" />
-        </div> -->
       </div>
     </header>
 
@@ -50,7 +62,23 @@
 
 <script>
 export default {
-  name: 'App'
+  name: 'App',
+  data() {
+    return { darkMode: false }
+  },
+  mounted() {
+    this.darkMode = window.matchMedia('(prefers-color-scheme: dark)').matches
+    this.applyDarkMode()
+  },
+  methods: {
+    toggleDarkMode() {
+      this.darkMode = !this.darkMode
+      this.applyDarkMode()
+    },
+    applyDarkMode() {
+      document.body.classList.toggle('dark-mode', this.darkMode)
+    }
+  }
 }
 </script>
 
@@ -254,6 +282,84 @@ body.page-event-templates.sidebar-closed .app-header {
   width: 100%;
   height: 100%;
   object-fit: cover;
+}
+
+/* ---- 다크모드 토글 스위치 ---- */
+.theme-toggle {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+.toggle-track {
+  width: 44px;
+  height: 24px;
+  background: #d2d2d7;
+  border-radius: 12px;
+  position: relative;
+  transition: background 0.25s;
+  display: flex;
+  align-items: center;
+}
+.toggle-track.active {
+  background: #0a84ff;
+}
+.toggle-thumb {
+  position: absolute;
+  left: 2px;
+  width: 20px;
+  height: 20px;
+  background: #fff;
+  border-radius: 50%;
+  transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #6e6e73;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+.toggle-track.active .toggle-thumb {
+  transform: translateX(20px);
+  color: #0a84ff;
+}
+
+/* ---- 헤더 다크모드 ---- */
+body.dark-mode {
+  /* background: #000; */
+}
+body.dark-mode .app-header {
+  background: rgba(28, 28, 30, 0.85);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+body.dark-mode .header-center {
+  background: rgba(44, 44, 46, 0.8);
+}
+body.dark-mode .nav-link {
+  color: rgba(255, 255, 255, 0.55);
+}
+body.dark-mode .nav-link:hover {
+  color: rgba(255, 255, 255, 0.9);
+  background: rgba(255, 255, 255, 0.08);
+}
+body.dark-mode .nav-link.router-link-active {
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+  box-shadow: none;
+}
+body.dark-mode .icon-btn {
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.6);
+}
+body.dark-mode .icon-btn:hover {
+  background: rgba(255, 255, 255, 0.14);
+  color: #fff;
+}
+body.dark-mode .toggle-track:not(.active) {
+  background: rgba(255, 255, 255, 0.2);
 }
 
 /* Responsive */
