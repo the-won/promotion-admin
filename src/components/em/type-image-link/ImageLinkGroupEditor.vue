@@ -18,9 +18,10 @@
     <!-- 구분선 -->
     <hr class="vendor-divider" />
 
-    <div 
-      v-for="(group, groupIndex) in localGroups" 
+    <div
+      v-for="(group, groupIndex) in localGroups"
       :key="group.id"
+      v-show="selectedGroupIndex === null || selectedGroupIndex === groupIndex"
       class="card mb-4"
     >
       <div class="card-header">
@@ -250,6 +251,10 @@ export default {
     companyType: {
       type: String,
       default: 'normal'
+    },
+    selectedGroupIndex: {
+      type: Number,
+      default: null
     }
   },
   data() {

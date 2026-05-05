@@ -19,10 +19,11 @@
     <hr class="vendor-divider" />
 
     <!-- 행(Row) 목록 -->
-    <div 
-      v-for="(row, rowIndex) in localRows" 
+    <div
+      v-for="(row, rowIndex) in localRows"
       :key="row.id"
       :ref="`row-${row.id}`"
+      v-show="selectedRowIndex === null || selectedRowIndex === rowIndex"
       class="card mb-4"
       :class="{ 'card-active': activeRowId === row.id }"
       @mouseenter="setActiveRow(row.id)"
@@ -313,6 +314,10 @@ export default {
     companyType: {
       type: String,
       default: 'normal'
+    },
+    selectedRowIndex: {
+      type: Number,
+      default: null
     }
   },
   data() {
