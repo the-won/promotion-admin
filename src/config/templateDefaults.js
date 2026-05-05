@@ -6,60 +6,71 @@ export const templateDefaults = {
     title: {
       label: '이벤트 타이틀',
       type: 'text',
+      tab: '기본',
       value: '이벤트 타이틀',
       placeholder: '타이틀을 입력하세요'
     },
     subtitle: {
       label: '이벤트 부제목',
       type: 'text',
+      tab: '기본',
       value: '이벤트 부제목'
     },
     heroImage: {
       label: '히어로 이미지 URL',
       type: 'url',
+      tab: '기본',
       value: 'https://picsum.photos/500/300'
+    },
+    footerText: {
+      label: '푸터 텍스트',
+      type: 'text',
+      tab: '기본',
+      value: '© 2025 회사명 All rights reserved.'
     },
     mainHeading: {
       label: '메인 문구',
       type: 'text',
+      tab: '콘텐츠',
       value: '메인 문구'
     },
     mainText: {
       label: '본문 내용',
       type: 'textarea',
+      tab: '콘텐츠',
       value: '여기에 본문 내용이 들어갑니다.',
       rows: 4
     },
     buttonText: {
       label: '버튼 텍스트',
       type: 'text',
+      tab: '콘텐츠',
       value: '지금 참여하기'
     },
     buttonLink: {
       label: '버튼 링크',
       type: 'url',
+      tab: '콘텐츠',
       value: '#'
     },
     buttonColor: {
       label: '버튼 색상',
       type: 'color',
+      tab: '스타일',
       value: '#007bff'
-    },
-    footerText: {
-      label: '푸터 텍스트',
-      type: 'text',
-      value: '© 2025 회사명 All rights reserved.'
     }
   },
   'em-type-2': {
     folderName: {
       label: '폴더명 (ZIP 파일명)',
       type: 'text',
+      tab: '기본',
       value: ''
     },
     sendDate: {
       label: '발송일 기준',
       type: 'date-picker',
+      tab: '기본',
       value: {
         year: '2026',
         month: '01',
@@ -69,6 +80,7 @@ export const templateDefaults = {
     imageLinkGroups: {
       label: '이미지 링크 그룹',
       type: 'image-link-group',
+      tab: '이미지',
       value: [
         {
           id: 'grp_t2_001',
@@ -164,36 +176,47 @@ export const templateDefaults = {
     globalDomain: {
       label: '도메인',
       type: 'text',
+      tab: '기본',
       placeholder: 'www, sema, happy, victory 등',
       value: 'www'
     },
     sendDate: {
       label: '발송일 기준',
       type: 'date-picker',
+      tab: '기본',
       value: {
         year: '2026',
         month: '01',
         day: '01'
       }
     },
+    _div_t4_header: {
+      type: 'divider',
+      label: '헤더 이미지',
+      tab: '기본'
+    },
     headerImage: {
       label: '상단 이미지 URL',
       type: 'url',
+      tab: '기본',
       value: 'https://www.efamilyshop.co.kr/storage/fud/20250513/visual_20250513162322.jpg'
     },
     headerImageAlt: {
       label: '상단 이미지 대체 텍스트',
       type: 'text',
+      tab: '기본',
       value: '대체텍스트를 작성하세요'
     },
     headerImageCode: {
       label: '상단 이미지 링크 - 상품코드',
       type: 'text',
+      tab: '기본',
       value: '3515'
     },
     productGroups: {
       label: '상품 그룹',
       type: 'product-group-list',
+      tab: '상품',
       value: [
         {
           id: 'pg_t4_001',
@@ -298,6 +321,7 @@ export const templateDefaults = {
     banners: {
       label: '하단 배너',
       type: 'banner-list',
+      tab: '배너',
       value: [
         {
           id: 'bn_t4_001',
@@ -319,6 +343,7 @@ export const templateDefaults = {
     companyType: {
       label: '도메인',
       type: 'select',
+      tab: '기본',
       value: 'normal',
       options: [
         { value: 'normal', label: 'TOBE' },
@@ -328,25 +353,34 @@ export const templateDefaults = {
     sendDate: {
       label: '발송일 기준',
       type: 'date-picker',
+      tab: '기본',
       value: {
         year: '2026',
         month: '01',
         day: '01'
       }
     },
+    _div_t5_header: {
+      type: 'divider',
+      label: '헤더 이미지',
+      tab: '기본'
+    },
     headerImage: {
       label: '화끈딜 상단 이미지 URL',
       type: 'url',
+      tab: '기본',
       value: 'http://org-i.benepia.co.kr/ckeditor/2026/01/14/8B63F328B909.Tomcat_117683655605400.png'
     },
     headerImageAlt: {
       label: '상단 이미지 대체 텍스트',
       type: 'text',
+      tab: '기본',
       value: '베네피아 5대혜택 - 이번주 최저가 상품! /최저가보상/무료반품/배송지연보상/할인쿠폰/경품증정'
     },
     row1Products: {
       label: '화끈딜 1단 상품',
       type: 'hotdeal-row1-list',
+      tab: '상품',
       value: [
         {
           id: 'r1_t5_001',
@@ -371,6 +405,7 @@ export const templateDefaults = {
     row3Products: {
       label: '화끈딜 3단 상품',
       type: 'hotdeal-row3-list',
+      tab: '상품',
       value: [
         {
           id: 'r3_t5_001',
@@ -405,11 +440,13 @@ export const templateDefaults = {
     folderName: {
       label: '폴더명 (ZIP 파일명)',
       type: 'text',
+      tab: '기본',
       value: ''
     },
     companyType: {
       label: '도메인',
       type: 'select',
+      tab: '기본',
       value: 'normal',
       options: [
         { value: 'normal', label: 'TOBE' },
@@ -419,6 +456,7 @@ export const templateDefaults = {
     sendDate: {
       label: '발송일 기준',
       type: 'date-picker',
+      tab: '기본',
       value: {
         year: '2026',
         month: '01',
@@ -428,6 +466,7 @@ export const templateDefaults = {
     imageMapRows: {
       label: '이미지 행 목록',
       type: 'image-map-rows',
+      tab: '이미지맵',
       value: [
         {
           id: 'imr_map_001',
@@ -482,6 +521,7 @@ export const templateDefaults = {
     imageMapAreas: {
       label: '핫스팟 목록',
       type: 'image-map-areas',
+      tab: '이미지맵',
       value: [
         // {
         //   id: 'ima_map_001',
@@ -519,6 +559,7 @@ export const templateDefaults = {
     companyType: {
       label: '도메인',
       type: 'select',
+      tab: '기본',
       value: 'normal',
       options: [
         { value: 'normal', label: 'TOBE' },
@@ -528,6 +569,7 @@ export const templateDefaults = {
     sendDate: {
       label: '발송일 기준',
       type: 'date-picker',
+      tab: '기본',
       value: {
         year: '2026',
         month: '01',
@@ -537,6 +579,7 @@ export const templateDefaults = {
     imageMapRows: {
       label: '이미지 행 목록',
       type: 'image-map-rows-2',
+      tab: '이미지맵',
       value: [
         {
           id: 'imr_map_001',
@@ -591,6 +634,7 @@ export const templateDefaults = {
     imageMapAreas: {
       label: '핫스팟 목록',
       type: 'image-map-areas',
+      tab: '이미지맵',
       value: [
         {
           id: 'ima_map_001',
@@ -628,11 +672,13 @@ export const templateDefaults = {
     folderName: {
       label: '폴더명 (ZIP 파일명)',
       type: 'text',
+      tab: '기본',
       value: ''
     },
     sendDate: {
       label: '발송일 기준',
       type: 'date-picker',
+      tab: '기본',
       value: {
         year: '2026',
         month: '01',
@@ -642,6 +688,7 @@ export const templateDefaults = {
     imageLinkGroups: {
       label: '이미지 링크 그룹',
       type: 'image-link-group',
+      tab: '이미지',
       value: [
         {
           id: 'grp_cpn_001',
@@ -676,6 +723,7 @@ export const templateDefaults = {
     companyType: {
       label: '도메인',
       type: 'select',
+      tab: '기본',
       value: 'normal',
       options: [
         { value: 'normal', label: 'TOBE' },
@@ -685,6 +733,7 @@ export const templateDefaults = {
     sendDate: {
       label: '발송일 기준',
       type: 'date-picker',
+      tab: '기본',
       value: {
         year: '2026',
         month: '01',
@@ -694,6 +743,7 @@ export const templateDefaults = {
     imageMapRows: {
       label: '이미지 행 목록',
       type: 'image-map-rows',
+      tab: '이미지맵',
       value: [
         {
           id: 'imr_ltr_001',
@@ -780,6 +830,7 @@ export const templateDefaults = {
     imageMapAreas: {
       label: '핫스팟 목록',
       type: 'image-map-areas',
+      tab: '이미지맵',
       value: [
         {
           id: 'ima_ltr_001',

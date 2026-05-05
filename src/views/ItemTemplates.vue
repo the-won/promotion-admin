@@ -277,12 +277,6 @@ export default {
   overflow: hidden;
 }
 
-.card-header {
-  padding: 16px 20px;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
 .width-toggle-btn {
   width: 32px;
   height: 32px;

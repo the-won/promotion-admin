@@ -27,7 +27,6 @@
                 :class="{ active: selectedTemplate === template.value }"
                 @click="selectTemplate(template.value)"
               >
-                <span class="tab-icon">{{ template.icon }}</span>
                 <span class="tab-text">{{ template.name }}</span>
               </button>
             </div>
@@ -41,7 +40,7 @@
           <!-- SIDEBAR -->
           <aside class="sidebar-card" :class="{ collapsed: !sidebarOpen, expanded: sidebarExpanded }">
             <header class="card-header">
-              <button class="width-toggle-btn" @click="toggleSidebarWidth" title="너비 조절">
+              <button class="width-toggle-btn" @click="toggleSidebarWidth" :aria-label="sidebarExpanded ? '너비 좁히기' : '너비 넓히기'" title="너비 조절">
                 <svg v-if="!sidebarExpanded" width="16" height="16" viewBox="0 0 16 16" fill="none">
                   <path d="M1 8H15M15 8L11 4M15 8L11 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                 </svg>
@@ -50,16 +49,21 @@
                 </svg>
               </button>
               <h3 class="card-title">템플릿 설정</h3>
-              <button class="close-btn" @click="toggleSidebar">✕</button>
+              <button class="close-btn" @click="toggleSidebar" aria-label="사이드바 닫기">✕</button>
             </header>
 
             <div class="card-body">
               <section class="sidebar-section">
                 <button class="template-select-btn" @click="openModal">
-                  <span class="btn-icon">📋</span>
+                  <svg class="btn-icon" width="15" height="15" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                    <rect x="5" y="2" width="10" height="3" rx="1.5" fill="currentColor" opacity="0.7"/>
+                    <rect x="3" y="4" width="14" height="14" rx="2" stroke="currentColor" stroke-width="1.6" fill="none"/>
+                    <line x1="6.5" y1="8.5" x2="13.5" y2="8.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+                    <line x1="6.5" y1="11.5" x2="11" y2="11.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+                  </svg>
                   <span class="btn-text">템플릿 선택</span>
-                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                    <path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                    <path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
                   </svg>
                 </button>
                 <h4 class="section-title">기본 설정</h4>
@@ -174,14 +178,14 @@ export default {
       visibleScrollPosition: { scrollTop: 0, viewportHeight: 400 },
       currentDevice: 'web',
       templates: [
-        { value: 'em-type-1', name: 'Type 1', icon: '', description: '기본 텍스트 템플릿' },
-        { value: 'em-type-2', name: 'Image Link', icon: '', description: '이미지 중심 템플릿' },
-        { value: 'em-type-imagemap', name: 'Use Map', icon: '', description: '이미지맵 템플릿' },
-        { value: 'em-type-imagemap2', name: 'Use Map2', icon: '', description: '이미지맵 템플릿2' },
-        { value: 'em-type-coupon', name: '쿠폰혜택', icon: '', description: '쿠폰혜택 템플릿' },
-        { value: 'em-type-letter', name: '베네레터', icon: '', description: '베네레터 템플릿' },
-        { value: 'em-type-4', name: '이패밀리샵', icon: '', description: '이패밀리샵 템플릿' },
-        { value: 'em-type-5', name: '비밀특가', icon: '', description: '핫스팟 인터랙티브 템플릿' }
+        { value: 'em-type-1', name: 'Type 1', description: '기본 텍스트 템플릿' },
+        { value: 'em-type-2', name: 'Image Link', description: '이미지 중심 템플릿' },
+        { value: 'em-type-imagemap', name: 'Use Map', description: '이미지맵 템플릿' },
+        { value: 'em-type-imagemap2', name: 'Use Map2', description: '이미지맵 템플릿2' },
+        { value: 'em-type-coupon', name: '쿠폰혜택', description: '쿠폰혜택 템플릿' },
+        { value: 'em-type-letter', name: '베네레터', description: '베네레터 템플릿' },
+        { value: 'em-type-4', name: '이패밀리샵', description: '이패밀리샵 템플릿' },
+        { value: 'em-type-5', name: '비밀특가', description: '핫스팟 인터랙티브 템플릿' }
       ]
     }
   },
@@ -199,10 +203,10 @@ export default {
         this.updateVisiblePositions()
       })
     },
-    sidebarOpen(val) {
+    sidebarOpen() {
       this.updateBodyClass()
     },
-    sidebarExpanded(val) {
+    sidebarExpanded() {
       this.updateBodyClass()
     }
   },
@@ -399,15 +403,12 @@ export default {
 </script>
 
 <style scoped>
-:root {
-  --sidebar-wid: 320px;
-}
 .em-templates {
-  padding-left: 320px;
+  padding-left: var(--sidebar-w);
   transition: padding-left var(--template-layout-duration, 0.35s) var(--template-layout-ease, cubic-bezier(0.4, 0, 0.2, 1));
 }
 .em-templates.wide-sidebar {
-  padding-left: 640px;
+  padding-left: var(--sidebar-w-expanded);
 }
 .em-templates.no-sidebar,
 .em-templates.no-sidebar.wide-sidebar {
@@ -435,7 +436,7 @@ export default {
 
 /* SIDEBAR */
 .sidebar-card {
-  width: 320px;
+  width: var(--sidebar-w);
   background: #fff;
   display: flex;
   flex-direction: column;
@@ -452,7 +453,7 @@ export default {
 }
 
 .sidebar-card.expanded {
-  width: 640px;
+  width: var(--sidebar-w-expanded);
 }
 
 .sidebar-card.collapsed {
@@ -462,12 +463,7 @@ export default {
   overflow: hidden;
 }
 
-.card-header {
-  padding: 16px 20px;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
+
 
 .width-toggle-btn {
   width: 32px;
@@ -475,24 +471,25 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #f3f4f6;
-  border: 1px solid #e5e7eb;
-  border-radius: 8px;
-  color: #6b7280;
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  color: var(--color-text-secondary, #6e6e73);
   cursor: pointer;
-  transition: all 0.2s;
+  transition: color 0.15s;
   flex-shrink: 0;
 }
 
 .width-toggle-btn:hover {
-  background: #e5e7eb;
-  border-color: #6366f1;
-  color: #6366f1;
+  background: transparent;
+  border-color: transparent;
+  color: var(--color-primary, #0071e3);
 }
 
 .card-title {
+  flex: 1;
+  text-align: center;
   font-weight: 700;
-  margin-right: auto;
 }
 .close-btn {
   border: none;
@@ -504,115 +501,97 @@ export default {
   font-weight: 700;
   margin-bottom: 12px;
 }
-.card-body {
-  padding: 20px;
-  overflow-y: auto;
-}
-.sidebar-footer-fixed {
-  padding: 16px;
-  border-top: 1px solid #eee;
-}
 .download-btn {
   width: 100%;
   padding: 12px;
-  background: #6366f1;
+  background: var(--color-primary, #0071e3);
   color: #fff;
-  border-radius: 10px;
+  border-radius: 3px;
   border: none;
   cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  transition: background 0.15s;
 }
 
-/* PREVIEW */
-.preview-card-wrap {
-  flex: 1;
-  background: #fff;
-  border-radius: 16px;
-  display: flex;
-  flex-direction: column;
-}
-.preview-header {
-  padding: 16px 20px;
-  display: flex;
-  justify-content: space-between;
-}
-.preview-body-wrap {
-  flex: 1;
-  display: flex;
-  justify-content: center;
-}
-.preview-canvas {
-  background: #fff;
-  margin: 0 auto;
+.download-btn:hover {
+  background: var(--color-primary-hover, #0077ed);
 }
 
-.preview-card-wrap {
-  transition: flex var(--template-layout-duration, 0.35s) var(--template-layout-ease, cubic-bezier(0.4, 0, 0.2, 1));
-}
 
-.preview-card-wrap.expanded {
-  flex: 1 1 100%;
-}
 
 .show-sidebar-btn {
   position: fixed;
-  top: 50px;
+  top: 72px;
   padding: 6px 12px;
   font-size: 13px;
   font-weight: 600;
-  border-radius: 8px;
-  border: 1px solid #6366f1;
+  border-radius: 3px;
+  border: 1px solid var(--color-primary, #0071e3);
   background: #fff;
-  color: #6366f1;
+  color: var(--color-primary, #0071e3);
   cursor: pointer;
 }
 
 .card-body {
   flex: 1;
   overflow-y: auto;
-  padding-bottom: 24px;
-  scrollbar-width: none;
-  -ms-overflow-style: none;
+  padding: 16px 16px 24px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-border) transparent;
 }
 .card-body::-webkit-scrollbar {
-  width: 0;
-  height: 0;
+  width: 4px;
+}
+.card-body::-webkit-scrollbar-track {
+  background: transparent;
+}
+.card-body::-webkit-scrollbar-thumb {
+  background: var(--color-border);
+  border-radius: 2px;
+}
+.card-body::-webkit-scrollbar-thumb:hover {
+  background: var(--color-border-hover);
 }
 
 .sidebar-footer-fixed {
   margin-top: auto;
-  background: #fff;
+  padding: 16px;
+  border-top: 1px solid var(--color-border);
+  background: var(--color-bg);
 }
 
 /* Template Select Button */
 .template-select-btn {
   width: 100%;
-  padding: 12px 16px;
+  padding: 10px 14px;
   margin-bottom: 16px;
   display: flex;
   align-items: center;
   gap: 10px;
-  background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
-  border: none;
-  border-radius: 10px;
-  color: #fff;
-  font-size: 14px;
-  font-weight: 600;
+  background: rgb(0 0 0 / 4%);
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  color: var(--color-text-secondary);
+  font-size: 13px;
+  font-weight: 500;
   cursor: pointer;
-  transition: all 0.2s;
-  box-shadow: 0 2px 8px rgba(99, 102, 241, 0.25);
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
 }
 
 .template-select-btn:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.35);
+  background: rgb(0 0 0 / 7%);
+  border-color: var(--color-border-hover);
+  color: var(--color-text);
 }
 
 .template-select-btn:active {
-  transform: translateY(0);
+  background: rgb(0 0 0 / 10%);
 }
 
 .template-select-btn .btn-icon {
-  font-size: 18px;
+  flex-shrink: 0;
+  color: var(--color-text-tertiary);
 }
 
 .template-select-btn .btn-text {
@@ -620,12 +599,14 @@ export default {
   text-align: left;
 }
 
-.template-select-btn svg {
-  opacity: 0.8;
-  transition: transform 0.2s;
+.template-select-btn > svg:last-child {
+  flex-shrink: 0;
+  opacity: 0.45;
+  transition: transform 0.15s;
 }
 
-.template-select-btn:hover svg {
+.template-select-btn:hover > svg:last-child {
   transform: translateY(2px);
+  opacity: 0.65;
 }
 </style>

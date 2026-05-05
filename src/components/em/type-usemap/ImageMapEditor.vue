@@ -19,10 +19,11 @@
     <hr class="vendor-divider" />
 
     <!-- 행(Row) 목록 -->
-    <div 
-      v-for="(row, rowIndex) in localRows" 
+    <div
+      v-for="(row, rowIndex) in localRows"
       :key="row.id"
       :ref="`row-${row.id}`"
+      v-show="selectedRowIndex === null || selectedRowIndex === rowIndex"
       class="card mb-4"
       :class="{ 'card-active': activeRowId === row.id }"
       @mouseenter="setActiveRow(row.id)"
@@ -313,6 +314,10 @@ export default {
     companyType: {
       type: String,
       default: 'normal'
+    },
+    selectedRowIndex: {
+      type: Number,
+      default: null
     }
   },
   data() {
@@ -797,23 +802,41 @@ export default {
 }
 
 .card-active {
-  background: #f0f4ff;
-  outline: 2px solid #6366f1;
-  outline-offset: 1px;
-  animation: cardPulse 1.5s ease-in-out infinite;
+  position: relative;
+  background: var(--color-primary-light);
+  outline: none;
   cursor: pointer;
 }
-
-@keyframes cardPulse {
-  0%, 100% {
-    outline-color: #6366f1;
-    box-shadow: 0 2px 8px rgba(99, 102, 241, 0.3);
-  }
-  50% {
-    outline-color: #818cf8;
-    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.5);
-  }
+.card-active::before {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  padding: 2px;
+  background: conic-gradient(
+    from 0deg,
+    transparent 0%,
+    transparent 68%,
+    rgba(125, 211, 252, 0.4) 78%,
+    #0a84ff 87%,
+    rgba(125, 211, 252, 0.4) 96%,
+    transparent 100%
+  );
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  /* animation: spinBorderLight 2s linear infinite; */
+  pointer-events: none;
+  z-index: 1;
 }
+
+/* @keyframes spinBorderLight {
+  to { transform: rotate(360deg); }
+} */
 
 .card-nested {
   background: var(--color-bg, #fff);
@@ -826,8 +849,8 @@ export default {
 
 @keyframes flashPulse {
   0%, 100% {
-    border-color: var(--color-primary, #5568f8);
-    box-shadow: 0 0 0 3px rgba(85, 104, 248, 0.1);
+    border-color: var(--color-primary, #0071e3);
+    box-shadow: 0 0 0 3px rgba(0, 113, 227, 0.1);
   }
   50% {
     border-color: #f59e0b;
@@ -946,9 +969,4 @@ export default {
   box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.2);
 } */
 
-.vendor-divider {
-  border: none;
-  border-top: 2px solid #e5e7eb;
-  margin: 20px 0;
-}
 </style>

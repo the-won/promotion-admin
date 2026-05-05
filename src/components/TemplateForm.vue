@@ -1,6 +1,5 @@
 <template>
   <div class="template-form">
-    <h4 class="form-title">템플릿 설정</h4>
 
     <!-- Device Toggle (hotspot-group 타입이 있을 때만 표시) -->
     <div v-if="hasHotspotGroup" class="device-toggle-section">
@@ -25,14 +24,53 @@
       @update:banners="localData.banners = $event"
     />
 
-    <div class="form-fields" :class="{ expanded: sidebarExpanded }">
-      <div 
-        v-for="(config, key) in templateConfig" 
-        :key="key" 
-        class="form-group"
-        :class="{ 'full-width': isFullWidthField(config.type) }"
-        :data-privacy-form-field="key"
-      >
+    <!-- 세로 네비게이션 + 필드 래퍼 -->
+    <div class="form-layout" :class="{ 'layout-expanded': sidebarExpanded && tabs.length > 1 }">
+
+      <nav v-if="tabs.length > 1" class="form-nav" role="navigation" aria-label="설정 섹션">
+        <button
+          v-for="tab in tabs"
+          :key="tab"
+          type="button"
+          class="form-nav-item"
+          :class="{ active: (activeTab || tabs[0]) === tab }"
+          @click="activeTab = tab"
+          :aria-current="(activeTab || tabs[0]) === tab ? 'page' : undefined"
+        >
+          <span class="nav-icon" aria-hidden="true" v-html="tabIcon(tab)"></span>
+          <span class="nav-label">{{ tab }}</span>
+        </button>
+
+        <!-- 서브-nav: 이미지 / 이미지맵 탭에서만 표시 -->
+        <template v-if="currentTabSubItems">
+          <div class="form-nav-sub-header">목록</div>
+          <button
+            v-for="(label, idx) in currentTabSubItems.items"
+            :key="`sub-${idx}`"
+            type="button"
+            class="form-nav-sub-item"
+            :class="{ active: activeSubItem === idx }"
+            @click="activeSubItem = activeSubItem === idx ? null : idx"
+          >
+            <span class="sub-nav-bullet" aria-hidden="true">·</span>
+            {{ label }}
+          </button>
+        </template>
+      </nav>
+
+      <div class="form-content">
+        <div class="form-fields" :class="{ expanded: sidebarExpanded }">
+      <template v-for="(config, key) in filteredFields">
+        <div v-if="config.type === 'divider'" :key="`d-${key}`" class="form-section-divider">
+          <span>{{ config.label }}</span>
+        </div>
+        <div
+          v-else
+          :key="key"
+          class="form-group"
+          :class="{ 'full-width': isFullWidthField(config.type) }"
+          :data-privacy-form-field="key"
+        >
         <label v-if="!isHideLabelField(config.type)" class="form-label">{{ config.label }}</label>
         
         <!-- Text, URL, Email, Number 등 -->
@@ -163,6 +201,7 @@
           v-model="localData[key]"
           :sidebarExpanded="sidebarExpanded"
           :companyType.sync="localData.companyType"
+          :selectedGroupIndex="currentTabSubItems && currentTabSubItems.type === 'image-link' ? activeSubItem : null"
           @select-image="handleSelectImage"
           @active-image-change="handleActiveImageChange"
         />
@@ -189,6 +228,7 @@
           :selectedRowInfo="selectedRowInfo"
           :visibleScrollPosition="visibleScrollPosition"
           :sidebarExpanded="sidebarExpanded"
+          :selectedRowIndex="currentTabSubItems && currentTabSubItems.type === 'image-map' ? activeSubItem : null"
           @update:rows="localData.imageMapRows = $event"
           @update:areas="localData.imageMapAreas = $event"
           @update:companyType="localData.companyType = $event"
@@ -207,6 +247,7 @@
           :selectedRowInfo="selectedRowInfo"
           :visibleScrollPosition="visibleScrollPosition"
           :sidebarExpanded="sidebarExpanded"
+          :selectedRowIndex="currentTabSubItems && currentTabSubItems.type === 'image-map' ? activeSubItem : null"
           @update:rows="localData.imageMapRows = $event"
           @update:areas="localData.imageMapAreas = $event"
           @update:companyType="localData.companyType = $event"
@@ -235,6 +276,9 @@
           :privacy-preview-focus="privacyPreviewFocus"
           @active-section="$emit('active-section-index', $event)"
         />
+        </div>
+      </template>
+        </div>
       </div>
     </div>
   </div>
@@ -282,24 +326,58 @@ export default {
     'privacyPreviewFocus'
   ],
   data() {
-    return { 
+    return {
       localData: {},
       currentDevice: 'web',
+      activeTab: null,
+      activeSubItem: null,
       selectedImageInfo: { groupId: null, imageId: null },
       selectedRowInfo: { rowId: null, rowIndex: null },
       selectedHotspotInfo: { hotspotId: null, groupIndex: null }
     }
   },
   computed: {
+    tabs() {
+      const seen = new Set()
+      return Object.values(this.templateConfig || {})
+        .map(f => f.tab || '기본')
+        .filter(t => !seen.has(t) && seen.add(t))
+    },
+    filteredFields() {
+      if (this.tabs.length <= 1) return this.templateConfig
+      const current = this.activeTab || this.tabs[0]
+      const result = {}
+      Object.entries(this.templateConfig || {}).forEach(([key, config]) => {
+        if ((config.tab || '기본') === current) result[key] = config
+      })
+      return result
+    },
     hasHotspotGroup() {
       if (!this.templateConfig) return false
       return Object.values(this.templateConfig).some(
         config => config.type === 'hotspot-group' || config.type === 'hotspot-group-list'
       )
+    },
+    currentTabSubItems() {
+      const fields = Object.entries(this.filteredFields || {})
+      for (const [key, config] of fields) {
+        if (config.type === 'image-link-group') {
+          const groups = this.localData[key] || []
+          return { type: 'image-link', key, items: groups.map((_, i) => `이미지 링크 그룹${i + 1}`) }
+        }
+        if (['image-map-rows', 'image-map-rows-2'].includes(config.type)) {
+          const rows = this.localData[key] || []
+          return { type: 'image-map', key, items: rows.map((_, i) => `이미지행 목록${i + 1}`) }
+        }
+      }
+      return null
     }
   },
   created() {
     this.localData = { ...this.value }
+    this.$nextTick(() => {
+      if (this.currentTabSubItems) this.activeSubItem = 0
+    })
   },
   watch: {
     value: {
@@ -317,6 +395,33 @@ export default {
         }
       },
       deep: true
+    },
+    template() {
+      this.activeTab = null
+      this.activeSubItem = null
+    },
+    activeTab() {
+      this.activeSubItem = this.currentTabSubItems ? 0 : null
+    },
+    'localData.imageMapRows'(newRows, oldRows) {
+      if (!this.currentTabSubItems || this.currentTabSubItems.type !== 'image-map') return
+      const newLen = (newRows || []).length
+      const oldLen = (oldRows || []).length
+      if (newLen > oldLen) {
+        this.activeSubItem = newLen - 1
+      } else if (this.activeSubItem !== null && this.activeSubItem >= newLen) {
+        this.activeSubItem = Math.max(0, newLen - 1)
+      }
+    },
+    'localData.imageLinkGroups'(newGroups, oldGroups) {
+      if (!this.currentTabSubItems || this.currentTabSubItems.type !== 'image-link') return
+      const newLen = (newGroups || []).length
+      const oldLen = (oldGroups || []).length
+      if (newLen > oldLen) {
+        this.activeSubItem = newLen - 1
+      } else if (this.activeSubItem !== null && this.activeSubItem >= newLen) {
+        this.activeSubItem = Math.max(0, newLen - 1)
+      }
     },
     currentDevice(newVal) {
       this.$emit('device-change', newVal)
@@ -342,15 +447,31 @@ export default {
       wrap.classList.add('privacy-form-field-flash')
       setTimeout(() => wrap.classList.remove('privacy-form-field-flash'), 1600)
     },
+    tabIcon(tab) {
+      const icons = {
+        '기본': '<svg width="14" height="14" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="4.5" r="1.5" stroke="currentColor" stroke-width="1.4"/><line x1="10" y1="4.5" x2="15" y2="4.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><line x1="1" y1="4.5" x2="6" y2="4.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><circle cx="5" cy="11.5" r="1.5" stroke="currentColor" stroke-width="1.4"/><line x1="7" y1="11.5" x2="15" y2="11.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><line x1="1" y1="11.5" x2="3" y2="11.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>',
+        '콘텐츠': '<svg width="14" height="14" viewBox="0 0 16 16" fill="none"><line x1="1.5" y1="3.5" x2="14.5" y2="3.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><line x1="1.5" y1="7" x2="10" y2="7" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><line x1="1.5" y1="10.5" x2="14.5" y2="10.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><line x1="1.5" y1="14" x2="7" y2="14" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>',
+        '스타일': '<svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M2 12.5C2 12.5 4 10 8 10C12 10 14 12.5 14 12.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><path d="M8 2L9.5 6H14L10.5 8.5L12 13L8 10.5L4 13L5.5 8.5L2 6H6.5L8 2Z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>',
+        '이미지': '<svg width="14" height="14" viewBox="0 0 16 16" fill="none"><rect x="1.5" y="1.5" width="13" height="13" rx="1.5" stroke="currentColor" stroke-width="1.4"/><circle cx="5.5" cy="5.5" r="1.5" stroke="currentColor" stroke-width="1.3"/><path d="M1.5 10.5L5 7L7.5 9.5L10 7.5L14.5 12" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+        '상품': '<svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M1.5 1.5H3L4.5 9.5H11.5L13 4H5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><circle cx="5.5" cy="12.5" r="1.2" stroke="currentColor" stroke-width="1.3"/><circle cx="10.5" cy="12.5" r="1.2" stroke="currentColor" stroke-width="1.3"/></svg>',
+        '배너': '<svg width="14" height="14" viewBox="0 0 16 16" fill="none"><rect x="1.5" y="2.5" width="13" height="4" rx="1" stroke="currentColor" stroke-width="1.4"/><rect x="1.5" y="9.5" width="13" height="4" rx="1" stroke="currentColor" stroke-width="1.4"/></svg>',
+        '이미지맵': '<svg width="14" height="14" viewBox="0 0 16 16" fill="none"><rect x="1.5" y="1.5" width="13" height="13" rx="1.5" stroke="currentColor" stroke-width="1.4"/><path d="M5 7L7.5 5L10.5 8L13 6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/><circle cx="10" cy="10.5" r="2" stroke="currentColor" stroke-width="1.3"/><path d="M11.4 11.9L13.5 14" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>',
+      }
+      return icons[tab] || '<svg width="14" height="14" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="5.5" stroke="currentColor" stroke-width="1.4"/></svg>'
+    },
     isFullWidthField(type) {
       const fullWidthTypes = [
-        'hotspot-group', 
+        'hotspot-group',
         'hotspot-group-list',
-        'image-link-group', 
-        'image-map-rows', 
-        'textarea', 
+        'image-link-group',
+        'image-map-rows',
+        'image-map-rows-2',
+        'image-map-areas',
+        'textarea',
         'product-group-list',
         'banner-list',
+        'hotdeal-row1-list',
+        'hotdeal-row3-list',
         'privacy-section-list'
       ]
       return fullWidthTypes.includes(type)
@@ -418,13 +539,126 @@ export default {
   width: 100%;
 }
 
-.form-title {
-  margin: 0 0 20px 0;
-  font-size: 12px;
+/* 세로 nav 레이아웃 */
+.form-layout {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.form-layout.layout-expanded {
+  flex-direction: row;
+  align-items: flex-start;
+}
+
+/* 세로 nav */
+.form-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding-bottom: 12px;
+  margin-bottom: 14px;
+  border-bottom: 1px solid var(--color-border, #d2d2d7);
+  flex-shrink: 0;
+}
+
+.form-layout.layout-expanded .form-nav {
+  width: 136px;
+  padding-bottom: 0;
+  padding-right: 10px;
+  margin-bottom: 0;
+  margin-right: 14px;
+  border-bottom: none;
+  border-right: 1px solid var(--color-border, #d2d2d7);
+  position: sticky;
+  top: 0;
+}
+
+/* nav 아이템 */
+.form-nav-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 7px 10px;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--color-text-secondary, #6e6e73);
+  font-size: 12.5px;
+  font-weight: 500;
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+
+.form-nav-item:hover {
+  background: var(--color-bg-tertiary, #e8e8ed);
+  color: var(--color-text, #1d1d1f);
+}
+
+.form-nav-item.active {
+  background: var(--color-primary-light, rgba(0, 113, 227, 0.08));
+  color: var(--color-primary, #0071e3);
   font-weight: 600;
-  color: var(--color-text-secondary, #64748b);
+}
+
+.nav-icon {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  line-height: 0;
+}
+
+/* 서브-nav */
+.form-nav-sub-header {
+  padding: 10px 10px 4px;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  color: var(--color-text-tertiary, #888);
+  opacity: 0.7;
+}
+
+.form-nav-sub-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+  padding: 6px 10px 6px 18px;
+  border: none;
+  border-radius: 5px;
+  background: transparent;
+  color: var(--color-text-secondary, #6e6e73);
+  font-size: 12px;
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.12s, color 0.12s;
+}
+
+.form-nav-sub-item:hover {
+  background: var(--color-bg-tertiary, #e8e8ed);
+  color: var(--color-text, #1d1d1f);
+}
+
+.form-nav-sub-item.active {
+  background: var(--color-primary-light, rgba(0, 113, 227, 0.08));
+  color: var(--color-primary, #0071e3);
+  font-weight: 600;
+}
+
+.sub-nav-bullet {
+  opacity: 0.4;
+  font-size: 14px;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+/* fields 영역 */
+.form-content {
+  flex: 1;
+  min-width: 0;
 }
 
 .device-toggle-section {
@@ -434,31 +668,54 @@ export default {
 .form-fields {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 20px;
 }
 
 .form-fields.expanded {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 14px 16px;
+  gap: 16px 20px;
 }
 
 .form-fields.expanded .form-group.full-width {
   grid-column: 1 / -1;
 }
 
+.form-section-divider {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 8px 0 4px;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-text-tertiary, #717175);
+  grid-column: 1 / -1;
+}
+
+.form-section-divider::before,
+.form-section-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--color-border, #d2d2d7);
+  opacity: 0.6;
+}
+
 /* Form Group */
 .form-group {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 8px;
   margin-bottom: 0;
 }
 
 .form-label {
-  font-size: 11px;
-  font-weight: 500;
-  color: var(--color-text-secondary, #64748b);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-text-secondary, #6e6e73);
+  margin-bottom: 4px;
 }
 
 /* Color Picker */

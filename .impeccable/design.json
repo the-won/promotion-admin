@@ -1,0 +1,217 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-05-05T00:00:00.000Z",
+  "title": "Design System: Promotion Admin",
+  "extensions": {
+    "colorMeta": {
+      "instrument-blue": {
+        "role": "primary",
+        "displayName": "Instrument Blue",
+        "canonical": "oklch(54% 0.22 260)",
+        "tonalRamp": ["#001833", "#002d66", "#004399", "#0058cc", "#0071e3", "#3d9aff", "#80bfff", "#c2e0ff"]
+      },
+      "instrument-blue-hover": {
+        "role": "primary",
+        "displayName": "Instrument Blue Hover",
+        "canonical": "oklch(55% 0.22 260)",
+        "tonalRamp": ["#001833", "#002d66", "#004399", "#005ad0", "#0077ed", "#42a0ff", "#85c5ff", "#c5e3ff"]
+      },
+      "instrument-blue-faint": {
+        "role": "primary",
+        "displayName": "Instrument Blue Faint",
+        "canonical": "oklch(95% 0.025 260)",
+        "tonalRamp": ["#dbe8fb", "#e1ecfc", "#e8f0fc", "#eef4fd", "#f3f7fe", "#f7faff", "#fafcff", "#ffffff"]
+      },
+      "graphite-ink": {
+        "role": "neutral",
+        "displayName": "Graphite Ink",
+        "canonical": "oklch(14% 0.002 250)",
+        "tonalRamp": ["#050505", "#0d0d0e", "#1d1d1f", "#3a3a3c", "#636366", "#8e8e93", "#c7c7cc", "#f2f2f7"]
+      },
+      "mid-graphite": {
+        "role": "neutral",
+        "displayName": "Mid Graphite",
+        "canonical": "oklch(47% 0.005 260)",
+        "tonalRamp": ["#1a1a1b", "#2c2c2e", "#48484a", "#6e6e73", "#8e8e93", "#aeaeb2", "#d1d1d6", "#f2f2f7"]
+      },
+      "hairline-silver": {
+        "role": "neutral",
+        "displayName": "Hairline Silver",
+        "canonical": "oklch(84% 0.004 260)",
+        "tonalRamp": ["#8e8e93", "#aeaeb2", "#c7c7cc", "#d2d2d7", "#dcdce1", "#e5e5ea", "#ebebf0", "#f2f2f7"]
+      },
+      "studio-canvas": {
+        "role": "neutral",
+        "displayName": "Studio Canvas",
+        "canonical": "oklch(97% 0.003 260)",
+        "tonalRamp": ["#c7c7cc", "#d1d1d6", "#dcdce1", "#e8e8ed", "#f2f2f7", "#f5f5f7", "#f9f9fb", "#ffffff"]
+      },
+      "deep-navy": {
+        "role": "neutral",
+        "displayName": "Deep Navy",
+        "canonical": "oklch(10% 0.025 265)",
+        "tonalRamp": ["#050608", "#0e111c", "#15182c", "#1e2444", "#2a335e", "#3d4f8f", "#6b7fcf", "#a8b4e8"]
+      },
+      "blueprint-indigo": {
+        "role": "secondary",
+        "displayName": "Blueprint Indigo",
+        "canonical": "oklch(50% 0.18 270)",
+        "tonalRamp": ["#0f1040", "#1e2080", "#2e30b8", "#4547c6", "#5c61d4", "#7d82e0", "#a8abec", "#d4d5f8"]
+      },
+      "midnight-canvas": {
+        "role": "neutral",
+        "displayName": "Midnight Canvas",
+        "canonical": "oklch(13% 0.003 260)",
+        "tonalRamp": ["#050505", "#0d0d0f", "#1c1c1e", "#2c2c2e", "#3a3a3c", "#636366", "#aeaeb2", "#f2f2f7"]
+      },
+      "display-blue": {
+        "role": "primary",
+        "displayName": "Display Blue",
+        "canonical": "oklch(58% 0.22 258)",
+        "tonalRamp": ["#002040", "#003d80", "#0055bb", "#006ee0", "#0a84ff", "#4aa9ff", "#85c9ff", "#c2e5ff"]
+      },
+      "success": {
+        "role": "semantic",
+        "displayName": "Success Green",
+        "canonical": "oklch(50% 0.15 162)",
+        "tonalRamp": ["#052e16", "#064e22", "#065f2c", "#047857", "#059669", "#10b981", "#6ee7b7", "#d1fae5"]
+      },
+      "danger": {
+        "role": "semantic",
+        "displayName": "Danger Red",
+        "canonical": "oklch(50% 0.22 27)",
+        "tonalRamp": ["#450a0a", "#7f1d1d", "#991b1b", "#b91c1c", "#dc2626", "#ef4444", "#fca5a5", "#fee2e2"]
+      }
+    },
+    "shadows": [
+      {
+        "name": "hero-panel",
+        "value": "0 18px 44px rgba(0,0,0,0.14)",
+        "inset": "0 1px 0 rgba(255,255,255,0.10) inset",
+        "purpose": "히어로 패널 전용. 다크 히어로 존에서만 사용."
+      },
+      {
+        "name": "dark-sidebar-edge",
+        "value": "4px 0 24px rgba(0,0,0,0.30)",
+        "purpose": "다크모드 사이드바 우측 엣지. 미리보기 영역과 분리."
+      },
+      {
+        "name": "nav-active",
+        "value": "0 1px 3px rgba(0,0,0,0.10)",
+        "purpose": "헤더 액티브 탭. 엘리베이션이 아닌 선택 신호."
+      }
+    ],
+    "motion": [
+      {
+        "name": "ease-standard",
+        "value": "cubic-bezier(0.4, 0, 0.2, 1)",
+        "duration": "0.2s",
+        "purpose": "모든 상태 전환의 기본 이징."
+      },
+      {
+        "name": "ease-layout",
+        "value": "cubic-bezier(0.4, 0, 0.2, 1)",
+        "duration": "0.35s",
+        "purpose": "사이드바 열기/닫기, 레이아웃 전환."
+      },
+      {
+        "name": "ease-fast",
+        "value": "ease",
+        "duration": "0.15s",
+        "purpose": "보더 색상 전환, 빠른 피드백."
+      }
+    ],
+    "breakpoints": [
+      { "name": "mobile", "value": "768px", "note": "헤더 네비게이션 숨김 기준." }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "주요 동작. 다운로드, 확인 등 화면당 최대 1개.",
+      "html": "<button class=\"ds-btn-primary\">HTML 다운로드</button>",
+      "css": ".ds-btn-primary { display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 10px 18px; font-family: Pretendard, -apple-system, BlinkMacSystemFont, system-ui, sans-serif; font-size: 13px; font-weight: 500; line-height: 1; color: #ffffff; background: #0071e3; border: none; border-radius: 3px; cursor: pointer; transition: background 0.15s ease; white-space: nowrap; } .ds-btn-primary:hover { background: #0077ed; } .ds-btn-primary:focus-visible { outline: 2px solid #0071e3; outline-offset: 2px; } .ds-btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }"
+    },
+    {
+      "name": "Ghost Button",
+      "kind": "button",
+      "refersTo": "button-ghost",
+      "description": "보조 동작. 취소, 토글. Primary와 항상 함께 쓰이지 않아도 된다.",
+      "html": "<button class=\"ds-btn-ghost\">취소</button>",
+      "css": ".ds-btn-ghost { display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 10px 18px; font-family: Pretendard, -apple-system, BlinkMacSystemFont, system-ui, sans-serif; font-size: 13px; font-weight: 500; line-height: 1; color: #6e6e73; background: transparent; border: 1px solid #d2d2d7; border-radius: 3px; cursor: pointer; transition: background 0.15s ease, border-color 0.15s ease; } .ds-btn-ghost:hover { background: #f5f5f7; border-color: #a1a1a6; } .ds-btn-ghost:focus-visible { outline: 2px solid #0071e3; outline-offset: 2px; }"
+    },
+    {
+      "name": "Download Button",
+      "kind": "button",
+      "refersTo": "button-download",
+      "description": "사이드바 고정 푸터의 시그니처 CTA. 전체 너비, 높은 패딩.",
+      "html": "<button class=\"ds-btn-download\">HTML 다운로드</button>",
+      "css": ".ds-btn-download { display: flex; align-items: center; justify-content: center; width: 100%; padding: 14px 20px; font-family: Pretendard, -apple-system, BlinkMacSystemFont, system-ui, sans-serif; font-size: 14px; font-weight: 500; line-height: 1.2; color: #ffffff; background: #0071e3; border: none; border-radius: 3px; cursor: pointer; transition: filter 0.15s ease; } .ds-btn-download:hover { filter: brightness(1.06); } .ds-btn-download:focus-visible { outline: 2px solid #0071e3; outline-offset: 2px; }"
+    },
+    {
+      "name": "Text Input",
+      "kind": "input",
+      "refersTo": "input-default",
+      "description": "하단선 전용 인풋. 이 시스템의 가장 결정적인 폼 선택.",
+      "html": "<div class=\"ds-field\"><label class=\"ds-label\">이미지 URL</label><input class=\"ds-input\" type=\"text\" placeholder=\"https://\" /></div>",
+      "css": ".ds-field { display: flex; flex-direction: column; } .ds-label { display: block; margin-bottom: 6px; font-family: Pretendard, -apple-system, sans-serif; font-size: 12px; font-weight: 500; color: #6e6e73; line-height: 1.47; } .ds-input { width: 100%; height: 36px; padding: 7px 0; font-family: Pretendard, -apple-system, sans-serif; font-size: 12px; line-height: 1.47; color: #1d1d1f; background: transparent; border: none; border-bottom: 1px solid #d2d2d7; border-radius: 0; outline: none; box-sizing: border-box; transition: border-color 0.15s ease; } .ds-input::placeholder { color: #aeaeb2; } .ds-input:hover { border-bottom-color: #a1a1a6; } .ds-input:focus { border-bottom-color: #0071e3; }"
+    },
+    {
+      "name": "Section Label",
+      "kind": "custom",
+      "description": "사이드바 내부 섹션 서브헤더. uppercase + 넓은 레터 스페이싱.",
+      "html": "<h4 class=\"ds-section-label\">기본 설정</h4>",
+      "css": ".ds-section-label { margin: 0; padding: 16px 0 6px; font-family: Pretendard, -apple-system, sans-serif; font-size: 11px; font-weight: 600; letter-spacing: 0.07em; text-transform: uppercase; color: #6e6e73; line-height: 1.4; }"
+    },
+    {
+      "name": "Template Tab (Hero)",
+      "kind": "chip",
+      "description": "다크 히어로 위의 템플릿 선택 탭. 라이트 필 + 인디고 액티브.",
+      "html": "<div class=\"ds-tab-group\"><button class=\"ds-hero-tab ds-hero-tab--active\">기본 이벤트</button><button class=\"ds-hero-tab\">이미지맵</button></div>",
+      "css": ".ds-tab-group { display: flex; gap: 8px; flex-wrap: wrap; } .ds-hero-tab { padding: 9px 16px; border-radius: 10px; background: rgba(255,255,255,0.93); border: 1px solid rgba(255,255,255,0.28); cursor: pointer; font-family: Pretendard, -apple-system, sans-serif; font-weight: 600; font-size: 13px; color: #334155; transition: border-color 0.15s ease, color 0.15s ease, box-shadow 0.15s ease; } .ds-hero-tab:hover { border-color: rgba(92,97,212,0.38); color: #373c8f; } .ds-hero-tab--active { border-color: #5c61d4; color: #373c8f; box-shadow: 0 0 0 2px rgba(92,97,212,0.14); } .ds-hero-tab:focus-visible { outline: 2px solid #5c61d4; outline-offset: 2px; }"
+    },
+    {
+      "name": "Nav Link",
+      "kind": "nav",
+      "description": "헤더 플로팅 필 네비게이션 링크.",
+      "html": "<nav class=\"ds-nav\"><a class=\"ds-nav-link ds-nav-link--active\" href=\"#\">EM Templates</a><a class=\"ds-nav-link\" href=\"#\">Event Templates</a></nav>",
+      "css": ".ds-nav { display: flex; align-items: center; gap: 8px; background: rgba(243,244,246,0.70); padding: 4px; border-radius: 10px; backdrop-filter: blur(10px); } .ds-nav-link { display: flex; align-items: center; padding: 8px 16px; border-radius: 8px; font-family: Pretendard, -apple-system, sans-serif; font-size: 14px; font-weight: 500; color: #6b7280; text-decoration: none; transition: color 0.2s, background 0.2s; } .ds-nav-link:hover { color: #1f2937; background: rgba(99,102,241,0.08); } .ds-nav-link--active { background: rgba(255,255,255,0.95); color: #1f2937; box-shadow: 0 1px 3px rgba(0,0,0,0.10); }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Spare Studio",
+    "overview": "이 시스템은 설득을 위한 것이 아니라 작업을 위한 것이다. 모든 표면은 이메일 HTML을 만드는 일을 위해 존재하고, 그 외에는 아무것도 하지 않는다. 장식이 없어서 깔끔한 게 아니라, 있어야 할 것이 정확히 있기 때문에 깔끔하다.\n\n레이아웃은 두 개의 존으로 나뉜다. 상단 히어로(Dark Navy)는 도구의 아이덴티티 존이고, 사이드바와 미리보기 영역(Studio Canvas)은 실제 작업 존이다. 이 두 존은 서로 섞이지 않는다.\n\n이 시스템이 명시적으로 거부하는 것: 폼 요소가 쌓여 어디부터 봐야 할지 모르는 레이아웃, 한 화면에 옵션이 쏟아지는 무거운 엔터프라이즈 UI, 도구가 결과물보다 눈에 띄는 어드민.",
+    "keyCharacteristics": [
+      "히어로(다크 네이비) + 작업 존(화이트/캔버스) 이중 레지스터",
+      "폼 우선: 모든 간격과 계층 결정은 폼 가독성 기준",
+      "작업 존은 완전히 평평하다 — 섀도는 히어로 패널에만",
+      "Apple-영향 언어: 헤어라인 보더, 하단선 인풋, 정밀한 타입 스케일",
+      "Instrument Blue는 인터랙티브 요소에만 사용. 출현 빈도가 신뢰를 만든다"
+    ],
+    "rules": [
+      { "name": "The One Voice Rule", "body": "Instrument Blue가 유일한 인터랙티브 색상이다. 새로운 액센트 색상을 추가하지 않는다.", "section": "colors" },
+      { "name": "The Scale Rule", "body": "타입 사이즈는 11–12–13–16 네 단계다. 중간 크기를 추가하지 않는다.", "section": "typography" },
+      { "name": "The Flat-by-Default Rule", "body": "라이트 작업 존의 카드, 인풋, 폼 그룹에 box-shadow 없음. 섀도는 히어로 패널, 다크 사이드바 엣지, 네비게이션 액티브 링크 세 곳에만.", "section": "elevation" }
+    ],
+    "dos": [
+      "모든 폼 필드에 하단선 전용 인풋 사용 (border-bottom: 1px solid #d2d2d7)",
+      "라이트 작업 존의 모든 표면은 평평하고 섀도 없이 유지",
+      "Instrument Blue는 인터랙티브 상태 전용으로만 사용",
+      "uppercase + 0.07em 레터 스페이싱은 사이드바 내 11px 섹션 서브헤더에만",
+      "backdrop-filter: blur()는 히어로 패널과 다크 사이드바 푸터 두 곳에만",
+      "버튼 3px, 카드/인풋 0px 라디우스의 의도적 불연속성 유지"
+    ],
+    "donts": [
+      "폼 레이아웃을 숨 쉴 공간 없이 인풋만 쌓지 않는다",
+      "사용자가 어디 있는지 모르게 만드는 사이드바 구조 금지",
+      "라이트 작업 존의 카드/폼 그룹에 box-shadow 추가 금지",
+      "1px 초과 border-left/right를 컬러 액센트로 사용 금지",
+      "background-clip: text와 그레이디언트 조합 금지",
+      "두 번째 인터랙티브 색상 추가 금지",
+      "라이트 작업 존에 글래스모피즘 추가 금지",
+      "어떤 인터랙션에도 모달을 첫 번째 선택으로 쓰지 않는다"
+    ]
+  }
+}
