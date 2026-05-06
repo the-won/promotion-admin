@@ -440,21 +440,28 @@ export default {
 
 /* 핫스팟 하이라이트 */
 .highlight-hotspot {
-  outline: 3px solid #6366f1 !important;
+  outline: 3px solid #0071e3 !important;
   outline-offset: 2px;
-  box-shadow: 0 0 20px rgba(99, 102, 241, 0.8) !important;
-  animation: hotspotPulse 1.5s ease-in-out infinite;
   z-index: 100 !important;
 }
 
-@keyframes hotspotPulse {
-  0%, 100% {
-    outline-color: #6366f1;
-    box-shadow: 0 0 20px rgba(99, 102, 241, 0.8);
-  }
-  50% {
-    outline-color: #818cf8;
-    box-shadow: 0 0 30px rgba(99, 102, 241, 1);
-  }
+.highlight-hotspot::after {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  border: 2px solid rgba(0, 113, 227, 0.65);
+  border-radius: 2px;
+  pointer-events: none;
+  animation: flashRing 750ms cubic-bezier(0.22, 1, 0.36, 1) 1 forwards;
+}
+
+@keyframes flashRing {
+  0%   { opacity: 1; transform: scale(1); }
+  30%  { opacity: 1; transform: scale(1.03); }
+  100% { opacity: 0; transform: scale(1.10); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .highlight-hotspot::after { animation: none; opacity: 0; }
 }
 </style>

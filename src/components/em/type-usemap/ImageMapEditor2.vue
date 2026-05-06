@@ -746,7 +746,7 @@ export default {
         el.scrollIntoView({ behavior: 'smooth', block: 'center' })
 
         this.flashingAreaId = areaId
-        setTimeout(() => { this.flashingAreaId = null }, 1500)
+        setTimeout(() => { this.flashingAreaId = null }, 780)
       })
     }
   }
@@ -803,19 +803,29 @@ export default {
 
 /* 프리뷰에서 클릭 시 깜빡임 효과 */
 .card-nested.flash-highlight {
-  animation: flashPulse 0.5s ease-in-out 3;
+  position: relative;
+  border-color: var(--color-primary, #5568f8);
+  box-shadow: 0 0 0 3px rgba(85, 104, 248, 0.15);
 }
 
-@keyframes flashPulse {
-  0%, 100% {
-    border-color: var(--color-primary, #5568f8);
-    box-shadow: 0 0 0 3px rgba(85, 104, 248, 0.1);
-  }
-  50% {
-    border-color: #f59e0b;
-    box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.3);
-    background: rgba(245, 158, 11, 0.08);
-  }
+.card-nested.flash-highlight::after {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  border: 2px solid rgba(85, 104, 248, 0.65);
+  border-radius: inherit;
+  pointer-events: none;
+  animation: flashRing 750ms cubic-bezier(0.22, 1, 0.36, 1) 1 forwards;
+}
+
+@keyframes flashRing {
+  0%   { opacity: 1; transform: scale(1); }
+  30%  { opacity: 1; transform: scale(1.03); }
+  100% { opacity: 0; transform: scale(1.10); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card-nested.flash-highlight::after { animation: none; opacity: 0; }
 }
 
 .card-header-sm {

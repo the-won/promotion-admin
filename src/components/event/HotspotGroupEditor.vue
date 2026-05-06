@@ -646,7 +646,7 @@ export default {
         if (!el) return
         el.scrollIntoView({ behavior: 'smooth', block: 'center' })
         this.flashingId = hotspotId
-        setTimeout(() => { this.flashingId = null }, 1500)
+        setTimeout(() => { this.flashingId = null }, 780)
       })
     }
   }
@@ -758,19 +758,29 @@ export default {
 }
 
 .card.flash-highlight {
-  animation: flashPulse 0.5s ease-in-out 3;
+  position: relative;
+  border-color: #0071e3;
+  box-shadow: 0 0 0 3px rgba(0, 113, 227, 0.15);
 }
 
-@keyframes flashPulse {
-  0%, 100% {
-    border-color: #0071e3;
-    box-shadow: 0 0 0 3px rgba(0, 113, 227, 0.1);
-  }
-  50% {
-    border-color: #f59e0b;
-    box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.3);
-    background: rgba(245, 158, 11, 0.08);
-  }
+.card.flash-highlight::after {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  border: 2px solid rgba(0, 113, 227, 0.65);
+  border-radius: inherit;
+  pointer-events: none;
+  animation: flashRing 750ms cubic-bezier(0.22, 1, 0.36, 1) 1 forwards;
+}
+
+@keyframes flashRing {
+  0%   { opacity: 1; transform: scale(1); }
+  30%  { opacity: 1; transform: scale(1.03); }
+  100% { opacity: 0; transform: scale(1.10); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card.flash-highlight::after { animation: none; opacity: 0; }
 }
 
 .btn-add-group {

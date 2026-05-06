@@ -30,21 +30,25 @@
             <tbody>
                <tr v-for="group in data.imageLinkGroups" :key="group.id">
                   <td align="center" :style="{ paddingBottom: '3px', paddingTop: '3px', paddingLeft: '3px', paddingRight: '3px' }">
-                    <a 
-                      :href="group.href" 
-                      :target="group.targetBlank ? '_blank' : '_self'" 
-                      rel="noopener noreferrer"
+                    <div
+                      class="image-group-wrapper"
+                      :class="{ 'group-selected': isGroupActive(group.id) }"
                     >
-                      <!-- 그룹 내의 모든 이미지 렌더링 -->
-                      <img 
-                        v-for="image in group.images" 
-                        :key="image.id"
-                        :ref="`image-${group.id}-${image.id}`"
-                        :src="image.url" 
-                        :alt="image.alt"
-                        :class="{ 'highlight-image': isImageActive(group.id, image.id) }"
-                      />
-                    </a>
+                      <a
+                        :href="group.href"
+                        :target="group.targetBlank ? '_blank' : '_self'"
+                        rel="noopener noreferrer"
+                      >
+                        <!-- 그룹 내의 모든 이미지 렌더링 -->
+                        <img
+                          v-for="image in group.images"
+                          :key="image.id"
+                          :ref="`image-${group.id}-${image.id}`"
+                          :src="image.url"
+                          :alt="image.alt"
+                        />
+                      </a>
+                    </div>
                   </td>
                 </tr>
             </tbody>
@@ -104,9 +108,13 @@ export default {
   
   methods: {
     isImageActive(groupId, imageId) {
-      return this.selectedImageInfo && 
-             this.selectedImageInfo.groupId === groupId && 
+      return this.selectedImageInfo &&
+             this.selectedImageInfo.groupId === groupId &&
              this.selectedImageInfo.imageId === imageId
+    },
+
+    isGroupActive(groupId) {
+      return this.selectedImageInfo && this.selectedImageInfo.groupId === groupId
     },
     
     scrollToImage(groupId, imageId) {
@@ -137,21 +145,28 @@ export default {
 </script>
 
 <style scoped>
-.highlight-image {
-  outline: 3px solid #6366f1;
-  outline-offset: 2px;
-  box-shadow: 0 0 12px rgba(99, 102, 241, 0.5);
-  animation: pulse 1.5s ease-in-out infinite;
+.image-group-wrapper {
+  position: relative;
+  display: inline-block;
 }
 
-@keyframes pulse {
-  0%, 100% {
-    outline-color: #6366f1;
-    box-shadow: 0 0 12px rgba(99, 102, 241, 0.5);
-  }
-  50% {
-    outline-color: #818cf8;
-    box-shadow: 0 0 20px rgba(99, 102, 241, 0.8);
-  }
+.image-group-wrapper.group-selected::after {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  border: 2px solid rgba(0, 113, 227, 0.65);
+  border-radius: 2px;
+  pointer-events: none;
+  animation: flashRing 750ms cubic-bezier(0.22, 1, 0.36, 1) 1 forwards;
+}
+
+@keyframes flashRing {
+  0%   { opacity: 1; transform: scale(1); }
+  30%  { opacity: 1; transform: scale(1.03); }
+  100% { opacity: 0; transform: scale(1.10); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .image-group-wrapper.group-selected::after { animation: none; opacity: 0; }
 }
 </style>
