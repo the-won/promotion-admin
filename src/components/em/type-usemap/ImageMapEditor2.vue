@@ -755,12 +755,6 @@ export default {
 
 <style scoped>
 
-.image-settings {
-  background: var(--color-bg-tertiary, #eceef2);
-  padding: 14px;
-  border-radius: var(--form-radius, 8px);
-  margin-bottom: 16px;
-}
 
 .hotspots-section {
   margin-top: 16px;

@@ -39,7 +39,7 @@
         <div class="content-grid">
           <!-- SIDEBAR -->
           <aside class="sidebar-card" :class="{ collapsed: !sidebarOpen, expanded: sidebarExpanded }">
-            <header class="card-header">
+            <!-- <header class="card-header">
               <button class="width-toggle-btn" @click="toggleSidebarWidth" :aria-label="sidebarExpanded ? '너비 좁히기' : '너비 넓히기'" title="너비 조절">
                 <svg v-if="!sidebarExpanded" width="16" height="16" viewBox="0 0 16 16" fill="none">
                   <path d="M1 8H15M15 8L11 4M15 8L11 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -50,11 +50,13 @@
               </button>
               <h3 class="card-title">템플릿 설정</h3>
               <button class="close-btn" @click="toggleSidebar" aria-label="사이드바 닫기">✕</button>
-            </header>
+            </header> -->
 
             <div class="card-body">
               <section class="sidebar-section">
-                <button class="template-select-btn" @click="openModal">
+                <div class="items-grid cols-2">
+                
+                <!-- <button class="template-select-btn" @click="openModal">
                   <svg class="btn-icon" width="15" height="15" viewBox="0 0 20 20" fill="none" aria-hidden="true">
                     <rect x="5" y="2" width="10" height="3" rx="1.5" fill="currentColor" opacity="0.7"/>
                     <rect x="3" y="4" width="14" height="14" rx="2" stroke="currentColor" stroke-width="1.6" fill="none"/>
@@ -65,8 +67,20 @@
                   <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
                     <path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
                   </svg>
-                </button>
-                <h4 class="section-title">기본 설정</h4>
+                </button> -->
+                </div>
+              
+                <div class="form-row-space">
+                  <h4 class="section-title">기본 설정</h4>
+                  <button class="width-toggle-btn" @click="toggleSidebarWidth" :aria-label="sidebarExpanded ? '너비 좁히기' : '너비 넓히기'" title="너비 조절">
+                    <svg v-if="!sidebarExpanded" width="16" height="16" viewBox="0 0 16 16" fill="none">
+                      <path d="M1 8H15M15 8L11 4M15 8L11 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    <svg v-else width="16" height="16" viewBox="0 0 16 16" fill="none">
+                      <path d="M15 8H1M1 8L5 4M1 8L5 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                  </button>
+                </div>
                 <TemplateForm
                   :template="selectedTemplate"
                   v-model="formData"
@@ -403,210 +417,5 @@ export default {
 </script>
 
 <style scoped>
-.em-templates {
-  padding-left: var(--sidebar-w);
-  transition: padding-left var(--template-layout-duration, 0.35s) var(--template-layout-ease, cubic-bezier(0.4, 0, 0.2, 1));
-}
-.em-templates.wide-sidebar {
-  padding-left: var(--sidebar-w-expanded);
-}
-.em-templates.no-sidebar,
-.em-templates.no-sidebar.wide-sidebar {
-  padding-left: 0 !important;
-}
-.main-container {
-  max-width: 1200px;
-  margin: 0 auto;
-  transition: max-width var(--template-layout-duration, 0.35s) var(--template-layout-ease, cubic-bezier(0.4, 0, 0.2, 1));
-}
-.no-sidebar .main-container,
-.no-sidebar.wide-sidebar .main-container {
-  max-width: 100% !important;
-}
 
-/* LAYOUT */
-.content-container {
-  max-width: 1400px;
-  margin: 32px auto;
-}
-.content-grid {
-  display: flex;
-  gap: 24px;
-}
-
-/* SIDEBAR */
-.sidebar-card {
-  width: var(--sidebar-w);
-  background: #fff;
-  display: flex;
-  flex-direction: column;
-  position: fixed;
-  top: 0px;
-  bottom: 0;
-  left: 0;
-  box-shadow: 0 1px 2px 0 rgb(0 0 0 / 16%), 0 1px 2px 0 rgb(0 0 0 / 2%);
-  z-index: 20;
-  transition:
-    width var(--template-layout-duration, 0.35s) var(--template-layout-ease, cubic-bezier(0.4, 0, 0.2, 1)),
-    opacity var(--template-layout-duration, 0.35s) var(--template-layout-ease, cubic-bezier(0.4, 0, 0.2, 1));
-  flex-shrink: 0;
-}
-
-.sidebar-card.expanded {
-  width: var(--sidebar-w-expanded);
-}
-
-.sidebar-card.collapsed {
-  width: 0;
-  opacity: 0;
-  pointer-events: none;
-  overflow: hidden;
-}
-
-
-
-.width-toggle-btn {
-  width: 32px;
-  height: 32px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: transparent;
-  border: none;
-  border-radius: 0;
-  color: var(--color-text-secondary, #6e6e73);
-  cursor: pointer;
-  transition: color 0.15s;
-  flex-shrink: 0;
-}
-
-.width-toggle-btn:hover {
-  background: transparent;
-  border-color: transparent;
-  color: var(--color-primary, #0071e3);
-}
-
-.card-title {
-  flex: 1;
-  text-align: center;
-  font-weight: 700;
-}
-.close-btn {
-  border: none;
-  background: none;
-  cursor: pointer;
-}
-.section-title {
-  font-size: 13px;
-  font-weight: 700;
-  margin-bottom: 12px;
-}
-.download-btn {
-  width: 100%;
-  padding: 12px;
-  background: var(--color-primary, #0071e3);
-  color: #fff;
-  border-radius: 3px;
-  border: none;
-  cursor: pointer;
-  font-size: 14px;
-  font-weight: 600;
-  transition: background 0.15s;
-}
-
-.download-btn:hover {
-  background: var(--color-primary-hover, #0077ed);
-}
-
-
-
-.show-sidebar-btn {
-  position: fixed;
-  top: 72px;
-  padding: 6px 12px;
-  font-size: 13px;
-  font-weight: 600;
-  border-radius: 3px;
-  border: 1px solid var(--color-primary, #0071e3);
-  background: #fff;
-  color: var(--color-primary, #0071e3);
-  cursor: pointer;
-}
-
-.card-body {
-  flex: 1;
-  overflow-y: auto;
-  padding: 16px 16px 24px;
-  scrollbar-width: thin;
-  scrollbar-color: var(--color-border) transparent;
-}
-.card-body::-webkit-scrollbar {
-  width: 4px;
-}
-.card-body::-webkit-scrollbar-track {
-  background: transparent;
-}
-.card-body::-webkit-scrollbar-thumb {
-  background: var(--color-border);
-  border-radius: 2px;
-}
-.card-body::-webkit-scrollbar-thumb:hover {
-  background: var(--color-border-hover);
-}
-
-.sidebar-footer-fixed {
-  margin-top: auto;
-  padding: 16px;
-  border-top: 1px solid var(--color-border);
-  background: var(--color-bg);
-}
-
-/* Template Select Button */
-.template-select-btn {
-  width: 100%;
-  padding: 10px 14px;
-  margin-bottom: 16px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  background: rgb(0 0 0 / 4%);
-  border: 1px solid var(--color-border);
-  border-radius: 6px;
-  color: var(--color-text-secondary);
-  font-size: 13px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: background 0.15s, border-color 0.15s, color 0.15s;
-}
-
-.template-select-btn:hover {
-  background: rgb(0 0 0 / 7%);
-  border-color: var(--color-border-hover);
-  color: var(--color-text);
-}
-
-.template-select-btn:active {
-  background: rgb(0 0 0 / 10%);
-}
-
-.template-select-btn .btn-icon {
-  flex-shrink: 0;
-  color: var(--color-text-tertiary);
-}
-
-.template-select-btn .btn-text {
-  flex: 1;
-  text-align: left;
-}
-
-.template-select-btn > svg:last-child {
-  flex-shrink: 0;
-  opacity: 0.45;
-  transition: transform 0.15s;
-}
-
-.template-select-btn:hover > svg:last-child {
-  transform: translateY(2px);
-  opacity: 0.65;
-}
 </style>
