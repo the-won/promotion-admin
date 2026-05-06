@@ -192,6 +192,7 @@
         <ProductGroupListEditor
           v-else-if="config.type === 'product-group-list'"
           v-model="localData[key]"
+          @select-product="handleSelectProduct"
         />
 
         <!-- 👇 Banner List Editor (추가) -->
@@ -261,12 +262,14 @@
         <HotdealRow1Editor
           v-else-if="config.type === 'hotdeal-row1-list'"
           v-model="localData[key]"
+          @select-product="handleSelectProduct"
         />
 
         <!-- Hotdeal Row3 Editor -->
         <HotdealRow3Editor
           v-else-if="config.type === 'hotdeal-row3-list'"
           v-model="localData[key]"
+          @select-product="handleSelectProduct"
         />
 
         <!-- Privacy Section Editor -->
@@ -493,6 +496,10 @@ export default {
       return ['hotspot-group', 'hotspot-group-list', 'privacy-section-list', 'efamily-uploader', 'hotdeal-uploader'].includes(type)
     },
     
+    handleSelectProduct(info) {
+      this.$emit('select-product', info)
+    },
+
     handleSelectHotspot(id) {
       this.$emit('select-hotspot', id)
     },
@@ -581,7 +588,7 @@ export default {
 .form-nav {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 3px;
   padding-bottom: 12px;
   margin-bottom: 14px;
   border-bottom: 1px solid var(--color-border, #d2d2d7);

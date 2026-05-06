@@ -150,6 +150,11 @@ export default {
   display: inline-block;
 }
 
+.image-group-wrapper.group-selected {
+  outline: 2px solid rgba(0, 113, 227, 0.6);
+  outline-offset: 2px;
+}
+
 .image-group-wrapper.group-selected::after {
   content: '';
   position: absolute;

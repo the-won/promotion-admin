@@ -28,7 +28,11 @@
       </div>
 
       <!-- 타이틀 이미지 -->
-      <div class="title-image-section">
+      <div
+        class="title-image-section selectable"
+        :class="{ 'flash-highlight': flashingTitleId === group.id }"
+        @click="selectTitleImage(group.id)"
+      >
         <div class="form-row">
           <div class="form-group">
             <label>타이틀 이미지 URL</label>
@@ -55,10 +59,12 @@
       <!-- items-grid -->
       <div class="items-grid">
         <!-- 각 행 (card) -->
-        <div 
-          v-for="(row, rowIndex) in group.rows" 
+        <div
+          v-for="(row, rowIndex) in group.rows"
           :key="row.id"
-          class="card"
+          class="card selectable"
+          :class="{ 'flash-highlight': flashingId === row.id }"
+          @click="selectRow(group.id, row.id)"
         >
           <div class="card-header card-header-orange">
             <span class="card-title">상품 행 {{ rowIndex + 1 }} (3개)</span>
@@ -192,7 +198,9 @@ export default {
   },
   data() {
     return {
-      localGroups: []
+      localGroups: [],
+      flashingId: null,
+      flashingTitleId: null
     }
   },
   created() {
@@ -232,6 +240,18 @@ export default {
       }
     },
     
+    selectTitleImage(groupId) {
+      this.flashingTitleId = groupId
+      setTimeout(() => { this.flashingTitleId = null }, 780)
+      this.$emit('select-product', { refKey: 'efamily-title-' + groupId })
+    },
+
+    selectRow(_groupId, rowId) {
+      this.flashingId = rowId
+      setTimeout(() => { this.flashingId = null }, 780)
+      this.$emit('select-product', { refKey: 'efamily-row-' + rowId })
+    },
+
     createNewRow() {
       return {
         id: Date.now() + Math.random(),
@@ -313,14 +333,6 @@ export default {
 }
 
 /* 그룹 래퍼 */
-.group-wrapper {
-  /* margin-bottom: 32px;
-  padding: 20px;
-  background: #f9fafb;
-  border: 2px solid #e5e7eb;
-  border-radius: 12px; */
-}
-
 .group-wrapper:last-child {
   margin-bottom: 0;
 }
@@ -330,17 +342,17 @@ export default {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 16px;
+  /* margin-bottom: 16px; */
   padding: 12px 16px;
   /* background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); */
-  background-color: #1b223a;
+  /* background-color: #1b223a; */
   border-radius: 8px;
 }
 
 .group-title {
   font-size: 14px;
   font-weight: 600;
-  color: #fff;
+  color: var(--color-text);
 }
 
 /* 타이틀 이미지 섹션 */
@@ -350,11 +362,36 @@ export default {
   background: #fff;
   border: 1px solid #e5e7eb;
   border-radius: 8px;
+  cursor: pointer;
 }
 /* 템플릿 설정 확장 케이스 */
-.expanded .group-wrapper .items-grid {
+/* .expanded .group-wrapper .items-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 14px 16px;
+} */
+
+.card.flash-highlight,
+.title-image-section.flash-highlight {
+  position: relative;
+  border-color: #0071e3;
+  box-shadow: 0 0 0 3px rgba(0, 113, 227, 0.15);
+}
+
+.card.flash-highlight::after,
+.title-image-section.flash-highlight::after {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  border: 2px solid rgba(0, 113, 227, 0.65);
+  border-radius: inherit;
+  pointer-events: none;
+  animation: flashRing 750ms cubic-bezier(0.22, 1, 0.36, 1) 1 forwards;
+}
+
+@keyframes flashRing {
+  0%   { opacity: 1; transform: scale(1); }
+  30%  { opacity: 1; transform: scale(1.03); }
+  100% { opacity: 0; transform: scale(1.10); }
 }
 </style>

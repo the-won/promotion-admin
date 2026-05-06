@@ -92,6 +92,7 @@
                   @select-hotspot="handleSelectHotspot"
                   @select-image="handleSelectImage"
                   @select-row="handleSelectRow"
+                  @select-product="handleSelectProduct"
                   @active-row-change="handleActiveRowChange"
                   @active-image-change="handleActiveImageChange"
                   @device-change="currentDevice = $event"
@@ -141,6 +142,7 @@
                   :activeImageIndex="activeImageIndex"
                   :selectedImageInfo="selectedImageInfo"
                   :selectedRowInfo="selectedRowInfo"
+                  :selectedProductInfo="selectedProductInfo"
                   @select-hotspot="handleSelectHotspot"
                   @update-hotspot="handleUpdateHotspot"
                   @delete-hotspot="handleDeleteHotspot"
@@ -185,8 +187,9 @@ export default {
       activeImageIndex: null,
       selectedImageInfo: { groupId: null, imageId: null },
       selectedRowInfo: { rowId: null, rowIndex: null },
+      selectedProductInfo: null,
       sidebarOpen: true,
-      sidebarExpanded: false,
+      sidebarExpanded: true,
       isModalOpen: false,
       visibleTopPositions: { 1: 10, 2: 10 },
       visibleScrollPosition: { scrollTop: 0, viewportHeight: 400 },
@@ -308,6 +311,9 @@ export default {
         timestamp: Date.now()
       }
       console.log('✅ selectedRowInfo 설정:', this.selectedRowInfo)
+    },
+    handleSelectProduct(info) {
+      this.selectedProductInfo = { refKey: info.refKey, timestamp: Date.now() }
     },
     handleActiveRowChange(rowId) {
       this.activeRowId = rowId

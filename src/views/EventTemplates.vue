@@ -230,7 +230,7 @@ export default {
       activeRowId: null,
       activeImageIndex: null,
       sidebarOpen: true,
-      sidebarExpanded: false,
+      sidebarExpanded: true,
       isModalOpen: false,
       visibleTopPositions: { 1: 10, 2: 10 },
       visibleScrollPosition: { scrollTop: 0, viewportHeight: 400 },

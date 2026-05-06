@@ -135,7 +135,7 @@ export default {
       selectedTemplate: 'privacy-policy',
       formData: this.extractValues(templateDefaults['privacy-policy']),
       sidebarOpen: true,
-      sidebarExpanded: false,
+      sidebarExpanded: true,
       isModalOpen: false,
       activePreviewIndex: null,
       privacyPreviewFocus: null,

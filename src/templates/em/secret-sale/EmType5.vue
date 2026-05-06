@@ -50,7 +50,11 @@
                           <tr :key="'row1-space-' + product.id + '-' + index">
                             <td :height="index === 0 ? 60 : 13"></td>
                           </tr>
-                          <tr :key="'row1-product-' + product.id + '-' + index">
+                          <tr
+                            :key="'row1-product-' + product.id + '-' + index"
+                            :ref="'hotdeal-row1-' + product.id"
+                            :class="{ 'row-selected': isProductSelected('hotdeal-row1-' + product.id) }"
+                          >
                             <td :style="`font-size: 0px; VERTICAL-ALIGN: top`">
                               <table cellSpacing="0" cellPadding="0" width="720" border="0">
                                 <tbody>
@@ -74,7 +78,11 @@
                           <tr :key="'row3-space-' + productSet.id + '-' + index">
                             <td :height="index === 0 ? 43 : 30"></td>
                           </tr>
-                          <tr :key="'row3-product-' + productSet.id + '-' + index">
+                          <tr
+                            :key="'row3-product-' + productSet.id + '-' + index"
+                            :ref="'hotdeal-row3-' + productSet.id"
+                            :class="{ 'row-selected': isProductSelected('hotdeal-row3-' + productSet.id) }"
+                          >
                             <td :style="`font-size: 0px; VERTICAL-ALIGN: top`">
                               <table cellSpacing="0" cellPadding="0" width="720" border="0">
                                 <tbody>
@@ -170,8 +178,21 @@
 </template>
 
 <script>
+import imageHighlightMixin from '../../../utils/imageHighlightMixin.js'
+
 export default {
-  props: ['data'],
+  mixins: [imageHighlightMixin],
+  props: {
+    data: { type: Object, default: () => ({}) },
+    selectedProductInfo: { type: Object, default: null }
+  },
+  watch: {
+    'selectedProductInfo.timestamp'(newVal) {
+      if (newVal && this.selectedProductInfo && this.selectedProductInfo.refKey) {
+        this.scrollToImageByRef(this.selectedProductInfo.refKey)
+      }
+    }
+  },
   data() {
     return {
       companyUrls: {
@@ -191,6 +212,9 @@ export default {
     }
   },
   methods: {
+    isProductSelected(refKey) {
+      return this.selectedProductInfo && this.selectedProductInfo.refKey === refKey
+    },
     getUrl(type) {
       const companyType = this.data.companyType || 'normal'
       return this.companyUrls[companyType][type]
@@ -210,5 +234,15 @@ export default {
 </script>
 
 <style scoped>
+tr.row-selected {
+  outline: 2px solid rgba(0, 113, 227, 0.6);
+  outline-offset: -2px;
+  animation: rowFlash 750ms cubic-bezier(0.22, 1, 0.36, 1) 1 forwards;
+}
 
+@keyframes rowFlash {
+  0%   { box-shadow: 0 0 0 5px rgba(0, 113, 227, 0.35); }
+  60%  { box-shadow: 0 0 0 8px rgba(0, 113, 227, 0.12); }
+  100% { box-shadow: none; }
+}
 </style>

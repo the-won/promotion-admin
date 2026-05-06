@@ -1418,7 +1418,9 @@ button {
   background-color: inherit;
 }
 
-
+.dark-mode .group-title {
+  color: rgba(255, 255, 255, 0.9);
+}
 
 
 /* 개인정보처리방침 */

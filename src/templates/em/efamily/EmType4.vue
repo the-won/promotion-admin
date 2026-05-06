@@ -22,7 +22,11 @@
       <!-- 👇 각 상품 그룹 -->
       <template v-for="(group, groupIndex) in productGroups">
         <!-- 그룹 타이틀 이미지 -->
-        <tr :key="`title-${group.id}`">
+        <tr
+          :key="`title-${group.id}`"
+          :ref="'efamily-title-' + group.id"
+          :class="{ 'row-selected': isRowSelected('efamily-title-' + group.id) }"
+        >
           <td style="font-size:0; vertical-align:top;">
             <img :src="group.titleImage.url" :alt="group.titleImage.alt" width="770" border="0" />
           </td>
@@ -35,7 +39,11 @@
               <tbody>
                 <template v-for="(row, rowIndex) in group.rows">
                   <!-- 상품 3개 행 -->
-                  <tr :key="`row-${row.id}`">
+                  <tr
+                    :key="`row-${row.id}`"
+                    :ref="'efamily-row-' + row.id"
+                    :class="{ 'row-selected': isRowSelected('efamily-row-' + row.id) }"
+                  >
                     <td style="width: 25px;"></td>
                     <td style="font-size:0;vertical-align:top;">
                       <a :href="buildProductUrl(row.products[0].productCode)" style="padding:0;">
@@ -160,11 +168,18 @@
 </template>
 
 <script>
+import imageHighlightMixin from '../../../utils/imageHighlightMixin.js'
+
 export default {
+  mixins: [imageHighlightMixin],
   props: {
     data: {
       type: Object,
       default: () => ({})
+    },
+    selectedProductInfo: {
+      type: Object,
+      default: null
     }
   },
   computed: {
@@ -178,7 +193,17 @@ export default {
       return this.data.banners || []
     }
   },
+  watch: {
+    'selectedProductInfo.timestamp'(newVal) {
+      if (newVal && this.selectedProductInfo && this.selectedProductInfo.refKey) {
+        this.scrollToImageByRef(this.selectedProductInfo.refKey)
+      }
+    }
+  },
   methods: {
+    isRowSelected(refKey) {
+      return this.selectedProductInfo && this.selectedProductInfo.refKey === refKey
+    },
     buildHeaderUrl() {
       const code = this.data.headerImageCode
       if (!code) return '#'
@@ -211,3 +236,17 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+tr.row-selected {
+  outline: 2px solid rgba(0, 113, 227, 0.6);
+  outline-offset: -2px;
+  animation: rowFlash 750ms cubic-bezier(0.22, 1, 0.36, 1) 1 forwards;
+}
+
+@keyframes rowFlash {
+  0%   { box-shadow: 0 0 0 5px rgba(0, 113, 227, 0.35); }
+  60%  { box-shadow: 0 0 0 8px rgba(0, 113, 227, 0.12); }
+  100% { box-shadow: none; }
+}
+</style>

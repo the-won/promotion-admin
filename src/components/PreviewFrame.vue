@@ -18,6 +18,7 @@
           :selectedImageInfo="selectedImageInfo"
           :selectedRowInfo="selectedRowInfo"
           :selectedHotspotInfo="selectedHotspotInfo"
+          :selectedProductInfo="selectedProductInfo"
           :activeIndex="activeIndex"
           @select-hotspot="handleSelectHotspot"
           @update-hotspot="handleUpdateHotspot"
@@ -113,6 +114,10 @@ export default {
     selectedHotspotInfo: {
       type: Object,
       default: () => ({ hotspotId: null, groupIndex: null })
+    },
+    selectedProductInfo: {
+      type: Object,
+      default: null
     },
     activeIndex: {
       type: Number,

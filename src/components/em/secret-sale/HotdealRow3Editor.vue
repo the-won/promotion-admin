@@ -10,10 +10,12 @@
     </div>
 
     <div class="items-grid">
-      <div 
-        v-for="(productSet, index) in localProducts" 
-        :key="productSet.id" 
-        class="card"
+      <div
+        v-for="(productSet, index) in localProducts"
+        :key="productSet.id"
+        class="card selectable"
+        :class="{ 'flash-highlight': flashingId === productSet.id }"
+        @click="selectProductSet(productSet.id)"
       >
         <div class="card-header card-header-orange">
           <span class="card-title">3X3 상품 {{ index + 1 }}라인</span>
@@ -128,7 +130,8 @@ export default {
   props: ['value'],
   data() {
     return {
-      localProducts: []
+      localProducts: [],
+      flashingId: null
     }
   },
   created() {
@@ -153,6 +156,11 @@ export default {
     }
   },
   methods: {
+    selectProductSet(id) {
+      this.flashingId = id
+      setTimeout(() => { this.flashingId = null }, 780)
+      this.$emit('select-product', { refKey: 'hotdeal-row3-' + id })
+    },
     addRow() {
       this.localProducts.push({
         id: Date.now(),
@@ -175,5 +183,25 @@ export default {
   margin-top: 16px;
 }
 
+.card.flash-highlight {
+  position: relative;
+  border-color: #0071e3;
+  box-shadow: 0 0 0 3px rgba(0, 113, 227, 0.15);
+}
 
+.card.flash-highlight::after {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  border: 2px solid rgba(0, 113, 227, 0.65);
+  border-radius: inherit;
+  pointer-events: none;
+  animation: flashRing 750ms cubic-bezier(0.22, 1, 0.36, 1) 1 forwards;
+}
+
+@keyframes flashRing {
+  0%   { opacity: 1; transform: scale(1); }
+  30%  { opacity: 1; transform: scale(1.03); }
+  100% { opacity: 0; transform: scale(1.10); }
+}
 </style>

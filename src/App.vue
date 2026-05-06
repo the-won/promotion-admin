@@ -67,7 +67,6 @@ export default {
     return { darkMode: false }
   },
   mounted() {
-    this.darkMode = window.matchMedia('(prefers-color-scheme: dark)').matches
     this.applyDarkMode()
   },
   methods: {
