@@ -115,10 +115,10 @@ button {
   display: flex;
   flex-direction: column;
   position: fixed;
-  top: 60px;
+  top: 0px;
   bottom: 0;
   left: 0;
-  box-shadow: 0 1px 2px 0 rgb(0 0 0 / 16%), 0 1px 2px 0 rgb(0 0 0 / 2%);
+  /* box-shadow: 0 1px 2px 0 rgb(0 0 0 / 16%), 0 1px 2px 0 rgb(0 0 0 / 2%); */
   z-index: 20;
   transition:
     width var(--template-layout-duration, 0.35s) var(--template-layout-ease, cubic-bezier(0.4, 0, 0.2, 1)),
@@ -200,7 +200,8 @@ button {
 .card-title {
   flex: 1;
   /* text-align: center; */
-  font-weight: 700;
+  font-weight: 500;
+  font-size: 14px;
 }
 .close-btn {
   border: none;
@@ -208,7 +209,7 @@ button {
   cursor: pointer;
 }
 .section-title {
-  font-size: 14px;
+  font-size: 16px;
   font-weight: 700;
   margin-bottom: 12px;
 }
@@ -327,17 +328,14 @@ button {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  /* margin-bottom: 14px; */
+  margin-bottom: 14px;
   /* padding: 10px 14px; */
   background: transparent;
   border-bottom: none;
    gap: 12px;
 }
 
-.card-title {
-  font-size: 12px;
-  font-weight: 600;
-}
+
 
 .sidebar-card > .card-header {
   padding: 12px 16px;
@@ -414,6 +412,8 @@ button {
 }
 
 
+
+
 /* date-picker */
 .date-picker .form-row {
   align-items: center;
@@ -486,7 +486,7 @@ button {
 
 
 .image-link-group-editor {
-  margin-top: 16px;
+  /* margin-top: 16px; */
 }
 
 .images-section {
@@ -1223,12 +1223,10 @@ button {
   color: rgb(248 250 252 / 86%);
   text-transform: uppercase;
   letter-spacing: 0.06em;
-  font-size: 12px;
   font-weight: 600;
   opacity: 1;
 }
 .dark-mode .form-label {
-  font-size: 12px;
   font-weight: 500;
   color: rgba(255, 255, 255, 0.9);
 }
@@ -1423,6 +1421,7 @@ button {
 .dark-mode .tab-selector {
   background-color: inherit;
 }
+
 
 
 
@@ -1712,7 +1711,7 @@ body.page-event-templates .hero-section .template-tab {
   margin-bottom: -1px;
   cursor: pointer;
   font-weight: 500;
-  font-size: 13px;
+  font-size: 14px;
   color: oklch(18% 0.03 258 / 48%);
   transition:
     border-bottom-color 0.15s ease,
@@ -1766,9 +1765,9 @@ body.page-event-templates .hero-section.no-sidebar.wide-sidebar {
    ============================================ */
 
 /* 1. 액센트 변수: Blueprint Indigo → Display Blue */
-.dark-mode body.page-item-templates,
-.dark-mode body.page-em-templates,
-.dark-mode body.page-event-templates {
+body.page-item-templates.dark-mode,
+body.page-em-templates.dark-mode,
+body.page-event-templates.dark-mode {
   --hero-accent: oklch(64% 0.22 235);
   --hero-accent-deep: oklch(50% 0.22 235);
   --hero-accent-glow: oklch(64% 0.22 235 / 16%);
@@ -1776,27 +1775,28 @@ body.page-event-templates .hero-section.no-sidebar.wide-sidebar {
 }
 
 /* 2. 배경: 다크 네이비 + Display Blue 글로 */
-.dark-mode body.page-item-templates .hero-section,
-.dark-mode body.page-em-templates .hero-section,
-.dark-mode body.page-event-templates .hero-section {
-  background:
+body.page-item-templates.dark-mode .hero-section,
+body.page-em-templates.dark-mode .hero-section,
+body.page-event-templates.dark-mode .hero-section {
+  /* background:
     radial-gradient(ellipse 110% 70% at 95% 5%, oklch(64% 0.22 235 / 22%) 0%, transparent 50%),
     radial-gradient(ellipse 80% 60% at 5% 90%, oklch(44% 0.16 268 / 14%) 0%, transparent 48%),
     radial-gradient(ellipse 60% 40% at 50% 100%, oklch(14% 0.04 260 / 60%) 0%, transparent 55%),
-    linear-gradient(158deg, oklch(10% 0.02 255) 0%, oklch(13% 0.04 263) 44%, oklch(12% 0.03 258) 100%);
+    linear-gradient(158deg, oklch(10% 0.02 255) 0%, oklch(13% 0.04 263) 44%, oklch(12% 0.03 258) 100%); */
+    background: #1c1c1e;
 }
 
-.dark-mode body.page-item-templates .hero-section::after,
-.dark-mode body.page-em-templates .hero-section::after,
-.dark-mode body.page-event-templates .hero-section::after {
+body.page-item-templates.dark-mode .hero-section::after,
+body.page-em-templates.dark-mode .hero-section::after,
+body.page-event-templates.dark-mode .hero-section::after {
   opacity: 0.36;
   mix-blend-mode: overlay;
 }
 
 /* 3. bg-glow 오브: Display Blue */
-.dark-mode body.page-item-templates .hero-bg-glow,
-.dark-mode body.page-em-templates .hero-bg-glow,
-.dark-mode body.page-event-templates .hero-bg-glow {
+body.page-item-templates.dark-mode .hero-bg-glow,
+body.page-em-templates.dark-mode .hero-bg-glow,
+body.page-event-templates.dark-mode .hero-bg-glow {
   background: radial-gradient(circle,
     oklch(64% 0.22 235 / 14%) 0%,
     oklch(52% 0.20 235 / 7%) 42%,
@@ -1805,9 +1805,9 @@ body.page-event-templates .hero-section.no-sidebar.wide-sidebar {
 }
 
 /* 4. Status chip: Display Blue 배지 */
-.dark-mode body.page-item-templates .hero-status-chip,
-.dark-mode body.page-em-templates .hero-status-chip,
-.dark-mode body.page-event-templates .hero-status-chip {
+body.page-item-templates.dark-mode .hero-status-chip,
+body.page-em-templates.dark-mode .hero-status-chip,
+body.page-event-templates.dark-mode .hero-status-chip {
   color: oklch(72% 0.14 235);
   background: oklch(64% 0.22 235 / 12%);
   border: 1px solid oklch(64% 0.22 235 / 32%);
@@ -1815,46 +1815,46 @@ body.page-event-templates .hero-section.no-sidebar.wide-sidebar {
 }
 
 /* 5. 타이틀 / eyebrow / subtitle: 다크 배경 위 밝은 텍스트 */
-.dark-mode body.page-item-templates .hero-section .hero-title,
-.dark-mode body.page-em-templates .hero-section .hero-title,
-.dark-mode body.page-event-templates .hero-section .hero-title {
+body.page-item-templates.dark-mode .hero-section .hero-title,
+body.page-em-templates.dark-mode .hero-section .hero-title,
+body.page-event-templates.dark-mode .hero-section .hero-title {
   color: oklch(98% 0.005 220);
 }
 
-.dark-mode body.page-item-templates .hero-eyebrow,
-.dark-mode body.page-em-templates .hero-eyebrow,
-.dark-mode body.page-event-templates .hero-eyebrow {
+body.page-item-templates.dark-mode .hero-eyebrow,
+body.page-em-templates.dark-mode .hero-eyebrow,
+body.page-event-templates.dark-mode .hero-eyebrow {
   color: oklch(91% 0.012 224 / 64%);
 }
 
-.dark-mode body.page-item-templates .hero-subtitle,
-.dark-mode body.page-em-templates .hero-subtitle,
-.dark-mode body.page-event-templates .hero-subtitle {
+body.page-item-templates.dark-mode .hero-subtitle,
+body.page-em-templates.dark-mode .hero-subtitle,
+body.page-event-templates.dark-mode .hero-subtitle {
   color: oklch(91% 0.012 224 / 70%);
 }
 
 /* 6. 탭 언더라인: 다크 배경용 */
-.dark-mode body.page-item-templates .hero-section .template-tabs,
-.dark-mode body.page-em-templates .hero-section .template-tabs,
-.dark-mode body.page-event-templates .hero-section .template-tabs {
+body.page-item-templates.dark-mode .hero-section .template-tabs,
+body.page-em-templates.dark-mode .hero-section .template-tabs,
+body.page-event-templates.dark-mode .hero-section .template-tabs {
   border-top-color: oklch(100% 0 0 / 10%);
 }
 
-.dark-mode body.page-item-templates .hero-section .template-tab,
-.dark-mode body.page-em-templates .hero-section .template-tab,
-.dark-mode body.page-event-templates .hero-section .template-tab {
+body.page-item-templates.dark-mode .hero-section .template-tab,
+body.page-em-templates.dark-mode .hero-section .template-tab,
+body.page-event-templates.dark-mode .hero-section .template-tab {
   color: oklch(91% 0.012 224 / 52%);
 }
 
-.dark-mode body.page-item-templates .hero-section .template-tab:hover,
-.dark-mode body.page-em-templates .hero-section .template-tab:hover,
-.dark-mode body.page-event-templates .hero-section .template-tab:hover {
+body.page-item-templates.dark-mode .hero-section .template-tab:hover,
+body.page-em-templates.dark-mode .hero-section .template-tab:hover,
+body.page-event-templates.dark-mode .hero-section .template-tab:hover {
   border-bottom-color: oklch(100% 0 0 / 24%);
   color: oklch(91% 0.012 224 / 82%);
 }
 
-.dark-mode body.page-item-templates .hero-section .template-tab.active,
-.dark-mode body.page-em-templates .hero-section .template-tab.active,
-.dark-mode body.page-event-templates .hero-section .template-tab.active {
+body.page-item-templates.dark-mode .hero-section .template-tab.active,
+body.page-em-templates.dark-mode .hero-section .template-tab.active,
+body.page-event-templates.dark-mode .hero-section .template-tab.active {
   color: oklch(98% 0.005 220);
 }

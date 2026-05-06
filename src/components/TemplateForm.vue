@@ -551,6 +551,20 @@ export default {
   width: 100%;
 }
 
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 0;
+}
+
+.form-label {
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--color-text, #212121);
+  margin-bottom: 4px;
+}
+
 /* 세로 nav 레이아웃 */
 .form-layout {
   display: flex;
@@ -715,20 +729,7 @@ export default {
   opacity: 0.6;
 }
 
-/* Form Group */
-.form-group {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  margin-bottom: 0;
-}
 
-.form-label {
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--color-text-secondary, #6e6e73);
-  margin-bottom: 4px;
-}
 
 /* Color Picker */
 .color-field {
