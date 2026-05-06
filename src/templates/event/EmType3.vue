@@ -351,48 +351,6 @@ export default {
   width: 100%;
 }
 
-.image-container {
-  position: relative;
-  width: 100%;
-  user-select: none;
-  /* margin-bottom: 20px; */
-  transition: all 0.3s ease;
-}
-
-.image-container-highlighted {
-  outline: 4px solid #5568f8;
-  outline-offset: 4px;
-  box-shadow: 0 0 0 4px rgba(85, 104, 248, 0.1),
-              0 8px 24px rgba(85, 104, 248, 0.2);
-  background: rgba(85, 104, 248, 0.02);
-  transform: scale(1.005);
-  z-index: 5;
-}
-
-.image-container-highlighted::before {
-  content: '';
-  position: absolute;
-  top: -8px;
-  left: -8px;
-  right: -8px;
-  bottom: -8px;
-  background: linear-gradient(135deg, 
-    rgba(85, 104, 248, 0.1) 0%, 
-    rgba(85, 104, 248, 0.05) 50%,
-    rgba(85, 104, 248, 0.1) 100%);
-  border-radius: 4px;
-  pointer-events: none;
-  animation: pulse-highlight 2s ease-in-out infinite;
-}
-
-@keyframes pulse-highlight {
-  0%, 100% {
-    opacity: 0.5;
-  }
-  50% {
-    opacity: 1;
-  }
-}
 
 .background-image {
   width: 100%;

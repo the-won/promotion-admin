@@ -1,23 +1,5 @@
 <template>
   <div class="image-link-group-editor">
-    <!-- 전역 벤더 선택 (상단) -->
-    <div class="global-vendor-selector">
-      <div class="form-group">
-        <label>벤더 타입 (전체 그룹 적용)</label>
-        <select 
-          v-model="globalVendor" 
-          @change="handleVendorChange"
-          class="form-input vendor-select"
-        >
-          <option value="normal">일반</option>
-          <option value="hynix">하이닉스</option>
-        </select>
-      </div>
-    </div>
-
-    <!-- 구분선 -->
-    <hr class="vendor-divider" />
-
     <div
       v-for="(group, groupIndex) in localGroups"
       :key="group.id"
@@ -266,15 +248,21 @@ export default {
     }
   },
   created() {
-    this.localGroups = this.value && this.value.length > 0 
-      ? JSON.parse(JSON.stringify(this.value)) 
+    this.localGroups = this.value && this.value.length > 0
+      ? JSON.parse(JSON.stringify(this.value))
       : [this.createNewGroup()]
-    
+
     // companyType props로 globalVendor 초기화
     this.globalVendor = this.companyType || 'normal'
-    
+
     // 기존 그룹 초기화
     this.initializeGroups()
+  },
+  mounted() {
+    // 탭 전환 후 재마운트 시 현재 companyType 기준으로 URL 재생성
+    this.$nextTick(() => {
+      this.localGroups.forEach(group => this.updateGroupUrl(group))
+    })
   },
   watch: {
     value: {
@@ -301,6 +289,10 @@ export default {
     companyType(newVal) {
       if (newVal !== this.globalVendor) {
         this.globalVendor = newVal
+        this.$nextTick(() => {
+          this.localGroups.forEach(group => this.updateGroupUrl(group))
+          this.$emit('input', JSON.parse(JSON.stringify(this.localGroups)))
+        })
       }
     }
   },

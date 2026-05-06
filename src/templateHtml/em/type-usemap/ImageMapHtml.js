@@ -1,29 +1,88 @@
 /**
  * 이미지맵 기반 이메일 템플릿 HTML 생성
- * 
+ *
  * 데이터 구조:
  * - imageMapRows: [{ id, imageUrl, width, height, imageAlt, mapName }]
- * - imageMapAreas: [{ id, rowId, href, alt, coords: { x1, y1, x2, y2 } }]
+ * - imageMapAreas: [{ id, rowId, href, alt, coords: { x1, y1, x2, y2 }, linkType, linkData }]
  */
+
+const LINK_TEMPLATES = {
+  normal: {
+    plan: (code) =>
+      `https://newfront.benepia.co.kr/gatepage/emGateway.do?pcUrl=https://$:domain:$.benepia.co.kr/frnt/pointmall/pointmall.do?returnUrl=/main/eventDisplay.bene?dpPlanNo=${code}&mbUrl=https://mr2.benepia.co.kr/gateLink.bene?domain=$:domain:$%26linkUrl=/main/planDetail.bene?dpPlanNo=${code}`,
+    product: (code) =>
+      `https://newfront.benepia.co.kr/gatepage/emGateway.do?pcUrl=https://$:domain:$.benepia.co.kr/frnt/pointmall/pointmall.do?returnUrl=https://newmall.benepia.co.kr/disp/storeMain.bene?chnlId=%26custCoCd=$:co_cd:$%26shopId=%26prdId=${code}&mbUrl=https://mr2.benepia.co.kr/gateLink.bene?domain=$:domain:$%26linkUrl=/disp/detailView.bene?prdId=${code}`,
+    event: (webCode, mobileCode) =>
+      `https://newfront.benepia.co.kr/gatepage/emGateway.do?pcUrl=https://$:domain:$.benepia.co.kr/frnt/eventzone/eventZoneView.do?evtTypCd=1%26evtNo=${webCode}&mbUrl=https://mr2.benepia.co.kr/gateLink.bene?domain=$:domain:$%26linkUrl=/disp/eventDetailView.bene?dispAreaSeq=${mobileCode}`,
+    search: (keyword) =>
+      `https://newfront.benepia.co.kr/gatepage/emGateway.do?pcUrl=https://$:domain:$.benepia.co.kr/search/searchList.do?srchLocChck=header%26srchTxt=${keyword}&mbUrl=https://mr2.benepia.co.kr/gateLink.bene?domain=$:domain:$%26linkUrl=/searchResult.bene?srchTxt=${keyword}`
+  },
+  hynix: {
+    plan: (code) =>
+      `https://newfront.benepia.co.kr/gatepage/emGateway.do?pcUrl=https://skhynix.benepia.co.kr/hynix/pointmall/pointmall.do?returnUrl=/main/eventDisplay.bene?dpPlanNo=${code}&&mbUrl=https://mr2.benepia.co.kr/gateLink.bene?linkUrl=/main/planDetail.bene?dpPlanNo=${code}`,
+    product: (code) =>
+      `https://newfront.benepia.co.kr/gatepage/emGateway.do?pcUrl=https://skhynix.benepia.co.kr/hynix/pointmall/pointmall.do?returnUrl=/disp/storeMain.bene?chnlId=BENE%26custCoCd=00C4%26shopId=%26prdId=${code}&mbUrl=https://mr2.benepia.co.kr/gateLink.bene?linkUrl=/disp/detailView.bene?prdId=${code}`,
+    event: (mobileCode) =>
+      `https://newfront.benepia.co.kr/gatepage/emGateway.do?pcUrl=https://skhynix.benepia.co.kr/hynix/getFrontMain.do&mbUrl=https://mr2.benepia.co.kr/gateLink.bene?linkUrl=/disp/eventDetailView.bene?dispAreaSeq=${mobileCode}`,
+    search: (keyword) =>
+      `https://newfront.benepia.co.kr/gatepage/emGateway.do?pcUrl=https://skhynix.benepia.co.kr/hynix/getFrontMain.do&mbUrl=https://mr2.benepia.co.kr/gateLink.bene?linkUrl=/searchResult.bene?srchTxt=${keyword}`
+  }
+}
+
+// 다운로드 시점의 companyType으로 URL을 재생성 (탭 전환과 무관하게 항상 정확한 도메인 적용)
+function buildAreaUrl(area, companyType) {
+  const vendorType = companyType || 'normal'
+  const t = LINK_TEMPLATES[vendorType] || LINK_TEMPLATES['normal']
+
+  if (area.linkType && area.linkData) {
+    const { linkType, linkData } = area
+    switch (linkType) {
+      case 'plan':
+        if (linkData.planCode) return t.plan(linkData.planCode)
+        break
+      case 'product':
+        if (linkData.productCode) return t.product(linkData.productCode)
+        break
+      case 'event':
+        if (vendorType === 'normal') {
+          if (linkData.webEventCode && linkData.mobileEventCode)
+            return t.event(linkData.webEventCode, linkData.mobileEventCode)
+        } else {
+          if (linkData.mobileEventCode) return t.event(linkData.mobileEventCode)
+        }
+        break
+      case 'search':
+        if (linkData.searchKeyword) return t.search(encodeURIComponent(linkData.searchKeyword))
+        break
+      case 'custom':
+        return linkData.customUrl || 'javascript:void(0)'
+    }
+  }
+
+  // linkType 없는 레거시 area (href 직접 지정)
+  return area.href || 'javascript:void(0)'
+}
 
 export function generateImageMapHtml(data) {
   const rows = data.imageMapRows || []
   const areas = data.imageMapAreas || []
-  
+  const companyType = data.companyType || 'normal'
+
   if (rows.length === 0) {
     return '<!-- 이미지맵 데이터가 없습니다 -->'
   }
 
   const rowsHtml = rows.map((row, index) => {
     const mapName = row.mapName || `mapContents${String(index + 1).padStart(2, '0')}`
-    
+
     // 해당 row에 속한 areas만 필터링
     const rowAreas = areas.filter(a => a.rowId === row.id)
-    
+
     // area 태그들 생성
     const areasHtml = rowAreas.map(area => {
       const coords = `${area.coords.x1},${area.coords.y1},${area.coords.x2},${area.coords.y2}`
-      return `								<area shape="rect" coords="${coords}" href="${area.href}" alt="${area.alt}" target="_blank" title="새창열림">`
+      const href = buildAreaUrl(area, companyType)
+      return `								<area shape="rect" coords="${coords}" href="${href}" alt="${area.alt}" target="_blank" title="새창열림">`
     }).join('\n')
 
     return `					<tr>

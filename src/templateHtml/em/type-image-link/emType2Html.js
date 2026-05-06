@@ -1,3 +1,58 @@
+const LINK_TEMPLATES = {
+  normal: {
+    plan: (code) =>
+      `https://newfront.benepia.co.kr/gatepage/emGateway.do?pcUrl=https://$:domain:$.benepia.co.kr/frnt/pointmall/pointmall.do?returnUrl=/main/eventDisplay.bene?dpPlanNo=${code}&mbUrl=https://mr2.benepia.co.kr/gateLink.bene?domain=$:domain:$%26linkUrl=/main/planDetail.bene?dpPlanNo=${code}`,
+    product: (code) =>
+      `https://newfront.benepia.co.kr/gatepage/emGateway.do?pcUrl=https://$:domain:$.benepia.co.kr/frnt/pointmall/pointmall.do?returnUrl=https://newmall.benepia.co.kr/disp/storeMain.bene?chnlId=%26custCoCd=$:co_cd:$%26shopId=%26prdId=${code}&mbUrl=https://mr2.benepia.co.kr/gateLink.bene?domain=$:domain:$%26linkUrl=/disp/detailView.bene?prdId=${code}`,
+    event: (webCode, mobileCode) =>
+      `https://newfront.benepia.co.kr/gatepage/emGateway.do?pcUrl=https://$:domain:$.benepia.co.kr/frnt/eventzone/eventZoneView.do?evtTypCd=1%26evtNo=${webCode}&mbUrl=https://mr2.benepia.co.kr/gateLink.bene?domain=$:domain:$%26linkUrl=/disp/eventDetailView.bene?dispAreaSeq=${mobileCode}`,
+    search: (keyword) =>
+      `https://newfront.benepia.co.kr/gatepage/emGateway.do?pcUrl=https://$:domain:$.benepia.co.kr/search/searchList.do?srchLocChck=header%26srchTxt=${keyword}&mbUrl=https://mr2.benepia.co.kr/gateLink.bene?domain=$:domain:$%26linkUrl=/searchResult.bene?srchTxt=${keyword}`
+  },
+  hynix: {
+    plan: (code) =>
+      `https://newfront.benepia.co.kr/gatepage/emGateway.do?pcUrl=https://skhynix.benepia.co.kr/hynix/pointmall/pointmall.do?returnUrl=/main/eventDisplay.bene?dpPlanNo=${code}&&mbUrl=https://mr2.benepia.co.kr/gateLink.bene?linkUrl=/main/planDetail.bene?dpPlanNo=${code}`,
+    product: (code) =>
+      `https://newfront.benepia.co.kr/gatepage/emGateway.do?pcUrl=https://skhynix.benepia.co.kr/hynix/pointmall/pointmall.do?returnUrl=/disp/storeMain.bene?chnlId=BENE%26custCoCd=00C4%26shopId=%26prdId=${code}&mbUrl=https://mr2.benepia.co.kr/gateLink.bene?linkUrl=/disp/detailView.bene?prdId=${code}`,
+    event: (mobileCode) =>
+      `https://newfront.benepia.co.kr/gatepage/emGateway.do?pcUrl=https://skhynix.benepia.co.kr/hynix/getFrontMain.do&mbUrl=https://mr2.benepia.co.kr/gateLink.bene?linkUrl=/disp/eventDetailView.bene?dispAreaSeq=${mobileCode}`,
+    search: (keyword) =>
+      `https://newfront.benepia.co.kr/gatepage/emGateway.do?pcUrl=https://skhynix.benepia.co.kr/hynix/getFrontMain.do&mbUrl=https://mr2.benepia.co.kr/gateLink.bene?linkUrl=/searchResult.bene?srchTxt=${keyword}`
+  }
+}
+
+function buildGroupUrl(group, companyType) {
+  const vendorType = companyType || 'normal'
+  const t = LINK_TEMPLATES[vendorType] || LINK_TEMPLATES['normal']
+
+  if (group.linkType && group.linkData) {
+    const { linkType, linkData } = group
+    switch (linkType) {
+      case 'plan':
+        if (linkData.planCode) return t.plan(linkData.planCode)
+        break
+      case 'product':
+        if (linkData.productCode) return t.product(linkData.productCode)
+        break
+      case 'event':
+        if (vendorType === 'normal') {
+          if (linkData.webEventCode && linkData.mobileEventCode)
+            return t.event(linkData.webEventCode, linkData.mobileEventCode)
+        } else {
+          if (linkData.mobileEventCode) return t.event(linkData.mobileEventCode)
+        }
+        break
+      case 'search':
+        if (linkData.searchKeyword) return t.search(encodeURIComponent(linkData.searchKeyword))
+        break
+      case 'custom':
+        return linkData.customUrl || 'javascript:void(0)'
+    }
+  }
+
+  return group.href || 'javascript:void(0)'
+}
+
 export function generateEmType2Html(data) {
   const companyUrls = {
     normal: {
@@ -22,13 +77,14 @@ export function generateEmType2Html(data) {
   const groups = data.imageLinkGroups || []
   
   const groupsHtml = groups.map(group => {
-    const imagesHtml = group.images.map(img => 
+    const imagesHtml = group.images.map(img =>
       `            <img src="${img.url}" align="left" width="720" alt="${img.alt}" border="0">`
     ).join('\n')
-    
+    const href = buildGroupUrl(group, companyType)
+
     return `        <tr>
           <td>
-            <a href="${group.href}" target="_blank" title="새창열림">
+            <a href="${href}" target="_blank" title="새창열림">
 ${imagesHtml}
             </a>
           </td>

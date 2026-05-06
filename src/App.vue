@@ -330,10 +330,10 @@ body.dark-mode {
   /* background: #000; */
 }
 body.dark-mode .app-header {
-  background: rgba(28, 28, 30, 0.85);
+  /* background: rgba(28, 28, 30, 0.85);
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
   backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px); */
 }
 body.dark-mode .header-center {
   background: rgba(44, 44, 46, 0.8);

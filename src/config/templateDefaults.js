@@ -67,6 +67,16 @@ export const templateDefaults = {
       tab: '기본',
       value: ''
     },
+    companyType: {
+      label: '도메인',
+      type: 'select',
+      tab: '기본',
+      value: 'normal',
+      options: [
+        { value: 'normal', label: 'TOBE' },
+        { value: 'hynix', label: 'HYNIX' }
+      ]
+    },
     sendDate: {
       label: '발송일 기준',
       type: 'date-picker',
@@ -318,6 +328,11 @@ export const templateDefaults = {
         }
       ]
     },
+    _uploader_t4: {
+      type: 'efamily-uploader',
+      tab: '업로드',
+      label: '일괄 업로드'
+    },
     banners: {
       label: '하단 배너',
       type: 'banner-list',
@@ -432,9 +447,14 @@ export const templateDefaults = {
           ]
         }
       ]
+    },
+    _uploader_t5: {
+      type: 'hotdeal-uploader',
+      tab: '업로드',
+      label: '일괄 업로드'
     }
   },
-  
+
   // 이미지맵 템플릿형
   'em-type-imagemap': {
     folderName: {
@@ -675,6 +695,16 @@ export const templateDefaults = {
       tab: '기본',
       value: ''
     },
+    companyType: {
+      label: '도메인',
+      type: 'select',
+      tab: '기본',
+      value: 'normal',
+      options: [
+        { value: 'normal', label: 'TOBE' },
+        { value: 'hynix', label: 'HYNIX' }
+      ]
+    },
     sendDate: {
       label: '발송일 기준',
       type: 'date-picker',
@@ -720,6 +750,12 @@ export const templateDefaults = {
   },
   // 베네레터
   'em-type-letter': {
+    folderName: {
+      label: '폴더명 (ZIP 파일명)',
+      type: 'text',
+      tab: '기본',
+      value: ''
+    },
     companyType: {
       label: '도메인',
       type: 'select',

@@ -6,24 +6,6 @@
       <DeviceToggle v-model="currentDevice" />
     </div>
 
-    <!-- 화끈딜 템플릿일 경우 통합 업로드 표시 -->
-    <HotdealExcelUploader
-      v-if="template === 'em-type-5'"
-      :row1Products="localData.row1Products"
-      :row3Products="localData.row3Products"
-      @update:row1Products="localData.row1Products = $event"
-      @update:row3Products="localData.row3Products = $event"
-    />
-    <!-- 이패밀리샵 템플릿일 경우 통합 업로드 표시 -->
-    <EfamilyExcelUploader
-      v-if="template === 'em-type-4'"
-      :productGroups="localData.productGroups"
-      :banners="localData.banners"
-      @update:header="updateHeader"
-      @update:productGroups="localData.productGroups = $event"
-      @update:banners="localData.banners = $event"
-    />
-
     <!-- 세로 네비게이션 + 필드 래퍼 -->
     <div class="form-layout" :class="{ 'layout-expanded': sidebarExpanded && tabs.length > 1 }">
 
@@ -65,7 +47,7 @@
           <span>{{ config.label }}</span>
         </div>
         <div
-          v-else
+          v-else-if="config.type !== 'image-map-areas'"
           :key="key"
           class="form-group"
           :class="{ 'full-width': isFullWidthField(config.type) }"
@@ -256,6 +238,25 @@
           @clear-highlight="handleClearRowHighlight"
         />
 
+        <!-- Efamily 일괄 업로드 -->
+        <EfamilyExcelUploader
+          v-else-if="config.type === 'efamily-uploader'"
+          :productGroups="localData.productGroups"
+          :banners="localData.banners"
+          @update:header="updateHeader"
+          @update:productGroups="localData.productGroups = $event"
+          @update:banners="localData.banners = $event"
+        />
+
+        <!-- 화끈딜 일괄 업로드 -->
+        <HotdealExcelUploader
+          v-else-if="config.type === 'hotdeal-uploader'"
+          :row1Products="localData.row1Products"
+          :row3Products="localData.row3Products"
+          @update:row1Products="localData.row1Products = $event"
+          @update:row3Products="localData.row3Products = $event"
+        />
+
         <!-- Hotdeal Row1 Editor -->
         <HotdealRow1Editor
           v-else-if="config.type === 'hotdeal-row1-list'"
@@ -423,6 +424,15 @@ export default {
         this.activeSubItem = Math.max(0, newLen - 1)
       }
     },
+    selectedHotspotId(newId) {
+      if (newId === null || !this.currentTabSubItems || this.currentTabSubItems.type !== 'image-map') return
+      const area = (this.localData.imageMapAreas || []).find(a => a.id === newId)
+      if (!area) return
+      const rowIndex = (this.localData.imageMapRows || []).findIndex(r => r.id === area.rowId)
+      if (rowIndex !== -1) {
+        this.activeSubItem = rowIndex
+      }
+    },
     currentDevice(newVal) {
       this.$emit('device-change', newVal)
     },
@@ -472,13 +482,15 @@ export default {
         'banner-list',
         'hotdeal-row1-list',
         'hotdeal-row3-list',
-        'privacy-section-list'
+        'privacy-section-list',
+        'efamily-uploader',
+        'hotdeal-uploader'
       ]
       return fullWidthTypes.includes(type)
     },
     
     isHideLabelField(type) {
-      return ['hotspot-group', 'hotspot-group-list', 'privacy-section-list'].includes(type)
+      return ['hotspot-group', 'hotspot-group-list', 'privacy-section-list', 'efamily-uploader', 'hotdeal-uploader'].includes(type)
     },
     
     handleSelectHotspot(id) {

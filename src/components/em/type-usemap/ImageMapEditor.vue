@@ -1,23 +1,5 @@
 <template>
   <div class="image-map-editor">
-    <!-- 전역 벤더 선택 (상단) -->
-    <div class="global-vendor-selector">
-      <div class="form-group">
-        <label>벤더 타입 (전체 핫스팟 적용)</label>
-        <select 
-          :value="companyType"
-          @change="handleVendorChange"
-          class="form-input vendor-select"
-        >
-          <option value="normal">일반</option>
-          <option value="hynix">하이닉스</option>
-        </select>
-      </div>
-    </div>
-
-    <!-- 구분선 -->
-    <hr class="vendor-divider" />
-
     <!-- 행(Row) 목록 -->
     <div
       v-for="(row, rowIndex) in localRows"
@@ -334,11 +316,12 @@ export default {
     this.localAreas = this.areas ? JSON.parse(JSON.stringify(this.areas)) : []
   },
   mounted() {
-    // 각 row의 imageUrl 변경 감지
     this.setupImageUrlWatchers()
-    
-    // 기존 areas 초기화 및 watcher 설정
     this.initializeAreas()
+    // 탭 전환 후 재마운트 시 현재 companyType 기준으로 URL 재생성
+    this.$nextTick(() => {
+      this.localAreas.forEach(area => this.updateAreaUrl(area))
+    })
   },
   beforeDestroy() {
     // 모든 watcher 해제
@@ -396,6 +379,14 @@ export default {
     selectedAreaId(newId) {
       if (newId != null) {
         this.scrollToAreaCard(newId)
+      }
+    },
+    companyType(newVal, oldVal) {
+      if (newVal !== oldVal) {
+        this.$nextTick(() => {
+          this.localAreas.forEach(area => this.updateAreaUrl(area))
+          this.$emit('update:areas', JSON.parse(JSON.stringify(this.localAreas)))
+        })
       }
     }
   },
@@ -790,16 +781,7 @@ export default {
 
 <style scoped>
 
-.image-settings {
-  background: var(--color-bg-tertiary, #eceef2);
-  padding: 14px;
-  border-radius: var(--form-radius, 8px);
-  margin-bottom: 16px;
-}
 
-.hotspots-section {
-  margin-top: 16px;
-}
 
 .card-active {
   position: relative;
@@ -887,22 +869,6 @@ export default {
   }
 }
 
-/* 링크 입력 영역 */
-.link-inputs {
-  padding: 10px;
-  background: #f9fafb;
-  border: 1px solid #e5e7eb;
-  border-radius: 6px;
-  margin-bottom: 12px;
-}
-
-.link-inputs .form-group {
-  margin-bottom: 8px;
-}
-
-.link-inputs .form-group:last-child {
-  margin-bottom: 0;
-}
 
 /* URL 미리보기 */
 .url-preview {
@@ -925,18 +891,6 @@ export default {
   color: #6b7280;
 }
 
-/* 전역 벤더 선택 영역 */
-/* .global-vendor-selector {
-  padding: 16px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  border-radius: 8px;
-  margin-bottom: 20px;
-}
-
-.global-vendor-selector .form-group {
-  margin-bottom: 0;
-} */
-
 .global-vendor-selector label {
   color: #fff;
   font-weight: 600;
@@ -945,28 +899,6 @@ export default {
   display: block;
 }
 
-/* .vendor-select {
-  width: 100%;
-  max-width: 200px;
-  font-weight: 600;
-  font-size: 14px;
-  padding: 8px 12px;
-  border: 2px solid rgba(255, 255, 255, 0.3);
-  background: rgba(255, 255, 255, 0.95);
-  border-radius: 6px;
-  cursor: pointer;
-  transition: all 0.2s;
-}
 
-.vendor-select:hover {
-  border-color: rgba(255, 255, 255, 0.6);
-  background: #fff;
-}
-
-.vendor-select:focus {
-  outline: none;
-  border-color: #fff;
-  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.2);
-} */
 
 </style>

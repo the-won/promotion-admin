@@ -264,7 +264,7 @@ export default {
       return templateDefaults[templateName]
     },
     async handleDownload() {
-      const zipTemplates = ['em-type-imagemap', 'em-type-2', 'em-type-coupon']
+      const zipTemplates = ['em-type-imagemap', 'em-type-2', 'em-type-coupon', 'em-type-letter']
       if (zipTemplates.includes(this.selectedTemplate)) {
         await imageDownloadHtml(this.selectedTemplate, this.formData, 'web', { htmlFilename: 'em.html' })
       } else {

@@ -97,23 +97,5 @@ export default {
 </script>
 
 <style scoped>
-/* .date-picker {
-  margin-top: 8px;
-} */
 
-.date-picker .form-row {
-  align-items: center;
-  gap: 0;
-}
-
-.date-picker .form-group {
-  flex: 0 0 auto;
-  min-width: 70px;
-}
-
-.date-separator {
-  font-size: 11px;
-  color: var(--color-text-secondary, #64748b);
-  padding: 0 4px;
-}
 </style>

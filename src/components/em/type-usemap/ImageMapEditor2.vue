@@ -1,23 +1,5 @@
 <template>
   <div class="image-map-editor">
-    <!-- 전역 벤더 선택 (상단) -->
-    <div class="global-vendor-selector">
-      <div class="form-group">
-        <label>벤더 타입 (전체 핫스팟 적용)</label>
-        <select 
-          :value="companyType"
-          @change="handleVendorChange"
-          class="form-input vendor-select"
-        >
-          <option value="normal">일반</option>
-          <option value="hynix">하이닉스</option>
-        </select>
-      </div>
-    </div>
-
-    <!-- 구분선 -->
-    <hr class="vendor-divider" />
-
     <!-- 행(Row) 목록 -->
     <div
       v-for="(row, rowIndex) in localRows"
@@ -319,11 +301,12 @@ export default {
     this.localAreas = this.areas ? JSON.parse(JSON.stringify(this.areas)) : []
   },
   mounted() {
-    // 각 row의 imageUrl 변경 감지
     this.setupImageUrlWatchers()
-    
-    // 기존 areas 초기화 및 watcher 설정
     this.initializeAreas()
+    // 탭 전환 후 재마운트 시 현재 companyType 기준으로 URL 재생성
+    this.$nextTick(() => {
+      this.localAreas.forEach(area => this.updateAreaUrl(area))
+    })
   },
   beforeDestroy() {
     // 모든 watcher 해제
@@ -381,6 +364,14 @@ export default {
     selectedAreaId(newId) {
       if (newId != null) {
         this.scrollToAreaCard(newId)
+      }
+    },
+    companyType(newVal, oldVal) {
+      if (newVal !== oldVal) {
+        this.$nextTick(() => {
+          this.localAreas.forEach(area => this.updateAreaUrl(area))
+          this.$emit('update:areas', JSON.parse(JSON.stringify(this.localAreas)))
+        })
       }
     }
   },
