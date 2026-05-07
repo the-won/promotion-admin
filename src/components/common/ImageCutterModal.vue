@@ -16,15 +16,26 @@
         </div>
 
         <div class="cutter-body">
+          <div class="cutter-zoom-bar">
+            <button type="button" class="zoom-btn" title="축소 (−)" :disabled="zoom <= 0.25" @click="zoomOut">−</button>
+            <span class="zoom-value">{{ Math.round(zoom * 100) }}%</span>
+            <button type="button" class="zoom-btn" title="확대 (+)" :disabled="zoom >= 4" @click="zoomIn">+</button>
+            <span class="zoom-sep"></span>
+            <button type="button" class="zoom-fit" @click="resetZoom">맞춤</button>
+          </div>
           <div class="cutter-image-outer">
+            <div class="cutter-scale-host" :style="scaleHostStyle">
             <div
               ref="imageWrap"
               class="cutter-image-wrap"
+              :style="wrapTransformStyle"
               @click="handleImageClick"
+              @wheel.prevent="handleWheel"
             >
               <img
                 ref="img"
                 :src="imageUrl"
+                :style="imageLoaded ? { width: '100%', height: '100%', maxWidth: 'none', maxHeight: 'none' } : {}"
                 class="cutter-img"
                 draggable="false"
                 @load="onImageLoad"
@@ -51,6 +62,7 @@
                   >✕</button>
                 </div>
               </div>
+            </div>
             </div>
           </div>
           <p class="cutter-tip">이미지를 클릭하면 라인이 추가됩니다 · 라인을 드래그하여 위치 조정 · ✕로 삭제</p>
@@ -92,7 +104,10 @@ export default {
       imgNaturalHeight: 0,
       imageLoaded: false,
       dragging: null,
-      nextId: 0
+      nextId: 0,
+      zoom: 1,
+      baseDisplayWidth: 0,
+      baseDisplayHeight: 0
     }
   },
   computed: {
@@ -103,6 +118,23 @@ export default {
       if (!this.imageUrl) return 'image/png'
       const m = this.imageUrl.match(/^data:([^;]+);/)
       return m ? m[1] : 'image/png'
+    },
+    wrapTransformStyle() {
+      if (!this.imageLoaded) return {}
+      return {
+        width: this.baseDisplayWidth + 'px',
+        height: this.baseDisplayHeight + 'px',
+        transform: `scale(${this.zoom})`,
+        transformOrigin: 'top left'
+      }
+    },
+    scaleHostStyle() {
+      if (!this.imageLoaded) return {}
+      // wrap에 border 1px 있으므로 양쪽 2px 더해서 스크롤 영역을 정확히 확보
+      return {
+        width: Math.round((this.baseDisplayWidth + 2) * this.zoom) + 'px',
+        height: Math.round((this.baseDisplayHeight + 2) * this.zoom) + 'px'
+      }
     }
   },
   watch: {
@@ -111,6 +143,9 @@ export default {
         this.lines = []
         this.imageLoaded = false
         this.nextId = 0
+        this.zoom = 1
+        this.baseDisplayWidth = 0
+        this.baseDisplayHeight = 0
       }
     }
   },
@@ -127,7 +162,26 @@ export default {
       const img = this.$refs.img
       this.imgNaturalWidth = img.naturalWidth
       this.imgNaturalHeight = img.naturalHeight
-      this.imageLoaded = true
+      // CSS가 렌더링을 완료한 후 실제 표시 크기를 읽어야 JS 계산과 오차가 없음
+      this.$nextTick(() => {
+        this.baseDisplayWidth = img.offsetWidth
+        this.baseDisplayHeight = img.offsetHeight
+        this.imageLoaded = true
+      })
+    },
+
+    zoomIn() {
+      this.zoom = Math.min(4, Math.round((this.zoom + 0.25) * 100) / 100)
+    },
+    zoomOut() {
+      this.zoom = Math.max(0.25, Math.round((this.zoom - 0.25) * 100) / 100)
+    },
+    resetZoom() {
+      this.zoom = 1
+    },
+    handleWheel(e) {
+      if (e.deltaY < 0) this.zoomIn()
+      else this.zoomOut()
     },
 
     handleImageClick(e) {
@@ -261,27 +315,92 @@ export default {
 /* Body */
 .cutter-body {
   flex: 1;
-  overflow-y: auto;
-  padding: 20px 24px 14px;
+  min-height: 0;
+  padding: 16px 24px 14px;
   background: #f5f5f7;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 10px;
+  overflow: hidden;
 }
+.cutter-zoom-bar {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+}
+.zoom-btn {
+  width: 26px;
+  height: 26px;
+  background: #fff;
+  border: 1px solid #d2d2d7;
+  border-radius: 3px;
+  color: #1d1d1f;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  transition: border-color 0.1s, background 0.1s;
+}
+.zoom-btn:hover:not(:disabled) { border-color: #0071e3; color: #0071e3; background: #f0f7ff; }
+.zoom-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+.zoom-value {
+  min-width: 38px;
+  text-align: center;
+  font-family: Pretendard, -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  color: #1d1d1f;
+  font-variant-numeric: tabular-nums;
+}
+.zoom-sep {
+  width: 1px;
+  height: 16px;
+  background: #d2d2d7;
+  margin: 0 2px;
+}
+.zoom-fit {
+  background: #fff;
+  border: 1px solid #d2d2d7;
+  border-radius: 3px;
+  color: #6e6e73;
+  padding: 4px 9px;
+  font-size: 12px;
+  font-weight: 500;
+  font-family: Pretendard, -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  cursor: pointer;
+  line-height: 1;
+  transition: border-color 0.1s, color 0.1s;
+}
+.zoom-fit:hover { border-color: #a1a1a6; color: #1d1d1f; }
+
 .cutter-image-outer {
   display: flex;
   justify-content: center;
+  align-items: flex-start;
   width: 100%;
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+}
+.cutter-scale-host {
+  flex-shrink: 0;
+  position: relative;
 }
 .cutter-image-wrap {
   position: relative;
-  display: inline-block;
+  display: block;
   cursor: crosshair;
   user-select: none;
   border: 1px solid #d2d2d7;
   background: #fff;
   line-height: 0;
+  transform-origin: top left;
 }
 .cutter-img {
   display: block;

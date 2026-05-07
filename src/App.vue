@@ -64,7 +64,7 @@
 export default {
   name: 'App',
   data() {
-    return { darkMode: false }
+    return { darkMode: localStorage.getItem('theme') === 'dark' }
   },
   mounted() {
     this.applyDarkMode()
@@ -72,6 +72,7 @@ export default {
   methods: {
     toggleDarkMode() {
       this.darkMode = !this.darkMode
+      localStorage.setItem('theme', this.darkMode ? 'dark' : 'light')
       this.applyDarkMode()
     },
     applyDarkMode() {
