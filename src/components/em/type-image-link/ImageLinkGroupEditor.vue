@@ -195,6 +195,12 @@
               <div v-if="image._uploadedFileName" class="file-info">
                 ✓ {{ image._uploadedFileName }}
               </div>
+              <button
+                v-if="image.url && image.url.startsWith('data:')"
+                type="button"
+                class="btn-cut"
+                @click.stop="openCutter(group, imageIndex, image)"
+              >✂ 자르기</button>
             </div>
 
             <div class="form-group">
@@ -216,11 +222,22 @@
     <div class="text-center mt-4">
       <button @click="addGroup" class="btn btn-primary btn-lg">새 링크 그룹 추가</button>
     </div>
+
+    <image-cutter-modal
+      :visible="cutterVisible"
+      :image-url="cutterImageUrl"
+      :file-name="cutterFileName"
+      @confirm="onCutterConfirm"
+      @cancel="closeCutter"
+    />
   </div>
 </template>
 
 <script>
+import ImageCutterModal from '../../common/ImageCutterModal.vue'
+
 export default {
+  components: { ImageCutterModal },
   props: {
     value: {
       type: Array,
@@ -244,7 +261,11 @@ export default {
       localGroups: [],
       globalVendor: 'normal',
       activeGroupId: null,
-      activeImageId: null
+      activeImageId: null,
+      cutterVisible: false,
+      cutterTarget: null,
+      cutterImageUrl: '',
+      cutterFileName: ''
     }
   },
   created() {
@@ -318,6 +339,32 @@ export default {
         console.log('이미지 업로드:', file.name, '크기:', (file.size / 1024).toFixed(2), 'KB')
       }
       reader.readAsDataURL(file)
+    },
+
+    openCutter(group, imageIndex, image) {
+      this.cutterTarget = { group, imageIndex }
+      this.cutterImageUrl = image.url
+      this.cutterFileName = image._uploadedFileName || ''
+      this.cutterVisible = true
+    },
+
+    closeCutter() {
+      this.cutterVisible = false
+      this.cutterTarget = null
+      this.cutterImageUrl = ''
+      this.cutterFileName = ''
+    },
+
+    onCutterConfirm(pieces) {
+      const { group, imageIndex } = this.cutterTarget
+      group.images[imageIndex].url = pieces[0].url
+      const newImages = pieces.slice(1).map((p, i) => ({
+        id: this.generateId(`img_cut_${i}`),
+        url: p.url,
+        alt: group.images[imageIndex].alt || ''
+      }))
+      group.images.splice(imageIndex + 1, 0, ...newImages)
+      this.closeCutter()
     },
 
     // 고유 ID 생성 (템플릿 간 충돌 방지)

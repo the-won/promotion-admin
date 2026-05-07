@@ -1502,6 +1502,26 @@ button {
   font-weight: 500;
 }
 
+.btn-cut {
+  margin-top: 6px;
+  background: transparent;
+  border: 1px solid #d2d2d7;
+  border-radius: 3px;
+  color: #6e6e73;
+  font-size: 11px;
+  font-weight: 500;
+  font-family: Pretendard, -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  padding: 4px 10px;
+  cursor: pointer;
+  line-height: 1.4;
+  transition: border-color 0.1s, color 0.1s;
+  display: inline-block;
+}
+.btn-cut:hover {
+  border-color: #a1a1a6;
+  color: #1d1d1f;
+}
+
 /* ============================================
    템플릿 빌더 공통 — 히어로 & 상단 탭 (Item / EM / Event)
    body: page-item-templates | page-em-templates | page-event-templates

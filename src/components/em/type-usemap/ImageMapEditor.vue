@@ -42,6 +42,12 @@
           <div v-if="row._uploadedFileName" class="file-info">
             ✓ {{ row._uploadedFileName }}
           </div>
+          <button
+            v-if="row.imageUrl && row.imageUrl.startsWith('data:')"
+            type="button"
+            class="btn-cut"
+            @click.stop="openCutter(row, rowIndex)"
+          >✂ 자르기</button>
         </div>
 
         <div class="form-row">
@@ -259,14 +265,24 @@
     <div class="text-center mt-4">
       <button @click="addRow" class="btn btn-primary btn-lg">새 행 추가</button>
     </div>
+
+    <image-cutter-modal
+      :visible="cutterVisible"
+      :image-url="cutterImageUrl"
+      :file-name="cutterFileName"
+      @confirm="onCutterConfirm"
+      @cancel="closeCutter"
+    />
   </div>
 </template>
 
 <script>
-import imageHighlightMixin from '../../../utils/imageHighlightMixin.js' 
+import imageHighlightMixin from '../../../utils/imageHighlightMixin.js'
+import ImageCutterModal from '../../common/ImageCutterModal.vue'
 
 export default {
   name: 'ImageMapEditor',
+  components: { ImageCutterModal },
   mixins: [imageHighlightMixin],
   props: {
     rows: {
@@ -308,7 +324,11 @@ export default {
       localAreas: [],
       activeRowId: null,
       rowWatchers: [],
-      flashingAreaId: null
+      flashingAreaId: null,
+      cutterVisible: false,
+      cutterTarget: null,
+      cutterImageUrl: '',
+      cutterFileName: ''
     }
   },
   created() {
@@ -661,6 +681,42 @@ export default {
       reader.readAsDataURL(file)
     },
     
+    openCutter(row, rowIndex) {
+      this.cutterTarget = { row, rowIndex }
+      this.cutterImageUrl = row.imageUrl
+      this.cutterFileName = row._uploadedFileName || ''
+      this.cutterVisible = true
+    },
+
+    closeCutter() {
+      this.cutterVisible = false
+      this.cutterTarget = null
+      this.cutterImageUrl = ''
+      this.cutterFileName = ''
+    },
+
+    onCutterConfirm(pieces) {
+      const { row, rowIndex } = this.cutterTarget
+      row.imageUrl = pieces[0].url
+      row.width = pieces[0].width
+      row.height = pieces[0].height
+
+      const newRows = pieces.slice(1).map((p, i) => {
+        const newId = Date.now() + i + 1
+        return {
+          id: newId,
+          imageUrl: p.url,
+          width: p.width,
+          height: p.height,
+          imageAlt: '',
+          mapName: `mapContents${String(newId).slice(-4)}`
+        }
+      })
+      this.localRows.splice(rowIndex + 1, 0, ...newRows)
+      this.$nextTick(() => { this.setupImageUrlWatchers() })
+      this.closeCutter()
+    },
+
     getAreasForRow(rowId) {
       return this.localAreas.filter(a => a.rowId === rowId)
     },
