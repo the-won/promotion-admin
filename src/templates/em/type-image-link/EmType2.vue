@@ -6,22 +6,19 @@
 
           <!-- header table -->
           <table cellspacing="0" cellpadding="0" width="100%" border="0">
-              <!-- 2013-06-19 username 간격 수정 -->
               <tbody>
                 <tr>
-                  <td height="88" rowspan="2" width="148"><img alt="BENEPIA" src="https://newfront.benepia.co.kr/upload/xquared/b9d3364e-f386-4138-a6a4-6d61ed93422c.gif" width="148" height="88"><!-- 2022-02-15 BI변경 --></td>
+                  <td height="88" rowspan="2" width="148"><img :alt="headerConfig.logoAlt" :src="headerConfig.logoUrl" :width="headerConfig.logoWidth" :height="headerConfig.logoHeight"></td>
                   <td height="51" align="right"></td>
                   <td height="88" rowspan="2" width="325">
-                    <a href="https://newfront.benepia.co.kr/gatepage/emGateway.do?pcUrl=https://$:domain:$.benepia.co.kr/frnt/mypage/main.do?mnuTopLevel=0%26mnuLevel=0&mbUrl=https://mr2.benepia.co.kr/gateLink.bene?domain=$:domain:$%26linkUrl=/frnt/mypage/pointInfo.bene"  target="_blank" title="상세조회">
-                      <!-- 2020-05-26 이미지 경로 수정 -->
-                      <img border="0" alt="의 베네피아 잔여 포인트를 지금 확인하세요!" src="https://i.benepia.co.kr/ckeditor/D9E5A1E20280.mns0115844189801720.gif" width="325" height="88">
+                    <a :href="headerDetailUrl" target="_blank" title="상세조회">
+                      <img border="0" :alt="headerConfig.bannerAlt" :src="headerConfig.bannerUrl" :width="headerConfig.bannerWidth" :height="headerConfig.bannerHeight">
                     </a>
                   </td>
                 </tr>
-                <tr> 
-            <td :style="`font-size: 12px`" height="37" valign="top" align="right"><strong>%UserName%님</strong></td>
+                <tr>
+                  <td :style="`font-size: 12px`" height="37" valign="top" align="right"><strong>%UserName%님</strong></td>
                 </tr>
-                <!-- // 2013-06-19 username 간격 수정 -->
               </tbody>
           </table>
 
@@ -91,10 +88,11 @@
 
 <script>
 import imageHighlightMixin from '../../../utils/imageHighlightMixin.js'
+import { HEADER_CONFIGS } from '../../../config/headerConfig.js'
 
 export default {
   mixins: [imageHighlightMixin],
-  
+
   props: {
     data: {
       type: Object,
@@ -105,7 +103,16 @@ export default {
       default: () => ({ groupId: null, imageId: null })
     }
   },
-  
+
+  computed: {
+    headerConfig() {
+      return HEADER_CONFIGS[this.data.headerType || 'benepia'] || HEADER_CONFIGS.benepia
+    },
+    headerDetailUrl() {
+      return this.headerConfig.detailUrls[this.data.companyType || 'normal'] || this.headerConfig.detailUrls.normal
+    }
+  },
+
   methods: {
     isImageActive(groupId, imageId) {
       return this.selectedImageInfo &&

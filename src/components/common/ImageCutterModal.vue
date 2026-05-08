@@ -48,10 +48,12 @@
               >
                 <div
                   class="cut-line-bar"
+                  :style="{ transform: `scaleY(${1/zoom})` }"
                   @mousedown.stop.prevent="startDrag($event, line.id)"
                 ></div>
                 <div
                   class="cut-line-handle"
+                  :style="{ transform: `translateY(-50%) scale(${1/zoom})`, transformOrigin: 'right center' }"
                   @mousedown.stop.prevent="startDrag($event, line.id)"
                 >
                   <span class="cut-line-px">{{ Math.round(line.pos * imgNaturalHeight) }}px</span>
@@ -439,7 +441,6 @@ export default {
   position: absolute;
   right: 0;
   top: 50%;
-  transform: translateY(-50%);
   display: flex;
   align-items: center;
   gap: 4px;

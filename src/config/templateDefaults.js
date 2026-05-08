@@ -77,6 +77,16 @@ export const templateDefaults = {
         { value: 'hynix', label: 'HYNIX' }
       ]
     },
+    headerType: {
+      label: '헤더 유형',
+      type: 'select',
+      tab: '기본',
+      value: 'benepia',
+      options: [
+        { value: 'benepia', label: '베네피아' },
+        { value: 'hugashop', label: '휴가샵' }
+      ]
+    },
     sendDate: {
       label: '발송일 기준',
       type: 'date-picker',
@@ -473,6 +483,16 @@ export const templateDefaults = {
         { value: 'hynix', label: 'HYNIX' }
       ]
     },
+    headerType: {
+      label: '헤더 유형',
+      type: 'select',
+      tab: '기본',
+      value: 'benepia',
+      options: [
+        { value: 'benepia', label: '베네피아' },
+        { value: 'hugashop', label: '휴가샵' }
+      ]
+    },
     sendDate: {
       label: '발송일 기준',
       type: 'date-picker',
@@ -584,6 +604,16 @@ export const templateDefaults = {
       options: [
         { value: 'normal', label: 'TOBE' },
         { value: 'hynix', label: 'HYNIX' }
+      ]
+    },
+    headerType: {
+      label: '헤더 유형',
+      type: 'select',
+      tab: '기본',
+      value: 'benepia',
+      options: [
+        { value: 'benepia', label: '베네피아' },
+        { value: 'hugashop', label: '휴가샵' }
       ]
     },
     sendDate: {
@@ -764,6 +794,16 @@ export const templateDefaults = {
       options: [
         { value: 'normal', label: 'TOBE' },
         { value: 'hynix', label: 'HYNIX' }
+      ]
+    },
+    headerType: {
+      label: '헤더 유형',
+      type: 'select',
+      tab: '기본',
+      value: 'benepia',
+      options: [
+        { value: 'benepia', label: '베네피아' },
+        { value: 'hugashop', label: '휴가샵' }
       ]
     },
     sendDate: {
