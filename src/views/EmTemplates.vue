@@ -39,7 +39,7 @@
         <div class="content-grid">
           <!-- SIDEBAR -->
           <aside class="sidebar-card" :class="{ collapsed: !sidebarOpen, expanded: sidebarExpanded }">
-            <!-- <header class="card-header">
+            <header class="card-header">
               <button class="width-toggle-btn" @click="toggleSidebarWidth" :aria-label="sidebarExpanded ? '너비 좁히기' : '너비 넓히기'" title="너비 조절">
                 <svg v-if="!sidebarExpanded" width="16" height="16" viewBox="0 0 16 16" fill="none">
                   <path d="M1 8H15M15 8L11 4M15 8L11 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -50,7 +50,7 @@
               </button>
               <h3 class="card-title">템플릿 설정</h3>
               <button class="close-btn" @click="toggleSidebar" aria-label="사이드바 닫기">✕</button>
-            </header> -->
+            </header>
 
             <div class="card-body">
               <section class="sidebar-section">
@@ -70,17 +70,7 @@
                 </button> -->
                 </div>
               
-                <div class="form-row-space">
-                  <h4 class="section-title">기본 설정</h4>
-                  <button class="width-toggle-btn" @click="toggleSidebarWidth" :aria-label="sidebarExpanded ? '너비 좁히기' : '너비 넓히기'" title="너비 조절">
-                    <svg v-if="!sidebarExpanded" width="16" height="16" viewBox="0 0 16 16" fill="none">
-                      <path d="M1 8H15M15 8L11 4M15 8L11 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                    </svg>
-                    <svg v-else width="16" height="16" viewBox="0 0 16 16" fill="none">
-                      <path d="M15 8H1M1 8L5 4M1 8L5 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                    </svg>
-                  </button>
-                </div>
+                <h4 class="section-title">기본 설정</h4>
                 <TemplateForm
                   :template="selectedTemplate"
                   v-model="formData"
@@ -180,8 +170,8 @@ export default {
   components: { TemplateForm, PreviewFrame, TemplateSelectModal },
   data() {
     return {
-      selectedTemplate: 'em-type-1',
-      formData: this.extractValues(templateDefaults['em-type-1']),
+      selectedTemplate: 'em-type-2',
+      formData: this.extractValues(templateDefaults['em-type-2']),
       selectedHotspotId: null,
       activeRowId: null,
       activeImageIndex: null,
@@ -195,10 +185,10 @@ export default {
       visibleScrollPosition: { scrollTop: 0, viewportHeight: 400 },
       currentDevice: 'web',
       templates: [
-        { value: 'em-type-1', name: 'Type 1', description: '기본 텍스트 템플릿' },
+        // { value: 'em-type-1', name: 'Type 1', description: '기본 텍스트 템플릿' },
         { value: 'em-type-2', name: 'Image Link', description: '이미지 중심 템플릿' },
         { value: 'em-type-imagemap', name: 'Use Map', description: '이미지맵 템플릿' },
-        { value: 'em-type-imagemap2', name: 'Use Map2', description: '이미지맵 템플릿2' },
+        // { value: 'em-type-imagemap2', name: 'Use Map2', description: '이미지맵 템플릿2' },
         { value: 'em-type-coupon', name: '쿠폰혜택', description: '쿠폰혜택 템플릿' },
         { value: 'em-type-letter', name: '베네레터', description: '베네레터 템플릿' },
         { value: 'em-type-4', name: '이패밀리샵', description: '이패밀리샵 템플릿' },
