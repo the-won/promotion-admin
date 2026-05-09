@@ -612,52 +612,13 @@ export const templateDefaults = {
       value: [
         {
           id: 'imr_map_001',
-          imageUrl: 'https://picsum.photos/id/9/720/300',
+          imageUrl: 'https://picsum.photos/id/30/720/300',
           width: 720,
-          height: 0,
+          height: 300,
           imageAlt: '',
           mapName: 'mapContents01'
-        },
-        // {
-        //   id: 'imr_map_002',
-        //   imageUrl: 'http://org-i.benepia.co.kr/ckeditor/2025/12/11/BB588B647500.Tomcat_117654296464950.jpg',
-        //   width: 720,
-        //   height: 1478,
-        //   imageAlt: '[News01] 따뜻한 진심을 담은 연말 선물',
-        //   mapName: 'mapContents02'
-        // },
-        // {
-        //   id: 'imr_map_003',
-        //   imageUrl: 'http://org-i.benepia.co.kr/ckeditor/2025/12/11/BB588B647500.Tomcat_117654297755070.jpg',
-        //   width: 720,
-        //   height: 1155,
-        //   imageAlt: '[News02] 겨울에 즐기는 따뜻한 홈파티',
-        //   mapName: 'mapContents03'
-        // },
-        // {
-        //   id: 'imr_map_004',
-        //   imageUrl: 'https://org-i.benepia.co.kr/ckeditor/2025/12/11/BB588B647500.Tomcat_117654297899630.jpg',
-        //   width: 720,
-        //   height: 1461,
-        //   imageAlt: '[News02] 겨울에 즐기는 따뜻한 홈파티',
-        //   mapName: 'mapContents04'
-        // },
-        // {
-        //   id: 'imr_map_005',
-        //   imageUrl: 'https://org-i.benepia.co.kr/ckeditor/2025/08/11/866100976AD2.Tomcat_117548786243380.jpg',
-        //   width: 720,
-        //   height: 250,
-        //   imageAlt: '[News02] 겨울에 즐기는 따뜻한 홈파티',
-        //   mapName: 'mapContents05'
-        // },
-        // {
-        //   id: 'imr_map_006',
-        //   imageUrl: 'https://org-i.benepia.co.kr/ckeditor/2025/08/11/866100976AD2.Tomcat_117548786439870.jpg',
-        //   width: 720,
-        //   height: 453,
-        //   imageAlt: '[News02] 겨울에 즐기는 따뜻한 홈파티',
-        //   mapName: 'mapContents06'
-        // }
+        }
+        
       ]
     },
     imageMapAreas: {
@@ -665,34 +626,7 @@ export const templateDefaults = {
       type: 'image-map-areas',
       tab: '이미지맵',
       value: [
-        // {
-        //   id: 'ima_map_001',
-        //   rowId: 'imr_map_002',
-        //   href: 'https://example.com/beauty',
-        //   alt: '홀리데이 뷰티 기프트 기획전',
-        //   coords: { x1: 60, y1: 349, x2: 660, y2: 853 }
-        // },
-        // {
-        //   id: 'ima_map_002',
-        //   rowId: 'imr_map_002',
-        //   href: 'https://example.com/health',
-        //   alt: '베스트 건강가전 선물 기획전',
-        //   coords: { x1: 60, y1: 893, x2: 660, y2: 1397 }
-        // },
-        // {
-        //   id: 'ima_map_003',
-        //   rowId: 'imr_map_003',
-        //   href: 'https://example.com/tree',
-        //   alt: '크리스마스 트리 기획전',
-        //   coords: { x1: 411, y1: 397, x2: 639, y2: 624 }
-        // },
-        // {
-        //   id: 'ima_map_004',
-        //   rowId: 'imr_map_003',
-        //   href: 'https://example.com/food',
-        //   alt: '홈파티 간편식 기획전',
-        //   coords: { x1: 77, y1: 686, x2: 305, y2: 914 }
-        // }
+      
       ]
     }
   },

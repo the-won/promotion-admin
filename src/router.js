@@ -11,7 +11,13 @@ Vue.use(VueRouter)
 const routes = [
   {
     path: '/',
-    redirect: '/em-templates'
+    redirect: () => {
+      try {
+        const saved = JSON.parse(localStorage.getItem('defaultLanding'))
+        if (saved && saved.page) return `/${saved.page}`
+      } catch {}
+      return '/em-templates'
+    }
   },
   {
     path: '/home',

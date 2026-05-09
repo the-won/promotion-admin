@@ -170,9 +170,14 @@ export default {
   name: 'EmTemplates',
   components: { TemplateForm, PreviewFrame, TemplateSelectModal },
   data() {
+    let _tpl = 'em-type-2'
+    try {
+      const s = JSON.parse(localStorage.getItem('defaultLanding'))
+      if (s && s.page === 'em-templates' && s.template) _tpl = s.template
+    } catch {}
     return {
-      selectedTemplate: 'em-type-2',
-      formData: this.extractValues(templateDefaults['em-type-2']),
+      selectedTemplate: _tpl,
+      formData: this.extractValues(templateDefaults[_tpl]),
       selectedHotspotId: null,
       activeRowId: null,
       activeImageIndex: null,

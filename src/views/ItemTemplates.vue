@@ -131,9 +131,14 @@ export default {
   name: 'ItemTemplates',
   components: { TemplateForm, PreviewFrame, TemplateSelectModal },
   data() {
+    let _tpl = 'privacy-policy'
+    try {
+      const s = JSON.parse(localStorage.getItem('defaultLanding'))
+      if (s && s.page === 'item-templates' && s.template) _tpl = s.template
+    } catch {}
     return {
-      selectedTemplate: 'privacy-policy',
-      formData: this.extractValues(templateDefaults['privacy-policy']),
+      selectedTemplate: _tpl,
+      formData: this.extractValues(templateDefaults[_tpl]),
       sidebarOpen: true,
       sidebarExpanded: true,
       isModalOpen: false,

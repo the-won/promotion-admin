@@ -157,9 +157,14 @@ export default {
   name: 'EventTemplates',
   components: { TemplateForm, PreviewFrame, TemplateSelectModal },
   data() {
+    let _tpl = 'em-type-1'
+    try {
+      const s = JSON.parse(localStorage.getItem('defaultLanding'))
+      if (s && s.page === 'event-templates' && s.template) _tpl = s.template
+    } catch {}
     return {
-      selectedTemplate: 'em-type-1',
-      formData: this.extractValues(templateDefaults['em-type-1']),
+      selectedTemplate: _tpl,
+      formData: this.extractValues(templateDefaults[_tpl]),
       selectedHotspotId: null,
       selectedHotspotInfo: { hotspotId: null, groupIndex: null },
       activeRowId: null,
