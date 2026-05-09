@@ -3,8 +3,8 @@
     <div class="preview-card">
       <div class="preview-body" ref="previewBody" @scroll="handleScroll">
         <!-- TopBanner (디바이스별) -->
-        <TopBanner v-if="deviceType === 'web' && showTopBanner" />
-        <TopBannerMobile v-if="deviceType === 'mobile' && showTopBanner" />
+        <TopBanner v-if="deviceType === 'web' && effectiveShowTopBanner" />
+        <TopBannerMobile v-if="deviceType === 'mobile' && effectiveShowTopBanner" />
 
         <!-- 템플릿 컴포넌트 -->
         <component
@@ -12,8 +12,8 @@
           :is="currentComponent"
           :data="formData"
           :deviceType="deviceType"
-          :show-top-banner="showTopBanner"
-          :show-bottom-banner="showBottomBanner"
+          :show-top-banner="effectiveShowTopBanner"
+          :show-bottom-banner="effectiveShowBottomBanner"
           :selectedId="selectedHotspotId"
           :selectedImageInfo="selectedImageInfo"
           :selectedRowInfo="selectedRowInfo"
@@ -28,16 +28,16 @@
         />
 
          <!-- 공지사항 -->
-        <div v-if="showNotice && noticeData.items && noticeData.items.length > 0" class="preview-notice">
-          <h2 class="preview-notice-title">{{ noticeData.title || '꼭 확인하세요' }}</h2>
+        <div v-if="effectiveShowNotice && effectiveNoticeData.items && effectiveNoticeData.items.length > 0" class="preview-notice">
+          <h2 class="preview-notice-title">{{ effectiveNoticeData.title || '꼭 확인하세요' }}</h2>
           <ul class="preview-notice-list">
-            <li v-for="(item, i) in noticeData.items" :key="i">{{ item }}</li>
+            <li v-for="(item, i) in effectiveNoticeData.items" :key="i">{{ item }}</li>
           </ul>
         </div>
 
         <!-- BottomBanner (디바이스별) -->
-        <BottomBanner v-if="deviceType === 'web' && showBottomBanner" />
-        <BottomBannerMobile v-if="deviceType === 'mobile' && showBottomBanner" />
+        <BottomBanner v-if="deviceType === 'web' && effectiveShowBottomBanner" />
+        <BottomBannerMobile v-if="deviceType === 'mobile' && effectiveShowBottomBanner" />
 
        
 
@@ -134,6 +134,30 @@ export default {
     }
   },
   computed: {
+    effectiveShowTopBanner() {
+      return this.formData && this.formData.showTopBanner !== undefined
+        ? this.formData.showTopBanner
+        : this.showTopBanner
+    },
+    effectiveShowBottomBanner() {
+      return this.formData && this.formData.showBottomBanner !== undefined
+        ? this.formData.showBottomBanner
+        : this.showBottomBanner
+    },
+    effectiveShowNotice() {
+      return this.formData && this.formData.showNotice !== undefined
+        ? this.formData.showNotice
+        : this.showNotice
+    },
+    effectiveNoticeData() {
+      if (this.formData && (this.formData.noticeTitle !== undefined || this.formData.noticeItems !== undefined)) {
+        return {
+          title: this.formData.noticeTitle,
+          items: this.formData.noticeItems || []
+        }
+      }
+      return this.noticeData
+    },
     currentComponent() {
       const map = {
         'em-type-1': 'EmType1',

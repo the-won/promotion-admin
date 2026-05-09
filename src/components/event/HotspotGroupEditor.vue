@@ -1,16 +1,16 @@
 <template>
   <div class="hotspot-group-editor">
     <!-- 각 그룹 -->
-    <div 
-      v-for="(group, groupIdx) in localGroups" 
-      :key="group.id" 
+    <div
+      v-for="{ group, actualIdx } in displayGroups"
+      :key="group.id"
       class="image-map-editor"
     >
       <div class="card-header">
-        <span class="card-title">이미지 {{ groupIdx + 1 }}</span>
-        <button 
+        <span class="card-title">이미지 {{ actualIdx + 1 }}</span>
+        <button
           v-if="localGroups.length > 1"
-          @click="removeGroup(group.id)" 
+          @click="removeGroup(group.id)"
           class="btn btn-danger btn-sm"
         >
           그룹 삭제
@@ -18,20 +18,20 @@
       </div>
 
       <!-- 이미지 URL -->
-      <div 
+      <div
         class="image-url-section"
-        @mouseenter="setActiveImage(groupIdx + 1)"
+        @mouseenter="setActiveImage(actualIdx + 1)"
         @mouseleave="setActiveImage(null)"
-        @click="selectImage(groupIdx + 1)"
+        @click="selectImage(actualIdx + 1)"
       >
         <div class="form-group">
           <label>
             {{ deviceType === 'mobile' ? '모바일' : '웹' }} 이미지 URL
           </label>
-          <input 
-            type="url" 
+          <input
+            type="url"
             :value="getImageUrl(group)"
-            @input="updateImageUrl(groupIdx, $event.target.value)"
+            @input="updateImageUrl(actualIdx, $event.target.value)"
             placeholder="https://example.com/image.jpg"
             class="form-input"
             @click.stop
@@ -46,18 +46,24 @@
           <div class="image-input-wrapper">
             <input
               type="file"
-              :id="`upload-${deviceType}-${groupIdx}`"
+              :id="`upload-${deviceType}-${actualIdx}`"
               accept="image/*"
-              @change="handleImageUpload(groupIdx, $event)"
+              @change="handleImageUpload(actualIdx, $event)"
               class="file-input-hidden"
               @click.stop
             />
-            <label :for="`upload-${deviceType}-${groupIdx}`" class="btn-file">
+            <label :for="`upload-${deviceType}-${actualIdx}`" class="btn-file">
               📁 파일 선택
             </label>
             <span v-if="getUploadedFileName(group)" class="file-info">
               ✓ {{ getUploadedFileName(group) }}
             </span>
+            <button
+              v-if="getImageUrl(group) && getImageUrl(group).startsWith('data:')"
+              type="button"
+              class="btn-cut"
+              @click.stop="openCutter(actualIdx, group)"
+            >✂ 자르기</button>
           </div>
         </div>
 
@@ -65,10 +71,10 @@
           <label>
             {{ deviceType === 'mobile' ? '모바일' : '웹' }} 이미지 대체텍스트 (스크린리더용)
           </label>
-          <input 
-            type="text" 
+          <input
+            type="text"
             :value="getImageAlt(group)"
-            @input="updateImageAlt(groupIdx, $event.target.value)"
+            @input="updateImageAlt(actualIdx, $event.target.value)"
             placeholder="이미지 설명"
             class="form-input"
             @click.stop
@@ -79,7 +85,7 @@
       <!-- 핫스팟 목록 헤더 -->
       <div class="section-header">
         <h4>버튼 목록 ({{ group.hotspots.length }}개)</h4>
-        <button @click="addHotspot(groupIdx)" class="btn btn-success">추가</button>
+        <button @click="addHotspot(actualIdx)" class="btn btn-success">추가</button>
       </div>
 
       <!-- Empty State -->
@@ -98,11 +104,11 @@
             selected: selectedId === hotspot.id,
             'flash-highlight': flashingId === hotspot.id 
           }"
-          @click="selectHotspot(hotspot.id, groupIdx + 1)"
+          @click="selectHotspot(hotspot.id, actualIdx + 1)"
         >
           <div class="card-header">
             <span class="card-title">버튼 {{ hsIdx + 1 }}</span>
-            <button @click.stop="removeHotspot(groupIdx, hotspot.id)" class="btn btn-danger btn-sm">삭제</button>
+            <button @click.stop="removeHotspot(actualIdx, hotspot.id)" class="btn btn-danger btn-sm">삭제</button>
           </div>
 
           <!-- 링크 타입 셀렉트 (deviceType별 분리) -->
@@ -331,6 +337,14 @@
         + 새 이미지 + 핫스팟 그룹 추가
       </button>
     </div>
+
+    <ImageCutterModal
+      :visible="cutterVisible"
+      :image-url="cutterImageUrl"
+      :file-name="cutterFileName"
+      @confirm="onCutterConfirm"
+      @cancel="closeCutter"
+    />
   </div>
 </template>
 
@@ -343,9 +357,11 @@ import {
   buildWebAction,
   buildMobileAction,
 } from '../../utils/hotspotLinkBuilder.js'
+import ImageCutterModal from '../common/ImageCutterModal.vue'
 
 export default {
   name: 'HotspotGroupEditor',
+  components: { ImageCutterModal },
   props: {
     value: {
       type: Array,
@@ -366,6 +382,10 @@ export default {
     sidebarExpanded: {
       type: Boolean,
       default: false
+    },
+    selectedGroupIndex: {
+      type: Number,
+      default: null
     }
   },
   data() {
@@ -378,12 +398,23 @@ export default {
         product: '상품 코드',
         brand_ecoupon: '브랜드 코드',
         brand_store: '브랜드 코드',
-      }
+      },
+      cutterVisible: false,
+      cutterTarget: null,
+      cutterImageUrl: '',
+      cutterFileName: ''
     }
   },
   computed: {
     currentLinkTypes() {
       return this.deviceType === 'mobile' ? MOBILE_LINK_TYPES : WEB_LINK_TYPES
+    },
+    displayGroups() {
+      if (this.selectedGroupIndex !== null && this.selectedGroupIndex !== undefined) {
+        const group = this.localGroups[this.selectedGroupIndex]
+        return group ? [{ group, actualIdx: this.selectedGroupIndex }] : []
+      }
+      return this.localGroups.map((group, actualIdx) => ({ group, actualIdx }))
     }
   },
   created() {
@@ -550,8 +581,51 @@ export default {
         hotspots: []
       }
     },
+    openCutter(actualIdx, group) {
+      this.cutterTarget = { actualIdx }
+      this.cutterImageUrl = this.getImageUrl(group)
+      this.cutterFileName = this.getUploadedFileName(group) || ''
+      this.cutterVisible = true
+    },
+
+    closeCutter() {
+      this.cutterVisible = false
+      this.cutterTarget = null
+      this.cutterImageUrl = ''
+      this.cutterFileName = ''
+    },
+
+    onCutterConfirm(pieces) {
+      const { actualIdx } = this.cutterTarget
+      const srcGroup = this.localGroups[actualIdx]
+      const isWeb = this.deviceType !== 'mobile'
+
+      if (isWeb) {
+        srcGroup.webImageUrl = pieces[0].url
+        srcGroup.webImageFileName = `cut_1_${this.cutterFileName}`
+      } else {
+        srcGroup.mobileImageUrl = pieces[0].url
+        srcGroup.mobileImageFileName = `cut_1_${this.cutterFileName}`
+      }
+
+      const newGroups = pieces.slice(1).map((p, i) => ({
+        id: this.generateId('hg'),
+        webImageUrl: isWeb ? p.url : '',
+        webImageAlt: srcGroup.webImageAlt || '',
+        webImageFileName: isWeb ? `cut_${i + 2}_${this.cutterFileName}` : '',
+        mobileImageUrl: !isWeb ? p.url : '',
+        mobileImageAlt: srcGroup.mobileImageAlt || '',
+        mobileImageFileName: !isWeb ? `cut_${i + 2}_${this.cutterFileName}` : '',
+        hotspots: []
+      }))
+
+      this.localGroups.splice(actualIdx + 1, 0, ...newGroups)
+      this.closeCutter()
+    },
+
     addGroup() {
       this.localGroups.push(this.createNewGroup())
+      this.$nextTick(() => this.$emit('add-group'))
     },
     removeGroup(groupId) {
       if (this.localGroups.length <= 1) return
@@ -798,6 +872,25 @@ export default {
 .btn-add-group:hover {
   background: rgba(0, 113, 227, 0.05);
   border-color: #0071e3;
+}
+
+.btn-cut {
+  flex-shrink: 0;
+  padding: 4px 10px;
+  font-size: 12px;
+  font-weight: 600;
+  border: 1px solid #d1d5db;
+  border-radius: 5px;
+  background: #fff;
+  color: #374151;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+}
+
+.btn-cut:hover {
+  background: #fef3c7;
+  border-color: #f59e0b;
+  color: #b45309;
 }
 
 .checkbox-label {

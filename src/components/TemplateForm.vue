@@ -50,7 +50,7 @@
           v-else-if="config.type !== 'image-map-areas'"
           :key="key"
           class="form-group"
-          :class="{ 'full-width': isFullWidthField(config.type) }"
+          :class="{ 'full-width': isFullWidthField(config.type) || config.fullWidth }"
           :data-privacy-form-field="key"
         >
         <label v-if="!isHideLabelField(config.type)" class="form-label">{{ config.label }}</label>
@@ -112,15 +112,33 @@
           </label>
         </div>
         
-        <!-- Checkbox -->
-        <label v-else-if="config.type === 'checkbox'" class="checkbox-item">
-          <input 
-            type="checkbox"
-            v-model="localData[key]"
-            class="form-checkbox"
-          />
-          <span class="checkbox-label">{{ config.checkboxLabel || '사용' }}</span>
+        <!-- Checkbox (Toggle Switch) -->
+        <label v-else-if="config.type === 'checkbox'" class="toggle-item">
+          <span class="toggle-label">{{ config.label }}</span>
+          <span class="toggle-track" :class="{ active: localData[key] }">
+            <input
+              type="checkbox"
+              v-model="localData[key]"
+              class="toggle-input"
+            />
+            <span class="toggle-thumb"></span>
+          </span>
         </label>
+
+        <!-- Notice Items (공지사항 항목 리스트 에디터) -->
+        <div v-else-if="config.type === 'notice-items'" class="notice-items-editor">
+          <div v-for="(item, idx) in (localData[key] || [])" :key="idx" class="notice-item-row">
+            <input
+              type="text"
+              :value="item"
+              @input="updateNoticeItem(key, idx, $event.target.value)"
+              class="form-input notice-item-input"
+              placeholder="공지사항 내용"
+            />
+            <button type="button" @click="removeNoticeItem(key, idx)" class="btn-remove-item">✕</button>
+          </div>
+          <button type="button" @click="addNoticeItem(key)" class="btn-add-item">+ 항목 추가</button>
+        </div>
 
         <!-- Range Slider -->
         <div v-else-if="config.type === 'range'" class="range-field">
@@ -172,9 +190,11 @@
           :selectedId="selectedHotspotId"
           :selectedHotspotInfo="selectedHotspotInfo"
           :sidebarExpanded="sidebarExpanded"
+          :selectedGroupIndex="currentTabSubItems && currentTabSubItems.type === 'hotspot-group' ? activeSubItem : null"
           @select="handleSelectHotspot"
           @select-hotspot="handleSelectHotspotWithInfo"
           @select-image="handleSelectHotspotImage"
+          @add-group="handleHotspotGroupAdd"
         />
 
         <!-- Image Link Group Editor -->
@@ -373,6 +393,10 @@ export default {
           const rows = this.localData[key] || []
           return { type: 'image-map', key, items: rows.map((_, i) => `이미지행 목록${i + 1}`) }
         }
+        if (config.type === 'hotspot-group-list') {
+          const groups = this.localData[key] || []
+          return { type: 'hotspot-group', key, items: groups.map((_, i) => `이미지행 목록 ${i + 1}`) }
+        }
       }
       return null
     }
@@ -427,6 +451,16 @@ export default {
         this.activeSubItem = Math.max(0, newLen - 1)
       }
     },
+    'localData.hotspotGroups'(newGroups, oldGroups) {
+      if (!this.currentTabSubItems || this.currentTabSubItems.type !== 'hotspot-group') return
+      const newLen = (newGroups || []).length
+      const oldLen = (oldGroups || []).length
+      if (newLen > oldLen) {
+        this.activeSubItem = newLen - 1
+      } else if (this.activeSubItem !== null && this.activeSubItem >= newLen) {
+        this.activeSubItem = Math.max(0, newLen - 1)
+      }
+    },
     selectedHotspotId(newId) {
       if (newId === null || !this.currentTabSubItems || this.currentTabSubItems.type !== 'image-map') return
       const area = (this.localData.imageMapAreas || []).find(a => a.id === newId)
@@ -469,6 +503,7 @@ export default {
         '상품': '<svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M1.5 1.5H3L4.5 9.5H11.5L13 4H5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><circle cx="5.5" cy="12.5" r="1.2" stroke="currentColor" stroke-width="1.3"/><circle cx="10.5" cy="12.5" r="1.2" stroke="currentColor" stroke-width="1.3"/></svg>',
         '배너': '<svg width="14" height="14" viewBox="0 0 16 16" fill="none"><rect x="1.5" y="2.5" width="13" height="4" rx="1" stroke="currentColor" stroke-width="1.4"/><rect x="1.5" y="9.5" width="13" height="4" rx="1" stroke="currentColor" stroke-width="1.4"/></svg>',
         '이미지맵': '<svg width="14" height="14" viewBox="0 0 16 16" fill="none"><rect x="1.5" y="1.5" width="13" height="13" rx="1.5" stroke="currentColor" stroke-width="1.4"/><path d="M5 7L7.5 5L10.5 8L13 6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/><circle cx="10" cy="10.5" r="2" stroke="currentColor" stroke-width="1.3"/><path d="M11.4 11.9L13.5 14" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>',
+        '설정': '<svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M8 1.5A6.5 6.5 0 1 0 8 14.5A6.5 6.5 0 0 0 8 1.5Z" stroke="currentColor" stroke-width="1.4"/><circle cx="8" cy="8" r="2" stroke="currentColor" stroke-width="1.3"/></svg>',
       }
       return icons[tab] || '<svg width="14" height="14" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="5.5" stroke="currentColor" stroke-width="1.4"/></svg>'
     },
@@ -487,17 +522,27 @@ export default {
         'hotdeal-row3-list',
         'privacy-section-list',
         'efamily-uploader',
-        'hotdeal-uploader'
+        'hotdeal-uploader',
+        'notice-items',
+        'checkbox'
       ]
       return fullWidthTypes.includes(type)
     },
-    
+
     isHideLabelField(type) {
-      return ['hotspot-group', 'hotspot-group-list', 'privacy-section-list', 'efamily-uploader', 'hotdeal-uploader'].includes(type)
+      return ['hotspot-group', 'hotspot-group-list', 'privacy-section-list', 'efamily-uploader', 'hotdeal-uploader', 'checkbox', 'notice-items'].includes(type)
     },
     
     handleSelectProduct(info) {
       this.$emit('select-product', info)
+    },
+
+    handleHotspotGroupAdd() {
+      this.$nextTick(() => {
+        if (this.localData.hotspotGroups) {
+          this.activeSubItem = this.localData.hotspotGroups.length - 1
+        }
+      })
     },
 
     handleSelectHotspot(id) {
@@ -548,6 +593,20 @@ export default {
       this.localData.headerImageCode = headerData.headerImageCode
       this.localData.headerImage = headerData.headerImage
       this.localData.headerImageAlt = headerData.headerImageAlt
+    },
+
+    updateNoticeItem(key, idx, val) {
+      const arr = [...(this.localData[key] || [])]
+      arr[idx] = val
+      this.$set(this.localData, key, arr)
+    },
+    removeNoticeItem(key, idx) {
+      const arr = [...(this.localData[key] || [])]
+      arr.splice(idx, 1)
+      this.$set(this.localData, key, arr)
+    },
+    addNoticeItem(key) {
+      this.$set(this.localData, key, [...(this.localData[key] || []), ''])
     }
   }
 }
@@ -804,39 +863,69 @@ export default {
   color: var(--color-text, #2d3748);
 }
 
-/* Checkbox */
-.checkbox-item {
+/* Toggle Switch */
+.toggle-item {
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 10px 12px;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 14px;
   background: var(--color-bg-secondary, #f5f6fa);
   border: 1px solid transparent;
   border-radius: var(--form-radius, 8px);
   cursor: pointer;
-  transition: all 0.15s ease;
+  transition: background 0.15s, border-color 0.15s;
+  user-select: none;
 }
 
-.checkbox-item:hover {
+.toggle-item:hover {
   background: var(--color-bg-tertiary, #eceef2);
 }
 
-.checkbox-item:has(.form-checkbox:checked) {
-  background: var(--color-primary-light, #eef0ff);
-  border-color: var(--color-primary, #5568f8);
+.toggle-label {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--color-text, #1d1d1f);
+  flex: 1;
 }
 
-.form-checkbox {
+.toggle-track {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  width: 40px;
+  height: 22px;
+  border-radius: 11px;
+  background: var(--color-border, #d2d2d7);
+  transition: background 0.2s ease;
+  flex-shrink: 0;
+}
+
+.toggle-track.active {
+  background: var(--color-primary, #0071e3);
+}
+
+.toggle-input {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
+
+.toggle-thumb {
+  position: absolute;
+  left: 3px;
   width: 16px;
   height: 16px;
-  margin: 0;
-  accent-color: var(--color-primary, #5568f8);
-  cursor: pointer;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.25);
+  transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
-.checkbox-label {
-  font-size: 11px;
-  color: var(--color-text, #2d3748);
+.toggle-track.active .toggle-thumb {
+  transform: translateX(18px);
 }
 
 /* Range Slider */
@@ -888,6 +977,63 @@ export default {
   font-weight: 600;
   font-size: 11px;
   color: var(--color-primary, #5568f8);
+}
+
+/* Notice Items Editor */
+.notice-items-editor {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.notice-item-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.notice-item-input {
+  flex: 1;
+  min-width: 0;
+}
+
+.btn-remove-item {
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  border: 1px solid var(--color-border, #e8ebf0);
+  border-radius: 6px;
+  background: var(--color-bg-secondary, #f5f6fa);
+  color: var(--color-text-secondary, #6e6e73);
+  font-size: 11px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+
+.btn-remove-item:hover {
+  background: #fee2e2;
+  border-color: #fca5a5;
+  color: #dc2626;
+}
+
+.btn-add-item {
+  align-self: flex-start;
+  padding: 6px 12px;
+  border: 1px dashed var(--color-border, #d2d2d7);
+  border-radius: 6px;
+  background: transparent;
+  color: var(--color-primary, #0071e3);
+  font-size: 12px;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.btn-add-item:hover {
+  background: var(--color-primary-light, rgba(0, 113, 227, 0.06));
+  border-color: var(--color-primary, #0071e3);
 }
 
 .privacy-form-field-flash {

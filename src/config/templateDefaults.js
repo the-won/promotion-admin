@@ -130,18 +130,56 @@ export const templateDefaults = {
     folderName: {
       label: 'Zip 폴더 이름',
       type: 'text',
+      tab: '기본',
       placeholder: '폴더명을 적어주세요',
       value: ''
     },
     pageTitle: {
       label: '페이지 타이틀',
       type: 'text',
+      tab: '기본',
       placeholder: '클래스101 신년 프로모션',
       value: '클래스101 신년 프로모션'
+    },
+    showTopBanner: {
+      label: '상단 배너 사용',
+      type: 'checkbox',
+      tab: '설정',
+      value: true
+    },
+    showBottomBanner: {
+      label: '하단 배너 사용',
+      type: 'checkbox',
+      tab: '설정',
+      value: true
+    },
+    showNotice: {
+      label: '공지사항 사용',
+      type: 'checkbox',
+      tab: '설정',
+      value: true
+    },
+    noticeTitle: {
+      label: '공지사항 제목',
+      type: 'text',
+      tab: '설정',
+      fullWidth: true,
+      value: '꼭 확인하세요'
+    },
+    noticeItems: {
+      label: '공지사항 항목',
+      type: 'notice-items',
+      tab: '설정',
+      value: [
+        '이용권 할인은 베네피아에서 e쿠폰 구매 시에만 적용됩니다.',
+        "구매하신 e쿠폰은 '마이페이지 > 나의 e쿠폰함'에서 확인하실 수 있습니다.",
+        '본 이벤트는 제휴사의 사정에 의해 예고 없이 중단 또는 변경될 수 있습니다.'
+      ]
     },
     hotspotGroups: {
       label: '이미지 + 핫스팟 그룹',
       type: 'hotspot-group-list',
+      tab: '이미지맵',
       value: [
         {
           id: 'hg_t3_001',

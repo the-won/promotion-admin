@@ -67,67 +67,6 @@
                 </svg>
               </button>
 
-              <!-- 배너 설정 -->
-              <section class="banner-settings">
-                <label class="checkbox-item">
-                  <input 
-                    type="checkbox" 
-                    v-model="bannerSettings[currentDevice].showTopBanner"
-                  >
-                  <span>상단 배너 사용</span>
-                </label>
-                
-                <label class="checkbox-item">
-                  <input 
-                    type="checkbox" 
-                    v-model="bannerSettings[currentDevice].showBottomBanner"
-                  >
-                  <span>하단 배너 사용</span>
-                </label>
-
-                <label class="checkbox-item">
-                  <input 
-                    type="checkbox" 
-                    v-model="bannerSettings[currentDevice].showNotice"
-                  >
-                  <span>공지사항 사용</span>
-                </label>
-
-                <div class="notice-editor" v-show="bannerSettings[currentDevice].showNotice">
-                  <div class="notice-title-row">
-                    <span class="notice-label">제목</span>
-                    <input
-                      type="text"
-                      class="notice-title-input"
-                      v-model="bannerSettings[currentDevice].noticeTitle"
-                      placeholder="꼭 확인하세요"
-                    />
-                  </div>
-                  <div class="notice-items">
-                    <div
-                      v-for="(item, index) in bannerSettings[currentDevice].noticeItems"
-                      :key="index"
-                      class="notice-item-row"
-                    >
-                      <span class="notice-bullet">*</span>
-                      <input
-                        type="text"
-                        class="notice-item-input"
-                        :value="item"
-                        @input="updateNoticeItem(index, $event.target.value)"
-                        placeholder="공지사항 내용"
-                      />
-                      <button
-                        class="notice-item-del"
-                        @click="removeNoticeItem(index)"
-                        title="삭제"
-                      >✕</button>
-                    </div>
-                  </div>
-                  <button class="notice-add-btn" @click="addNoticeItem">+ 항목 추가</button>
-                </div>
-              </section>
-
               <section class="sidebar-section">
                 
                 <h4 class="section-title">기본 설정</h4>
@@ -174,13 +113,6 @@
                   :template="selectedTemplate"
                   :formData="formData"
                   :deviceType="currentDevice"
-                  :show-top-banner="bannerSettings[currentDevice].showTopBanner"
-                  :show-bottom-banner="bannerSettings[currentDevice].showBottomBanner"
-                  :show-notice="bannerSettings[currentDevice].showNotice"
-                  :notice-data="{
-                    title: bannerSettings[currentDevice].noticeTitle,
-                    items: bannerSettings[currentDevice].noticeItems
-                  }"
                   :selectedHotspotId="selectedHotspotId"
                   :selectedHotspotInfo="selectedHotspotInfo"
                   :activeRowId="activeRowId"
@@ -235,30 +167,6 @@ export default {
       visibleTopPositions: { 1: 10, 2: 10 },
       visibleScrollPosition: { scrollTop: 0, viewportHeight: 400 },
       currentDevice: 'web',
-      bannerSettings: {
-        web: {
-          showTopBanner: false,
-          showBottomBanner: false,
-          showNotice: false,
-          noticeTitle: '꼭 확인하세요',
-          noticeItems: [
-            '이용권 할인은 베네피아에서 e쿠폰 구매 시에만 적용됩니다.',
-            '구매하신 e쿠폰은 \'마이페이지 > 나의 e쿠폰함\'에서 확인하실 수 있습니다.',
-            '본 이벤트는 제휴사의 사정에 의해 예고 없이 중단 또는 변경될 수 있습니다.'
-          ]
-        },
-        mobile: {
-          showTopBanner: false,
-          showBottomBanner: false,
-          showNotice: false,
-          noticeTitle: '꼭 확인하세요',
-          noticeItems: [
-            '이용권 할인은 베네피아에서 e쿠폰 구매 시에만 적용됩니다.',
-            '구매하신 e쿠폰은 \'마이페이지 > 나의 e쿠폰함\'에서 확인하실 수 있습니다.',
-            '본 이벤트는 제휴사의 사정에 의해 예고 없이 중단 또는 변경될 수 있습니다.'
-          ]
-        }
-      },
       templates: [
         { value: 'em-type-1', name: 'Type 1', icon: '', description: '기본 텍스트 템플릿' },
         { value: 'em-type-3', name: 'Image Map', icon: '', description: '이벤트 이미지맵 템플릿' }
@@ -266,9 +174,6 @@ export default {
     }
   },
   computed: {
-    currentBannerSettings() {
-      return this.bannerSettings[this.currentDevice]
-    },
     selectedTemplateLabel() {
       const t = this.templates.find((x) => x.value === this.selectedTemplate)
       return t ? t.name : this.selectedTemplate
@@ -329,16 +234,6 @@ export default {
     document.body.classList.remove('sidebar-closed', 'sidebar-expanded', 'page-event-templates')
   },
   methods: {
-    addNoticeItem() {
-      this.bannerSettings[this.currentDevice].noticeItems.push('')
-    },
-    removeNoticeItem(index) {
-      this.bannerSettings[this.currentDevice].noticeItems.splice(index, 1)
-    },
-    updateNoticeItem(index, value) {
-      this.$set(this.bannerSettings[this.currentDevice].noticeItems, index, value)
-    },
-
     handleWindowScroll() {
       console.log('🔄 Window 스크롤 이벤트')
       this.updateVisiblePositions()
@@ -394,20 +289,14 @@ export default {
     },
     
     async handleDownload() {
-      console.log('🔍 다운로드 시작')
-      console.log('📱 currentDevice:', this.currentDevice)
-      console.log('📋 selectedTemplate:', this.selectedTemplate)
-      const settings = this.bannerSettings[this.currentDevice]
       const bannerOptions = {
-        showTopBanner: settings.showTopBanner,
-        showBottomBanner: settings.showBottomBanner,
-        showNotice: settings.showNotice,
-        noticeTitle: settings.noticeTitle,
-        noticeItems: settings.noticeItems
+        showTopBanner: this.formData.showTopBanner || false,
+        showBottomBanner: this.formData.showBottomBanner || false,
+        showNotice: this.formData.showNotice || false,
+        noticeTitle: this.formData.noticeTitle || '꼭 확인하세요',
+        noticeItems: this.formData.noticeItems || []
       }
-      console.log('🎌 bannerOptions:', bannerOptions)
-      // downloadHtml(this.selectedTemplate, this.formData, this.currentDevice, bannerOptions)
-       await imageDownloadHtml(this.selectedTemplate, this.formData, this.currentDevice, bannerOptions)
+      await imageDownloadHtml(this.selectedTemplate, this.formData, this.currentDevice, bannerOptions)
     },
     
     handleSelectHotspot(id) {
@@ -638,158 +527,7 @@ export default {
   opacity: 0.65;
 }
 
-.banner-settings {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  padding: 16px;
-  margin-bottom: 20px;
-  background: #f9fafb;
-  border-radius: 8px;
-  border: 1px solid #e5e7eb;
-}
-
-.checkbox-item {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  cursor: pointer;
-  font-size: 14px;
-  color: #374151;
-  padding: 8px;
-  border-radius: 6px;
-  transition: background 0.2s;
-}
-
-.checkbox-item:hover {
-  background: #f3f4f6;
-}
-
-.checkbox-item input[type="checkbox"] {
-  width: 18px;
-  height: 18px;
-  cursor: pointer;
-  accent-color: #6366f1;
-}
-
-.checkbox-item span {
-  user-select: none;
-}
-
 .sidebar-section .section-title:not(:first-child) {
   margin-top: 20px;
-}
-
-/* 공지사항 편집기 */
-.notice-editor {
-  margin-top: 12px;
-  padding: 12px;
-  background: #fff;
-  border: 1px solid #e5e7eb;
-  border-radius: 8px;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.notice-title-row {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.notice-label {
-  font-size: 12px;
-  font-weight: 600;
-  color: #6b7280;
-  white-space: nowrap;
-  width: 28px;
-}
-
-.notice-title-input {
-  flex: 1;
-  padding: 6px 8px;
-  font-size: 13px;
-  border: 1px solid #d1d5db;
-  border-radius: 6px;
-  outline: none;
-  color: #111827;
-}
-
-.notice-title-input:focus {
-  border-color: #6366f1;
-}
-
-.notice-items {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.notice-item-row {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.notice-bullet {
-  font-size: 13px;
-  color: #9ca3af;
-  flex-shrink: 0;
-}
-
-.notice-item-input {
-  flex: 1;
-  padding: 5px 8px;
-  font-size: 12px;
-  border: 1px solid #d1d5db;
-  border-radius: 6px;
-  outline: none;
-  color: #374151;
-  min-width: 0;
-}
-
-.notice-item-input:focus {
-  border-color: #6366f1;
-}
-
-.notice-item-del {
-  width: 22px;
-  height: 22px;
-  flex-shrink: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: none;
-  border: 1px solid #e5e7eb;
-  border-radius: 4px;
-  font-size: 10px;
-  color: #9ca3af;
-  cursor: pointer;
-  transition: all 0.15s;
-}
-
-.notice-item-del:hover {
-  background: #fee2e2;
-  border-color: #fca5a5;
-  color: #ef4444;
-}
-
-.notice-add-btn {
-  padding: 5px 10px;
-  font-size: 12px;
-  font-weight: 600;
-  color: #6366f1;
-  background: #eef2ff;
-  border: 1px dashed #a5b4fc;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: all 0.15s;
-  text-align: center;
-}
-
-.notice-add-btn:hover {
-  background: #e0e7ff;
-  border-color: #6366f1;
 }
 </style>
