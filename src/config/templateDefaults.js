@@ -503,6 +503,70 @@ export const templateDefaults = {
     }
   },
 
+  'em-type-familysale': {
+    folderName: {
+      label: 'Zip 폴더 이름',
+      type: 'text',
+      tab: '기본',
+      value: ''
+    },
+    companyType: {
+      label: '도메인',
+      type: 'select',
+      tab: '기본',
+      value: 'normal',
+      options: [
+        { value: 'normal', label: 'TOBE' },
+        { value: 'hynix', label: 'HYNIX' }
+      ]
+    },
+    sendDate: {
+      label: '발송일 기준',
+      type: 'date-picker',
+      tab: '기본',
+      value: {
+        year: '2026',
+        month: '01',
+        day: '01'
+      }
+    },
+    _div_fs_header: {
+      type: 'divider',
+      label: '헤더 이미지',
+      tab: '기본'
+    },
+    headerImage: {
+      label: '상단 이미지 URL',
+      type: 'url',
+      tab: '기본',
+      value: ''
+    },
+    headerImageAlt: {
+      label: '상단 이미지 대체텍스트',
+      type: 'text',
+      tab: '기본',
+      value: ''
+    },
+    productGroups: {
+      label: '상품 그룹',
+      type: 'family-sale-group',
+      tab: '상품',
+      value: [
+        {
+          id: 'pg_fs_001',
+          titleImage: { url: '', alt: '' },
+          products: [
+            { productCode: '', imageUrl: '', imageAlt: '' },
+            { productCode: '', imageUrl: '', imageAlt: '' },
+            { productCode: '', imageUrl: '', imageAlt: '' },
+            { productCode: '', imageUrl: '', imageAlt: '' },
+            { productCode: '', imageUrl: '', imageAlt: '' }
+          ]
+        }
+      ]
+    }
+  },
+
   // 이미지맵 템플릿형
   'em-type-imagemap': {
     folderName: {

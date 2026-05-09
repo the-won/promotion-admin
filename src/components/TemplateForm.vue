@@ -47,7 +47,7 @@
           <span>{{ config.label }}</span>
         </div>
         <div
-          v-else-if="config.type !== 'image-map-areas'"
+          v-else-if="config.type !== 'image-map-areas' && !isHiddenByHotdealNav(config.type)"
           :key="key"
           class="form-group"
           :class="{ 'full-width': isFullWidthField(config.type) || config.fullWidth }"
@@ -212,7 +212,9 @@
         <ProductGroupListEditor
           v-else-if="config.type === 'product-group-list'"
           v-model="localData[key]"
+          :selectedGroupIndex="currentTabSubItems && currentTabSubItems.type === 'product-group' ? activeSubItem : null"
           @select-product="handleSelectProduct"
+          @add-group="() => {}"
         />
 
         <!-- 👇 Banner List Editor (추가) -->
@@ -282,14 +284,26 @@
         <HotdealRow1Editor
           v-else-if="config.type === 'hotdeal-row1-list'"
           v-model="localData[key]"
+          :selectedIndex="hotdealRow1SelectedIndex"
           @select-product="handleSelectProduct"
+          @add-row="() => {}"
         />
 
         <!-- Hotdeal Row3 Editor -->
         <HotdealRow3Editor
           v-else-if="config.type === 'hotdeal-row3-list'"
           v-model="localData[key]"
+          :selectedIndex="hotdealRow3SelectedIndex"
           @select-product="handleSelectProduct"
+          @add-row="() => {}"
+        />
+
+        <!-- Family Sale Group Editor -->
+        <FamilySaleGroupEditor
+          v-else-if="config.type === 'family-sale-group'"
+          v-model="localData[key]"
+          :selectedGroupIndex="currentTabSubItems && currentTabSubItems.type === 'family-sale-group' ? activeSubItem : null"
+          @add-group="() => {}"
         />
 
         <!-- Privacy Section Editor -->
@@ -322,6 +336,7 @@ import ProductGroupListEditor from './em/efamily/ProductGroupListEditor.vue'
 import BannerListEditor from './em/efamily/BannerListEditor.vue'
 import EfamilyExcelUploader from './em/efamily/EfamilyExcelUploader.vue'
 import PrivacySectionEditor from './privacy/PrivacySectionEditor.vue'
+import FamilySaleGroupEditor from './em/family-sale/FamilySaleGroupEditor.vue'
 
 export default {
   components: { 
@@ -337,7 +352,8 @@ export default {
     ProductGroupListEditor,
     BannerListEditor,
     EfamilyExcelUploader,
-    PrivacySectionEditor
+    PrivacySectionEditor,
+    FamilySaleGroupEditor
   },
   props: [
     'template', 
@@ -397,8 +413,43 @@ export default {
           const groups = this.localData[key] || []
           return { type: 'hotspot-group', key, items: groups.map((_, i) => `이미지행 목록 ${i + 1}`) }
         }
+        if (config.type === 'product-group-list') {
+          const groups = this.localData[key] || []
+          return { type: 'product-group', key, items: groups.map((_, i) => `상품 그룹 ${i + 1}`) }
+        }
+        if (config.type === 'family-sale-group') {
+          const groups = this.localData[key] || []
+          return { type: 'family-sale-group', key, items: groups.map((_, i) => `상품 그룹 ${i + 1}`) }
+        }
+      }
+      // 비밀특가: hotdeal-row1-list + hotdeal-row3-list 합산
+      let row1Key = null, row3Key = null
+      for (const [key, config] of fields) {
+        if (config.type === 'hotdeal-row1-list') row1Key = key
+        if (config.type === 'hotdeal-row3-list') row3Key = key
+      }
+      if (row1Key || row3Key) {
+        const row1 = row1Key ? (this.localData[row1Key] || []) : []
+        const row3 = row3Key ? (this.localData[row3Key] || []) : []
+        const items = [
+          ...row1.map((_, i) => `1단 상품 ${i + 1}`),
+          ...row3.map((_, i) => `3단 상품 ${i + 1}`)
+        ]
+        return { type: 'hotdeal', row1Key, row3Key, row1Count: row1.length, items }
       }
       return null
+    },
+    hotdealRow1SelectedIndex() {
+      if (!this.currentTabSubItems || this.currentTabSubItems.type !== 'hotdeal') return null
+      if (this.activeSubItem === null) return null
+      const row1Count = this.currentTabSubItems.row1Count || 0
+      return this.activeSubItem < row1Count ? this.activeSubItem : null
+    },
+    hotdealRow3SelectedIndex() {
+      if (!this.currentTabSubItems || this.currentTabSubItems.type !== 'hotdeal') return null
+      if (this.activeSubItem === null) return null
+      const row1Count = this.currentTabSubItems.row1Count || 0
+      return this.activeSubItem >= row1Count ? this.activeSubItem - row1Count : null
     }
   },
   created() {
@@ -459,6 +510,43 @@ export default {
         this.activeSubItem = newLen - 1
       } else if (this.activeSubItem !== null && this.activeSubItem >= newLen) {
         this.activeSubItem = Math.max(0, newLen - 1)
+      }
+    },
+    'localData.productGroups'(newGroups, oldGroups) {
+      const subItems = this.currentTabSubItems
+      if (!subItems || !['product-group', 'family-sale-group'].includes(subItems.type)) return
+      const newLen = (newGroups || []).length
+      const oldLen = (oldGroups || []).length
+      if (newLen > oldLen) {
+        this.activeSubItem = newLen - 1
+      } else if (this.activeSubItem !== null && this.activeSubItem >= newLen) {
+        this.activeSubItem = Math.max(0, newLen - 1)
+      }
+    },
+    'localData.row1Products'(newRows, oldRows) {
+      const subItems = this.currentTabSubItems
+      if (!subItems || subItems.type !== 'hotdeal') return
+      const newLen = (newRows || []).length
+      const oldLen = (oldRows || []).length
+      if (newLen > oldLen) {
+        this.activeSubItem = newLen - 1
+      } else if (this.activeSubItem !== null && this.activeSubItem < (oldLen || 0) && this.activeSubItem >= newLen) {
+        this.activeSubItem = Math.max(0, newLen - 1)
+      }
+    },
+    'localData.row3Products'(newRows, oldRows) {
+      const subItems = this.currentTabSubItems
+      if (!subItems || subItems.type !== 'hotdeal') return
+      const row1Count = (this.localData.row1Products || []).length
+      const newLen = (newRows || []).length
+      const oldLen = (oldRows || []).length
+      if (newLen > oldLen) {
+        this.activeSubItem = row1Count + newLen - 1
+      } else if (this.activeSubItem !== null && this.activeSubItem >= row1Count) {
+        const row3Idx = this.activeSubItem - row1Count
+        if (row3Idx >= newLen) {
+          this.activeSubItem = row1Count + Math.max(0, newLen - 1)
+        }
       }
     },
     selectedHotspotId(newId) {
@@ -524,13 +612,14 @@ export default {
         'efamily-uploader',
         'hotdeal-uploader',
         'notice-items',
-        'checkbox'
+        'checkbox',
+        'family-sale-group'
       ]
       return fullWidthTypes.includes(type)
     },
 
     isHideLabelField(type) {
-      return ['hotspot-group', 'hotspot-group-list', 'privacy-section-list', 'efamily-uploader', 'hotdeal-uploader', 'checkbox', 'notice-items'].includes(type)
+      return ['hotspot-group', 'hotspot-group-list', 'privacy-section-list', 'efamily-uploader', 'hotdeal-uploader', 'checkbox', 'notice-items', 'family-sale-group'].includes(type)
     },
     
     handleSelectProduct(info) {
@@ -543,6 +632,66 @@ export default {
           this.activeSubItem = this.localData.hotspotGroups.length - 1
         }
       })
+    },
+    addSubNavItem() {
+      const subItems = this.currentTabSubItems
+      if (!subItems) return
+      const { type, key } = subItems
+      if (type === 'product-group') {
+        const newGroup = {
+          id: Date.now(),
+          titleImage: { url: '', alt: '' },
+          rows: [{ id: Date.now() + 1, products: [
+            { productCode: '', imageUrl: '', imageAlt: '' },
+            { productCode: '', imageUrl: '', imageAlt: '' },
+            { productCode: '', imageUrl: '', imageAlt: '' }
+          ]}]
+        }
+        const list = [...(this.localData[key] || []), newGroup]
+        this.$set(this.localData, key, list)
+        this.$nextTick(() => { this.activeSubItem = list.length - 1 })
+      } else if (type === 'family-sale-group') {
+        const newGroup = {
+          id: `pg_fs_${Date.now()}`,
+          titleImage: { url: '', alt: '' },
+          products: Array(5).fill(null).map(() => ({ productCode: '', imageUrl: '', imageAlt: '' }))
+        }
+        const list = [...(this.localData[key] || []), newGroup]
+        this.$set(this.localData, key, list)
+        this.$nextTick(() => { this.activeSubItem = list.length - 1 })
+      }
+    },
+    addHotdealItem(listType) {
+      const subItems = this.currentTabSubItems
+      if (!subItems || subItems.type !== 'hotdeal') return
+      if (listType === 'row1') {
+        const newProduct = { id: Date.now(), productId: '', imageUrl: '', imageAlt: '' }
+        const list = [...(this.localData[subItems.row1Key] || []), newProduct]
+        this.$set(this.localData, subItems.row1Key, list)
+        this.$nextTick(() => { this.activeSubItem = list.length - 1 })
+      } else if (listType === 'row3') {
+        const newProductSet = {
+          id: Date.now(),
+          products: [
+            { productId: '', imageUrl: '', imageAlt: '' },
+            { productId: '', imageUrl: '', imageAlt: '' },
+            { productId: '', imageUrl: '', imageAlt: '' }
+          ]
+        }
+        const row1Count = (this.localData[subItems.row1Key] || []).length
+        const list = [...(this.localData[subItems.row3Key] || []), newProductSet]
+        this.$set(this.localData, subItems.row3Key, list)
+        this.$nextTick(() => { this.activeSubItem = row1Count + list.length - 1 })
+      }
+    },
+    isHiddenByHotdealNav(type) {
+      const subItems = this.currentTabSubItems
+      if (!subItems || subItems.type !== 'hotdeal' || this.activeSubItem === null) return false
+      const row1Count = subItems.row1Count || 0
+      const isRow1Selected = this.activeSubItem < row1Count
+      if (type === 'hotdeal-row1-list' && !isRow1Selected) return true
+      if (type === 'hotdeal-row3-list' && isRow1Selected) return true
+      return false
     },
 
     handleSelectHotspot(id) {
@@ -704,6 +853,9 @@ export default {
 
 /* 서브-nav */
 .form-nav-sub-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   padding: 10px 10px 4px;
   font-size: 10px;
   font-weight: 600;
@@ -711,6 +863,37 @@ export default {
   text-transform: uppercase;
   color: var(--color-text-tertiary, #888);
   opacity: 0.7;
+}
+
+.sub-nav-add-wrap {
+  display: flex;
+  gap: 4px;
+  opacity: 1;
+}
+
+.sub-nav-add-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1px 5px;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1;
+  border: 1px solid var(--color-border, #d2d2d7);
+  border-radius: 4px;
+  background: var(--color-bg, #fff);
+  color: var(--color-text-secondary, #6e6e73);
+  cursor: pointer;
+  transition: background 0.12s, color 0.12s, border-color 0.12s;
+  letter-spacing: 0;
+  text-transform: none;
+  opacity: 1;
+}
+
+.sub-nav-add-btn:hover {
+  background: var(--color-primary, #0071e3);
+  color: #fff;
+  border-color: var(--color-primary, #0071e3);
 }
 
 .form-nav-sub-item {

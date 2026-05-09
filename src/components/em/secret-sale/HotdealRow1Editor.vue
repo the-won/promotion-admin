@@ -1,10 +1,5 @@
 <template>
   <div class="hotdeal-row1-editor">
-    <div class="section-header">
-      <h4>화끈딜 1단 상품</h4>
-      <button @click="addRow" class="btn btn-success">1행 추가</button>
-    </div>
-
     <div v-if="localProducts.length === 0" class="empty-state">
       1단 상품을 추가하세요.
     </div>
@@ -13,20 +8,21 @@
       <div
         v-for="(product, index) in localProducts"
         :key="product.id"
+        v-show="selectedIndex === null || selectedIndex === index"
         class="card selectable"
         :class="{ 'flash-highlight': flashingId === product.id }"
         @click="selectProduct(product.id)"
       >
         <div class="card-header">
           <span class="card-title">1X1 상품 {{ index + 1 }}</span>
-          <button @click="removeRow(index)" class="btn btn-danger btn-sm">삭제</button>
+          <button @click.stop="removeRow(index)" class="btn btn-danger btn-sm">삭제</button>
         </div>
 
         <div class="form-row">
           <div class="form-group">
             <label>상품코드</label>
-            <input 
-              type="text" 
+            <input
+              type="text"
               v-model="product.productId"
               placeholder="상품코드"
               class="form-input"
@@ -35,8 +31,8 @@
 
           <div class="form-group">
             <label>대체 텍스트</label>
-            <input 
-              type="text" 
+            <input
+              type="text"
               v-model="product.imageAlt"
               placeholder="대체 텍스트"
               class="form-input"
@@ -45,8 +41,8 @@
 
           <div class="form-group">
             <label>이미지 URL</label>
-            <input 
-              type="url" 
+            <input
+              type="url"
               v-model="product.imageUrl"
               placeholder="이미지 URL"
               class="form-input"
@@ -55,12 +51,20 @@
         </div>
       </div>
     </div>
+
+    <!-- 새 상품 추가 버튼 -->
+    <div class="text-center mt-4">
+      <button @click="addRow" class="btn btn-primary btn-lg">새 1단 상품 추가</button>
+    </div>
   </div>
 </template>
 
 <script>
 export default {
-  props: ['value'],
+  props: {
+    value: { type: Array, default: () => [] },
+    selectedIndex: { type: Number, default: null }
+  },
   data() {
     return {
       flashingId: null,
@@ -112,6 +116,15 @@ export default {
 <style scoped>
 .hotdeal-row1-editor {
   margin-top: 16px;
+}
+
+.empty-state {
+  padding: 40px;
+  text-align: center;
+  color: var(--color-text-secondary, #64748b);
+  background: var(--color-bg-secondary, #f5f6fa);
+  border-radius: 8px;
+  border: 2px dashed var(--color-border, #e8ebf0);
 }
 
 .card.flash-highlight {

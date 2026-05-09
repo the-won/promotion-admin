@@ -276,50 +276,77 @@ button {
 /* Template Select Button */
 .template-select-btn {
   width: 100%;
-  padding: 10px 14px;
-  margin-bottom: 16px;
   display: flex;
-  align-items: center;
-  gap: 10px;
-  background: rgb(0 0 0 / 4%);
-  border: 1px solid var(--color-border);
-  border-radius: 6px;
-  color: var(--color-text-secondary);
-  font-size: 13px;
-  font-weight: 500;
+  align-items: stretch;
+  margin-bottom: 16px;
+  background: oklch(97% 0.014 265);
+  border: 1px solid oklch(84% 0.020 265);
+  border-radius: 10px;
   cursor: pointer;
-  transition: background 0.15s, border-color 0.15s, color 0.15s;
+  overflow: hidden;
+  text-align: left;
+  transition: border-color 0.2s, box-shadow 0.2s, background 0.18s;
 }
 
 .template-select-btn:hover {
-  background: rgb(0 0 0 / 7%);
-  border-color: var(--color-border-hover);
-  color: var(--color-text);
+  border-color: var(--blueprint-indigo, #5c61d4);
+  box-shadow: 0 0 0 3px oklch(60% 0.18 267 / 11%);
+  background: oklch(95.5% 0.018 265);
 }
 
 .template-select-btn:active {
-  background: rgb(0 0 0 / 10%);
+  background: oklch(94% 0.022 265);
 }
 
-.template-select-btn .btn-icon {
+.tsb-icon {
   flex-shrink: 0;
-  color: var(--color-text-tertiary);
+  width: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(150deg, var(--blueprint-indigo, #5c61d4) 0%, var(--blueprint-indigo-deep, #373c8f) 100%);
+  color: #fff;
 }
 
-.template-select-btn .btn-text {
+.tsb-body {
   flex: 1;
-  text-align: left;
+  min-width: 0;
+  padding: 9px 12px;
 }
 
-.template-select-btn > svg:last-child {
+.tsb-label {
+  display: block;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--color-text-tertiary, #86868b);
+  line-height: 1;
+  margin-bottom: 3px;
+}
+
+.tsb-value {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-text, #1d1d1f);
+  line-height: 1.2;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tsb-chevron {
   flex-shrink: 0;
-  opacity: 0.45;
-  transition: transform 0.15s;
+  align-self: center;
+  margin-right: 12px;
+  color: var(--color-text-tertiary, #86868b);
+  transition: transform 0.18s ease, color 0.18s;
 }
 
-.template-select-btn:hover > svg:last-child {
+.template-select-btn:hover .tsb-chevron {
+  color: var(--blueprint-indigo, #5c61d4);
   transform: translateY(2px);
-  opacity: 0.65;
 }
 
 
@@ -1878,3 +1905,20 @@ body.page-em-templates.dark-mode .hero-section .template-tab.active,
 body.page-event-templates.dark-mode .hero-section .template-tab.active {
   color: oklch(98% 0.005 220);
 }
+
+/* Dark Mode: Template Select Button */
+.dark-mode .template-select-btn {
+  background: rgb(255 255 255 / 6%);
+  border-color: rgb(255 255 255 / 12%);
+}
+
+.dark-mode .template-select-btn:hover {
+  border-color: rgb(92 97 212 / 55%);
+  box-shadow: 0 0 0 3px rgb(92 97 212 / 15%);
+  background: rgb(255 255 255 / 9%);
+}
+
+.dark-mode .tsb-label { color: rgb(226 232 240 / 50%); }
+.dark-mode .tsb-value { color: #f1f5f9; }
+.dark-mode .tsb-chevron { color: rgb(226 232 240 / 50%); }
+.dark-mode .template-select-btn:hover .tsb-chevron { color: oklch(72% 0.12 267); }

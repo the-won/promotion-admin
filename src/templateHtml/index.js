@@ -3,6 +3,7 @@ import { generateEmType2Html } from './em/type-image-link/emType2Html.js'
 import { generateEventMapHtml } from './event/eventMapHtml.js'
 import { generateEmType4Html } from './em/efamily/emType4Html.js'
 import { generateEmType5Html } from './em/secret-sale/emType5Html.js'
+import { generateEmTypeFamilySaleHtml } from './em/family-sale/emTypeFamilySaleHtml.js'
 import { generateFullEmailHtml } from './em/type-usemap/ImageMapHtml.js'
 import { generateFullEmailHtml2 } from './em/type-usemap/ImageMapHtml2.js'
 import { generatePrivacyHtml } from './privacy/privacyHtml.js'
@@ -14,6 +15,7 @@ export const templateHtmlGenerators = {
   'em-type-3': generateEventMapHtml,
   'em-type-4': generateEmType4Html,
   'em-type-5': generateEmType5Html,
+  'em-type-familysale': generateEmTypeFamilySaleHtml,
   'em-type-imagemap': generateFullEmailHtml,
   'em-type-imagemap2': generateFullEmailHtml2,
   'em-type-letter' : generateFullEmailHtml,

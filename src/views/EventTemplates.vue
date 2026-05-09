@@ -55,20 +55,23 @@
 
             <div class="card-body">
               <button class="template-select-btn" @click="openModal">
-                <svg class="btn-icon" width="15" height="15" viewBox="0 0 20 20" fill="none" aria-hidden="true">
-                  <rect x="5" y="2" width="10" height="3" rx="1.5" fill="currentColor" opacity="0.7"/>
-                  <rect x="3" y="4" width="14" height="14" rx="2" stroke="currentColor" stroke-width="1.6" fill="none"/>
-                  <line x1="6.5" y1="8.5" x2="13.5" y2="8.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
-                  <line x1="6.5" y1="11.5" x2="11" y2="11.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
-                </svg>
-                <span class="btn-text">템플릿 선택</span>
-                <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                <div class="tsb-icon">
+                  <svg width="18" height="18" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                    <rect x="2" y="2" width="7" height="7" rx="1.5" fill="currentColor" opacity="0.9"/>
+                    <rect x="11" y="2" width="7" height="7" rx="1.5" fill="currentColor" opacity="0.65"/>
+                    <rect x="2" y="11" width="7" height="7" rx="1.5" fill="currentColor" opacity="0.65"/>
+                    <rect x="11" y="11" width="7" height="7" rx="1.5" fill="currentColor" opacity="0.9"/>
+                  </svg>
+                </div>
+                <div class="tsb-body">
+                  <span class="tsb-label">템플릿</span>
+                  <span class="tsb-value">{{ selectedTemplateLabel }}</span>
+                </div>
+                <svg class="tsb-chevron" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
                   <path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
                 </svg>
               </button>
-
               <section class="sidebar-section">
-                
                 <h4 class="section-title">기본 설정</h4>
                 <TemplateForm
                   :template="selectedTemplate"
@@ -194,7 +197,7 @@ export default {
     },
     sidebarExpanded(val) {
       this.updateBodyClass()
-    }
+    },
   },
   mounted() {
     document.body.classList.add('page-event-templates')
@@ -439,19 +442,19 @@ export default {
     selectTemplate(templateValue) {
       this.selectedTemplate = templateValue
     },
-    
+
     openModal() {
       this.isModalOpen = true
     },
-    
+
     closeModal() {
       this.isModalOpen = false
     },
-    
+
     handleModalSelect(templateValue) {
       this.selectedTemplate = templateValue
     },
-    
+
     updateBodyClass() {
       document.body.classList.remove('sidebar-closed', 'sidebar-expanded')
       if (!this.sidebarOpen) {

@@ -59,6 +59,7 @@ import EmType5 from '../templates/em/secret-sale/EmType5.vue'
 import EmTypeImageMap from '../templates/em/type-usemap/EmTypeImageMap.vue'
 import EmTypeImageMap2 from '../templates/em/type-usemap/EmTypeImageMap2.vue'
 import PrivacyPreview from '../templates/privacy/PrivacyPreview.vue'
+import EmTypeFamilySale from '../templates/em/family-sale/EmTypeFamilySale.vue'
 
 export default {
   name: 'PreviewFrame',
@@ -74,7 +75,8 @@ export default {
     EmType5,
     EmTypeImageMap,
     EmTypeImageMap2,
-    PrivacyPreview
+    PrivacyPreview,
+    EmTypeFamilySale
   },
   props: {
     template: String,
@@ -169,6 +171,7 @@ export default {
         'em-type-imagemap2': 'EmTypeImageMap2',
         'em-type-coupon' : 'EmType2',
         'em-type-letter' : 'EmTypeImageMap',
+        'em-type-familysale': 'EmTypeFamilySale',
         'privacy-policy': 'PrivacyPreview'
       }
       return map[this.template] || 'EmType1'

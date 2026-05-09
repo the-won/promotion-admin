@@ -1,25 +1,21 @@
 <template>
   <div class="product-group-list-editor">
-    <div class="section-header">
-      <h4>상품 그룹 관리</h4>
-      <button @click="addGroup" class="btn btn-success">새 그룹 추가</button>
-    </div>
-
     <div v-if="localGroups.length === 0" class="empty-state">
       상품 그룹을 추가하세요.
     </div>
 
     <!-- 각 그룹 -->
-    <div 
-      v-for="(group, groupIndex) in localGroups" 
+    <div
+      v-for="(group, groupIndex) in localGroups"
       :key="group.id"
+      v-show="selectedGroupIndex === null || selectedGroupIndex === groupIndex"
       class="group-wrapper"
     >
       <!-- 그룹 헤더 -->
       <div class="group-header">
         <span class="group-title">상품 그룹 {{ groupIndex + 1 }}</span>
-        <button 
-          @click="removeGroup(group.id)" 
+        <button
+          @click="removeGroup(group.id)"
           class="btn btn-danger btn-sm"
           :disabled="localGroups.length === 1"
         >
@@ -36,8 +32,8 @@
         <div class="form-row">
           <div class="form-group">
             <label>타이틀 이미지 URL</label>
-            <input 
-              type="url" 
+            <input
+              type="url"
               v-model="group.titleImage.url"
               placeholder="http://www.efamilyshop.co.kr/storage/..."
               class="form-input"
@@ -46,8 +42,8 @@
 
           <div class="form-group">
             <label>타이틀 대체 텍스트</label>
-            <input 
-              type="text" 
+            <input
+              type="text"
               v-model="group.titleImage.alt"
               placeholder="예: 지금이 운동할 시기!"
               class="form-input"
@@ -68,8 +64,8 @@
         >
           <div class="card-header card-header-orange">
             <span class="card-title">상품 행 {{ rowIndex + 1 }} (3개)</span>
-            <button 
-              @click="removeRow(group.id, row.id)" 
+            <button
+              @click="removeRow(group.id, row.id)"
               class="btn btn-danger btn-sm"
               :disabled="group.rows.length === 1"
             >
@@ -81,32 +77,15 @@
           <div class="form-row mb-3">
             <div class="form-group">
               <label>상품코드</label>
-              <input 
-                type="text" 
-                v-model="row.products[0].productCode"
-                placeholder="상품코드"
-                class="form-input"
-              />
+              <input type="text" v-model="row.products[0].productCode" placeholder="상품코드" class="form-input" />
             </div>
-
             <div class="form-group">
               <label>대체 텍스트</label>
-              <input 
-                type="text" 
-                v-model="row.products[0].imageAlt"
-                placeholder="대체 텍스트"
-                class="form-input"
-              />
+              <input type="text" v-model="row.products[0].imageAlt" placeholder="대체 텍스트" class="form-input" />
             </div>
-
             <div class="form-group">
               <label>이미지 URL</label>
-              <input 
-                type="url" 
-                v-model="row.products[0].imageUrl"
-                placeholder="이미지 URL"
-                class="form-input"
-              />
+              <input type="url" v-model="row.products[0].imageUrl" placeholder="이미지 URL" class="form-input" />
             </div>
           </div>
 
@@ -114,32 +93,15 @@
           <div class="form-row mb-3">
             <div class="form-group">
               <label>상품코드</label>
-              <input 
-                type="text" 
-                v-model="row.products[1].productCode"
-                placeholder="상품코드"
-                class="form-input"
-              />
+              <input type="text" v-model="row.products[1].productCode" placeholder="상품코드" class="form-input" />
             </div>
-
             <div class="form-group">
               <label>대체 텍스트</label>
-              <input 
-                type="text" 
-                v-model="row.products[1].imageAlt"
-                placeholder="대체 텍스트"
-                class="form-input"
-              />
+              <input type="text" v-model="row.products[1].imageAlt" placeholder="대체 텍스트" class="form-input" />
             </div>
-
             <div class="form-group">
               <label>이미지 URL</label>
-              <input 
-                type="url" 
-                v-model="row.products[1].imageUrl"
-                placeholder="이미지 URL"
-                class="form-input"
-              />
+              <input type="url" v-model="row.products[1].imageUrl" placeholder="이미지 URL" class="form-input" />
             </div>
           </div>
 
@@ -147,32 +109,15 @@
           <div class="form-row">
             <div class="form-group">
               <label>상품코드</label>
-              <input 
-                type="text" 
-                v-model="row.products[2].productCode"
-                placeholder="상품코드"
-                class="form-input"
-              />
+              <input type="text" v-model="row.products[2].productCode" placeholder="상품코드" class="form-input" />
             </div>
-
             <div class="form-group">
               <label>대체 텍스트</label>
-              <input 
-                type="text" 
-                v-model="row.products[2].imageAlt"
-                placeholder="대체 텍스트"
-                class="form-input"
-              />
+              <input type="text" v-model="row.products[2].imageAlt" placeholder="대체 텍스트" class="form-input" />
             </div>
-
             <div class="form-group">
               <label>이미지 URL</label>
-              <input 
-                type="url" 
-                v-model="row.products[2].imageUrl"
-                placeholder="이미지 URL"
-                class="form-input"
-              />
+              <input type="url" v-model="row.products[2].imageUrl" placeholder="이미지 URL" class="form-input" />
             </div>
           </div>
         </div>
@@ -185,16 +130,19 @@
         </button>
       </div>
     </div>
+
+    <!-- 새 그룹 추가 버튼 -->
+    <div class="text-center mt-4">
+      <button @click="addGroup" class="btn btn-primary btn-lg">새 상품 그룹 추가</button>
+    </div>
   </div>
 </template>
 
 <script>
 export default {
   props: {
-    value: {
-      type: Array,
-      default: () => []
-    }
+    value: { type: Array, default: () => [] },
+    selectedGroupIndex: { type: Number, default: null }
   },
   data() {
     return {
@@ -204,8 +152,8 @@ export default {
     }
   },
   created() {
-    this.localGroups = this.value && this.value.length > 0 
-      ? JSON.parse(JSON.stringify(this.value)) 
+    this.localGroups = this.value && this.value.length > 0
+      ? JSON.parse(JSON.stringify(this.value))
       : [this.createNewGroup()]
   },
   watch: {
@@ -232,26 +180,20 @@ export default {
     createNewGroup() {
       return {
         id: Date.now(),
-        titleImage: {
-          url: '',
-          alt: ''
-        },
+        titleImage: { url: '', alt: '' },
         rows: [this.createNewRow()]
       }
     },
-    
     selectTitleImage(groupId) {
       this.flashingTitleId = groupId
       setTimeout(() => { this.flashingTitleId = null }, 780)
       this.$emit('select-product', { refKey: 'efamily-title-' + groupId })
     },
-
     selectRow(_groupId, rowId) {
       this.flashingId = rowId
       setTimeout(() => { this.flashingId = null }, 780)
       this.$emit('select-product', { refKey: 'efamily-row-' + rowId })
     },
-
     createNewRow() {
       return {
         id: Date.now() + Math.random(),
@@ -262,11 +204,10 @@ export default {
         ]
       }
     },
-    
     addGroup() {
       this.localGroups.push(this.createNewGroup())
+      this.$emit('add-group')
     },
-    
     removeGroup(groupId) {
       const index = this.localGroups.findIndex(g => g.id === groupId)
       if (index !== -1) {
@@ -277,14 +218,12 @@ export default {
         this.localGroups.splice(index, 1)
       }
     },
-    
     addRow(groupId) {
       const group = this.localGroups.find(g => g.id === groupId)
       if (group) {
         group.rows.push(this.createNewRow())
       }
     },
-    
     removeRow(groupId, rowId) {
       const group = this.localGroups.find(g => g.id === groupId)
       if (group) {
