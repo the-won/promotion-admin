@@ -126,6 +126,75 @@ export const templateDefaults = {
       ]
     } 
   },
+  'event-imagelink': {
+    folderName: {
+      label: 'Zip 폴더 이름',
+      type: 'text',
+      tab: '기본',
+      placeholder: '폴더명을 입력하세요',
+      value: ''
+    },
+    pageTitle: {
+      label: '페이지 타이틀',
+      type: 'text',
+      tab: '기본',
+      placeholder: '이벤트 이미지 링크',
+      value: '이벤트 이미지 링크'
+    },
+    showTopBanner: {
+      label: '상단 배너 사용',
+      type: 'checkbox',
+      tab: '설정',
+      value: true
+    },
+    showBottomBanner: {
+      label: '하단 배너 사용',
+      type: 'checkbox',
+      tab: '설정',
+      value: true
+    },
+    showNotice: {
+      label: '공지사항 사용',
+      type: 'checkbox',
+      tab: '설정',
+      value: false
+    },
+    noticeTitle: {
+      label: '공지사항 제목',
+      type: 'text',
+      tab: '설정',
+      fullWidth: true,
+      value: '꼭 확인하세요'
+    },
+    noticeItems: {
+      label: '공지사항 항목',
+      type: 'notice-items',
+      tab: '설정',
+      value: []
+    },
+    imageLinkGroups: {
+      label: '이미지 링크 그룹',
+      type: 'event-image-link-group',
+      tab: '이미지링크',
+      value: [
+        {
+          id: 'grp_el_001',
+          images: [
+            { id: 'img_el_001', url: 'https://org-i.benepia.co.kr/ckeditor/2026/04/29/d5dbf950-0954-4be6-8587-2b48ca13c57e.jpg', fileName: '', alt: '묶어야 진짜 할인 e쿠폰통합권 출시' }
+          ],
+          web: {
+            linkType: 'plan',
+            useLink: false,
+            linkData: { code: '', webEventCode: '', mobileEventCode: '', webPartnerCode: '', mobilePartnerCode: '', returnUrl: '', url: '', brandSubType: 'ecoupon', couponType: 'single', couponCodes: '', keyword: '' }
+          },
+          mobile: {
+            linkType: 'plan',
+            linkData: { code: '', webEventCode: '', mobileEventCode: '', webPartnerCode: '', mobilePartnerCode: '', returnUrl: '', url: '', brandSubType: 'ecoupon', couponType: 'single', couponCodes: '', keyword: '' }
+          }
+        }
+      ]
+    }
+  },
   'em-type-3': {
     folderName: {
       label: 'Zip 폴더 이름',
@@ -183,30 +252,17 @@ export const templateDefaults = {
       value: [
         {
           id: 'hg_t3_001',
-          webImageUrl: 'http://10.71.101.60:13305/Promotion/2025%EB%85%84/20251229_BENEPRO-3607_[%EC%BB%A4%EB%A8%B8%EC%8A%A4%EC%82%AC%EC%97%85]%20%ED%81%B4%EB%9E%98%EC%8A%A4101%20%EC%8B%A0%EB%85%84%20%ED%94%84%EB%A1%9C%EB%AA%A8%EC%85%98/pc/images/img_contents01.jpg',
+          webImageUrl: 'https://org-i.benepia.co.kr/ckeditor/2026/04/29/d5dbf950-0954-4be6-8587-2b48ca13c57e.jpg',
           webImageAlt: '웹 이미지 설명',
           mobileImageUrl: '',
           mobileImageAlt: '',
           hotspots: [
-            {
-              id: 'hs_t3_001',
-              alt: '신청하기 버튼',
-              position: { left: 30, top: 5, width: 30, height: 10 },
-              web: {
-                linkType: 'plan',
-                useLink: false,
-                linkData: { code: '', webEventCode: '', mobileEventCode: '', webPartnerCode: '', mobilePartnerCode: '', returnUrl: '', url: '', couponType: 'single', couponCodes: '', keyword: '' }
-              },
-              mobile: {
-                linkType: 'plan',
-                linkData: { code: '', webEventCode: '', mobileEventCode: '', webPartnerCode: '', mobilePartnerCode: '', returnUrl: '', url: '', couponType: 'single', couponCodes: '', keyword: '' }
-              }
-            }
+          
           ]
         },
         {
           id: 'hg_t3_002',
-          webImageUrl: 'https://d2odciwzsa8zjd.cloudfront.net/public/editorImage/202503/fbca6135-d59d-4be7-b483-6e2577e4e4c3.png',
+          webImageUrl: 'https://org-i.benepia.co.kr/ckeditor/2026/04/30/aff5fac6-cb27-4707-ab3d-a63503af7c40.jpg',
           webImageAlt: '웹 이미지 설명',
           mobileImageUrl: '',
           mobileImageAlt: '',

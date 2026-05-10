@@ -83,9 +83,11 @@
                   :visibleScrollPosition="visibleScrollPosition"
                   :sidebarExpanded="sidebarExpanded"
                   :sidebarFocusInfo="sidebarFocusInfo"
+                  :activeImageInfo="selectedImageInfo"
                   @select-hotspot="handleSelectHotspot"
                   @select-hotspot-info="handleSelectHotspotInfo"
                   @select-hotspot-image="handleSelectHotspotImage"
+                  @select-image="handleSelectImageInfo"
                   @active-row-change="handleActiveRowChange"
                   @active-image-change="handleActiveImageChange"
                   @device-change="currentDevice = $event"
@@ -119,14 +121,17 @@
                   :deviceType="currentDevice"
                   :selectedHotspotId="selectedHotspotId"
                   :selectedHotspotInfo="selectedHotspotInfo"
+                  :selectedImageInfo="selectedImageInfo"
                   :activeRowId="activeRowId"
                   :activeImageIndex="activeImageIndex"
                   @select-hotspot="handleSelectHotspot"
                   @update-hotspot="handleUpdateHotspot"
                   @delete-hotspot="handleDeleteHotspot"
+                  @copy-hotspot="handleCopyHotspot"
                   @scroll-update="handlePreviewScroll"
                   @clear-highlight="handleClearHotspotHighlight"
                   @preview-image-click="handlePreviewImageClick"
+                  @select-image="handleSelectImageInfo"
                 />
               </div>
             </div>
@@ -152,7 +157,7 @@ import PreviewFrame from '../components/PreviewFrame.vue'
 import TemplateSelectModal from '../modals/TemplateSelectModal.vue'
 // import { downloadHtml } from '../utils/downloadHtml'
 // 새로운: imageDownloadHtml.js (이미지 분리용)
-import { imageDownloadHtml } from '../utils/imageDownloadHtml'
+import { imageDownloadHtml } from '../utils/ImageDownloadHtml'
 import { templateDefaults } from '../config/templateDefaults'
 
 export default {
@@ -169,6 +174,7 @@ export default {
       formData: this.extractValues(templateDefaults[_tpl]),
       selectedHotspotId: null,
       selectedHotspotInfo: { hotspotId: null, groupIndex: null },
+      selectedImageInfo: { groupId: null, imageId: null },
       activeRowId: null,
       activeImageIndex: null,
       sidebarFocusInfo: null,
@@ -180,7 +186,8 @@ export default {
       currentDevice: 'web',
       templates: [
         { value: 'em-type-1', name: 'Type 1', icon: '', description: '기본 텍스트 템플릿' },
-        { value: 'em-type-3', name: 'Image Map', icon: '', description: '이벤트 이미지맵 템플릿' }
+        { value: 'em-type-3', name: 'Image Map', icon: '', description: '이벤트 이미지맵 템플릿' },
+        { value: 'event-imagelink', name: 'Image Link', icon: '', description: '이미지 링크 템플릿' }
       ]
     }
   },
@@ -194,16 +201,17 @@ export default {
     selectedTemplate(newTemplate) {
       this.formData = this.extractValues(templateDefaults[newTemplate])
       this.selectedHotspotId = null
+      this.selectedImageInfo = { groupId: null, imageId: null }
       this.activeRowId = null
       this.activeImageIndex = null
       this.$nextTick(() => {
         this.updateVisiblePositions()
       })
     },
-    sidebarOpen(val) {
+    sidebarOpen() {
       this.updateBodyClass()
     },
-    sidebarExpanded(val) {
+    sidebarExpanded() {
       this.updateBodyClass()
     },
   },
@@ -314,6 +322,10 @@ export default {
       this.sidebarFocusInfo = { refKey, timestamp: Date.now() }
     },
 
+    handleSelectImageInfo(info) {
+      this.selectedImageInfo = { groupId: info.groupId || null, imageId: info.imageId || null, timestamp: Date.now() }
+    },
+
     handleSelectHotspot(id) {
       this.selectedHotspotId = id
     },
@@ -341,6 +353,7 @@ export default {
     handleClearHotspotHighlight() {
       console.log('🧹 핫스팟 하이라이트 제거')
       this.selectedHotspotInfo = { hotspotId: null, groupIndex: null }
+      this.selectedImageInfo = { groupId: null, imageId: null }
     },
     
     handleActiveRowChange(rowId) {
@@ -442,7 +455,24 @@ export default {
         }
       }
     },
-    
+
+    handleCopyHotspot({ hotspot, groupIndex }) {
+      if (!hotspot || groupIndex === undefined || !Array.isArray(this.formData.hotspotGroups)) return
+      const group = this.formData.hotspotGroups[groupIndex]
+      if (!group || !group.hotspots) return
+
+      const newHotspot = JSON.parse(JSON.stringify(hotspot))
+      newHotspot.id = Date.now()
+      newHotspot.position = {
+        ...newHotspot.position,
+        left: Math.min(100 - newHotspot.position.width, newHotspot.position.left + 5),
+        top: Math.min(100 - newHotspot.position.height, newHotspot.position.top + 5)
+      }
+
+      group.hotspots.push(newHotspot)
+      this.selectedHotspotId = newHotspot.id
+    },
+
     toggleSidebar() {
       this.sidebarOpen = !this.sidebarOpen
     },

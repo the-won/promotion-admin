@@ -154,14 +154,25 @@ export default {
     },
     
     handleKeydown(event) {
+      const tagName = event.target.tagName.toLowerCase()
+      if (tagName === 'input' || tagName === 'textarea' || event.target.isContentEditable) {
+        return
+      }
+
       if ((event.key === 'Delete' || event.key === 'Backspace') && this.selectedId) {
-        const tagName = event.target.tagName.toLowerCase()
-        if (tagName === 'input' || tagName === 'textarea' || event.target.isContentEditable) {
-          return
-        }
-        
         event.preventDefault()
         this.$emit('delete-hotspot', this.selectedId)
+      }
+
+      if ((event.ctrlKey || event.metaKey) && event.key === 'v' && this.selectedId) {
+        for (let i = 0; i < this.hotspotGroups.length; i++) {
+          const hotspot = (this.hotspotGroups[i].hotspots || []).find(h => h.id === this.selectedId)
+          if (hotspot) {
+            event.preventDefault()
+            this.$emit('copy-hotspot', { hotspot, groupIndex: i })
+            break
+          }
+        }
       }
     },
     

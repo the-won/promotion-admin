@@ -138,6 +138,7 @@
                   @select-hotspot="handleSelectHotspot"
                   @update-hotspot="handleUpdateHotspot"
                   @delete-hotspot="handleDeleteHotspot"
+                  @copy-hotspot="handleCopyHotspot"
                   @scroll-update="handlePreviewScroll"
                   @clear-highlight="handleClearHighlight"
                   @preview-image-click="handlePreviewImageClick"
@@ -391,6 +392,21 @@ export default {
           }
         }
       }
+    },
+    handleCopyHotspot({ area }) {
+      if (!area || !Array.isArray(this.formData.imageMapAreas)) return
+
+      const newArea = JSON.parse(JSON.stringify(area))
+      newArea.id = Date.now()
+      newArea.coords = {
+        x1: newArea.coords.x1 + 20,
+        y1: newArea.coords.y1 + 20,
+        x2: newArea.coords.x2 + 20,
+        y2: newArea.coords.y2 + 20
+      }
+
+      this.formData.imageMapAreas.push(newArea)
+      this.selectedHotspotId = newArea.id
     },
     toggleSidebar() {
       this.sidebarOpen = !this.sidebarOpen

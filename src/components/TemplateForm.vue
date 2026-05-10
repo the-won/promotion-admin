@@ -198,6 +198,19 @@
           @add-group="handleHotspotGroupAdd"
         />
 
+        <!-- Event Image Link Group Editor -->
+        <EventImageLinkGroupEditor
+          v-else-if="config.type === 'event-image-link-group'"
+          v-model="localData[key]"
+          :sidebarExpanded="sidebarExpanded"
+          :deviceType="currentDevice"
+          :selectedGroupIndex="currentTabSubItems && currentTabSubItems.type === 'event-image-link' ? activeSubItem : null"
+          :sidebarFocusInfo="sidebarFocusInfo"
+          :selectedImageInfo="activeImageInfo"
+          @select-image="handleSelectImage"
+          @active-image-change="handleActiveImageChange"
+        />
+
         <!-- Image Link Group Editor -->
         <ImageLinkGroupEditor
           v-else-if="config.type === 'image-link-group'"
@@ -343,6 +356,7 @@ import BannerListEditor from './em/efamily/BannerListEditor.vue'
 import EfamilyExcelUploader from './em/efamily/EfamilyExcelUploader.vue'
 import PrivacySectionEditor from './privacy/PrivacySectionEditor.vue'
 import FamilySaleGroupEditor from './em/family-sale/FamilySaleGroupEditor.vue'
+import EventImageLinkGroupEditor from './event/ImageLinkGroupEditor.vue'
 
 export default {
   components: { 
@@ -359,7 +373,8 @@ export default {
     BannerListEditor,
     EfamilyExcelUploader,
     PrivacySectionEditor,
-    FamilySaleGroupEditor
+    FamilySaleGroupEditor,
+    EventImageLinkGroupEditor
   },
   props: [
     'template',
@@ -370,7 +385,8 @@ export default {
     'visibleScrollPosition',
     'sidebarExpanded',
     'privacyPreviewFocus',
-    'sidebarFocusInfo'
+    'sidebarFocusInfo',
+    'activeImageInfo'
   ],
   data() {
     return {
@@ -403,12 +419,16 @@ export default {
     hasHotspotGroup() {
       if (!this.templateConfig) return false
       return Object.values(this.templateConfig).some(
-        config => config.type === 'hotspot-group' || config.type === 'hotspot-group-list'
+        config => config.type === 'hotspot-group' || config.type === 'hotspot-group-list' || config.type === 'event-image-link-group'
       )
     },
     currentTabSubItems() {
       const fields = Object.entries(this.filteredFields || {})
       for (const [key, config] of fields) {
+        if (config.type === 'event-image-link-group') {
+          const groups = this.localData[key] || []
+          return { type: 'event-image-link', key, items: groups.map((_, i) => `링크그룹 ${i + 1}`) }
+        }
         if (config.type === 'image-link-group') {
           const groups = this.localData[key] || []
           return { type: 'image-link', key, items: groups.map((_, i) => `이미지 링크 그룹${i + 1}`) }
@@ -501,7 +521,7 @@ export default {
       }
     },
     'localData.imageLinkGroups'(newGroups, oldGroups) {
-      if (!this.currentTabSubItems || this.currentTabSubItems.type !== 'image-link') return
+      if (!this.currentTabSubItems || !['image-link', 'event-image-link'].includes(this.currentTabSubItems.type)) return
       const newLen = (newGroups || []).length
       const oldLen = (oldGroups || []).length
       if (newLen > oldLen) {
@@ -582,7 +602,20 @@ export default {
         const subItems = this.currentTabSubItems
         if (!subItems) return
         const key = info.refKey
-        if (subItems.type === 'image-link' && key.startsWith('image-')) {
+        if (subItems.type === 'event-image-link') {
+          const groups = this.localData[subItems.key] || []
+          if (key.startsWith('image-group-')) {
+            const idx = groups.findIndex(g => `image-group-${g.id}` === key)
+            if (idx !== -1) this.activeSubItem = idx
+          } else if (key.startsWith('img-item-')) {
+            for (let i = 0; i < groups.length; i++) {
+              if (key.startsWith(`img-item-${groups[i].id}-`)) {
+                this.activeSubItem = i
+                break
+              }
+            }
+          }
+        } else if (subItems.type === 'image-link' && key.startsWith('image-')) {
           const groups = this.localData[subItems.key] || []
           for (let i = 0; i < groups.length; i++) {
             const group = groups[i]
@@ -690,6 +723,7 @@ export default {
         'hotspot-group',
         'hotspot-group-list',
         'image-link-group',
+        'event-image-link-group',
         'image-map-rows',
         'image-map-rows-2',
         'image-map-areas',
@@ -709,7 +743,7 @@ export default {
     },
 
     isHideLabelField(type) {
-      return ['hotspot-group', 'hotspot-group-list', 'privacy-section-list', 'efamily-uploader', 'hotdeal-uploader', 'checkbox', 'notice-items', 'family-sale-group'].includes(type)
+      return ['hotspot-group', 'hotspot-group-list', 'privacy-section-list', 'efamily-uploader', 'hotdeal-uploader', 'checkbox', 'notice-items', 'family-sale-group', 'event-image-link-group'].includes(type)
     },
     
     handleSelectProduct(info) {

@@ -205,16 +205,22 @@ export default {
     },
     
     handleKeydown(event) {
-      // Delete 또는 Backspace 키로 선택된 핫스팟 삭제
+      const tagName = event.target.tagName.toLowerCase()
+      if (tagName === 'input' || tagName === 'textarea' || event.target.isContentEditable) {
+        return
+      }
+
       if ((event.key === 'Delete' || event.key === 'Backspace') && this.selectedId) {
-        // input, textarea 등에서는 동작하지 않도록
-        const tagName = event.target.tagName.toLowerCase()
-        if (tagName === 'input' || tagName === 'textarea' || event.target.isContentEditable) {
-          return
-        }
-        
         event.preventDefault()
         this.$emit('delete-hotspot', this.selectedId)
+      }
+
+      if ((event.ctrlKey || event.metaKey) && event.key === 'v' && this.selectedId) {
+        const area = this.areas.find(a => a.id === this.selectedId)
+        if (area) {
+          event.preventDefault()
+          this.$emit('copy-hotspot', { area })
+        }
       }
     },
     

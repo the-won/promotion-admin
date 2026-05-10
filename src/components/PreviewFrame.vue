@@ -24,6 +24,8 @@
           @update-hotspot="handleUpdateHotspot"
           @delete-hotspot="handleDeleteHotspot"
           @clear-highlight="handleClearHighlight"
+          @copy-hotspot="handleCopyHotspot"
+          @select-image="$emit('select-image', $event)"
           @privacy-preview-focus="$emit('privacy-preview-focus', $event)"
         />
 
@@ -60,6 +62,7 @@ import EmTypeImageMap from '../templates/em/type-usemap/EmTypeImageMap.vue'
 import EmTypeImageMap2 from '../templates/em/type-usemap/EmTypeImageMap2.vue'
 import PrivacyPreview from '../templates/privacy/PrivacyPreview.vue'
 import EmTypeFamilySale from '../templates/em/family-sale/EmTypeFamilySale.vue'
+import EmTypeImageLink from '../templates/event/EmTypeImageLink.vue'
 
 export default {
   name: 'PreviewFrame',
@@ -76,7 +79,8 @@ export default {
     EmTypeImageMap,
     EmTypeImageMap2,
     PrivacyPreview,
-    EmTypeFamilySale
+    EmTypeFamilySale,
+    EmTypeImageLink
   },
   props: {
     template: String,
@@ -172,6 +176,7 @@ export default {
         'em-type-coupon' : 'EmType2',
         'em-type-letter' : 'EmTypeImageMap',
         'em-type-familysale': 'EmTypeFamilySale',
+        'event-imagelink': 'EmTypeImageLink',
         'privacy-policy': 'PrivacyPreview'
       }
       return map[this.template] || 'EmType1'
@@ -235,6 +240,9 @@ export default {
     },
     handleClearHighlight() {
       this.$emit('clear-highlight')
+    },
+    handleCopyHotspot(payload) {
+      this.$emit('copy-hotspot', payload)
     },
     handleWindowScroll() {
       this.updateScrollInfo()
