@@ -82,6 +82,7 @@
                   :visibleTopPositions="visibleTopPositions"
                   :visibleScrollPosition="visibleScrollPosition"
                   :sidebarExpanded="sidebarExpanded"
+                  :sidebarFocusInfo="sidebarFocusInfo"
                   @select-hotspot="handleSelectHotspot"
                   @select-hotspot-info="handleSelectHotspotInfo"
                   @select-hotspot-image="handleSelectHotspotImage"
@@ -125,6 +126,7 @@
                   @delete-hotspot="handleDeleteHotspot"
                   @scroll-update="handlePreviewScroll"
                   @clear-highlight="handleClearHotspotHighlight"
+                  @preview-image-click="handlePreviewImageClick"
                 />
               </div>
             </div>
@@ -169,6 +171,7 @@ export default {
       selectedHotspotInfo: { hotspotId: null, groupIndex: null },
       activeRowId: null,
       activeImageIndex: null,
+      sidebarFocusInfo: null,
       sidebarOpen: true,
       sidebarExpanded: true,
       isModalOpen: false,
@@ -307,6 +310,10 @@ export default {
       await imageDownloadHtml(this.selectedTemplate, this.formData, this.currentDevice, bannerOptions)
     },
     
+    handlePreviewImageClick({ refKey }) {
+      this.sidebarFocusInfo = { refKey, timestamp: Date.now() }
+    },
+
     handleSelectHotspot(id) {
       this.selectedHotspotId = id
     },

@@ -94,7 +94,8 @@ export default {
       startX: 0,
       startY: 0,
       initialPos: null,
-      containerRects: {}
+      containerRects: {},
+      localDragPos: null
     }
   },
   computed: {
@@ -113,6 +114,9 @@ export default {
     window.removeEventListener('keydown', this.handleKeydown)
   },
   watch: {
+    deviceType() {
+      this.$nextTick(() => { this.updateContainerRect() })
+    },
     'selectedHotspotInfo.timestamp'(newVal) {
       console.log('👀 selectedHotspotInfo 타임스탬프 변경됨:', newVal)
       
@@ -203,7 +207,9 @@ export default {
     },
     
     getHotspotStyle(hotspot) {
-      const pos = hotspot.position
+      const pos = (this.localDragPos && this.localDragPos.id === hotspot.id)
+        ? this.localDragPos.position
+        : hotspot.position
       return {
         left: pos.left + '%',
         top: pos.top + '%',
@@ -222,9 +228,10 @@ export default {
     
     startDrag(event, hotspot, imageIndex) {
       if (this.resizing) return
-      
+
       this.$emit('select-hotspot', hotspot.id)
-      
+      this.updateContainerRect(imageIndex)
+
       this.dragging = true
       this.currentHotspot = hotspot
       this.currentImageIndex = imageIndex
@@ -241,35 +248,36 @@ export default {
     
     onDrag(event) {
       if (!this.dragging || !this.currentHotspot || !this.currentImageIndex) return
-      
+
       const containerRect = this.containerRects[this.currentImageIndex]
       if (!containerRect) return
-      
+
       const dx = event.clientX - this.startX
       const dy = event.clientY - this.startY
-      
+
       const deltaLeft = (dx / containerRect.width) * 100
       const deltaTop = (dy / containerRect.height) * 100
-      
+
       let newLeft = this.initialPos.left + deltaLeft
       let newTop = this.initialPos.top + deltaTop
-      
+
       newLeft = Math.max(0, Math.min(100 - this.currentHotspot.position.width, newLeft))
       newTop = Math.max(0, Math.min(100 - this.currentHotspot.position.height, newTop))
-      
-      const groupKey = `hotspotGroups`
-      
-      this.$emit('update-hotspot', {
-        ...this.currentHotspot,
-        position: {
-          ...this.currentHotspot.position,
-          left: newLeft,
-          top: newTop
-        }
-      }, groupKey, this.currentImageIndex)
+
+      this.localDragPos = {
+        id: this.currentHotspot.id,
+        position: { ...this.currentHotspot.position, left: newLeft, top: newTop }
+      }
     },
-    
+
     stopDrag() {
+      if (this.localDragPos) {
+        this.$emit('update-hotspot', {
+          ...this.currentHotspot,
+          position: this.localDragPos.position
+        }, 'hotspotGroups', this.currentImageIndex)
+        this.localDragPos = null
+      }
       this.dragging = false
       this.currentHotspot = null
       this.currentImageIndex = null
@@ -278,6 +286,7 @@ export default {
     },
     
     startResize(event, hotspot, corner, imageIndex) {
+      this.updateContainerRect(imageIndex)
       this.resizing = corner
       this.currentHotspot = hotspot
       this.currentImageIndex = imageIndex
@@ -294,18 +303,18 @@ export default {
     
     onResize(event) {
       if (!this.resizing || !this.currentHotspot || !this.currentImageIndex) return
-      
+
       const containerRect = this.containerRects[this.currentImageIndex]
       if (!containerRect) return
-      
+
       const dx = event.clientX - this.startX
       const dy = event.clientY - this.startY
-      
+
       const deltaX = (dx / containerRect.width) * 100
       const deltaY = (dy / containerRect.height) * 100
-      
+
       let newPos = { ...this.initialPos }
-      
+
       if (this.resizing.includes('n')) {
         newPos.top = this.initialPos.top + deltaY
         newPos.height = this.initialPos.height - deltaY
@@ -320,22 +329,23 @@ export default {
       if (this.resizing.includes('e')) {
         newPos.width = this.initialPos.width + deltaX
       }
-      
+
       newPos.width = Math.max(5, Math.min(100, newPos.width))
       newPos.height = Math.max(3, Math.min(100, newPos.height))
-      
       newPos.left = Math.max(0, Math.min(100 - newPos.width, newPos.left))
       newPos.top = Math.max(0, Math.min(100 - newPos.height, newPos.top))
-      
-      const groupKey = `hotspotGroups`
-      
-      this.$emit('update-hotspot', {
-        ...this.currentHotspot,
-        position: newPos
-      }, groupKey, this.currentImageIndex)
+
+      this.localDragPos = { id: this.currentHotspot.id, position: newPos }
     },
-    
+
     stopResize() {
+      if (this.localDragPos) {
+        this.$emit('update-hotspot', {
+          ...this.currentHotspot,
+          position: this.localDragPos.position
+        }, 'hotspotGroups', this.currentImageIndex)
+        this.localDragPos = null
+      }
       this.resizing = null
       this.currentHotspot = null
       this.currentImageIndex = null

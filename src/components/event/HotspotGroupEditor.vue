@@ -19,7 +19,9 @@
 
       <!-- 이미지 URL -->
       <div
+        :ref="`image-section-${actualIdx}`"
         class="image-url-section"
+        :class="{ 'flash-highlight': flashingImageIdx === actualIdx }"
         @mouseenter="setActiveImage(actualIdx + 1)"
         @mouseleave="setActiveImage(null)"
         @click="selectImage(actualIdx + 1)"
@@ -386,12 +388,17 @@ export default {
     selectedGroupIndex: {
       type: Number,
       default: null
+    },
+    imageHighlightGroupIndex: {
+      type: Object,
+      default: () => ({ idx: null, timestamp: null })
     }
   },
   data() {
     return {
       localGroups: [],
       flashingId: null,
+      flashingImageIdx: null,
       couponTypes: COUPON_TYPES,
       codeLabelMap: {
         plan: '기획전 코드',
@@ -445,6 +452,19 @@ export default {
       if (newId != null) {
         this.scrollToCard(newId)
       }
+    },
+    'imageHighlightGroupIndex.timestamp'(newVal) {
+      if (!newVal || this.imageHighlightGroupIndex.idx == null) return
+      const idx = this.imageHighlightGroupIndex.idx
+      this.$nextTick(() => {
+        this.flashingImageIdx = idx
+        this.$nextTick(() => {
+          const ref = this.$refs[`image-section-${idx}`]
+          const el = Array.isArray(ref) ? ref[0] : ref
+          if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' })
+        })
+        setTimeout(() => { this.flashingImageIdx = null }, 780)
+      })
     }
   },
   methods: {
@@ -710,6 +730,7 @@ export default {
     selectHotspot(hotspotId, groupIndex) {
       this.$emit('select', hotspotId)
       this.$emit('select-hotspot', { hotspotId, groupIndex })
+      this.scrollToCard(hotspotId)
     },
     scrollToCard(hotspotId) {
       this.$nextTick(() => {
@@ -758,6 +779,23 @@ export default {
 .image-url-section:hover {
   background: rgba(0, 113, 227, 0.05);
   box-shadow: 0 0 0 2px rgba(0, 113, 227, 0.1);
+}
+
+.image-url-section.flash-highlight {
+  position: relative;
+  background: rgba(0, 113, 227, 0.06);
+  box-shadow: 0 0 0 2px rgba(0, 113, 227, 0.4);
+  border-radius: 8px;
+}
+
+.image-url-section.flash-highlight::after {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  border: 2px solid rgba(0, 113, 227, 0.65);
+  border-radius: 10px;
+  pointer-events: none;
+  animation: flashRing 750ms cubic-bezier(0.22, 1, 0.36, 1) 1 forwards;
 }
 
 .section-header {
@@ -855,6 +893,7 @@ export default {
 
 @media (prefers-reduced-motion: reduce) {
   .card.flash-highlight::after { animation: none; opacity: 0; }
+  .image-url-section.flash-highlight::after { animation: none; opacity: 0; }
 }
 
 .btn-add-group {

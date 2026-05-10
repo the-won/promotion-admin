@@ -191,6 +191,7 @@
           :selectedHotspotInfo="selectedHotspotInfo"
           :sidebarExpanded="sidebarExpanded"
           :selectedGroupIndex="currentTabSubItems && currentTabSubItems.type === 'hotspot-group' ? activeSubItem : null"
+          :imageHighlightGroupIndex="focusedHotspotGroupIdx"
           @select="handleSelectHotspot"
           @select-hotspot="handleSelectHotspotWithInfo"
           @select-image="handleSelectHotspotImage"
@@ -204,6 +205,7 @@
           :sidebarExpanded="sidebarExpanded"
           :companyType.sync="localData.companyType"
           :selectedGroupIndex="currentTabSubItems && currentTabSubItems.type === 'image-link' ? activeSubItem : null"
+          :sidebarFocusInfo="sidebarFocusInfo"
           @select-image="handleSelectImage"
           @active-image-change="handleActiveImageChange"
         />
@@ -213,6 +215,7 @@
           v-else-if="config.type === 'product-group-list'"
           v-model="localData[key]"
           :selectedGroupIndex="currentTabSubItems && currentTabSubItems.type === 'product-group' ? activeSubItem : null"
+          :sidebarFocusInfo="sidebarFocusInfo"
           @select-product="handleSelectProduct"
           @add-group="() => {}"
         />
@@ -234,6 +237,7 @@
           :visibleScrollPosition="visibleScrollPosition"
           :sidebarExpanded="sidebarExpanded"
           :selectedRowIndex="currentTabSubItems && currentTabSubItems.type === 'image-map' ? activeSubItem : null"
+          :sidebarFocusInfo="sidebarFocusInfo"
           @update:rows="localData.imageMapRows = $event"
           @update:areas="localData.imageMapAreas = $event"
           @update:companyType="localData.companyType = $event"
@@ -285,6 +289,7 @@
           v-else-if="config.type === 'hotdeal-row1-list'"
           v-model="localData[key]"
           :selectedIndex="hotdealRow1SelectedIndex"
+          :sidebarFocusInfo="sidebarFocusInfo"
           @select-product="handleSelectProduct"
           @add-row="() => {}"
         />
@@ -294,6 +299,7 @@
           v-else-if="config.type === 'hotdeal-row3-list'"
           v-model="localData[key]"
           :selectedIndex="hotdealRow3SelectedIndex"
+          :sidebarFocusInfo="sidebarFocusInfo"
           @select-product="handleSelectProduct"
           @add-row="() => {}"
         />
@@ -327,7 +333,7 @@ import DeviceToggle from './DeviceToggle.vue'
 import HotspotGroupEditor from './event/HotspotGroupEditor.vue'
 import HotdealRow1Editor from './em/secret-sale/HotdealRow1Editor.vue'
 import HotdealRow3Editor from './em/secret-sale/HotdealRow3Editor.vue'
-import HotdealExcelUploader from './em/secret-sale/HotdealExcelUploader.vue'
+import HotdealExcelUploader from './em/secret-sale/Hotdealexceluploader.vue'
 import DatePicker from './DatePicker.vue'
 import ImageLinkGroupEditor from './em/type-image-link/ImageLinkGroupEditor.vue'
 import ImageMapEditor from './em/type-usemap/ImageMapEditor.vue'
@@ -356,14 +362,15 @@ export default {
     FamilySaleGroupEditor
   },
   props: [
-    'template', 
-    'value', 
-    'templateConfig', 
-    'selectedHotspotId', 
-    'visibleTopPositions', 
-    'visibleScrollPosition', 
+    'template',
+    'value',
+    'templateConfig',
+    'selectedHotspotId',
+    'visibleTopPositions',
+    'visibleScrollPosition',
     'sidebarExpanded',
-    'privacyPreviewFocus'
+    'privacyPreviewFocus',
+    'sidebarFocusInfo'
   ],
   data() {
     return {
@@ -373,7 +380,8 @@ export default {
       activeSubItem: null,
       selectedImageInfo: { groupId: null, imageId: null },
       selectedRowInfo: { rowId: null, rowIndex: null },
-      selectedHotspotInfo: { hotspotId: null, groupIndex: null }
+      selectedHotspotInfo: { hotspotId: null, groupIndex: null },
+      focusedHotspotGroupIdx: { idx: null, timestamp: null }
     }
   },
   computed: {
@@ -550,13 +558,95 @@ export default {
       }
     },
     selectedHotspotId(newId) {
-      if (newId === null || !this.currentTabSubItems || this.currentTabSubItems.type !== 'image-map') return
-      const area = (this.localData.imageMapAreas || []).find(a => a.id === newId)
-      if (!area) return
-      const rowIndex = (this.localData.imageMapRows || []).findIndex(r => r.id === area.rowId)
-      if (rowIndex !== -1) {
-        this.activeSubItem = rowIndex
+      if (newId === null || !this.currentTabSubItems) return
+      if (this.currentTabSubItems.type === 'image-map') {
+        const area = (this.localData.imageMapAreas || []).find(a => a.id === newId)
+        if (!area) return
+        const rowIndex = (this.localData.imageMapRows || []).findIndex(r => r.id === area.rowId)
+        if (rowIndex !== -1) {
+          this.activeSubItem = rowIndex
+        }
+      } else if (this.currentTabSubItems.type === 'hotspot-group') {
+        const groups = this.localData[this.currentTabSubItems.key] || []
+        for (let i = 0; i < groups.length; i++) {
+          if ((groups[i].hotspots || []).some(h => h.id === newId)) {
+            this.activeSubItem = i
+            return
+          }
+        }
       }
+    },
+    sidebarFocusInfo: {
+      handler(info) {
+        if (!info || !info.refKey) return
+        const subItems = this.currentTabSubItems
+        if (!subItems) return
+        const key = info.refKey
+        if (subItems.type === 'image-link' && key.startsWith('image-')) {
+          const groups = this.localData[subItems.key] || []
+          for (let i = 0; i < groups.length; i++) {
+            const group = groups[i]
+            for (const img of (group.images || [])) {
+              if (`image-${group.id}-${img.id}` === key) {
+                this.activeSubItem = i
+                return
+              }
+            }
+          }
+        } else if (subItems.type === 'image-map' && key.startsWith('row-')) {
+          const rows = this.localData[subItems.key] || []
+          const rowId = key.slice(4)
+          const idx = rows.findIndex(r => String(r.id) === rowId)
+          if (idx !== -1) this.activeSubItem = idx
+        } else if (subItems.type === 'product-group') {
+          const groups = this.localData[subItems.key] || []
+          if (key.startsWith('efamily-title-')) {
+            const gid = Number(key.slice('efamily-title-'.length))
+            const idx = groups.findIndex(g => g.id === gid)
+            if (idx !== -1) this.activeSubItem = idx
+          } else if (key.startsWith('efamily-row-')) {
+            const rid = Number(key.slice('efamily-row-'.length))
+            for (let i = 0; i < groups.length; i++) {
+              if ((groups[i].rows || []).some(r => r.id === rid)) {
+                this.activeSubItem = i
+                return
+              }
+            }
+          }
+        } else if (subItems.type === 'hotspot-group') {
+          const groups = this.localData[subItems.key] || []
+          let targetIdx = null
+          if (key.startsWith('image-container-')) {
+            const idx = parseInt(key.replace('image-container-', ''), 10) - 1
+            if (idx >= 0 && idx < groups.length) targetIdx = idx
+          } else if (key.startsWith('hotspot-')) {
+            const hotspotId = key.slice('hotspot-'.length)
+            for (let i = 0; i < groups.length; i++) {
+              if ((groups[i].hotspots || []).some(h => String(h.id) === hotspotId)) {
+                targetIdx = i
+                break
+              }
+            }
+          }
+          if (targetIdx !== null) {
+            this.activeSubItem = targetIdx
+            this.focusedHotspotGroupIdx = { idx: targetIdx, timestamp: Date.now() }
+          }
+          return
+        } else if (subItems.type === 'hotdeal') {
+          const row1Count = subItems.row1Count || 0
+          if (key.startsWith('hotdeal-row1-')) {
+            const id = Number(key.slice('hotdeal-row1-'.length))
+            const idx = (this.localData[subItems.row1Key] || []).findIndex(p => p.id === id)
+            if (idx !== -1) this.activeSubItem = idx
+          } else if (key.startsWith('hotdeal-row3-')) {
+            const id = Number(key.slice('hotdeal-row3-'.length))
+            const idx = (this.localData[subItems.row3Key] || []).findIndex(p => p.id === id)
+            if (idx !== -1) this.activeSubItem = row1Count + idx
+          }
+        }
+      },
+      deep: true
     },
     currentDevice(newVal) {
       this.$emit('device-change', newVal)

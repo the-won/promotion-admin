@@ -25,6 +25,7 @@
 
       <!-- 타이틀 이미지 -->
       <div
+        :data-group-id="group.id"
         class="title-image-section selectable"
         :class="{ 'flash-highlight': flashingTitleId === group.id }"
         @click="selectTitleImage(group.id)"
@@ -58,6 +59,7 @@
         <div
           v-for="(row, rowIndex) in group.rows"
           :key="row.id"
+          :data-row-id="row.id"
           class="card selectable"
           :class="{ 'flash-highlight': flashingId === row.id }"
           @click="selectRow(group.id, row.id)"
@@ -142,7 +144,8 @@
 export default {
   props: {
     value: { type: Array, default: () => [] },
-    selectedGroupIndex: { type: Number, default: null }
+    selectedGroupIndex: { type: Number, default: null },
+    sidebarFocusInfo: { type: Object, default: null }
   },
   data() {
     return {
@@ -171,6 +174,32 @@ export default {
       handler(val) {
         if (JSON.stringify(val) !== JSON.stringify(this.value)) {
           this.$emit('input', JSON.parse(JSON.stringify(val)))
+        }
+      },
+      deep: true
+    },
+    sidebarFocusInfo: {
+      handler(info) {
+        if (!info || !info.refKey) return
+        if (info.refKey.startsWith('efamily-title-')) {
+          const groupId = Number(info.refKey.slice('efamily-title-'.length))
+          if (!this.localGroups.find(g => g.id === groupId)) return
+          this.$nextTick(() => {
+            this.flashingTitleId = groupId
+            setTimeout(() => { this.flashingTitleId = null }, 780)
+            const el = this.$el.querySelector(`[data-group-id="${groupId}"]`)
+            if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' })
+          })
+        } else if (info.refKey.startsWith('efamily-row-')) {
+          const rowId = Number(info.refKey.slice('efamily-row-'.length))
+          const found = this.localGroups.some(g => g.rows.some(r => r.id === rowId))
+          if (!found) return
+          this.$nextTick(() => {
+            this.flashingId = rowId
+            setTimeout(() => { this.flashingId = null }, 780)
+            const el = this.$el.querySelector(`[data-row-id="${rowId}"]`)
+            if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' })
+          })
         }
       },
       deep: true

@@ -5,9 +5,10 @@
       v-for="(row, rowIndex) in localRows"
       :key="row.id"
       :ref="`row-${row.id}`"
+      :data-row-id="row.id"
       v-show="selectedRowIndex === null || selectedRowIndex === rowIndex"
       class="card mb-4"
-      :class="{ 'card-active': activeRowId === row.id }"
+      :class="{ 'card-active': activeRowId === row.id, 'flash-highlight': flashingRowId === row.id }"
       @mouseenter="setActiveRow(row.id)"
       @mouseleave="setActiveRow(null)"
       @click="selectRow(row.id, rowIndex)"
@@ -316,6 +317,10 @@ export default {
     selectedRowIndex: {
       type: Number,
       default: null
+    },
+    sidebarFocusInfo: {
+      type: Object,
+      default: null
     }
   },
   data() {
@@ -325,6 +330,7 @@ export default {
       activeRowId: null,
       rowWatchers: [],
       flashingAreaId: null,
+      flashingRowId: null,
       cutterVisible: false,
       cutterTarget: null,
       cutterImageUrl: '',
@@ -408,6 +414,23 @@ export default {
           this.$emit('update:areas', JSON.parse(JSON.stringify(this.localAreas)))
         })
       }
+    },
+    sidebarFocusInfo: {
+      handler(info) {
+        if (!info || !info.refKey) return
+        const prefix = 'row-'
+        if (!info.refKey.startsWith(prefix)) return
+        const rowId = info.refKey.slice(prefix.length)
+        const row = this.localRows.find(r => String(r.id) === String(rowId))
+        if (!row) return
+        this.$nextTick(() => {
+          this.flashingRowId = row.id
+          setTimeout(() => { this.flashingRowId = null }, 780)
+          const el = this.$el.querySelector(`[data-row-id="${row.id}"]`)
+          if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' })
+        })
+      },
+      deep: true
     }
   },
   methods: {
@@ -837,7 +860,25 @@ export default {
 
 <style scoped>
 
-
+.card.flash-highlight {
+  position: relative;
+  border-color: var(--color-primary, #5c61d4);
+  box-shadow: 0 0 0 3px var(--color-primary-light, rgba(92, 97, 212, 0.15));
+}
+.card.flash-highlight::after {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  border: 2px solid var(--color-primary, #5c61d4);
+  border-radius: inherit;
+  animation: flashRing 0.78s ease-out forwards;
+  pointer-events: none;
+}
+@keyframes flashRing {
+  0%   { opacity: 1; transform: scale(1); }
+  30%  { opacity: 1; transform: scale(1.03); }
+  100% { opacity: 0; transform: scale(1.06); }
+}
 
 .card-active {
   position: relative;

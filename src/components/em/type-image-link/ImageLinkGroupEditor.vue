@@ -157,11 +157,15 @@
         </div>
 
         <div class="items-grid" :class="{ 'cols-2': sidebarExpanded }">
-          <div 
-            v-for="(image, imageIndex) in group.images" 
+          <div
+            v-for="(image, imageIndex) in group.images"
             :key="image.id"
+            :data-image-card="`${group.id}-${image.id}`"
             class="card card-nested"
-            :class="{ 'card-active': activeGroupId === group.id && activeImageId === image.id }"
+            :class="{
+              'card-active': activeGroupId === group.id && activeImageId === image.id,
+              'flash-highlight': previewFlashKey === `${group.id}-${image.id}`
+            }"
             @mouseenter="setActiveImage(group.id, image.id)"
             @mouseleave="setActiveImage(null, null)"
             @click="selectImage(group.id, image.id, imageIndex)"
@@ -254,6 +258,10 @@ export default {
     selectedGroupIndex: {
       type: Number,
       default: null
+    },
+    sidebarFocusInfo: {
+      type: Object,
+      default: null
     }
   },
   data() {
@@ -262,6 +270,7 @@ export default {
       globalVendor: 'normal',
       activeGroupId: null,
       activeImageId: null,
+      previewFlashKey: null,
       cutterVisible: false,
       cutterTarget: null,
       cutterImageUrl: '',
@@ -315,6 +324,26 @@ export default {
           this.$emit('input', JSON.parse(JSON.stringify(this.localGroups)))
         })
       }
+    },
+    sidebarFocusInfo: {
+      handler(info) {
+        if (!info || !info.refKey) return
+        for (const group of this.localGroups) {
+          for (const image of group.images) {
+            if (`image-${group.id}-${image.id}` === info.refKey) {
+              const cardKey = `${group.id}-${image.id}`
+              this.$nextTick(() => {
+                this.previewFlashKey = cardKey
+                setTimeout(() => { this.previewFlashKey = null }, 780)
+                const el = this.$el.querySelector(`[data-image-card="${cardKey}"]`)
+                if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' })
+              })
+              return
+            }
+          }
+        }
+      },
+      deep: true
     }
   },
   methods: {
@@ -673,5 +702,25 @@ export default {
 /* @keyframes spinBorderLight {
   to { transform: rotate(360deg); }
 } */
+
+.card-nested.flash-highlight {
+  position: relative;
+  border-color: var(--color-primary, #5c61d4);
+  box-shadow: 0 0 0 3px var(--color-primary-light, rgba(92, 97, 212, 0.15));
+}
+.card-nested.flash-highlight::after {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  border: 2px solid var(--color-primary, #5c61d4);
+  border-radius: inherit;
+  animation: flashRing 0.78s ease-out forwards;
+  pointer-events: none;
+}
+@keyframes flashRing {
+  0%   { opacity: 1; transform: scale(1); }
+  30%  { opacity: 1; transform: scale(1.03); }
+  100% { opacity: 0; transform: scale(1.06); }
+}
 
 </style>

@@ -9,6 +9,7 @@
         v-for="(product, index) in localProducts"
         :key="product.id"
         v-show="selectedIndex === null || selectedIndex === index"
+        :data-product-id="product.id"
         class="card selectable"
         :class="{ 'flash-highlight': flashingId === product.id }"
         @click="selectProduct(product.id)"
@@ -63,7 +64,8 @@
 export default {
   props: {
     value: { type: Array, default: () => [] },
-    selectedIndex: { type: Number, default: null }
+    selectedIndex: { type: Number, default: null },
+    sidebarFocusInfo: { type: Object, default: null }
   },
   data() {
     return {
@@ -88,6 +90,23 @@ export default {
         if (JSON.stringify(val) !== JSON.stringify(this.value)) {
           this.$emit('input', JSON.parse(JSON.stringify(val)))
         }
+      },
+      deep: true
+    },
+    sidebarFocusInfo: {
+      handler(info) {
+        if (!info || !info.refKey) return
+        const prefix = 'hotdeal-row1-'
+        if (!info.refKey.startsWith(prefix)) return
+        const id = Number(info.refKey.slice(prefix.length))
+        const product = this.localProducts.find(p => p.id === id)
+        if (!product) return
+        this.$nextTick(() => {
+          this.flashingId = product.id
+          setTimeout(() => { this.flashingId = null }, 780)
+          const el = this.$el.querySelector(`[data-product-id="${product.id}"]`)
+          if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' })
+        })
       },
       deep: true
     }

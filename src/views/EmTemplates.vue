@@ -80,6 +80,7 @@
                   :visibleTopPositions="visibleTopPositions"
                   :visibleScrollPosition="visibleScrollPosition"
                   :sidebarExpanded="sidebarExpanded"
+                  :sidebarFocusInfo="sidebarFocusInfo"
                   @select-hotspot="handleSelectHotspot"
                   @select-image="handleSelectImage"
                   @select-row="handleSelectRow"
@@ -139,6 +140,7 @@
                   @delete-hotspot="handleDeleteHotspot"
                   @scroll-update="handlePreviewScroll"
                   @clear-highlight="handleClearHighlight"
+                  @preview-image-click="handlePreviewImageClick"
                 />
               </div>
             </div>
@@ -184,6 +186,7 @@ export default {
       selectedImageInfo: { groupId: null, imageId: null },
       selectedRowInfo: { rowId: null, rowIndex: null },
       selectedProductInfo: null,
+      sidebarFocusInfo: null,
       sidebarOpen: true,
       sidebarExpanded: true,
       isModalOpen: false,
@@ -311,6 +314,9 @@ export default {
     },
     handleSelectProduct(info) {
       this.selectedProductInfo = { refKey: info.refKey, timestamp: Date.now() }
+    },
+    handlePreviewImageClick({ refKey }) {
+      this.sidebarFocusInfo = { refKey, timestamp: Date.now() }
     },
     handleActiveRowChange(rowId) {
       this.activeRowId = rowId

@@ -1,7 +1,7 @@
 <template>
   <div class="preview-deel">
     <div class="preview-card">
-      <div class="preview-body" ref="previewBody" @scroll="handleScroll">
+      <div class="preview-body" ref="previewBody" @scroll="handleScroll" @click.capture="handleBodyClick">
         <!-- TopBanner (디바이스별) -->
         <TopBanner v-if="deviceType === 'web' && effectiveShowTopBanner" />
         <TopBannerMobile v-if="deviceType === 'mobile' && effectiveShowTopBanner" />
@@ -187,6 +187,43 @@ export default {
     window.removeEventListener('scroll', this.handleWindowScroll)
   },
   methods: {
+    handleBodyClick(event) {
+      const link = event.target.closest('a')
+      if (link) {
+        event.preventDefault()
+      }
+      const btn = event.target.closest('button')
+      if (btn) {
+        event.preventDefault()
+      }
+      if (event.target.closest('.draggable-hotspot') || event.target.closest('.hotspot-overlay')) return
+      const refKey = this.findRefKeyForPoint(event.clientX, event.clientY)
+      if (refKey) this.$emit('preview-image-click', { refKey })
+    },
+    findRefKeyForPoint(x, y) {
+      const templateComp = this.$refs.templateComponent
+      if (!templateComp || !templateComp.$refs) return null
+      let bestKey = null
+      let smallestArea = Infinity
+      const refs = templateComp.$refs
+      for (const key of Object.keys(refs)) {
+        const raw = refs[key]
+        const rawEl = Array.isArray(raw) ? raw[0] : raw
+        if (!rawEl) continue
+        const el = rawEl.$el !== undefined ? rawEl.$el : rawEl
+        if (!el || !el.getBoundingClientRect) continue
+        const rect = el.getBoundingClientRect()
+        if (rect.width === 0 || rect.height === 0) continue
+        if (x >= rect.left && x <= rect.right && y >= rect.top && y <= rect.bottom) {
+          const area = rect.width * rect.height
+          if (area < smallestArea) {
+            smallestArea = area
+            bestKey = key
+          }
+        }
+      }
+      return bestKey
+    },
     handleSelectHotspot(id) {
       this.$emit('select-hotspot', id)
     },
@@ -240,7 +277,6 @@ export default {
       let visibleCenter = 0
       
       if (containerTop < 0 && containerTop + containerHeight > 0) {
-        const visibleHeight = Math.min(containerHeight, containerTop + containerHeight)
         const visibleTop = Math.abs(containerTop)
         visibleCenter = (visibleTop + (viewportHeight / 2)) / containerHeight * 100
       } else if (containerTop >= 0 && containerTop < viewportHeight) {
