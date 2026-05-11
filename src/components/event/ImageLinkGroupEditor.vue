@@ -229,80 +229,76 @@
         :ref="`image-section-${actualIdx}`"
         class="image-url-section"
         :class="{ 'flash-highlight': flashingImageIdx === actualIdx }"
-        @mouseenter="$emit('active-image-change', actualIdx + 1)"
-        @mouseleave="$emit('active-image-change', null)"
-        @click="selectImageSection(group.id, actualIdx)"
       >
         <div class="images-header">
           <span class="images-label">이미지 목록</span>
-          <button type="button" class="btn btn-success btn-sm" @click.stop="addImage(actualIdx)">+ 이미지 추가</button>
+          <button type="button" class="btn btn-success btn-sm" @click.stop="addImage(actualIdx)">이미지 추가</button>
         </div>
 
-        <div
-          v-for="(img, imgIdx) in group.images"
-          :key="img.id"
-          :ref="`img-entry-${actualIdx}-${imgIdx}`"
-          class="img-entry"
-          :class="{ 'img-entry-selected': selectedImageInfo && selectedImageInfo.imageId === img.id }"
-          @click.stop="selectImageEntry(group.id, img.id, imgIdx)"
-        >
-          <div class="img-entry-header">
-            <span class="img-entry-label">이미지 {{ imgIdx + 1 }}</span>
-            <button
-              v-if="group.images.length > 1"
-              type="button"
-              class="btn btn-danger btn-sm"
-              @click.stop="removeImage(actualIdx, imgIdx)"
-            >삭제</button>
-          </div>
+        <div class="items-grid" :class="{ 'cols-2': sidebarExpanded }">
+          <div
+            v-for="(img, imgIdx) in group.images"
+            :key="img.id"
+            :ref="`img-entry-${actualIdx}-${imgIdx}`"
+            class="img-entry"
+            :class="{ 'img-entry-selected': selectedImageInfo && selectedImageInfo.imageId === img.id }"
+            @click.stop="selectImageEntry(group.id, img.id, imgIdx)"
+          >
+            <div class="img-entry-header">
+              <span class="img-entry-label">이미지 {{ imgIdx + 1 }}</span>
+              <button
+                v-if="group.images.length > 1"
+                type="button"
+                class="btn btn-danger btn-sm"
+                @click.stop="removeImage(actualIdx, imgIdx)"
+              >삭제</button>
+            </div>
 
-          <!-- URL 입력 -->
-          <div class="form-group">
-            <label>이미지 URL</label>
-            <input
-              type="url"
-              v-model="img.url"
-              placeholder="https://example.com/image.jpg"
-              class="form-input"
-              @click.stop
-            />
-          </div>
-
-          <!-- 파일 업로드 -->
-          <div class="form-group">
-            <label>이미지 업로드</label>
-            <div class="image-input-wrapper">
+            <div class="form-group">
+              <label>이미지 URL</label>
               <input
-                type="file"
-                :id="`upload-${actualIdx}-${imgIdx}`"
-                accept="image/*"
-                @change="handleImageUpload(actualIdx, imgIdx, $event)"
-                class="file-input-hidden"
+                type="url"
+                v-model="img.url"
+                placeholder="https://example.com/image.jpg"
+                class="form-input"
                 @click.stop
               />
-              <label :for="`upload-${actualIdx}-${imgIdx}`" class="btn-file" @click.stop>
-                📁 파일 선택
-              </label>
-              <span v-if="img.fileName" class="file-info">✓ {{ img.fileName }}</span>
-              <button
-                v-if="img.url && img.url.startsWith('data:')"
-                type="button"
-                class="btn-cut"
-                @click.stop="openCutter(actualIdx, imgIdx, img)"
-              >✂ 자르기</button>
             </div>
-          </div>
 
-          <!-- Alt -->
-          <div class="form-group">
-            <label>대체텍스트 (스크린리더용)</label>
-            <input
-              type="text"
-              v-model="img.alt"
-              placeholder="이미지 설명"
-              class="form-input"
-              @click.stop
-            />
+            <div class="form-group">
+              <label>이미지 업로드</label>
+              <div class="image-input-wrapper">
+                <input
+                  type="file"
+                  :id="`upload-${actualIdx}-${imgIdx}`"
+                  accept="image/*"
+                  @change="handleImageUpload(actualIdx, imgIdx, $event)"
+                  class="file-input-hidden"
+                  @click.stop
+                />
+                <label :for="`upload-${actualIdx}-${imgIdx}`" class="btn-file" @click.stop>
+                  📁 파일 선택
+                </label>
+                <span v-if="img.fileName" class="file-info">✓ {{ img.fileName }}</span>
+                <button
+                  v-if="img.url && img.url.startsWith('data:')"
+                  type="button"
+                  class="btn-cut"
+                  @click.stop="openCutter(actualIdx, imgIdx, img)"
+                >✂ 자르기</button>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label>대체텍스트 (스크린리더용)</label>
+              <input
+                type="text"
+                v-model="img.alt"
+                placeholder="이미지 설명"
+                class="form-input"
+                @click.stop
+              />
+            </div>
           </div>
         </div>
       </div>
@@ -649,6 +645,17 @@ export default {
   color: #1f2937;
 }
 
+/* ── 이미지 그리드 ── */
+.items-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 8px;
+}
+
+.items-grid.cols-2 {
+  grid-template-columns: repeat(2, 1fr);
+}
+
 /* ── 이미지 섹션 ── */
 .image-url-section {
   padding: 12px;
@@ -740,11 +747,11 @@ export default {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 8px;
+  margin-bottom: 14px;
 }
 
 .img-entry-label {
-  font-size: 11px;
+  font-size: 14px;
   font-weight: 600;
   color: var(--color-text-secondary, #6e6e73);
 }
@@ -764,7 +771,7 @@ export default {
 }
 
 /* 버튼 공통 */
-.btn {
+/* .btn {
   padding: 7px 14px;
   border: none;
   border-radius: 5px;
@@ -778,25 +785,9 @@ export default {
 .btn-success:hover { background: #059669; }
 .btn-danger  { background: #ef4444; color: #fff; }
 .btn-danger:hover  { background: #dc2626; }
-.btn-sm { padding: 3px 9px; font-size: 11px; }
+.btn-sm { padding: 3px 9px; font-size: 11px; } */
 
-.btn-add-group {
-  width: 100%;
-  padding: 12px;
-  font-size: 13px;
-  font-weight: 600;
-  border: 2px dashed #d1d5db;
-  background: transparent;
-  color: #0071e3;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background 0.15s, border-color 0.15s;
-}
 
-.btn-add-group:hover {
-  background: rgba(0, 113, 227, 0.05);
-  border-color: #0071e3;
-}
 
 .add-group-section {
   margin-top: 8px;

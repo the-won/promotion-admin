@@ -19,7 +19,7 @@ export const HEADER_CONFIGS = {
     logoAlt: '휴가샵',
     logoWidth: 148,
     logoHeight: 88,
-    bannerUrl: 'TODO_HUGASHOP_BANNER_URL',
+    bannerUrl: 'https://i.benepia.co.kr/ckeditor/D9E5A1E20280.mns0115844189801720.gif',
     bannerAlt: '의 휴가샵 포인트를 지금 확인하세요!',
     bannerWidth: 325,
     bannerHeight: 88,

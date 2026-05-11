@@ -47,7 +47,7 @@
           <span>{{ config.label }}</span>
         </div>
         <div
-          v-else-if="config.type !== 'image-map-areas' && !isHiddenByHotdealNav(config.type)"
+          v-else-if="config.type !== 'image-map-areas' && !isHiddenByHotdealNav(config.type) && !isHiddenByCondition(config)"
           :key="key"
           class="form-group"
           :class="{ 'full-width': isFullWidthField(config.type) || config.fullWidth }"
@@ -808,6 +808,11 @@ export default {
         this.$nextTick(() => { this.activeSubItem = row1Count + list.length - 1 })
       }
     },
+    isHiddenByCondition(config) {
+      if (!config.showWhen) return false
+      return !this.localData[config.showWhen]
+    },
+
     isHiddenByHotdealNav(type) {
       const subItems = this.currentTabSubItems
       if (!subItems || subItems.type !== 'hotdeal' || this.activeSubItem === null) return false

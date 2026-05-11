@@ -524,53 +524,7 @@ export default {
   cursor: pointer;
 }
 
-.template-select-btn {
-  width: 100%;
-  padding: 10px 14px;
-  margin-bottom: 16px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  background: rgb(0 0 0 / 4%);
-  border: 1px solid var(--color-border);
-  border-radius: 6px;
-  color: var(--color-text-secondary);
-  font-size: 13px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: background 0.15s, border-color 0.15s, color 0.15s;
-}
 
-.template-select-btn:hover {
-  background: rgb(0 0 0 / 7%);
-  border-color: var(--color-border-hover);
-  color: var(--color-text);
-}
-
-.template-select-btn:active {
-  background: rgb(0 0 0 / 10%);
-}
-
-.template-select-btn .btn-icon {
-  flex-shrink: 0;
-  color: var(--color-text-tertiary);
-}
-
-.template-select-btn .btn-text {
-  flex: 1;
-  text-align: left;
-}
-
-.template-select-btn > svg:last-child {
-  flex-shrink: 0;
-  opacity: 0.45;
-  transition: transform 0.15s;
-}
-
-.template-select-btn:hover > svg:last-child {
-  transform: translateY(2px);
-  opacity: 0.65;
-}
 
 .sidebar-section .section-title:not(:first-child) {
   margin-top: 20px;

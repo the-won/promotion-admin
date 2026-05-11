@@ -224,7 +224,10 @@
 
     <!-- 새 그룹 추가 버튼 -->
     <div class="text-center mt-4">
-      <button @click="addGroup" class="btn btn-primary btn-lg">새 링크 그룹 추가</button>
+      <!-- <button @click="addGroup" class="btn btn-primary btn-lg">새 링크 그룹 추가</button> -->
+      <div class="add-group-section">
+        <button @click="addGroup" class="btn btn-add-group">새 링크 그룹 추가</button>
+      </div>
     </div>
 
     <image-cutter-modal

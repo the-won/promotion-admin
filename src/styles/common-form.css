@@ -485,14 +485,17 @@ button {
 }
 /* URL 미리보기 */
 .form-input.url-preview {
-  background: #f3f4f6;
+  background: #f1f5f9;
   color: #6b7280;
   font-size: 11px;
-  font-family: monospace;
+  font-family: 'Consolas', 'Monaco', monospace;
   cursor: text;
-  padding: 7px;
+  word-break: break-all;
+    line-height: 1.5;
+  padding: 10px;
   height: auto;
-  border: none;
+  border: 1px solid #e2e8f0;
+  border-radius: 3px;
 }
 
 .form-input.url-preview:focus {
@@ -687,6 +690,15 @@ button {
 .checkbox-label {
   font-size: var(--form-font-size);
   color: var(--color-text);
+}
+
+.form-group .checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  font-size: 12px;
+  color: #374151;
 }
 
 /* Range Slider */
@@ -892,6 +904,24 @@ button {
 .btn-lg {
   padding: 12px 24px;
   font-size: 14px;
+}
+
+.btn-add-group {
+  width: 100%;
+  padding: 12px;
+  font-size: 13px;
+  font-weight: 600;
+  border: 2px dashed #d1d5db;
+  background: transparent;
+  color: #0071e3;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.btn-add-group:hover {
+  background: rgba(0, 113, 227, 0.05);
+  border-color: #0071e3;
 }
 
 

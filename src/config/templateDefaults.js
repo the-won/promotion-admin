@@ -164,12 +164,14 @@ export const templateDefaults = {
       type: 'text',
       tab: '설정',
       fullWidth: true,
+      showWhen: 'showNotice',
       value: '꼭 확인하세요'
     },
     noticeItems: {
       label: '공지사항 항목',
       type: 'notice-items',
       tab: '설정',
+      showWhen: 'showNotice',
       value: []
     },
     imageLinkGroups: {
@@ -233,12 +235,14 @@ export const templateDefaults = {
       type: 'text',
       tab: '설정',
       fullWidth: true,
+      showWhen: 'showNotice',
       value: '꼭 확인하세요'
     },
     noticeItems: {
       label: '공지사항 항목',
       type: 'notice-items',
       tab: '설정',
+      showWhen: 'showNotice',
       value: [
         '이용권 할인은 베네피아에서 e쿠폰 구매 시에만 적용됩니다.',
         "구매하신 e쿠폰은 '마이페이지 > 나의 e쿠폰함'에서 확인하실 수 있습니다.",

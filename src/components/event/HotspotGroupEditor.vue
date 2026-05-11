@@ -87,7 +87,7 @@
       <!-- 핫스팟 목록 헤더 -->
       <div class="section-header">
         <h4>버튼 목록 ({{ group.hotspots.length }}개)</h4>
-        <button @click="addHotspot(actualIdx)" class="btn btn-success">추가</button>
+        <button @click="addHotspot(actualIdx)" class="btn btn-success btn-sm">핫스팟 추가</button>
       </div>
 
       <!-- Empty State -->
@@ -811,7 +811,7 @@ export default {
   font-weight: 700;
   color: #1f2937;
 }
-
+/* 
 .btn {
   padding: 8px 16px;
   border: none;
@@ -826,7 +826,7 @@ export default {
 .btn-success:hover { background: #059669; }
 .btn-danger { background: #ef4444; color: white; }
 .btn-danger:hover { background: #dc2626; }
-.btn-sm { padding: 4px 10px; font-size: 12px; }
+.btn-sm { padding: 4px 10px; font-size: 12px; } */
 
 .empty-state {
   padding: 24px;
@@ -896,7 +896,7 @@ export default {
   .image-url-section.flash-highlight::after { animation: none; opacity: 0; }
 }
 
-.btn-add-group {
+/* .btn-add-group {
   width: 100%;
   padding: 12px;
   font-size: 14px;
@@ -911,7 +911,7 @@ export default {
 .btn-add-group:hover {
   background: rgba(0, 113, 227, 0.05);
   border-color: #0071e3;
-}
+} */
 
 .btn-cut {
   flex-shrink: 0;
@@ -932,14 +932,14 @@ export default {
   color: #b45309;
 }
 
-.checkbox-label {
+/* .checkbox-label {
   display: flex;
   align-items: center;
   gap: 8px;
   cursor: pointer;
   font-size: 12px;
   color: #374151;
-}
+} */
 
 .form-checkbox {
   width: 16px;
