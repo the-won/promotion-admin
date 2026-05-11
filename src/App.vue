@@ -1,7 +1,7 @@
 <template>
   <div class="app-wrapper">
     <!-- Header -->
-    <header class="app-header">
+    <header v-if="$route.name !== 'Login'" class="app-header">
       <!-- <div class="header-left">
         <div class="logo">
           <div class="logo-icon">📧</div>

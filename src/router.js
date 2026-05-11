@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Home from './views/Home.vue'
+import Login from './views/Login.vue'
 import EmTemplates from './views/EmTemplates.vue'
 import EventTemplates from './views/EventTemplates.vue'
 import ItemTemplates from './views/ItemTemplates.vue'
@@ -11,13 +12,12 @@ Vue.use(VueRouter)
 const routes = [
   {
     path: '/',
-    redirect: () => {
-      try {
-        const saved = JSON.parse(localStorage.getItem('defaultLanding'))
-        if (saved && saved.page) return `/${saved.page}`
-      } catch {}
-      return '/em-templates'
-    }
+    redirect: '/login'
+  },
+  {
+    path: '/login',
+    name: 'Login',
+    component: Login
   },
   {
     path: '/home',
