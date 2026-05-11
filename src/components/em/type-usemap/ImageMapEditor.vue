@@ -266,7 +266,7 @@
     <div class="text-center mt-4">
       <!-- <button @click="addRow" class="btn btn-primary btn-lg">새 행 추가</button> -->
       <div class="add-group-section">
-        <button @click="addRow" class="btn btn-add-group">+ 새이미지 + 핫스팟 그룹 추가</button>
+        <button @click="addRow" class="btn btn-add-group">+ 새 이미지 + 핫스팟 그룹 추가</button>
       </div>
     </div>
 

@@ -19,9 +19,9 @@
         <router-link to="/event-templates" class="nav-link">
           Event Templates
         </router-link>
-        <router-link to="/item-templates" class="nav-link">
+        <a href="#" class="nav-link" @click.prevent="showComingSoon">
           Item Templates
-        </router-link>
+        </a>
         <router-link to="/settings" class="nav-link">
           Settings
         </router-link>
@@ -77,6 +77,9 @@ export default {
     },
     applyDarkMode() {
       document.body.classList.toggle('dark-mode', this.darkMode)
+    },
+    showComingSoon() {
+      alert('comming soon')
     }
   }
 }

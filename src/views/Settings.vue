@@ -141,7 +141,7 @@ export default {
 .settings-header {
   position: relative;
   max-width: 720px;
-  margin: 0 auto 48px;
+  margin: 40px auto 48px;
   overflow: hidden;
   padding: 0 4px;
 }
@@ -169,7 +169,7 @@ export default {
 .settings-title {
   margin: 0 0 10px;
   font-size: 2.6rem;
-  font-weight: 900;
+  font-weight: 700;
   letter-spacing: -0.045em;
   color: oklch(14% 0.028 265);
   line-height: 1.1;
