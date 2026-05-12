@@ -787,28 +787,36 @@ export const templateDefaults = {
           rowId: 'imr_map_002',
           href: 'https://example.com/beauty',
           alt: '홀리데이 뷰티 기프트 기획전',
-          coords: { x1: 60, y1: 349, x2: 660, y2: 853 }
+          coords: { x1: 60, y1: 349, x2: 660, y2: 853 },
+          linkType: 'event',
+          linkData: { planCode: '', productCode: '', webEventCode: '', mobileEventCode: '', searchKeyword: '', customUrl: '' }
         },
         {
           id: 'ima_map_002',
           rowId: 'imr_map_002',
           href: 'https://example.com/health',
           alt: '베스트 건강가전 선물 기획전',
-          coords: { x1: 60, y1: 893, x2: 660, y2: 1397 }
+          coords: { x1: 60, y1: 893, x2: 660, y2: 1397 },
+          linkType: 'event',
+          linkData: { planCode: '', productCode: '', webEventCode: '', mobileEventCode: '', searchKeyword: '', customUrl: '' }
         },
         {
           id: 'ima_map_003',
           rowId: 'imr_map_003',
           href: 'https://example.com/tree',
           alt: '크리스마스 트리 기획전',
-          coords: { x1: 411, y1: 397, x2: 639, y2: 624 }
+          coords: { x1: 411, y1: 397, x2: 639, y2: 624 },
+          linkType: 'event',
+          linkData: { planCode: '', productCode: '', webEventCode: '', mobileEventCode: '', searchKeyword: '', customUrl: '' }
         },
         {
           id: 'ima_map_004',
           rowId: 'imr_map_003',
           href: 'https://example.com/food',
           alt: '홈파티 간편식 기획전',
-          coords: { x1: 77, y1: 686, x2: 305, y2: 914 }
+          coords: { x1: 77, y1: 686, x2: 305, y2: 914 },
+          linkType: 'event',
+          linkData: { planCode: '', productCode: '', webEventCode: '', mobileEventCode: '', searchKeyword: '', customUrl: '' }
         }
       ]
     }
@@ -849,7 +857,7 @@ export const templateDefaults = {
         {
           id: 'grp_cpn_001',
           href: 'https://example.com/product1',
-          linkType: 'custom',
+          linkType: 'event',
           linkData: {
             planCode: '',
             productCode: '',
@@ -1009,70 +1017,90 @@ export const templateDefaults = {
           rowId: 'imr_ltr_002',
           href: 'https://example.com/beauty',
           alt: '홀리데이 뷰티 기프트 기획전',
-          coords: { x1: 60, y1: 349, x2: 660, y2: 853 }
+          coords: { x1: 60, y1: 349, x2: 660, y2: 853 },
+          linkType: 'event',
+          linkData: { planCode: '', productCode: '', webEventCode: '', mobileEventCode: '', searchKeyword: '', customUrl: '' }
         },
         {
           id: 'ima_ltr_002',
           rowId: 'imr_ltr_002',
           href: 'https://example.com/health',
           alt: '베스트 건강가전 선물 기획전',
-          coords: { x1: 60, y1: 893, x2: 660, y2: 1397 }
+          coords: { x1: 60, y1: 893, x2: 660, y2: 1397 },
+          linkType: 'event',
+          linkData: { planCode: '', productCode: '', webEventCode: '', mobileEventCode: '', searchKeyword: '', customUrl: '' }
         },
         {
           id: 'ima_ltr_003',
           rowId: 'imr_ltr_003',
           href: 'https://example.com/tree',
           alt: '크리스마스 트리 기획전',
-          coords: { x1: 411, y1: 397, x2: 639, y2: 624 }
+          coords: { x1: 411, y1: 397, x2: 639, y2: 624 },
+          linkType: 'event',
+          linkData: { planCode: '', productCode: '', webEventCode: '', mobileEventCode: '', searchKeyword: '', customUrl: '' }
         },
         {
           id: 'ima_ltr_004',
           rowId: 'imr_ltr_003',
           href: 'https://example.com/food',
           alt: '홈파티 간편식 기획전',
-          coords: { x1: 77, y1: 686, x2: 305, y2: 914 }
+          coords: { x1: 77, y1: 686, x2: 305, y2: 914 },
+          linkType: 'event',
+          linkData: { planCode: '', productCode: '', webEventCode: '', mobileEventCode: '', searchKeyword: '', customUrl: '' }
         },
         {
           id: 'ima_ltr_005',
           rowId: 'imr_ltr_004',
           href: '',
           alt: '',
-          coords: { x1: 61, y1: 348, x2: 661, y2: 670 }
+          coords: { x1: 61, y1: 348, x2: 661, y2: 670 },
+          linkType: 'event',
+          linkData: { planCode: '', productCode: '', webEventCode: '', mobileEventCode: '', searchKeyword: '', customUrl: '' }
         },
         {
           id: 'ima_ltr_006',
           rowId: 'imr_ltr_005',
           href: '',
           alt: '',
-          coords: { x1: 58, y1: 349, x2: 661, y2: 1012 }
+          coords: { x1: 58, y1: 349, x2: 661, y2: 1012 },
+          linkType: 'event',
+          linkData: { planCode: '', productCode: '', webEventCode: '', mobileEventCode: '', searchKeyword: '', customUrl: '' }
         },
         {
           id: 'ima_ltr_007',
           rowId: 'imr_ltr_006',
           href: '',
           alt: '',
-          coords: { x1: 45, y1: 498, x2: 679, y2: 748 }
+          coords: { x1: 45, y1: 498, x2: 679, y2: 748 },
+          linkType: 'event',
+          linkData: { planCode: '', productCode: '', webEventCode: '', mobileEventCode: '', searchKeyword: '', customUrl: '' }
         },
         {
           id: 'ima_ltr_008',
           rowId: 'imr_ltr_007',
           href: '',
           alt: '',
-          coords: { x1: 27, y1: 147, x2: 688, y2: 329 }
+          coords: { x1: 27, y1: 147, x2: 688, y2: 329 },
+          linkType: 'event',
+          linkData: { planCode: '', productCode: '', webEventCode: '', mobileEventCode: '', searchKeyword: '', customUrl: '' }
         },
         {
           id: 'ima_ltr_009',
           rowId: 'imr_ltr_008',
           href: '',
           alt: '',
-          coords: { x1: 98, y1: 198, x2: 220, y2: 262 }
+          coords: { x1: 98, y1: 198, x2: 220, y2: 262 },
+          linkType: 'event',
+          linkData: { planCode: '', productCode: '', webEventCode: '', mobileEventCode: '', searchKeyword: '', customUrl: '' }
         },
         {
           id: 'ima_ltr_010',
           rowId: 'imr_ltr_009',
           href: '',
           alt: '',
-          coords: { x1: 31, y1: 28, x2: 690, y2: 207 }
+          coords: { x1: 31, y1: 28, x2: 690, y2: 207 },
+          linkType: 'event',
+          linkData: { planCode: '', productCode: '', webEventCode: '', mobileEventCode: '', searchKeyword: '', customUrl: '' }
         },
       
       ]

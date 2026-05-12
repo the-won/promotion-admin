@@ -94,17 +94,13 @@
 
             <div class="form-group">
               <label>링크 타입</label>
-              <select 
-                v-model="area.linkType" 
+              <select
+                v-model="area.linkType"
                 @change="updateAreaUrl(area)"
-                class="form-input" 
+                class="form-input"
                 @click.stop
               >
-                <option value="plan">기획전</option>
-                <option value="product">상품</option>
-                <option value="event">이벤트</option>
-                <option value="search">검색어</option>
-                <option value="custom">기타 (전체 URL)</option>
+                <option v-for="opt in areaLinkTypeOptions" :key="opt.value" :value="opt.value">{{ opt.label }}</option>
               </select>
             </div>
 
@@ -112,8 +108,8 @@
             <div v-if="area.linkType === 'plan'" class="link-inputs">
               <div class="form-group">
                 <label>기획전 코드</label>
-                <input 
-                  type="text" 
+                <input
+                  type="text"
                   v-model="area.linkData.planCode"
                   @input="updateAreaUrl(area)"
                   placeholder="예: 12345"
@@ -127,8 +123,8 @@
             <div v-if="area.linkType === 'product'" class="link-inputs">
               <div class="form-group">
                 <label>상품 코드</label>
-                <input 
-                  type="text" 
+                <input
+                  type="text"
                   v-model="area.linkData.productCode"
                   @input="updateAreaUrl(area)"
                   placeholder="예: PRD001"
@@ -144,8 +140,8 @@
               <div v-if="companyType === 'normal'">
                 <div class="form-group">
                   <label>웹 이벤트 코드</label>
-                  <input 
-                    type="text" 
+                  <input
+                    type="text"
                     v-model="area.linkData.webEventCode"
                     @input="updateAreaUrl(area)"
                     placeholder="웹용 코드"
@@ -155,8 +151,8 @@
                 </div>
                 <div class="form-group">
                   <label>모바일 이벤트 코드</label>
-                  <input 
-                    type="text" 
+                  <input
+                    type="text"
                     v-model="area.linkData.mobileEventCode"
                     @input="updateAreaUrl(area)"
                     placeholder="모바일용 코드"
@@ -165,13 +161,13 @@
                   />
                 </div>
               </div>
-              
+
               <!-- 하이닉스: 모바일 코드만 -->
               <div v-else>
                 <div class="form-group">
                   <label>모바일 이벤트 코드</label>
-                  <input 
-                    type="text" 
+                  <input
+                    type="text"
                     v-model="area.linkData.mobileEventCode"
                     @input="updateAreaUrl(area)"
                     placeholder="모바일용 코드"
@@ -186,8 +182,8 @@
             <div v-if="area.linkType === 'search'" class="link-inputs">
               <div class="form-group">
                 <label>검색어</label>
-                <input 
-                  type="text" 
+                <input
+                  type="text"
                   v-model="area.linkData.searchKeyword"
                   @input="updateAreaUrl(area)"
                   placeholder="예: 커피"
@@ -198,14 +194,44 @@
             </div>
 
             <!-- 기타 (전체 URL) 입력 -->
-            <div v-if="area.linkType === 'custom'" class="link-inputs">
+            <div v-if="area.linkType === 'custom' || area.linkType === 'hugashop_custom'" class="link-inputs">
               <div class="form-group">
                 <label>전체 URL</label>
-                <input 
-                  type="url" 
+                <input
+                  type="url"
                   v-model="area.linkData.customUrl"
                   @input="updateAreaUrl(area)"
                   placeholder="https://example.com"
+                  class="form-input"
+                  @click.stop
+                />
+              </div>
+            </div>
+
+            <!-- 휴가샵 이벤트 입력 -->
+            <div v-if="area.linkType === 'hugashop_event'" class="link-inputs">
+              <div class="form-group">
+                <label>웹이벤트코드 (evtSeq)</label>
+                <input
+                  type="text"
+                  v-model="area.linkData.webEventCode"
+                  @input="updateAreaUrl(area)"
+                  placeholder="예: 12345"
+                  class="form-input"
+                  @click.stop
+                />
+              </div>
+            </div>
+
+            <!-- 휴가샵 설문형 입력 -->
+            <div v-if="area.linkType === 'hugashop_survey'" class="link-inputs">
+              <div class="form-group">
+                <label>웹이벤트코드 (surveyNo)</label>
+                <input
+                  type="text"
+                  v-model="area.linkData.webEventCode"
+                  @input="updateAreaUrl(area)"
+                  placeholder="예: 67890"
                   class="form-input"
                   @click.stop
                 />
@@ -285,9 +311,31 @@ export default {
       type: String,
       default: 'normal'
     },
+    headerType: {
+      type: String,
+      default: 'benepia'
+    },
     selectedRowIndex: {
       type: Number,
       default: null
+    }
+  },
+  computed: {
+    areaLinkTypeOptions() {
+      if (this.headerType === 'hugashop') {
+        return [
+          { value: 'hugashop_event', label: '이벤트' },
+          { value: 'hugashop_survey', label: '설문형' },
+          { value: 'hugashop_custom', label: '기타 (전체 URL)' }
+        ]
+      }
+      return [
+        { value: 'plan', label: '기획전' },
+        { value: 'product', label: '상품' },
+        { value: 'event', label: '이벤트' },
+        { value: 'search', label: '검색어' },
+        { value: 'custom', label: '기타 (전체 URL)' }
+      ]
     }
   },
   data() {
@@ -373,6 +421,22 @@ export default {
       if (newVal !== oldVal) {
         this.$nextTick(() => {
           this.localAreas.forEach(area => this.updateAreaUrl(area))
+          this.$emit('update:areas', JSON.parse(JSON.stringify(this.localAreas)))
+        })
+      }
+    },
+    headerType(newVal, oldVal) {
+      if (newVal !== oldVal) {
+        const hugashopTypes = ['hugashop_event', 'hugashop_survey', 'hugashop_custom']
+        this.$nextTick(() => {
+          this.localAreas.forEach(area => {
+            if (newVal === 'hugashop' && !hugashopTypes.includes(area.linkType)) {
+              area.linkType = 'hugashop_event'
+            } else if (newVal !== 'hugashop' && hugashopTypes.includes(area.linkType)) {
+              area.linkType = 'custom'
+            }
+            this.updateAreaUrl(area)
+          })
           this.$emit('update:areas', JSON.parse(JSON.stringify(this.localAreas)))
         })
       }
@@ -478,7 +542,20 @@ export default {
         case 'custom':
           console.log('기타 URL:', linkData.customUrl)
           return linkData.customUrl || ''
-        
+
+        case 'hugashop_event': {
+          const code = linkData.webEventCode || ''
+          return code ? `/frnt/eventzone/eventZoneView.do?evtSeq=${code}` : ''
+        }
+
+        case 'hugashop_survey': {
+          const code = linkData.webEventCode || ''
+          return code ? `/frnt/eventzone/surveyParti.do?surveyNo=${code}` : ''
+        }
+
+        case 'hugashop_custom':
+          return linkData.customUrl || ''
+
         default:
           console.log('알 수 없는 linkType:', linkType)
           return ''
@@ -534,10 +611,10 @@ export default {
     },
     
     initializeAreas() {
-      // 기존 area에 linkType이 없으면 초기화
+      const validOptions = this.areaLinkTypeOptions.map(o => o.value)
       this.localAreas.forEach(area => {
-        if (!area.linkType) {
-          this.$set(area, 'linkType', 'custom')
+        if (!area.linkType || !validOptions.includes(area.linkType)) {
+          this.$set(area, 'linkType', this.headerType === 'hugashop' ? 'hugashop_event' : 'event')
         }
         if (!area.linkData) {
           this.$set(area, 'linkData', {
@@ -697,9 +774,9 @@ export default {
       const newArea = {
         id: newId,
         rowId: rowId,
-        
+
         // 링크 타입 및 데이터
-        linkType: 'custom',
+        linkType: this.headerType === 'hugashop' ? 'hugashop_event' : 'custom',
         linkData: {
           planCode: '',
           productCode: '',

@@ -57,6 +57,16 @@ function buildAreaUrl(area, companyType) {
         break
       case 'custom':
         return linkData.customUrl || 'javascript:void(0)'
+      case 'hugashop_event':
+        if (linkData.webEventCode)
+          return `/frnt/eventzone/eventZoneView.do?evtSeq=${linkData.webEventCode}`
+        break
+      case 'hugashop_survey':
+        if (linkData.webEventCode)
+          return `/frnt/eventzone/surveyParti.do?surveyNo=${linkData.webEventCode}`
+        break
+      case 'hugashop_custom':
+        return linkData.customUrl || 'javascript:void(0)'
     }
   }
 

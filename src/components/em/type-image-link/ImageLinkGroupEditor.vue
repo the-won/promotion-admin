@@ -14,17 +14,13 @@
       <!-- 링크 타입 선택 -->
       <div class="form-group">
         <label>링크 타입</label>
-        <select 
-          v-model="group.linkType" 
+        <select
+          v-model="group.linkType"
           @change="updateGroupUrl(group)"
           class="form-input"
           @click.stop
         >
-          <option value="plan">기획전</option>
-          <option value="product">상품</option>
-          <option value="event">이벤트</option>
-          <option value="search">검색어</option>
-          <option value="custom">기타 (전체 URL)</option>
+          <option v-for="opt in groupLinkTypeOptions" :key="opt.value" :value="opt.value">{{ opt.label }}</option>
         </select>
       </div>
 
@@ -32,8 +28,8 @@
       <div v-if="group.linkType === 'plan'" class="link-inputs">
         <div class="form-group">
           <label>기획전 코드</label>
-          <input 
-            type="text" 
+          <input
+            type="text"
             v-model="group.linkData.planCode"
             @input="updateGroupUrl(group)"
             placeholder="예: 12345"
@@ -47,8 +43,8 @@
       <div v-if="group.linkType === 'product'" class="link-inputs">
         <div class="form-group">
           <label>상품 코드</label>
-          <input 
-            type="text" 
+          <input
+            type="text"
             v-model="group.linkData.productCode"
             @input="updateGroupUrl(group)"
             placeholder="예: PRD001"
@@ -64,8 +60,8 @@
         <div v-if="globalVendor === 'normal'">
           <div class="form-group">
             <label>웹 이벤트 코드</label>
-            <input 
-              type="text" 
+            <input
+              type="text"
               v-model="group.linkData.webEventCode"
               @input="updateGroupUrl(group)"
               placeholder="웹용 코드"
@@ -75,8 +71,8 @@
           </div>
           <div class="form-group">
             <label>모바일 이벤트 코드</label>
-            <input 
-              type="text" 
+            <input
+              type="text"
               v-model="group.linkData.mobileEventCode"
               @input="updateGroupUrl(group)"
               placeholder="모바일용 코드"
@@ -85,13 +81,13 @@
             />
           </div>
         </div>
-        
+
         <!-- 하이닉스: 모바일 코드만 -->
         <div v-else>
           <div class="form-group">
             <label>모바일 이벤트 코드</label>
-            <input 
-              type="text" 
+            <input
+              type="text"
               v-model="group.linkData.mobileEventCode"
               @input="updateGroupUrl(group)"
               placeholder="모바일용 코드"
@@ -106,8 +102,8 @@
       <div v-if="group.linkType === 'search'" class="link-inputs">
         <div class="form-group">
           <label>검색어</label>
-          <input 
-            type="text" 
+          <input
+            type="text"
             v-model="group.linkData.searchKeyword"
             @input="updateGroupUrl(group)"
             placeholder="예: 커피"
@@ -118,14 +114,44 @@
       </div>
 
       <!-- 기타 (전체 URL) 입력 -->
-      <div v-if="group.linkType === 'custom'" class="link-inputs">
+      <div v-if="group.linkType === 'custom' || group.linkType === 'hugashop_custom'" class="link-inputs">
         <div class="form-group">
           <label>전체 URL</label>
-          <input 
-            type="url" 
+          <input
+            type="url"
             v-model="group.linkData.customUrl"
             @input="updateGroupUrl(group)"
             placeholder="https://example.com"
+            class="form-input"
+            @click.stop
+          />
+        </div>
+      </div>
+
+      <!-- 휴가샵 이벤트 입력 -->
+      <div v-if="group.linkType === 'hugashop_event'" class="link-inputs">
+        <div class="form-group">
+          <label>웹이벤트코드 (evtSeq)</label>
+          <input
+            type="text"
+            v-model="group.linkData.webEventCode"
+            @input="updateGroupUrl(group)"
+            placeholder="예: 12345"
+            class="form-input"
+            @click.stop
+          />
+        </div>
+      </div>
+
+      <!-- 휴가샵 설문형 입력 -->
+      <div v-if="group.linkType === 'hugashop_survey'" class="link-inputs">
+        <div class="form-group">
+          <label>웹이벤트코드 (surveyNo)</label>
+          <input
+            type="text"
+            v-model="group.linkData.webEventCode"
+            @input="updateGroupUrl(group)"
+            placeholder="예: 67890"
             class="form-input"
             @click.stop
           />
@@ -258,6 +284,10 @@ export default {
       type: String,
       default: 'normal'
     },
+    headerType: {
+      type: String,
+      default: 'benepia'
+    },
     selectedGroupIndex: {
       type: Number,
       default: null
@@ -265,6 +295,24 @@ export default {
     sidebarFocusInfo: {
       type: Object,
       default: null
+    }
+  },
+  computed: {
+    groupLinkTypeOptions() {
+      if (this.headerType === 'hugashop') {
+        return [
+          { value: 'hugashop_event', label: '이벤트' },
+          { value: 'hugashop_survey', label: '설문형' },
+          { value: 'hugashop_custom', label: '기타 (전체 URL)' }
+        ]
+      }
+      return [
+        { value: 'plan', label: '기획전' },
+        { value: 'product', label: '상품' },
+        { value: 'event', label: '이벤트' },
+        { value: 'search', label: '검색어' },
+        { value: 'custom', label: '기타 (전체 URL)' }
+      ]
     }
   },
   data() {
@@ -324,6 +372,22 @@ export default {
         this.globalVendor = newVal
         this.$nextTick(() => {
           this.localGroups.forEach(group => this.updateGroupUrl(group))
+          this.$emit('input', JSON.parse(JSON.stringify(this.localGroups)))
+        })
+      }
+    },
+    headerType(newVal, oldVal) {
+      if (newVal !== oldVal) {
+        const hugashopTypes = ['hugashop_event', 'hugashop_survey', 'hugashop_custom']
+        this.$nextTick(() => {
+          this.localGroups.forEach(group => {
+            if (newVal === 'hugashop' && !hugashopTypes.includes(group.linkType)) {
+              group.linkType = 'hugashop_event'
+            } else if (newVal !== 'hugashop' && hugashopTypes.includes(group.linkType)) {
+              group.linkType = 'custom'
+            }
+            this.updateGroupUrl(group)
+          })
           this.$emit('input', JSON.parse(JSON.stringify(this.localGroups)))
         })
       }
@@ -407,9 +471,9 @@ export default {
     createNewGroup() {
       return {
         id: this.generateId('grp'),
-        
+
         // 링크 타입 및 데이터
-        linkType: 'custom',
+        linkType: this.headerType === 'hugashop' ? 'hugashop_event' : 'event',
         linkData: {
           planCode: '',
           productCode: '',
@@ -502,12 +566,25 @@ export default {
         
         case 'custom':
           return linkData.customUrl || ''
-        
+
+        case 'hugashop_event': {
+          const code = linkData.webEventCode || ''
+          return code ? `/frnt/eventzone/eventZoneView.do?evtSeq=${code}` : ''
+        }
+
+        case 'hugashop_survey': {
+          const code = linkData.webEventCode || ''
+          return code ? `/frnt/eventzone/surveyParti.do?surveyNo=${code}` : ''
+        }
+
+        case 'hugashop_custom':
+          return linkData.customUrl || ''
+
         default:
           return ''
       }
     },
-    
+
     updateGroupUrl(group) {
       const newUrl = this.generateUrl(group)
       if (newUrl !== group.href) {
@@ -551,9 +628,10 @@ export default {
     },
     
     initializeGroups() {
+      const validOptions = this.groupLinkTypeOptions.map(o => o.value)
       this.localGroups.forEach(group => {
-        if (!group.linkType) {
-          this.$set(group, 'linkType', 'custom')
+        if (!group.linkType || !validOptions.includes(group.linkType)) {
+          this.$set(group, 'linkType', this.headerType === 'hugashop' ? 'hugashop_event' : 'event')
         }
         if (!group.linkData) {
           this.$set(group, 'linkData', {

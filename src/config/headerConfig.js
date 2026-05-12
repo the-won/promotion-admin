@@ -15,16 +15,16 @@ export const HEADER_CONFIGS = {
   },
   hugashop: {
     // TODO: 아래 URL들을 실제 휴가샵 이미지/링크로 교체하세요
-    logoUrl: 'TODO_HUGASHOP_LOGO_URL',
+    logoUrl: 'https://org-i.benepia.co.kr/ckeditor/2025/04/04/4497759d-fe0f-4f92-a2f8-5c1081f97fb7.gif',
     logoAlt: '휴가샵',
-    logoWidth: 148,
+    logoWidth: 140,
     logoHeight: 88,
     bannerUrl: 'https://i.benepia.co.kr/ckeditor/D9E5A1E20280.mns0115844189801720.gif',
     bannerAlt: '의 휴가샵 포인트를 지금 확인하세요!',
     bannerWidth: 325,
     bannerHeight: 88,
     detailUrls: {
-      normal: 'TODO_HUGASHOP_TOBE_DETAIL_URL',
+      normal: 'https://vacation.benepia.co.kr/frnt/mypage/main.do?mnuTopLevel=0&mnuLevel=0',
       hynix: 'TODO_HUGASHOP_HYNIX_DETAIL_URL'
     }
   }
