@@ -246,6 +246,7 @@
           :rows="localData.imageMapRows"
           :areas="localData.imageMapAreas"
           :companyType="localData.companyType"
+          :headerType="localData.headerType"
           :selectedAreaId="selectedHotspotId"
           :selectedRowInfo="selectedRowInfo"
           :visibleScrollPosition="visibleScrollPosition"

@@ -157,7 +157,7 @@
                       <tbody>
                         <tr>
                           <td>
-                            <img src="http://i.benepia.co.kr/ckeditor/d20-10ad76abd4f417217996045900.jpg" align="left" width="720" alt="꼭 확인하세요!" border="0">
+                            <img src="http://10.71.101.60:13305/Promotion/2026%EB%85%84/familysale_img_pack/notice.jpg" align="left" width="720" alt="꼭 확인하세요!" border="0">
                           </td>
                         </tr>
                       </tbody>

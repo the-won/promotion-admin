@@ -599,7 +599,7 @@ export const templateDefaults = {
       label: '상단 이미지 URL',
       type: 'url',
       tab: '기본',
-      value: ''
+      value: 'http://10.71.101.60:13305/Promotion/2026%EB%85%84/familysale_img_pack/visual.jpg'
     },
     headerImageAlt: {
       label: '상단 이미지 대체텍스트',
@@ -614,13 +614,35 @@ export const templateDefaults = {
       value: [
         {
           id: 'pg_fs_001',
-          titleImage: { url: '', alt: '' },
+          titleImage: { url: 'http://10.71.101.60:13305/Promotion/2026%EB%85%84/familysale_img_pack/title_01.jpg', alt: '' },
           products: [
-            { productCode: '', imageUrl: '', imageAlt: '' },
-            { productCode: '', imageUrl: '', imageAlt: '' },
-            { productCode: '', imageUrl: '', imageAlt: '' },
-            { productCode: '', imageUrl: '', imageAlt: '' },
-            { productCode: '', imageUrl: '', imageAlt: '' }
+            { productCode: '', imageUrl: 'http://10.71.101.60:13305/Promotion/2026%EB%85%84/familysale_img_pack/product_01_01.jpg', imageAlt: '' },
+            { productCode: '', imageUrl: 'http://10.71.101.60:13305/Promotion/2026%EB%85%84/familysale_img_pack/product_01_02.jpg', imageAlt: '' },
+            { productCode: '', imageUrl: 'http://10.71.101.60:13305/Promotion/2026%EB%85%84/familysale_img_pack/product_01_03.jpg', imageAlt: '' },
+            { productCode: '', imageUrl: 'http://10.71.101.60:13305/Promotion/2026%EB%85%84/familysale_img_pack/product_01_04.jpg', imageAlt: '' },
+            { productCode: '', imageUrl: 'http://10.71.101.60:13305/Promotion/2026%EB%85%84/familysale_img_pack/product_01_05.jpg', imageAlt: '' }
+          ]
+        },
+        {
+          id: 'pg_fs_002',
+          titleImage: { url: 'http://10.71.101.60:13305/Promotion/2026%EB%85%84/familysale_img_pack/title_02.jpg', alt: '' },
+          products: [
+            { productCode: '', imageUrl: 'http://10.71.101.60:13305/Promotion/2026%EB%85%84/familysale_img_pack/product_02_01.jpg', imageAlt: '' },
+            { productCode: '', imageUrl: 'http://10.71.101.60:13305/Promotion/2026%EB%85%84/familysale_img_pack/product_02_02.jpg', imageAlt: '' },
+            { productCode: '', imageUrl: 'http://10.71.101.60:13305/Promotion/2026%EB%85%84/familysale_img_pack/product_02_03.jpg', imageAlt: '' },
+            { productCode: '', imageUrl: 'http://10.71.101.60:13305/Promotion/2026%EB%85%84/familysale_img_pack/product_02_04.jpg', imageAlt: '' },
+            { productCode: '', imageUrl: 'http://10.71.101.60:13305/Promotion/2026%EB%85%84/familysale_img_pack/product_02_05.jpg', imageAlt: '' }
+          ]
+        },
+        {
+          id: 'pg_fs_003',
+          titleImage: { url: 'http://10.71.101.60:13305/Promotion/2026%EB%85%84/familysale_img_pack/title_03.jpg', alt: '' },
+          products: [
+            { productCode: '', imageUrl: 'http://10.71.101.60:13305/Promotion/2026%EB%85%84/familysale_img_pack/product_03_01.jpg', imageAlt: '' },
+            { productCode: '', imageUrl: 'http://10.71.101.60:13305/Promotion/2026%EB%85%84/familysale_img_pack/product_03_02.jpg', imageAlt: '' },
+            { productCode: '', imageUrl: 'http://10.71.101.60:13305/Promotion/2026%EB%85%84/familysale_img_pack/product_03_03.jpg', imageAlt: '' },
+            { productCode: '', imageUrl: 'http://10.71.101.60:13305/Promotion/2026%EB%85%84/familysale_img_pack/product_03_04.jpg', imageAlt: '' },
+            { productCode: '', imageUrl: 'http://10.71.101.60:13305/Promotion/2026%EB%85%84/familysale_img_pack/product_03_05.jpg', imageAlt: '' }
           ]
         }
       ]
