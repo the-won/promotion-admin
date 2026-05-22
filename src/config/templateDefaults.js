@@ -614,6 +614,7 @@ export const templateDefaults = {
       value: [
         {
           id: 'pg_fs_001',
+          backgroundColor: '#E9F9FF',
           titleImage: { url: 'http://10.71.101.60:13305/Promotion/2026%EB%85%84/familysale_img_pack/title_01.jpg', alt: '' },
           products: [
             { productCode: '', imageUrl: 'http://10.71.101.60:13305/Promotion/2026%EB%85%84/familysale_img_pack/product_01_01.jpg', imageAlt: '' },
@@ -625,6 +626,7 @@ export const templateDefaults = {
         },
         {
           id: 'pg_fs_002',
+          backgroundColor: '#E9F9FF',
           titleImage: { url: 'http://10.71.101.60:13305/Promotion/2026%EB%85%84/familysale_img_pack/title_02.jpg', alt: '' },
           products: [
             { productCode: '', imageUrl: 'http://10.71.101.60:13305/Promotion/2026%EB%85%84/familysale_img_pack/product_02_01.jpg', imageAlt: '' },
@@ -636,6 +638,7 @@ export const templateDefaults = {
         },
         {
           id: 'pg_fs_003',
+          backgroundColor: '#E9F9FF',
           titleImage: { url: 'http://10.71.101.60:13305/Promotion/2026%EB%85%84/familysale_img_pack/title_03.jpg', alt: '' },
           products: [
             { productCode: '', imageUrl: 'http://10.71.101.60:13305/Promotion/2026%EB%85%84/familysale_img_pack/product_03_01.jpg', imageAlt: '' },

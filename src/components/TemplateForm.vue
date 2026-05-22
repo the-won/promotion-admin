@@ -166,7 +166,7 @@
           v-else-if="config.type === 'date-picker'"
           v-model="localData[key]"
         />
-
+       
         <!-- Hotspot Group Editor (단일 그룹) -->
         <HotspotGroupEditor
           v-else-if="config.type === 'hotspot-group'"

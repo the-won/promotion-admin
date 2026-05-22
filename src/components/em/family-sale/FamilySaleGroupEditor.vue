@@ -22,6 +22,15 @@
         </button>
       </div>
 
+      <!-- 배경색 -->
+      <div class="group-bg-color">
+        <label>배경색</label>
+        <div class="color-field">
+          <input type="color" v-model="group.backgroundColor" class="color-picker" />
+          <input type="text" v-model="group.backgroundColor" class="form-input" />
+        </div>
+      </div>
+
       <!-- 타이틀 이미지 -->
       <div
         class="title-image-section selectable"
@@ -181,17 +190,14 @@ export default {
     }
   },
   created() {
-    this.localGroups = this.value && this.value.length > 0
-      ? JSON.parse(JSON.stringify(this.value))
-      : [this.createNewGroup()]
+    this.localGroups = this.normalizeGroups(this.value)
   },
   watch: {
     value: {
       handler(newVal) {
-        if (JSON.stringify(newVal) !== JSON.stringify(this.localGroups)) {
-          this.localGroups = newVal && newVal.length > 0
-            ? JSON.parse(JSON.stringify(newVal))
-            : [this.createNewGroup()]
+        const normalized = this.normalizeGroups(newVal)
+        if (JSON.stringify(normalized) !== JSON.stringify(this.localGroups)) {
+          this.localGroups = normalized
         }
       },
       deep: true
@@ -206,9 +212,17 @@ export default {
     }
   },
   methods: {
+    normalizeGroups(groups) {
+      if (!groups || groups.length === 0) return [this.createNewGroup()]
+      return JSON.parse(JSON.stringify(groups)).map(g => ({
+        backgroundColor: '#E9F9FF',
+        ...g
+      }))
+    },
     createNewGroup() {
       return {
         id: `pg_fs_${Date.now()}`,
+        backgroundColor: '#E9F9FF',
         titleImage: { url: '', alt: '' },
         products: [
           { productCode: '', imageUrl: '', imageAlt: '' },
@@ -276,6 +290,42 @@ export default {
   font-size: 14px;
   font-weight: 600;
   color: var(--color-text);
+}
+
+.group-bg-color {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 16px;
+}
+
+.group-bg-color label {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--color-text-secondary, #64748b);
+  white-space: nowrap;
+}
+
+.color-field {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.color-picker {
+  width: 36px;
+  height: 28px;
+  padding: 2px;
+  border: 1px solid var(--color-border, #e5e7eb);
+  border-radius: 4px;
+  cursor: pointer;
+  background: none;
+}
+
+.color-field .form-input {
+  width: 100px;
+  font-size: 12px;
+  font-family: monospace;
 }
 
 .title-image-section {

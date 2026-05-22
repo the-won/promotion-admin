@@ -29,13 +29,17 @@
           @privacy-preview-focus="$emit('privacy-preview-focus', $event)"
         />
 
-         <!-- 공지사항 -->
-        <div v-if="effectiveShowNotice && effectiveNoticeData.items && effectiveNoticeData.items.length > 0" class="preview-notice">
-          <h2 class="preview-notice-title">{{ effectiveNoticeData.title || '꼭 확인하세요' }}</h2>
-          <ul class="preview-notice-list">
-            <li v-for="(item, i) in effectiveNoticeData.items" :key="i">{{ item }}</li>
-          </ul>
-        </div>
+        <!-- 공지사항 -->
+        <Notice
+          v-if="deviceType === 'web' && effectiveShowNotice"
+          :title="effectiveNoticeData.title"
+          :items="effectiveNoticeData.items"
+        />
+        <NoticeMobile
+          v-if="deviceType === 'mobile' && effectiveShowNotice"
+          :title="effectiveNoticeData.title"
+          :items="effectiveNoticeData.items"
+        />
 
         <!-- BottomBanner (디바이스별) -->
         <BottomBanner v-if="deviceType === 'web' && effectiveShowBottomBanner" />
@@ -53,6 +57,8 @@ import TopBanner from './event/common/TopBanner.vue'
 import TopBannerMobile from './event/common/TopBannerMobile.vue'
 import BottomBanner from './event/common/BottomBanner.vue'
 import BottomBannerMobile from './event/common/BottomBannerMobile.vue'
+import Notice from './event/common/Notice.vue'
+import NoticeMobile from './event/common/NoticeMobile.vue'
 import EmType1 from '../templates/EmType1.vue'
 import EmType2 from '../templates/em/type-image-link/EmType2.vue'
 import EmType3 from '../templates/event/EmType3.vue'
@@ -71,6 +77,8 @@ export default {
     TopBannerMobile,
     BottomBanner,
     BottomBannerMobile,
+    Notice,
+    NoticeMobile,
     EmType1,
     EmType2,
     EmType3,
@@ -414,59 +422,4 @@ export default {
   width: 480px;
 }
 
-/* 공지사항 프리뷰 */
-.preview-notice {
-  padding: 60px 39px 60px 187px;
-  background-color: #f8f8f8;
-  box-sizing: border-box;
-}
-
-.is-mobile .preview-notice {
-  padding: 8.33vw 5.41vw;
-}
-
-.preview-notice-title {
-  font-size: 32px;
-  font-weight: bold;
-  line-height: 38px;
-  color: #000;
-}
-
-.is-mobile .preview-notice-title {
-  font-size: 4.44vw;
-  line-height: 5.27vw;
-}
-
-.preview-notice-list {
-  margin-top: 28px;
-  list-style: none;
-  padding: 0;
-}
-
-.preview-notice-list li {
-  position: relative;
-  padding-left: 17px;
-  font-size: 24px;
-  font-weight: 400;
-  line-height: 29px;
-  color: #212121;
-  word-break: keep-all;
-}
-
-.is-mobile .preview-notice-list li {
-  font-size: 3.33vw;
-  line-height: 4.02vw;
-  padding-left: 2.36vw;
-}
-
-.preview-notice-list li::before {
-  content: '*';
-  position: absolute;
-  top: 3px;
-  left: 0;
-}
-
-.preview-notice-list li + li {
-  margin-top: 18px;
-}
 </style>

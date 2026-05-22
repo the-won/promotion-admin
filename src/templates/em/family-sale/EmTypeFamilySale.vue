@@ -62,23 +62,23 @@
                           </tr>
 
                           <!-- 대표 상품 간격 -->
-                          <tr :key="'featured-space-' + group.id">
+                          <!-- <tr :key="'featured-space-' + group.id">
                             <td :height="groupIndex === 0 ? 43 : 30"></td>
-                          </tr>
+                          </tr> -->
 
                           <!-- 대표 상품 (products[0]) -->
                           <tr :key="'featured-' + group.id">
                             <td style="font-size: 0px; vertical-align: top">
-                              <table cellspacing="0" cellpadding="0" width="720" border="0">
+                              <table cellspacing="0" cellpadding="0" width="720" border="0" :style="{ backgroundColor: group.backgroundColor || '#E9F9FF' }">
                                 <tbody>
                                   <tr>
-                                    <td width="45"></td>
+                                    <td width="66"></td>
                                     <td style="font-size: 0px; vertical-align: top">
                                       <a :href="getProductUrl(getProduct(group, 0).productCode)" target="_blank">
-                                        <img :src="getProduct(group, 0).imageUrl" align="left" width="630" :alt="getProduct(group, 0).imageAlt" border="0">
+                                        <img :src="getProduct(group, 0).imageUrl" align="left" width="588" :alt="getProduct(group, 0).imageAlt" border="0">
                                       </a>
                                     </td>
-                                    <td width="45"></td>
+                                    <td width="66"></td>
                                   </tr>
                                 </tbody>
                               </table>
@@ -87,28 +87,27 @@
 
                           <!-- 그리드 행 1 간격 -->
                           <tr :key="'grid1-space-' + group.id">
-                            <td height="16"></td>
+                            <td height="20" :style="{ backgroundColor: group.backgroundColor || '#E9F9FF' }"></td>
                           </tr>
 
                           <!-- 그리드 행 1 (products[1], products[2]) -->
                           <tr :key="'grid1-' + group.id">
                             <td style="font-size: 0px; vertical-align: top">
-                              <table cellspacing="0" cellpadding="0" width="720" border="0">
+                              <table cellspacing="0" cellpadding="0" width="720" border="0" :style="{ backgroundColor: group.backgroundColor || '#E9F9FF' }">
                                 <tbody>
                                   <tr>
-                                    <td width="45"></td>
+                                    <td width="66"></td>
                                     <td style="font-size: 0px; vertical-align: top">
                                       <a :href="getProductUrl(getProduct(group, 1).productCode)" target="_blank">
-                                        <img :src="getProduct(group, 1).imageUrl" align="left" width="307" :alt="getProduct(group, 1).imageAlt" border="0">
+                                        <img :src="getProduct(group, 1).imageUrl" align="left" width="294" :alt="getProduct(group, 1).imageAlt" border="0">
                                       </a>
                                     </td>
-                                    <td width="16"></td>
                                     <td style="font-size: 0px; vertical-align: top">
                                       <a :href="getProductUrl(getProduct(group, 2).productCode)" target="_blank">
-                                        <img :src="getProduct(group, 2).imageUrl" align="left" width="307" :alt="getProduct(group, 2).imageAlt" border="0">
+                                        <img :src="getProduct(group, 2).imageUrl" align="left" width="294" :alt="getProduct(group, 2).imageAlt" border="0">
                                       </a>
                                     </td>
-                                    <td width="45"></td>
+                                    <td width="66"></td>
                                   </tr>
                                 </tbody>
                               </table>
@@ -117,28 +116,27 @@
 
                           <!-- 그리드 행 2 간격 -->
                           <tr :key="'grid2-space-' + group.id">
-                            <td height="16"></td>
+                            <td height="20" :style="{ backgroundColor: group.backgroundColor || '#E9F9FF' }"></td>
                           </tr>
 
                           <!-- 그리드 행 2 (products[3], products[4]) -->
                           <tr :key="'grid2-' + group.id">
                             <td style="font-size: 0px; vertical-align: top">
-                              <table cellspacing="0" cellpadding="0" width="720" border="0">
+                              <table cellspacing="0" cellpadding="0" width="720" border="0" :style="{ backgroundColor: group.backgroundColor || '#E9F9FF' }">
                                 <tbody>
                                   <tr>
-                                    <td width="45"></td>
+                                    <td width="66"></td>
                                     <td style="font-size: 0px; vertical-align: top">
                                       <a :href="getProductUrl(getProduct(group, 3).productCode)" target="_blank">
-                                        <img :src="getProduct(group, 3).imageUrl" align="left" width="307" :alt="getProduct(group, 3).imageAlt" border="0">
+                                        <img :src="getProduct(group, 3).imageUrl" align="left" width="294" :alt="getProduct(group, 3).imageAlt" border="0">
                                       </a>
                                     </td>
-                                    <td width="16"></td>
                                     <td style="font-size: 0px; vertical-align: top">
                                       <a :href="getProductUrl(getProduct(group, 4).productCode)" target="_blank">
-                                        <img :src="getProduct(group, 4).imageUrl" align="left" width="307" :alt="getProduct(group, 4).imageAlt" border="0">
+                                        <img :src="getProduct(group, 4).imageUrl" align="left" width="294" :alt="getProduct(group, 4).imageAlt" border="0">
                                       </a>
                                     </td>
-                                    <td width="45"></td>
+                                    <td width="66"></td>
                                   </tr>
                                 </tbody>
                               </table>
@@ -147,7 +145,7 @@
                         </template>
 
                         <tr>
-                          <td height="80"></td>
+                          <td height="60" :style="{ backgroundColor: lastGroupColor }"></td>
                         </tr>
                       </tbody>
                     </table>
@@ -231,6 +229,12 @@ export default {
           product: "https://newfront.benepia.co.kr/gatepage/emGateway.do?pcUrl=https://skhynix.benepia.co.kr/hynix/pointmall/pointmall.do?returnUrl=/disp/storeMain.bene?chnlId=BENE%26custCoCd=00C4%26shopId=%26prdId={}&mbUrl=https://mr2.benepia.co.kr/gateLink.bene?linkUrl=/disp/detailView.bene?prdId={}"
         }
       }
+    }
+  },
+  computed: {
+    lastGroupColor() {
+      const groups = this.data.productGroups
+      return (groups && groups.length > 0 ? groups[groups.length - 1].backgroundColor : null) || '#E9F9FF'
     }
   },
   methods: {
