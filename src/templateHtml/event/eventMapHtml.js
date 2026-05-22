@@ -385,7 +385,7 @@ a {-webkit-tap-highlight-color:rgba(0,0,0,0); -webkit-tap-highlight-color: trans
 
 	${showBottomBanner ? `<!-- 배너 - 활용백서 -->
 	<div class="evt-cnt banner-howto" id="section_howto">
-		<a href="/disp/eventUsesWhiteNew.bene" onclick="gaEvtAction('MO_프로모션', '${pageTitle}', '배너(활용백서)')" style="width:100%"><img src="https://www.benepia.co.kr/event/2023/07/0726_kakao_friends/images/banner_info_mo_20250904.jpg" alt="베네피아 활용백서"></a>
+    <a href="javascript:void(0);" onclick="handleInternalUrl('/disp/eventUsesWhiteNew.bene'); gaEvtAction('MO_프로모션', '${pageTitle}', '배너(활용백서)');" style="width:100%; display:block;"><img src="https://www.benepia.co.kr/event/2023/07/0726_kakao_friends/images/banner_info_mo_20250904.jpg?date=20250910172538" alt="베네피아 활용백서"></a>
 	</div>
 	<!-- // 배너 - 활용백서 -->
 	<!-- 배너 - 리뷰 혜택 -->

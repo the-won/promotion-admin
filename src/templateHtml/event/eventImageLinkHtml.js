@@ -112,46 +112,75 @@ a {-webkit-tap-highlight-color:rgba(0,0,0,0); -webkit-tap-highlight-color: trans
 
 <body>
 <div class="evt-wrap">
-\t${showTopBanner ? `<!-- 상단배너(개인결제유도) -->
-\t<div class="scrolling-words-container">
-\t\t<ul class="scrolling-words">
-\t\t\t<li><button type="button" onclick="handleInternalUrl('/main/mainHotDeal.bene'); gaEvtAction('MO_프로모션', '${pageTitle}', '상단배너(개인결제유도)');"><span>우리회사 복지몰 <strong class="col-orange">베네피아</strong></span></button></li>
-\t\t\t<li><button type="button" onclick="handleInternalUrl('/main/mainHotDeal.bene'); gaEvtAction('MO_프로모션', '${pageTitle}', '상단배너(개인결제유도)');"><span>비교검색 끝 <strong class="col-red">최저가보상</strong></span></button></li>
-\t\t\t<li><button type="button" onclick="handleInternalUrl('/main/mainHotDeal.bene'); gaEvtAction('MO_프로모션', '${pageTitle}', '상단배너(개인결제유도)');"><span>놓치면 아까운 <strong class="col-orange2">여행딜특가</strong></span></button></li>
-\t\t</ul>
-\t</div>
-\t<script>
-\tconst { children: titles } = document.querySelector(".scrolling-words");
-\tconst txtsLen = titles.length;
-\tlet index = 0;
-\tconst textInTimer = 3000;
-\tconst textOutTimer = 2800;
-\tif(txtsLen != 1) {
-\t\tfunction animateText() {
-\t\t\tfor (let i = 0; i < txtsLen; i++) { titles[i].classList.remove("words-in", "words-out"); }
-\t\t\ttitles[index].classList.add("words-in");
-\t\t\tsetTimeout(function () { titles[index].classList.add("words-out"); }, textOutTimer);
-\t\t\tsetTimeout(function () { if (index == txtsLen - 1) { index = 0; } else { index++; } animateText(); }, textInTimer);
-\t\t}
-\t} else { titles[index].classList.add("words-in"); }
-\tanimateText();
-\t<\/script>
-\t<!-- //상단배너(개인결제유도) -->` : ''}
+	${showTopBanner ? `<!-- 상단배너(개인결제유도) -->
+	<div class="scrolling-words-container">
+		<ul class="scrolling-words">
+			<li><button type="button" onclick="handleInternalUrl('/main/mainHotDeal.bene'); gaEvtAction('MO_프로모션', '${pageTitle}', '상단배너(개인결제유도)');"><span>우리회사 복지몰 <strong class="col-orange">베네피아</strong></span></button></li>
+			<li><button type="button" onclick="handleInternalUrl('/main/mainHotDeal.bene'); gaEvtAction('MO_프로모션', '${pageTitle}', '상단배너(개인결제유도)');"><span>비교검색 끝 <strong class="col-red">최저가보상</strong></span></button></li>
+			<li><button type="button" onclick="handleInternalUrl('/main/mainHotDeal.bene'); gaEvtAction('MO_프로모션', '${pageTitle}', '상단배너(개인결제유도)');"><span>17시 전 주문하면 <strong class="col-blue">오늘출발</strong> <img src="https://www.benepia.co.kr/event/cm/topBnrPersPayInd/mobile/images/ico_delivery.png" alt="" style="width: 7.45vw;"></span></button></li>
+			<li><button type="button" onclick="handleInternalUrl('/main/mainHotDeal.bene'); gaEvtAction('MO_프로모션', '${pageTitle}', '상단배너(개인결제유도)');"><span>놓치면 아까운 <strong class="col-orange2">여행딜특가</strong></span></button></li>
+			<li><button type="button" onclick="handleInternalUrl('/main/mainHotDeal.bene'); gaEvtAction('MO_프로모션', '${pageTitle}', '상단배너(개인결제유도)');"><span> <img src="https://www.benepia.co.kr/event/cm/topBnrPersPayInd/mobile/images/ico_pay2.png" alt="" style="width: 25.45vw;"> <strong>100% 안전결제</strong></span></button></li>
+		</ul>
+	</div>
+	<script>
+	/*
+	* 최상단 띠배너
+	*/
+	const { children: titles } = document.querySelector(".scrolling-words");
+	const txtsLen = titles.length;
+	let index = 0;
+	const textInTimer = 3000;
+	const textOutTimer = 2800;
+
+	if(txtsLen != 1) {
+		function animateText() {
+			for (let i = 0; i < txtsLen; i++) {
+				titles[i].classList.remove("words-in", "words-out");
+			}
+			titles[index].classList.add("words-in");
+
+			setTimeout(function () {
+				titles[index].classList.add("words-out");
+			}, textOutTimer);
+
+			setTimeout(function () {
+				if (index == txtsLen - 1) {
+				index = 0;
+				} else {
+				index++;
+				}
+				animateText();
+
+			}, textInTimer);
+		}
+	} else {
+		titles[index].classList.add("words-in");
+	}
+	animateText();
+	<\/script>
+	<!-- //상단배너(개인결제유도) -->` : ''}
 
 ${contentHtml}
 
-\t${generateNoticeHtml()}
+	<!-- 꼭 확인하세요 -->
+	${generateNoticeHtml()}
+	<!-- // 꼭 확인하세요 -->
 
-\t${showBottomBanner ? `<!-- 배너 - 활용백서 -->
-\t<div class="evt-cnt banner-howto">
-\t\t<a href="/disp/eventUsesWhiteNew.bene" onclick="gaEvtAction('MO_프로모션', '${pageTitle}', '배너(활용백서)')" style="width:100%"><img src="https://www.benepia.co.kr/event/2023/07/0726_kakao_friends/images/banner_info_mo_20250904.jpg" alt="베네피아 활용백서"></a>
-\t</div>
-\t<!-- // 배너 - 활용백서 -->
-\t<!-- 배너 - 리뷰 혜택 -->
-\t<div class="evt-cnt banner-review">
-\t\t<button type="button" onclick="handleInternalUrl('/frnt/mypage/reviewWritableList.bene'); gaEvtAction('MO_프로모션', '${pageTitle}', '배너(리뷰 혜택)');" style="width:100%"><img src="https://www.benepia.co.kr/event/2023/07/0726_kakao_friends/images/banner_review_mo_20240306.jpg" alt="리뷰쓰고 혜택받자!"></button>
-\t</div>
-\t<!-- // 배너 - 리뷰 혜택 -->` : ''}
+	${showBottomBanner ? `<!-- 배너 - 활용백서 -->
+	<div class="evt-cnt banner-howto" id="section_howto">
+    <a href="javascript:void(0);" onclick="handleInternalUrl('/disp/eventUsesWhiteNew.bene'); gaEvtAction('MO_프로모션', '${pageTitle}', '배너(활용백서)');" style="width:100%; display:block;"><img src="https://www.benepia.co.kr/event/2023/07/0726_kakao_friends/images/banner_info_mo_20250904.jpg?date=20250910172538" alt="베네피아 활용백서"></a>
+	</div>
+	<!-- // 배너 - 활용백서 -->
+	<!-- 배너 - 리뷰 혜택 -->
+	<div class="evt-cnt banner-review" id="section_review">
+		<button type="button" onclick="handleInternalUrl('/frnt/mypage/reviewWritableList.bene'); gaEvtAction('MO_프로모션', '${pageTitle}', '배너(리뷰 혜택)');" style="width:100%"><img src="https://www.benepia.co.kr/event/2023/07/0726_kakao_friends/images/banner_review_mo_20240306.jpg" alt="리뷰쓰고 혜택받자!"></button>
+	</div>
+	<!-- // 배너 - 리뷰 혜택 -->
+	<!-- 배너 - 카카오톡 플러스 친구 -->
+	<div class="evt-cnt banner-kakao-plus" id="section_kakao">
+		<button type="button" onclick="AppWeblink('https://pf.kakao.com/_mxbBkT'); gaEvtAction('MO_프로모션', '${pageTitle}', '배너(카카오톡 플러스 친구)');" style="width:100%"><img src="https://www.benepia.co.kr/event/2023/07/0726_kakao_friends/images/banner_kakao_plus_mo_20240306.jpg" alt="베네피아와 카카오톡 친구해요"></button>
+	</div>
+	<!-- // 배너 - 카카오톡 플러스 친구 -->` : ''}
 </div>
 
 </body>
@@ -197,40 +226,62 @@ a {-webkit-tap-highlight-color: rgba(0,0,0,0); -webkit-tap-highlight-color: tran
 </head>
 <body>
 <div class="evt-wrap">
-\t${showTopBanner ? `<div class="scrolling-words-container">
-\t\t<ul class="scrolling-words">
-\t\t\t<li class="words-in"><button type="button" onclick="window.open('/frnt/pointmall/pointmall.do?returnUrl=/main/hotDeal.bene'); gaEvtAction('PC_프로모션', '${pageTitle}', '상단배너(개인결제유도)');"><span>우리회사 복지몰 <strong class="col-orange">베네피아</strong></span></button></li>
-\t\t\t<li class=""><button type="button" onclick="window.open('/frnt/pointmall/pointmall.do?returnUrl=/main/hotDeal.bene'); gaEvtAction('PC_프로모션', '${pageTitle}', '상단배너(개인결제유도)');"><span>비교검색 끝 <strong class="col-red">최저가보상</strong></span></button></li>
-\t\t\t<li class=""><button type="button" onclick="window.open('/frnt/pointmall/pointmall.do?returnUrl=/main/hotDeal.bene'); gaEvtAction('PC_프로모션', '${pageTitle}', '상단배너(개인결제유도)');"><span>놓치면 아까운 <strong class="col-orange2">여행딜특가</strong></span></button></li>
-\t\t</ul>
-\t</div>
-\t<script>
-\tconst { children: titles } = document.querySelector(".scrolling-words");
-\tconst txtsLen = titles.length;
-\tlet index = 0;
-\tconst textInTimer = 3000;
-\tconst textOutTimer = 2800;
-\tif(txtsLen != 1) {
-\t\tfunction animateText() {
-\t\t\tfor (let i = 0; i < txtsLen; i++) { titles[i].classList.remove("words-in", "words-out"); }
-\t\t\ttitles[index].classList.add("words-in");
-\t\t\tsetTimeout(function () { titles[index].classList.add("words-out"); }, textOutTimer);
-\t\t\tsetTimeout(function () { if (index == txtsLen - 1) { index = 0; } else { index++; } animateText(); }, textInTimer);
-\t\t}
-\t} else { titles[index].classList.add("words-in"); }
-\tanimateText();
-\t<\/script>` : ''}
+	${showTopBanner ? `<div class="scrolling-words-container">
+		<ul class="scrolling-words">
+			<li class=""><button type="button" onclick="window.open('/frnt/pointmall/pointmall.do?returnUrl=/main/hotDeal.bene'); gaEvtAction('PC_프로모션', '${pageTitle}', '상단배너(개인결제유도)');"><span>우리회사 복지몰 <strong class="col-orange">베네피아</strong></span></button></li>
+			<li class="words-in"><button type="button" onclick="window.open('/frnt/pointmall/pointmall.do?returnUrl=/main/hotDeal.bene'); gaEvtAction('PC_프로모션', '${pageTitle}', '상단배너(개인결제유도)');"><span>비교검색 끝 <strong class="col-red">최저가보상</strong></span></button></li>
+			<li class=""><button type="button" onclick="window.open('/frnt/pointmall/pointmall.do?returnUrl=/main/hotDeal.bene'); gaEvtAction('PC_프로모션', '${pageTitle}', '상단배너(개인결제유도)');"><span>17시 전 주문하면 <strong class="col-blue">오늘출발</strong> <img src="https://www.benepia.co.kr/event/cm/topBnrPersPayInd/pc/images/ico_delivery.png" alt="" style="width: 43px; margin-top: 3px;"></span></button></li>
+			<li class=""><button type="button" onclick="window.open('/frnt/pointmall/pointmall.do?returnUrl=/main/hotDeal.bene'); gaEvtAction('PC_프로모션', '${pageTitle}', '상단배너(개인결제유도)');"><span>놓치면 아까운 <strong class="col-orange2">여행딜특가</strong></span></button></li>
+			<li class=""><button type="button" onclick="window.open('/frnt/pointmall/pointmall.do?returnUrl=/main/hotDeal.bene'); gaEvtAction('PC_프로모션', '${pageTitle}', '상단배너(개인결제유도)');"><span> <img src="https://www.benepia.co.kr/event/cm/topBnrPersPayInd/pc/images/ico_pay2.png" alt="" style="width: 182px;"> <strong>100% 안전결제</strong></span></button></li>
+		</ul>
+	</div>
+	<script>
+	const { children: titles } = document.querySelector(".scrolling-words");
+	const txtsLen = titles.length;
+	let index = 0;
+	const textInTimer = 3000;
+	const textOutTimer = 2800;
+
+	if(txtsLen != 1) {
+		function animateText() {
+			for (let i = 0; i < txtsLen; i++) {
+				titles[i].classList.remove("words-in", "words-out");
+			}
+			titles[index].classList.add("words-in");
+
+			setTimeout(function () {
+				titles[index].classList.add("words-out");
+			}, textOutTimer);
+
+			setTimeout(function () {
+				if (index == txtsLen - 1) {
+				index = 0;
+				} else {
+				index++;
+				}
+				animateText();
+
+			}, textInTimer);
+		}
+	} else {
+		titles[index].classList.add("words-in");
+	}
+	animateText();
+	<\/script>` : ''}
 
 ${contentHtml}
 
-\t${generateNoticeHtml()}
+	${generateNoticeHtml()}
 
-\t${showBottomBanner ? `<div class="evt-cnt banner-howto">
-\t\t<button type="button" onclick="window.open('/frnt/event/eventUsesWhiteNew.do');"><img src="https://www.benepia.co.kr/event/2023/07/0726_kakao_friends/images/banner_info_pc_20250904.jpg" alt="베네피아 활용백서"></button>
-\t</div>
-\t<div class="evt-cnt banner-review">
-\t\t<button type="button" onclick="window.open('/frnt/pointmall/pointmall.do?returnUrl=/mypg/prdReviewList.bene');"><img src="https://www.benepia.co.kr/event/2023/07/0726_kakao_friends/images/banner_review_pc_20240306.jpg" alt="리뷰쓰고 혜택받자!"></button>
-\t</div>` : ''}
+	${showBottomBanner ? `<div class="evt-cnt banner-howto" id="section_howto">
+		<button type="button" onclick="window.open('/frnt/event/eventUsesWhiteNew.do');"><img src="https://www.benepia.co.kr/event/2023/07/0726_kakao_friends/images/banner_info_pc_20250904.jpg?date=20250910172538" alt="베네피아 활용백서"></button>
+	</div>
+	<div class="evt-cnt banner-review" id="section_review">
+		<button type="button" onclick="window.open('/frnt/pointmall/pointmall.do?returnUrl=/mypg/prdReviewList.bene');"><img src="https://www.benepia.co.kr/event/2023/07/0726_kakao_friends/images/banner_review_pc_20240306.jpg?date=20250910172538" alt="리뷰쓰고 혜택받자!"></button>
+	</div>
+	<div class="evt-cnt banner-kakao-plus" id="section_kakao">
+		<button type="button" onclick="window.open('https://pf.kakao.com/_mxbBkT');"><img src="https://www.benepia.co.kr/event/2023/07/0726_kakao_friends/images/banner_kakao_plus_pc_20240306.jpg?date=20250910172538" alt="베네피아와 카카오톡 친구해요"></button>
+	</div>` : ''}
 
 </div>
 
