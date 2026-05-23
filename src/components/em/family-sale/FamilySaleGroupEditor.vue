@@ -214,10 +214,10 @@ export default {
   methods: {
     normalizeGroups(groups) {
       if (!groups || groups.length === 0) return [this.createNewGroup()]
-      return JSON.parse(JSON.stringify(groups)).map(g => ({
-        backgroundColor: '#E9F9FF',
-        ...g
-      }))
+      return JSON.parse(JSON.stringify(groups)).map(g => {
+        if (!('backgroundColor' in g)) g.backgroundColor = '#E9F9FF'
+        return g
+      })
     },
     createNewGroup() {
       return {
@@ -245,7 +245,6 @@ export default {
     },
     addGroup() {
       this.localGroups.push(this.createNewGroup())
-      this.$emit('add-group')
     },
     removeGroup(groupId) {
       if (this.localGroups.length === 1) {

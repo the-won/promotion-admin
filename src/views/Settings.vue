@@ -1,63 +1,79 @@
 <template>
   <div class="settings-page">
-    <div class="settings-header">
-      <div class="header-glow" aria-hidden="true"></div>
-      <p class="settings-eyebrow">환경설정</p>
-      <h1 class="settings-title">Settings</h1>
-      <p class="settings-subtitle">앱 동작 방식을 원하는 대로 조정하세요.</p>
-    </div>
 
-    <div class="settings-body">
-      <section class="settings-section">
-        <div class="section-head">
-          <div class="section-title-row">
-            <h2 class="section-title">기본 시작 화면</h2>
-            <transition name="chip-fade">
-              <span v-if="savedIndicator" class="saved-chip" aria-live="polite">저장됨</span>
-            </transition>
-          </div>
-          <p class="section-desc">앱을 열 때 처음 표시할 페이지와 템플릿을 선택합니다.</p>
+    <!-- Toast -->
+    <transition name="toast-fade">
+      <span v-if="savedIndicator" class="save-toast" aria-live="polite">
+        <span class="toast-dot"></span>저장됨
+      </span>
+    </transition>
+
+    <div class="settings-inner">
+
+      <!-- Page header -->
+      <header class="pg-head">
+        <div class="pg-icon-wrap" aria-hidden="true">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="3"/>
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+          </svg>
         </div>
+        <div>
+          <h1 class="pg-title">Settings</h1>
+          <p class="pg-sub">기본 시작 화면과 템플릿을 설정합니다.</p>
+        </div>
+      </header>
 
-        <div class="page-groups" role="radiogroup" aria-label="기본 시작 페이지">
-          <div
-            v-for="group in pageGroups"
-            :key="group.id"
-            class="page-group"
-            :class="{ active: selectedPage === group.id }"
-          >
-            <button
-              class="page-radio-btn"
-              :aria-checked="selectedPage === group.id"
-              role="radio"
-              @click="selectPage(group.id)"
-            >
-              <div class="radio-indicator" :class="{ checked: selectedPage === group.id }" aria-hidden="true">
-                <div class="radio-inner"></div>
-              </div>
-              <span class="page-name">{{ group.label }}</span>
-              <span v-if="group.templates.length" class="page-meta">{{ group.templates.length }}개 템플릿</span>
-            </button>
+      <!-- Tab nav -->
+      <nav class="tab-nav" role="tablist">
+        <button
+          v-for="tab in tabs"
+          :key="tab.id"
+          class="tab-btn"
+          :class="{ 'is-active': activeTab === tab.id }"
+          role="tab"
+          :aria-selected="activeTab === tab.id"
+          @click="activeTab = tab.id"
+        >
+          {{ tab.label }}
+        </button>
+      </nav>
 
-            <transition name="expand">
-              <div v-if="selectedPage === group.id" class="template-panel">
-                <div v-if="group.templates.length" class="template-chips">
-                  <button
-                    v-for="t in group.templates"
-                    :key="t.value"
-                    class="template-chip"
-                    :class="{ active: selectedTemplate === t.value }"
-                    @click="selectTemplate(t.value)"
-                  >
-                    {{ t.name }}
-                  </button>
+      <!-- Section subheader -->
+      <div class="section-sub">
+        <h2 class="section-title">{{ currentSectionTitle }}</h2>
+        <p class="section-desc">기본으로 열릴 템플릿을 선택하세요.</p>
+      </div>
+
+      <!-- Template list -->
+      <transition name="list-fade" mode="out-in">
+        <div :key="activeTab" class="item-list">
+          <template v-for="group in filteredGroups">
+            <div v-if="activeTab === 'all'" :key="'g-' + group.id" class="group-label">
+              {{ group.label }}
+            </div>
+            <div v-for="t in group.templates" :key="t.value" class="item-wrap">
+              <button
+                class="item-row"
+                :class="{ 'is-active': selectedTemplate === t.value }"
+                @click="setDefault(group.id, t.value)"
+              >
+                <div class="toggle" :class="{ 'is-on': selectedTemplate === t.value }" aria-hidden="true">
+                  <span class="knob"></span>
                 </div>
-                <p v-else class="no-templates">아직 등록된 템플릿이 없습니다.</p>
-              </div>
-            </transition>
-          </div>
+                <div class="item-icon" :style="{ background: t.color }">
+                  <span>{{ t.abbr }}</span>
+                </div>
+                <div class="item-info">
+                  <span class="item-name">{{ t.name }}</span>
+                  <span class="item-desc">{{ t.desc }}</span>
+                </div>
+              </button>
+            </div>
+          </template>
         </div>
-      </section>
+      </transition>
+
     </div>
   </div>
 </template>
@@ -69,49 +85,62 @@ export default {
     let saved = null
     try { saved = JSON.parse(localStorage.getItem('defaultLanding')) } catch {}
     return {
+      activeTab: 'all',
       selectedPage: saved?.page || 'em-templates',
       selectedTemplate: saved?.template || 'em-type-2',
       savedIndicator: false,
+      tabs: [
+        { id: 'all', label: '전체' },
+        { id: 'em-templates', label: 'EM Templates' },
+        { id: 'event-templates', label: 'Event Templates' },
+        { id: 'item-templates', label: 'Item Templates' }
+      ],
       pageGroups: [
         {
           id: 'em-templates',
           label: 'EM Templates',
           templates: [
-            { value: 'em-type-2', name: 'Image Link' },
-            { value: 'em-type-imagemap', name: 'Use Map' },
-            { value: 'em-type-coupon', name: '쿠폰혜택' },
-            { value: 'em-type-letter', name: '베네레터' },
-            { value: 'em-type-4', name: '이패밀리샵' },
-            { value: 'em-type-5', name: '비밀특가' },
-            { value: 'em-type-familysale', name: '패밀리세일' }
+            { value: 'em-type-2',        name: 'Image Link',      abbr: 'IL', color: '#5c61d4', desc: '이미지 클릭 시 링크로 연결되는 기본 이메일 템플릿' },
+            { value: 'em-type-imagemap', name: 'Use Map',         abbr: 'UM', color: '#3b5bdb', desc: '이미지맵으로 다중 클릭 영역을 지정하는 이메일' },
+            { value: 'em-type-coupon',   name: '쿠폰혜택',        abbr: '쿠', color: '#e67700', desc: '쿠폰 및 혜택 안내를 위한 이메일 템플릿' },
+            { value: 'em-type-letter',   name: '베네레터',        abbr: '베', color: '#0ca678', desc: '뉴스레터 형식의 베네피아 레터 이메일' },
+            { value: 'em-type-4',        name: '이패밀리샵',      abbr: '이', color: '#1c7ed6', desc: '이패밀리샵 상품 소개 이메일 템플릿' },
+            { value: 'em-type-5',        name: '비밀특가',        abbr: '비', color: '#c92a2a', desc: '시크릿세일 특가 상품 안내 이메일' },
+            { value: 'em-type-familysale', name: '패밀리세일',   abbr: '패', color: '#a61e4d', desc: '패밀리세일 상품 그룹 이메일 템플릿' }
           ]
         },
         {
           id: 'event-templates',
           label: 'Event Templates',
           templates: [
-            { value: 'em-type-1', name: 'Type 1' },
-            { value: 'em-type-3', name: 'Image Map' }
+            { value: 'em-type-1', name: 'Type 1',    abbr: 'T1', color: '#2f9e44', desc: '기본 이벤트 페이지 템플릿' },
+            { value: 'em-type-3', name: 'Image Map', abbr: 'IM', color: '#0b7285', desc: '이미지맵 클릭 영역 이벤트 페이지' }
           ]
         },
         {
           id: 'item-templates',
           label: 'Item Templates',
           templates: [
-            { value: 'privacy-policy', name: '개인정보처리방침' }
+            { value: 'privacy-policy', name: '개인정보처리방침', abbr: '개', color: '#868e96', desc: '개인정보처리방침 문서 페이지 템플릿' }
           ]
         }
       ]
     }
   },
-  methods: {
-    selectPage(pageId) {
-      this.selectedPage = pageId
-      const group = this.pageGroups.find(g => g.id === pageId)
-      this.selectedTemplate = group?.templates[0]?.value || ''
-      this.save()
+  computed: {
+    filteredGroups() {
+      if (this.activeTab === 'all') return this.pageGroups
+      return this.pageGroups.filter(g => g.id === this.activeTab)
     },
-    selectTemplate(templateValue) {
+    currentSectionTitle() {
+      if (this.activeTab === 'all') return '전체 템플릿'
+      return this.tabs.find(t => t.id === this.activeTab)?.label || ''
+    }
+  },
+  methods: {
+    setDefault(pageId, templateValue) {
+      if (this.selectedTemplate === templateValue) return
+      this.selectedPage = pageId
       this.selectedTemplate = templateValue
       this.save()
     },
@@ -134,379 +163,388 @@ export default {
 <style scoped>
 .settings-page {
   min-height: 100vh;
-  background: oklch(96% 0.008 265);
-  padding: 56px 32px 80px;
-}
-
-.settings-header {
+  background: #fff;
+  padding: 0 0 80px;
   position: relative;
-  max-width: 720px;
-  margin: 40px auto 48px;
-  overflow: hidden;
-  padding: 0 4px;
 }
 
-.header-glow {
-  position: absolute;
-  right: -40px;
-  top: -30px;
-  width: 360px;
-  height: 240px;
-  background: radial-gradient(ellipse, oklch(72% 0.18 267 / 18%) 0%, transparent 68%);
+.settings-inner {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 120px 48px 0;
+}
+
+/* Toast */
+
+.save-toast {
+  position: fixed;
+  top: 20px;
+  right: 24px;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 9px 16px;
+  border-radius: 8px;
+  background: #18181b;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 500;
+  z-index: 1000;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.18);
+  letter-spacing: -0.01em;
+}
+
+.toast-dot {
+  width: 7px;
+  height: 7px;
   border-radius: 50%;
-  pointer-events: none;
+  background: #34c759;
+  flex-shrink: 0;
 }
 
-.settings-eyebrow {
-  margin: 0 0 10px;
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: oklch(52% 0.20 267);
+/* Page header */
+
+.pg-head {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  margin-bottom: 32px;
+  animation: slide-down 0.28s cubic-bezier(0.4, 0, 0.2, 1) both;
 }
 
-.settings-title {
-  margin: 0 0 10px;
-  font-size: 2.6rem;
+.pg-icon-wrap {
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  background: #f0f0ff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #5c61d4;
+  margin-top: 2px;
+}
+
+.pg-title {
+  margin: 0 0 5px;
+  font-size: 30px;
   font-weight: 700;
-  letter-spacing: -0.045em;
-  color: oklch(14% 0.028 265);
+  letter-spacing: -0.04em;
+  color: #111827;
   line-height: 1.1;
 }
 
-.settings-subtitle {
+.pg-sub {
   margin: 0;
   font-size: 14px;
-  color: oklch(50% 0.025 265);
-  line-height: 1.5;
+  color: #6b7280;
 }
 
-.settings-body {
-  max-width: 720px;
-  margin: 0 auto;
+/* Tab nav */
+
+.tab-nav {
   display: flex;
-  flex-direction: column;
-  gap: 24px;
+  border-bottom: 1px solid #e5e7eb;
+  gap: 0;
+  animation: slide-down 0.3s cubic-bezier(0.4, 0, 0.2, 1) 0.04s both;
 }
 
-.settings-section {
-  background: oklch(99.5% 0.004 265);
-  border: 1px solid oklch(88% 0.020 265);
-  border-radius: 16px;
-  overflow: hidden;
-  box-shadow:
-    0 1px 2px oklch(20% 0.05 265 / 4%),
-    0 8px 32px oklch(20% 0.05 265 / 6%);
+.tab-btn {
+  padding: 10px 16px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #6b7280;
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  cursor: pointer;
+  border-radius: 6px 6px 0 0;
+  transition: color 0.15s, border-color 0.15s, background 0.15s;
+  white-space: nowrap;
 }
 
-.section-head {
-  padding: 24px 24px 20px;
-  background: linear-gradient(135deg, oklch(93% 0.048 267) 0%, oklch(98.5% 0.010 265) 65%);
-  border-bottom: 1px solid oklch(88% 0.028 267);
+.tab-btn:hover {
+  color: #374151;
+  background: #f9fafb;
 }
 
-.section-title-row {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 6px;
+.tab-btn.is-active {
+  color: #111827;
+  font-weight: 600;
+  border-bottom-color: #5c61d4;
+  background: transparent;
+}
+
+/* Section subheader */
+
+.section-sub {
+  padding: 24px 0 20px;
+  border-bottom: 1px solid #e5e7eb;
+  animation: slide-down 0.3s cubic-bezier(0.4, 0, 0.2, 1) 0.07s both;
 }
 
 .section-title {
-  margin: 0;
-  font-size: 15px;
+  margin: 0 0 4px;
+  font-size: 18px;
   font-weight: 700;
-  letter-spacing: -0.02em;
-  color: oklch(18% 0.025 265);
-}
-
-.saved-chip {
-  display: inline-block;
-  font-size: 11px;
-  font-weight: 600;
-  padding: 3px 10px;
-  border-radius: 100px;
-  background: oklch(88% 0.10 160);
-  color: oklch(32% 0.12 160);
-  letter-spacing: 0.01em;
+  color: #111827;
+  letter-spacing: -0.025em;
 }
 
 .section-desc {
   margin: 0;
-  font-size: 13px;
-  color: oklch(50% 0.025 265);
-  line-height: 1.5;
+  font-size: 14px;
+  color: #6b7280;
 }
 
-.page-groups {
-  padding: 16px 16px 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
+/* Group label */
+
+.group-label {
+  padding: 20px 0 6px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #9ca3af;
 }
 
-.page-group {
-  border-radius: 12px;
-  border: 1.5px solid oklch(90% 0.018 265);
-  background: oklch(99% 0.003 265);
-  overflow: hidden;
-  transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
+/* Item list */
+
+.item-list {
+  animation: slide-down 0.26s cubic-bezier(0.4, 0, 0.2, 1) 0.1s both;
 }
 
-.page-group.active {
-  border-color: oklch(52% 0.20 267);
-  background: oklch(96% 0.025 267);
-  box-shadow:
-    0 0 0 3px oklch(52% 0.20 267 / 10%),
-    0 4px 16px oklch(44% 0.22 267 / 10%);
+.item-wrap {
+  border-bottom: 1px solid #e5e7eb;
 }
 
-.page-radio-btn {
+/* Item row */
+
+.item-row {
   width: 100%;
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 14px 16px;
+  gap: 16px;
+  padding: 14px 0;
   background: transparent;
   border: none;
   cursor: pointer;
   text-align: left;
+  border-radius: 8px;
   transition: background 0.15s;
 }
 
-.page-radio-btn:hover {
-  background: oklch(94% 0.015 267 / 50%);
+.item-row:hover {
+  background: #f9fafb;
+  padding: 14px 10px;
+  margin: 0 -10px;
+  width: calc(100% + 20px);
 }
 
-.page-group.active .page-radio-btn:hover {
-  background: oklch(91% 0.038 267 / 50%);
+.item-row.is-active .item-name {
+  color: #5c61d4;
+  font-weight: 700;
 }
 
-.radio-indicator {
+/* Toggle */
+
+.toggle {
   flex-shrink: 0;
+  position: relative;
+  width: 44px;
+  height: 26px;
+  border-radius: 100px;
+  background: #d1d5db;
+  transition: background 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  pointer-events: none;
+}
+
+.toggle.is-on {
+  background: #5c61d4;
+}
+
+.knob {
+  position: absolute;
+  top: 3px;
+  left: 3px;
   width: 20px;
   height: 20px;
   border-radius: 50%;
-  border: 2px solid oklch(74% 0.030 265);
+  background: #fff;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+  transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.toggle.is-on .knob {
+  transform: translateX(18px);
+}
+
+/* Item icon */
+
+.item-icon {
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: border-color 0.2s, background 0.2s;
+  font-size: 13px;
+  font-weight: 800;
+  color: #fff;
+  letter-spacing: -0.02em;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
 }
 
-.radio-indicator.checked {
-  border-color: oklch(52% 0.20 267);
-  background: oklch(52% 0.20 267);
-}
+/* Item info */
 
-.radio-inner {
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: oklch(99% 0 0);
-  opacity: 0;
-  transform: scale(0.6);
-  transition: opacity 0.15s, transform 0.15s;
-}
-
-.radio-indicator.checked .radio-inner {
-  opacity: 1;
-  transform: scale(1);
-}
-
-.page-name {
+.item-info {
   flex: 1;
-  font-size: 14px;
-  font-weight: 600;
-  color: oklch(20% 0.025 265);
-  letter-spacing: -0.01em;
-}
-
-.page-meta {
-  font-size: 12px;
-  color: oklch(58% 0.020 265);
-  flex-shrink: 0;
-  background: oklch(92% 0.012 265);
-  padding: 2px 8px;
-  border-radius: 100px;
-  font-weight: 500;
-}
-
-.template-panel {
-  padding: 12px 16px 16px;
-  border-top: 1px solid oklch(86% 0.030 267);
-}
-
-.template-chips {
+  min-width: 0;
   display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
+  flex-direction: column;
+  gap: 2px;
 }
 
-.template-chip {
-  padding: 7px 14px;
-  border-radius: 8px;
-  font-size: 13px;
+.item-name {
+  font-size: 15px;
   font-weight: 600;
-  cursor: pointer;
-  border: 1.5px solid oklch(86% 0.020 265);
-  background: oklch(97% 0.006 265);
-  color: oklch(36% 0.035 265);
-  transition: background 0.15s, border-color 0.15s, color 0.15s, box-shadow 0.15s;
+  color: #111827;
   letter-spacing: -0.01em;
+  transition: color 0.18s;
 }
 
-.template-chip:hover {
-  background: oklch(92% 0.028 267);
-  border-color: oklch(72% 0.08 267);
-  color: oklch(30% 0.08 267);
-}
-
-.template-chip.active {
-  background: oklch(52% 0.20 267);
-  border-color: oklch(52% 0.20 267);
-  color: oklch(99% 0 0);
-  box-shadow: 0 2px 12px oklch(44% 0.22 267 / 32%);
-}
-
-.no-templates {
+.item-desc {
   font-size: 13px;
-  color: oklch(58% 0.020 265);
-  font-style: italic;
-  margin: 0;
+  color: #6b7280;
+  line-height: 1.4;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.chip-fade-enter-active { transition: opacity 0.25s, transform 0.25s; }
-.chip-fade-leave-active { transition: opacity 0.18s, transform 0.18s; }
-.chip-fade-enter, .chip-fade-leave-to {
-  opacity: 0;
-  transform: translateY(-4px) scale(0.92);
+/* Animations */
+
+@keyframes slide-down {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
-.expand-enter-active { transition: opacity 0.22s ease, transform 0.22s cubic-bezier(0.4, 0, 0.2, 1); }
-.expand-leave-active { transition: opacity 0.16s ease, transform 0.16s cubic-bezier(0.4, 0, 0.2, 1); }
-.expand-enter, .expand-leave-to {
+.list-fade-enter-active {
+  transition: opacity 0.2s ease, transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.list-fade-leave-active {
+  transition: opacity 0.14s ease, transform 0.14s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.list-fade-enter,
+.list-fade-leave-to {
   opacity: 0;
-  transform: translateY(-6px);
+  transform: translateY(5px);
+}
+
+.toast-fade-enter-active {
+  transition: opacity 0.22s ease, transform 0.22s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.toast-fade-leave-active {
+  transition: opacity 0.18s ease, transform 0.18s ease;
+}
+.toast-fade-enter,
+.toast-fade-leave-to {
+  opacity: 0;
+  transform: translateY(-10px) scale(0.9);
 }
 
 @media (max-width: 640px) {
-  .settings-page { padding: 36px 16px 60px; }
-  .settings-title { font-size: 2rem; }
+  .settings-inner { padding: 28px 20px 0; }
+  .pg-title { font-size: 24px; }
+  .tab-btn { padding: 10px 12px; font-size: 13px; }
+  .item-row:hover { padding: 14px 0; margin: 0; width: 100%; background: transparent; }
 }
 </style>
 
 <style>
 .dark-mode .settings-page {
-  background: oklch(13% 0.024 265);
+  background: #111113;
 }
 
-.dark-mode .settings-page .settings-eyebrow {
-  color: oklch(72% 0.16 267);
+.dark-mode .settings-page .pg-icon-wrap {
+  background: rgba(92, 97, 212, 0.15);
+  color: #9899e8;
 }
 
-.dark-mode .settings-page .settings-title {
-  color: #f8fafc;
+.dark-mode .settings-page .pg-title {
+  color: #f9fafb;
 }
 
-.dark-mode .settings-page .settings-subtitle {
-  color: rgb(226 232 240 / 52%);
+.dark-mode .settings-page .pg-sub {
+  color: rgba(235, 235, 245, 0.5);
 }
 
-.dark-mode .settings-page .settings-section {
-  background: oklch(18% 0.028 265);
-  border-color: rgb(255 255 255 / 8%);
-  box-shadow:
-    0 0 0 1px rgb(0 0 0 / 20%) inset,
-    0 8px 32px rgb(0 0 0 / 22%);
+.dark-mode .settings-page .tab-nav {
+  border-bottom-color: rgba(255, 255, 255, 0.1);
 }
 
-.dark-mode .settings-page .section-head {
-  background: transparent;
-  border-bottom-color: rgb(255 255 255 / 8%);
+.dark-mode .settings-page .tab-btn {
+  color: rgba(235, 235, 245, 0.45);
+}
+
+.dark-mode .settings-page .tab-btn:hover {
+  color: rgba(235, 235, 245, 0.8);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.dark-mode .settings-page .tab-btn.is-active {
+  color: #f9fafb;
+  border-bottom-color: #7c82e0;
+}
+
+.dark-mode .settings-page .section-sub {
+  border-bottom-color: rgba(255, 255, 255, 0.1);
 }
 
 .dark-mode .settings-page .section-title {
-  color: #f1f5f9;
+  color: #f9fafb;
 }
 
 .dark-mode .settings-page .section-desc {
-  color: rgb(226 232 240 / 52%);
+  color: rgba(235, 235, 245, 0.5);
 }
 
-.dark-mode .settings-page .saved-chip {
-  background: rgb(34 197 94 / 16%);
-  color: rgb(134 239 172 / 88%);
+.dark-mode .settings-page .group-label {
+  color: rgba(235, 235, 245, 0.3);
 }
 
-.dark-mode .settings-page .page-group {
-  border-color: rgb(255 255 255 / 9%);
-  background: rgb(255 255 255 / 3%);
+.dark-mode .settings-page .item-wrap {
+  border-bottom-color: rgba(255, 255, 255, 0.08);
 }
 
-.dark-mode .settings-page .page-group.active {
-  border-color: rgb(92 97 212 / 55%);
-  background: rgb(92 97 212 / 10%);
-  box-shadow:
-    0 0 0 3px rgb(92 97 212 / 12%),
-    0 4px 16px rgb(0 0 0 / 20%);
+.dark-mode .settings-page .item-row:hover {
+  background: rgba(255, 255, 255, 0.04);
 }
 
-.dark-mode .settings-page .page-radio-btn:hover {
-  background: rgb(255 255 255 / 5%);
+.dark-mode .settings-page .item-name {
+  color: #f3f4f6;
 }
 
-.dark-mode .settings-page .page-group.active .page-radio-btn:hover {
-  background: rgb(92 97 212 / 14%);
+.dark-mode .settings-page .item-row.is-active .item-name {
+  color: #9899e8;
 }
 
-.dark-mode .settings-page .radio-indicator {
-  border-color: rgb(255 255 255 / 24%);
+.dark-mode .settings-page .item-desc {
+  color: rgba(235, 235, 245, 0.45);
 }
 
-.dark-mode .settings-page .radio-indicator.checked {
-  border-color: rgb(92 97 212 / 90%);
-  background: rgb(92 97 212 / 90%);
+.dark-mode .settings-page .toggle {
+  background: rgba(255, 255, 255, 0.18);
 }
 
-.dark-mode .settings-page .radio-inner {
-  background: #fff;
+.dark-mode .settings-page .toggle.is-on {
+  background: #5c61d4;
 }
 
-.dark-mode .settings-page .page-name {
-  color: #f1f5f9;
-}
-
-.dark-mode .settings-page .page-meta {
-  background: rgb(255 255 255 / 8%);
-  color: rgb(226 232 240 / 55%);
-}
-
-.dark-mode .settings-page .template-panel {
-  border-top-color: rgb(255 255 255 / 8%);
-}
-
-.dark-mode .settings-page .template-chip {
-  background: rgb(255 255 255 / 5%);
-  border-color: rgb(255 255 255 / 11%);
-  color: rgb(226 232 240 / 78%);
-}
-
-.dark-mode .settings-page .template-chip:hover {
-  background: rgb(255 255 255 / 10%);
-  border-color: rgb(255 255 255 / 18%);
-  color: #f1f5f9;
-}
-
-.dark-mode .settings-page .template-chip.active {
-  background: rgb(92 97 212 / 85%);
-  border-color: rgb(92 97 212 / 85%);
-  color: #fff;
-  box-shadow: 0 2px 12px rgb(92 97 212 / 35%);
-}
-
-.dark-mode .settings-page .no-templates {
-  color: rgb(226 232 240 / 40%);
+.dark-mode .settings-page .save-toast {
+  background: #27272a;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
 }
 </style>
