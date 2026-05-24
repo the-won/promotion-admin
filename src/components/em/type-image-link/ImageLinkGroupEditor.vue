@@ -235,13 +235,27 @@
 
             <div class="form-group">
               <label>대체 텍스트 (alt)</label>
-              <input 
-                type="text" 
-                v-model="image.alt"
-                placeholder="이미지 설명"
-                class="form-input"
-                @click.stop
-              />
+              <div class="alt-input-wrapper">
+                <input
+                  type="text"
+                  v-model="image.alt"
+                  placeholder="이미지 설명"
+                  class="form-input"
+                  @click.stop
+                />
+                <button
+                  type="button"
+                  class="btn-ocr"
+                  :disabled="!image.url || image._ocrLoading"
+                  :title="image.url ? 'OCR로 텍스트 추출' : '이미지 URL을 먼저 입력하세요'"
+                  @click.stop="runOcrForImage(image)"
+                >
+                  <span v-if="image._ocrLoading" class="ocr-spinner" aria-hidden="true"></span>
+                  <span v-else>OCR</span>
+                </button>
+              </div>
+              <div v-if="image._ocrSuccess" class="ocr-message ocr-success">✓ OCR 완료 — alt 텍스트가 자동 입력됐습니다</div>
+              <div v-if="image._ocrError" class="ocr-message ocr-error">{{ image._ocrError }}</div>
             </div>
           </div>
         </div>
@@ -463,9 +477,38 @@ export default {
       this.closeCutter()
     },
 
+    async runOcrForImage(image) {
+      if (!image.url || image._ocrLoading) return
+      this.$set(image, '_ocrLoading', true)
+      this.$set(image, '_ocrSuccess', false)
+      this.$set(image, '_ocrError', null)
+      try {
+        const { runOcr } = await import('../../../utils/ocrHelper.js')
+        const result = await runOcr(image.url)
+        if (result.success) {
+          image.alt = result.text || ''
+          if (!result.text) {
+            this.$set(image, '_ocrError', '이미지에서 텍스트를 찾을 수 없습니다.')
+            setTimeout(() => this.$set(image, '_ocrError', null), 4000)
+          } else {
+            this.$set(image, '_ocrSuccess', true)
+            setTimeout(() => this.$set(image, '_ocrSuccess', false), 3000)
+          }
+        } else {
+          this.$set(image, '_ocrError', result.errorMessage)
+          setTimeout(() => this.$set(image, '_ocrError', null), 6000)
+        }
+      } catch {
+        this.$set(image, '_ocrError', 'OCR을 실행할 수 없습니다.')
+        setTimeout(() => this.$set(image, '_ocrError', null), 6000)
+      } finally {
+        this.$set(image, '_ocrLoading', false)
+      }
+    },
+
     // 고유 ID 생성 (템플릿 간 충돌 방지)
     generateId(prefix = 'id') {
-      return `${prefix}_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
+      return `${prefix}_${Date.now()}_${Math.random().toString(36).substring(2, 11)}`
     },
     
     createNewGroup() {

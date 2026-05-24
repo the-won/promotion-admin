@@ -327,7 +327,21 @@
           <!-- 대체텍스트 -->
           <div class="form-group">
             <label>대체텍스트 (스크린리더용)</label>
-            <input type="text" v-model="hotspot.alt" placeholder="버튼 설명" class="form-input" @click.stop />
+            <div class="alt-input-wrapper">
+              <input type="text" v-model="hotspot.alt" placeholder="버튼 설명" class="form-input" @click.stop />
+              <button
+                type="button"
+                class="btn-ocr"
+                :disabled="!getImageUrl(group) || hotspot._ocrLoading"
+                :title="getImageUrl(group) ? '핫스팟 영역 OCR' : '이미지를 먼저 입력하세요'"
+                @click.stop="runOcrForHotspot(group, hotspot)"
+              >
+                <span v-if="hotspot._ocrLoading" class="ocr-spinner" aria-hidden="true"></span>
+                <span v-else>OCR</span>
+              </button>
+            </div>
+            <div v-if="hotspot._ocrSuccess" class="ocr-message ocr-success">✓ OCR 완료 — alt 텍스트가 자동 입력됐습니다</div>
+            <div v-if="hotspot._ocrError" class="ocr-message ocr-error">{{ hotspot._ocrError }}</div>
           </div>
         </div>
       </div>
@@ -477,6 +491,64 @@ export default {
       return this.deviceType === 'mobile'
         ? (group.mobileImageUrl || group.webImageUrl)
         : group.webImageUrl
+    },
+
+    // % 좌표 → 픽셀 변환 후 핫스팟 영역 OCR
+    async runOcrForHotspot(group, hotspot) {
+      const imageUrl = this.getImageUrl(group)
+      if (!imageUrl || hotspot._ocrLoading) return
+
+      this.$set(hotspot, '_ocrLoading', true)
+      this.$set(hotspot, '_ocrSuccess', false)
+      this.$set(hotspot, '_ocrError', null)
+
+      try {
+        const { runOcrOnRegion } = await import('../../utils/ocrHelper.js')
+
+        // 이미지 자연 크기를 로드해서 % → 픽셀 변환
+        const imgSize = await new Promise((resolve) => {
+          const img = new Image()
+          if (!imageUrl.startsWith('data:')) img.crossOrigin = 'anonymous'
+          img.onload = () => resolve({ w: img.naturalWidth, h: img.naturalHeight })
+          img.onerror = () => resolve(null)
+          img.src = imageUrl
+        })
+
+        if (!imgSize) {
+          this.$set(hotspot, '_ocrError', '이미지 서버가 CORS를 허용하지 않습니다. 파일 업로드 후 OCR을 사용하세요.')
+          setTimeout(() => this.$set(hotspot, '_ocrError', null), 6000)
+          return
+        }
+
+        const pos = hotspot.position
+        const region = {
+          x: Math.round(pos.left / 100 * imgSize.w),
+          y: Math.round(pos.top  / 100 * imgSize.h),
+          width:  Math.round(pos.width  / 100 * imgSize.w),
+          height: Math.round(pos.height / 100 * imgSize.h)
+        }
+
+        const result = await runOcrOnRegion(imageUrl, region)
+
+        if (result.success) {
+          hotspot.alt = result.text || ''
+          if (!result.text) {
+            this.$set(hotspot, '_ocrError', '해당 영역에서 텍스트를 찾을 수 없습니다.')
+            setTimeout(() => this.$set(hotspot, '_ocrError', null), 4000)
+          } else {
+            this.$set(hotspot, '_ocrSuccess', true)
+            setTimeout(() => this.$set(hotspot, '_ocrSuccess', false), 3000)
+          }
+        } else {
+          this.$set(hotspot, '_ocrError', result.errorMessage)
+          setTimeout(() => this.$set(hotspot, '_ocrError', null), 6000)
+        }
+      } catch {
+        this.$set(hotspot, '_ocrError', 'OCR을 실행할 수 없습니다.')
+        setTimeout(() => this.$set(hotspot, '_ocrError', null), 6000)
+      } finally {
+        this.$set(hotspot, '_ocrLoading', false)
+      }
     },
     updateImageUrl(groupIdx, url) {
       if (this.deviceType === 'mobile') {

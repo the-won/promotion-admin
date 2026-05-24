@@ -1952,3 +1952,51 @@ body.page-event-templates.dark-mode .hero-section .template-tab.active {
 .dark-mode .tsb-value { color: #f1f5f9; }
 .dark-mode .tsb-chevron { color: rgb(226 232 240 / 50%); }
 .dark-mode .template-select-btn:hover .tsb-chevron { color: oklch(72% 0.12 267); }
+
+/* ── OCR 대체텍스트 공통 스타일 ── */
+.alt-input-wrapper { display: flex; gap: 6px; align-items: center; }
+.alt-input-wrapper .form-input { flex: 1; }
+
+.btn-ocr {
+  flex-shrink: 0;
+  padding: 0 10px;
+  height: 36px;
+  background: transparent;
+  border: 1px solid var(--color-border);
+  border-radius: var(--btn-radius);
+  color: var(--color-text-secondary);
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  white-space: nowrap;
+  transition: border-color 0.15s, color 0.15s;
+}
+.btn-ocr:hover:not(:disabled) { border-color: var(--color-primary); color: var(--color-primary); }
+.btn-ocr:disabled { opacity: 0.4; cursor: not-allowed; }
+
+.ocr-spinner {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border: 2px solid var(--color-border);
+  border-top-color: var(--color-primary);
+  border-radius: 50%;
+  animation: ocr-spin 0.7s linear infinite;
+}
+@keyframes ocr-spin { to { transform: rotate(360deg); } }
+
+.ocr-message {
+  margin-top: 5px;
+  padding: 5px 8px;
+  border-radius: 3px;
+  font-size: 11px;
+  font-weight: 500;
+}
+.ocr-success { background: #f0fdf4; border: 1px solid #86efac; color: #16a34a; }
+.ocr-error   { background: #fef2f2; border: 1px solid #fca5a5; color: #dc2626; }
+
+.dark-mode .ocr-success { background: rgba(22, 163, 74, 0.15); border-color: rgba(134, 239, 172, 0.3); color: #86efac; }
+.dark-mode .ocr-error   { background: rgba(220, 38, 38, 0.15); border-color: rgba(252, 165, 165, 0.3); color: #fca5a5; }

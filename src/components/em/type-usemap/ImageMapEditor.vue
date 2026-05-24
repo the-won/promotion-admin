@@ -275,13 +275,27 @@
 
             <div class="form-group">
               <label>대체 텍스트 (alt)</label>
-              <input 
-                type="text" 
-                v-model="area.alt"
-                placeholder="버튼 설명"
-                class="form-input"
-                @click.stop
-              />
+              <div class="alt-input-wrapper">
+                <input
+                  type="text"
+                  v-model="area.alt"
+                  placeholder="버튼 설명"
+                  class="form-input"
+                  @click.stop
+                />
+                <button
+                  type="button"
+                  class="btn-ocr"
+                  :disabled="!getRowForArea(area) || area._ocrLoading"
+                  :title="getRowForArea(area) ? '핫스팟 영역 OCR' : '이미지를 먼저 입력하세요'"
+                  @click.stop="runOcrForArea(area)"
+                >
+                  <span v-if="area._ocrLoading" class="ocr-spinner" aria-hidden="true"></span>
+                  <span v-else>OCR</span>
+                </button>
+              </div>
+              <div v-if="area._ocrSuccess" class="ocr-message ocr-success">✓ OCR 완료 — alt 텍스트가 자동 입력됐습니다</div>
+              <div v-if="area._ocrError" class="ocr-message ocr-error">{{ area._ocrError }}</div>
             </div>
           </div>
         </div>
@@ -822,6 +836,50 @@ export default {
 
     getAreasForRow(rowId) {
       return this.localAreas.filter(a => a.rowId === rowId)
+    },
+
+    // area가 속한 row를 반환 (이미지 URL 확인용)
+    getRowForArea(area) {
+      return this.localRows.find(r => r.id === area.rowId && r.imageUrl) || null
+    },
+
+    async runOcrForArea(area) {
+      const row = this.getRowForArea(area)
+      if (!row || area._ocrLoading) return
+
+      this.$set(area, '_ocrLoading', true)
+      this.$set(area, '_ocrSuccess', false)
+      this.$set(area, '_ocrError', null)
+
+      try {
+        const { runOcrOnRegion } = await import('../../../utils/ocrHelper.js')
+        const region = {
+          x: area.coords.x1,
+          y: area.coords.y1,
+          width: area.coords.x2 - area.coords.x1,
+          height: area.coords.y2 - area.coords.y1
+        }
+        const result = await runOcrOnRegion(row.imageUrl, region)
+
+        if (result.success) {
+          area.alt = result.text || ''
+          if (!result.text) {
+            this.$set(area, '_ocrError', '해당 영역에서 텍스트를 찾을 수 없습니다.')
+            setTimeout(() => this.$set(area, '_ocrError', null), 4000)
+          } else {
+            this.$set(area, '_ocrSuccess', true)
+            setTimeout(() => this.$set(area, '_ocrSuccess', false), 3000)
+          }
+        } else {
+          this.$set(area, '_ocrError', result.errorMessage)
+          setTimeout(() => this.$set(area, '_ocrError', null), 6000)
+        }
+      } catch {
+        this.$set(area, '_ocrError', 'OCR을 실행할 수 없습니다.')
+        setTimeout(() => this.$set(area, '_ocrError', null), 6000)
+      } finally {
+        this.$set(area, '_ocrLoading', false)
+      }
     },
 
     addRow() {
