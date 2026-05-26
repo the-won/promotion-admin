@@ -16,7 +16,7 @@ const USE_CLOVA = true
 // 【큰 텍스트 기준】 이미지 높이 대비 단어 높이 비율
 //   0.03 → 이미지 높이의 3% 이상 (소제목 수준까지 포함)
 //   0.05 → 이미지 높이의 5% 이상 (메인 카피 위주)
-const LARGE_TEXT_RATIO = 0.03
+const LARGE_TEXT_RATIO = 2
 
 
 
@@ -32,10 +32,16 @@ const OCR_SECRET = import.meta.env.VITE_CLOVA_OCR_SECRET
 // 핫스팟 영역 크롭 후 Clova 전송 전 업스케일 배율
 const REGION_UPSCALE = 2
 
+// crypto.randomUUID()는 HTTPS·localhost만 지원 — HTTP 배포 환경용 fallback
+function ocrRequestId() {
+  if (typeof crypto?.randomUUID === 'function') return crypto.randomUUID()
+  return `req-${Date.now()}-${Math.random().toString(36).slice(2, 11)}`
+}
+
 async function callClovaOcr(imagePayload) {
   const body = {
     version: 'V2',
-    requestId: crypto.randomUUID(),
+    requestId: ocrRequestId(),
     timestamp: 0,
     images: [{ name: 'image', ...imagePayload }],
   }

@@ -15,6 +15,7 @@ export default defineConfig(({ mode }) => {
         '/ocr-proxy': {
           target: ocrUrlObj.origin,
           changeOrigin: true,
+          secure: false,
           rewrite: () => ocrUrlObj.pathname,
         },
       } : {},
