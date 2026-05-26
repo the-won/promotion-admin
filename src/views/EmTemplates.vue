@@ -338,6 +338,7 @@ export default {
     handleClearHighlight() {
       console.log('🧹 하이라이트 제거')
       this.selectedImageInfo = { groupId: null, imageId: null }
+      this.selectedRowInfo = { rowId: null, rowIndex: null }
     },
     handleUpdateHotspot(updatedHotspot, groupKey) {
       // 새 구조: hotspotGroup1, hotspotGroup2 (내부에 hotspots 배열)

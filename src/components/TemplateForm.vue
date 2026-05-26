@@ -481,7 +481,23 @@ export default {
       if (this.activeSubItem === null) return null
       const row1Count = this.currentTabSubItems.row1Count || 0
       return this.activeSubItem >= row1Count ? this.activeSubItem - row1Count : null
-    }
+    },
+    allEditorTabMap() {
+      const map = {}
+      const editorTypes = [
+        'event-image-link-group',
+        'image-link-group',
+        'image-map-rows',
+        'image-map-rows-2',
+        'hotspot-group-list',
+      ]
+      Object.entries(this.templateConfig || {}).forEach(([, config]) => {
+        if (editorTypes.includes(config.type)) {
+          map[config.type] = config.tab || '기본'
+        }
+      })
+      return map
+    },
   },
   created() {
     this.localData = { ...this.value }
@@ -581,106 +597,33 @@ export default {
       }
     },
     selectedHotspotId(newId) {
-      if (newId === null || !this.currentTabSubItems) return
-      if (this.currentTabSubItems.type === 'image-map') {
-        const area = (this.localData.imageMapAreas || []).find(a => a.id === newId)
-        if (!area) return
-        const rowIndex = (this.localData.imageMapRows || []).findIndex(r => r.id === area.rowId)
-        if (rowIndex !== -1) {
-          this.activeSubItem = rowIndex
-        }
-      } else if (this.currentTabSubItems.type === 'hotspot-group') {
-        const groups = this.localData[this.currentTabSubItems.key] || []
-        for (let i = 0; i < groups.length; i++) {
-          if ((groups[i].hotspots || []).some(h => h.id === newId)) {
-            this.activeSubItem = i
-            return
-          }
-        }
+      if (newId === null) return
+      const subItems = this.currentTabSubItems
+      if (!subItems) {
+        const map = this.allEditorTabMap
+        const targetTab = map['image-map-rows'] || map['image-map-rows-2'] || map['hotspot-group-list'] || null
+        if (!targetTab) return
+        this.activeTab = targetTab
+        this.$nextTick(() => this._applySelectedHotspotId(newId))
+        return
       }
+      this._applySelectedHotspotId(newId)
     },
     sidebarFocusInfo: {
       handler(info) {
         if (!info || !info.refKey) return
         const subItems = this.currentTabSubItems
-        if (!subItems) return
-        const key = info.refKey
-        if (subItems.type === 'event-image-link') {
-          const groups = this.localData[subItems.key] || []
-          if (key.startsWith('image-group-')) {
-            const idx = groups.findIndex(g => `image-group-${g.id}` === key)
-            if (idx !== -1) this.activeSubItem = idx
-          } else if (key.startsWith('img-item-')) {
-            for (let i = 0; i < groups.length; i++) {
-              if (key.startsWith(`img-item-${groups[i].id}-`)) {
-                this.activeSubItem = i
-                break
-              }
-            }
-          }
-        } else if (subItems.type === 'image-link' && key.startsWith('image-')) {
-          const groups = this.localData[subItems.key] || []
-          for (let i = 0; i < groups.length; i++) {
-            const group = groups[i]
-            for (const img of (group.images || [])) {
-              if (`image-${group.id}-${img.id}` === key) {
-                this.activeSubItem = i
-                return
-              }
-            }
-          }
-        } else if (subItems.type === 'image-map' && key.startsWith('row-')) {
-          const rows = this.localData[subItems.key] || []
-          const rowId = key.slice(4)
-          const idx = rows.findIndex(r => String(r.id) === rowId)
-          if (idx !== -1) this.activeSubItem = idx
-        } else if (subItems.type === 'product-group') {
-          const groups = this.localData[subItems.key] || []
-          if (key.startsWith('efamily-title-')) {
-            const gid = Number(key.slice('efamily-title-'.length))
-            const idx = groups.findIndex(g => g.id === gid)
-            if (idx !== -1) this.activeSubItem = idx
-          } else if (key.startsWith('efamily-row-')) {
-            const rid = Number(key.slice('efamily-row-'.length))
-            for (let i = 0; i < groups.length; i++) {
-              if ((groups[i].rows || []).some(r => r.id === rid)) {
-                this.activeSubItem = i
-                return
-              }
-            }
-          }
-        } else if (subItems.type === 'hotspot-group') {
-          const groups = this.localData[subItems.key] || []
-          let targetIdx = null
-          if (key.startsWith('image-container-')) {
-            const idx = parseInt(key.replace('image-container-', ''), 10) - 1
-            if (idx >= 0 && idx < groups.length) targetIdx = idx
-          } else if (key.startsWith('hotspot-')) {
-            const hotspotId = key.slice('hotspot-'.length)
-            for (let i = 0; i < groups.length; i++) {
-              if ((groups[i].hotspots || []).some(h => String(h.id) === hotspotId)) {
-                targetIdx = i
-                break
-              }
-            }
-          }
-          if (targetIdx !== null) {
-            this.activeSubItem = targetIdx
-            this.focusedHotspotGroupIdx = { idx: targetIdx, timestamp: Date.now() }
-          }
+        if (!subItems) {
+          const targetTab = this._findTabForRefKey(info.refKey)
+          if (!targetTab) return
+          this.activeTab = targetTab
+          this.$nextTick(() => {
+            const newSubItems = this.currentTabSubItems
+            if (newSubItems) this._applySidebarFocus(info, newSubItems)
+          })
           return
-        } else if (subItems.type === 'hotdeal') {
-          const row1Count = subItems.row1Count || 0
-          if (key.startsWith('hotdeal-row1-')) {
-            const id = Number(key.slice('hotdeal-row1-'.length))
-            const idx = (this.localData[subItems.row1Key] || []).findIndex(p => p.id === id)
-            if (idx !== -1) this.activeSubItem = idx
-          } else if (key.startsWith('hotdeal-row3-')) {
-            const id = Number(key.slice('hotdeal-row3-'.length))
-            const idx = (this.localData[subItems.row3Key] || []).findIndex(p => p.id === id)
-            if (idx !== -1) this.activeSubItem = row1Count + idx
-          }
         }
+        this._applySidebarFocus(info, subItems)
       },
       deep: true
     },
@@ -697,6 +640,118 @@ export default {
     }
   },
   methods: {
+    _findTabForRefKey(refKey) {
+      const map = this.allEditorTabMap
+      if (refKey.startsWith('image-group-') || refKey.startsWith('img-item-')) {
+        return map['event-image-link-group'] || null
+      }
+      if (refKey.startsWith('row-')) {
+        return map['image-map-rows'] || map['image-map-rows-2'] || null
+      }
+      if (refKey.startsWith('image-container-') || refKey.startsWith('hotspot-')) {
+        return map['hotspot-group-list'] || null
+      }
+      if (refKey.startsWith('image-')) {
+        return map['image-link-group'] || null
+      }
+      return null
+    },
+    _applySelectedHotspotId(newId) {
+      const subItems = this.currentTabSubItems
+      if (!subItems) return
+      if (subItems.type === 'image-map') {
+        const area = (this.localData.imageMapAreas || []).find(a => a.id === newId)
+        if (!area) return
+        const rowIndex = (this.localData.imageMapRows || []).findIndex(r => r.id === area.rowId)
+        if (rowIndex !== -1) this.activeSubItem = rowIndex
+      } else if (subItems.type === 'hotspot-group') {
+        const groups = this.localData[subItems.key] || []
+        for (let i = 0; i < groups.length; i++) {
+          if ((groups[i].hotspots || []).some(h => h.id === newId)) {
+            this.activeSubItem = i
+            return
+          }
+        }
+      }
+    },
+    _applySidebarFocus(info, subItems) {
+      const key = info.refKey
+      if (subItems.type === 'event-image-link') {
+        const groups = this.localData[subItems.key] || []
+        if (key.startsWith('image-group-')) {
+          const idx = groups.findIndex(g => `image-group-${g.id}` === key)
+          if (idx !== -1) this.activeSubItem = idx
+        } else if (key.startsWith('img-item-')) {
+          for (let i = 0; i < groups.length; i++) {
+            if (key.startsWith(`img-item-${groups[i].id}-`)) {
+              this.activeSubItem = i
+              break
+            }
+          }
+        }
+      } else if (subItems.type === 'image-link' && key.startsWith('image-')) {
+        const groups = this.localData[subItems.key] || []
+        for (let i = 0; i < groups.length; i++) {
+          const group = groups[i]
+          for (const img of (group.images || [])) {
+            if (`image-${group.id}-${img.id}` === key) {
+              this.activeSubItem = i
+              return
+            }
+          }
+        }
+      } else if (subItems.type === 'image-map' && key.startsWith('row-')) {
+        const rows = this.localData[subItems.key] || []
+        const rowId = key.slice(4)
+        const idx = rows.findIndex(r => String(r.id) === rowId)
+        if (idx !== -1) this.activeSubItem = idx
+      } else if (subItems.type === 'product-group') {
+        const groups = this.localData[subItems.key] || []
+        if (key.startsWith('efamily-title-')) {
+          const gid = Number(key.slice('efamily-title-'.length))
+          const idx = groups.findIndex(g => g.id === gid)
+          if (idx !== -1) this.activeSubItem = idx
+        } else if (key.startsWith('efamily-row-')) {
+          const rid = Number(key.slice('efamily-row-'.length))
+          for (let i = 0; i < groups.length; i++) {
+            if ((groups[i].rows || []).some(r => r.id === rid)) {
+              this.activeSubItem = i
+              return
+            }
+          }
+        }
+      } else if (subItems.type === 'hotspot-group') {
+        const groups = this.localData[subItems.key] || []
+        let targetIdx = null
+        if (key.startsWith('image-container-')) {
+          const idx = parseInt(key.replace('image-container-', ''), 10) - 1
+          if (idx >= 0 && idx < groups.length) targetIdx = idx
+        } else if (key.startsWith('hotspot-')) {
+          const hotspotId = key.slice('hotspot-'.length)
+          for (let i = 0; i < groups.length; i++) {
+            if ((groups[i].hotspots || []).some(h => String(h.id) === hotspotId)) {
+              targetIdx = i
+              break
+            }
+          }
+        }
+        if (targetIdx !== null) {
+          this.activeSubItem = targetIdx
+          this.focusedHotspotGroupIdx = { idx: targetIdx, timestamp: Date.now() }
+        }
+      } else if (subItems.type === 'hotdeal') {
+        const row1Count = subItems.row1Count || 0
+        if (key.startsWith('hotdeal-row1-')) {
+          const id = Number(key.slice('hotdeal-row1-'.length))
+          const idx = (this.localData[subItems.row1Key] || []).findIndex(p => p.id === id)
+          if (idx !== -1) this.activeSubItem = idx
+        } else if (key.startsWith('hotdeal-row3-')) {
+          const id = Number(key.slice('hotdeal-row3-'.length))
+          const idx = (this.localData[subItems.row3Key] || []).findIndex(p => p.id === id)
+          if (idx !== -1) this.activeSubItem = row1Count + idx
+        }
+      }
+    },
     scrollPrivacyFormFieldIntoView(fieldKey) {
       const root = this.$el
       if (!root || !fieldKey) return

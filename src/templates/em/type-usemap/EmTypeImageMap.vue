@@ -31,8 +31,7 @@
                   <div
                     class="image-container"
                     :class="{
-                      'image-container-highlighted': activeRowId === row.id,
-                      'row-selected': isRowActive(row.id)
+                      'image-container-highlighted': activeRowId === row.id || isRowActive(row.id)
                     }"
                     :ref="'container_' + row.id"
                     :style="{ width: row.width + 'px', position: 'relative' }"
@@ -47,7 +46,6 @@
                       align="left"
                       border="0"
                       class="preview-image"
-                      :class="{ 'highlight-image': isRowActive(row.id) }"
                       @dragstart.prevent
                     />
 
@@ -507,9 +505,4 @@ export default {
   background: #fff;
 }
 
-/* 이미지 하이라이트 — 링은 .row-selected::after(common-form.css)에서 처리 */
-.highlight-image {
-  outline: 2px solid rgba(0, 113, 227, 0.6);
-  outline-offset: 2px;
-}
 </style>

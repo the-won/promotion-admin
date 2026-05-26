@@ -29,7 +29,7 @@
                   <td align="center" :style="{ paddingBottom: '3px', paddingTop: '3px', paddingLeft: '3px', paddingRight: '3px' }">
                     <div
                       class="image-group-wrapper"
-                      :class="{ 'group-selected': isGroupActive(group.id) }"
+                      :class="{ 'image-container-highlighted': isGroupActive(group.id) }"
                     >
                       <a
                         :href="group.href"
@@ -155,30 +155,6 @@ export default {
 .image-group-wrapper {
   position: relative;
   display: inline-block;
-}
-
-.image-group-wrapper.group-selected {
-  outline: 2px solid rgba(0, 113, 227, 0.6);
-  outline-offset: 2px;
-}
-
-.image-group-wrapper.group-selected::after {
-  content: '';
-  position: absolute;
-  inset: -4px;
-  border: 2px solid rgba(0, 113, 227, 0.65);
-  border-radius: 2px;
-  pointer-events: none;
-  animation: flashRing 750ms cubic-bezier(0.22, 1, 0.36, 1) 1 forwards;
-}
-
-@keyframes flashRing {
-  0%   { opacity: 1; transform: scale(1); }
-  30%  { opacity: 1; transform: scale(1.03); }
-  100% { opacity: 0; transform: scale(1.10); }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .image-group-wrapper.group-selected::after { animation: none; opacity: 0; }
+  transition: all 0.3s ease;
 }
 </style>

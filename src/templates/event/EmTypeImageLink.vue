@@ -13,7 +13,7 @@
             :key="img.id"
             :ref="`img-item-${group.id}-${img.id}`"
             class="image-item"
-            :class="{ 'image-selected': selectedImageInfo && selectedImageInfo.imageId === img.id }"
+            :class="{ 'image-container-highlighted': selectedImageInfo && selectedImageInfo.imageId === img.id }"
             @click.stop="$emit('select-image', { groupId: group.id, imageId: img.id, imgIndex: imgIdx })"
           >
             <img
@@ -87,11 +87,7 @@ export default {
 .image-item {
   position: relative;
   cursor: pointer;
-}
-
-.image-selected {
-  outline: 2px solid rgba(0, 113, 227, 0.6);
-  outline-offset: 2px;
+  transition: all 0.3s ease;
 }
 
 .group-image {
