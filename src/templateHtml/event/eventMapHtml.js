@@ -240,6 +240,7 @@ export function generateEventMapHtml(data, deviceType = 'web', options = {}) {
 <meta name='viewport' content='initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no'/>
 <link rel="stylesheet" type="text/css" href="https://m.benepia.co.kr/resources/benepia/css/base.css">
 <link rel="stylesheet" type="text/css" href="https://m.benepia.co.kr/resources/benepia/css/evt_common_mobile.css">
+<script type="text/javascript" src="https://newfront.benepia.co.kr/resources/plugin/jquery/jquery-1.12.4.min.js"></script>
 <style>
 /* evt_common_mobile.css 내용 copy */
 .evt-wrap {width:100%; font-size:2.222222222222vw; font-family:'Pretendard', '맑은 고딕', 'Droid Sans', AppleSDGothicNeo, Helvetica,sans-serif;}
@@ -364,16 +365,8 @@ a {-webkit-tap-highlight-color:rgba(0,0,0,0); -webkit-tap-highlight-color: trans
 	<\/script>
 	<!-- //상단배너(개인결제유도) -->` : ''}
 
-	<!-- 상단 -->
-	<div class="evt-cnt">
-		<div class="hide">
-			<h1>새해에 꼭 배우고 싶은 CLASS101, 가격 인상 전 마지막 할인</h1>
-		</div>
-		<img src="./images/img_visual.jpg" alt="">
-	</div>
-	<!-- // 상단 -->
 
-	<!-- e쿠폰 -->
+	<!-- 콘텐츠 -->
 	<div class="evt-cnt">
 		${(data.hotspotGroups || []).map(group => generateImageSection(group)).join('\n')}
 	</div>
@@ -412,6 +405,7 @@ a {-webkit-tap-highlight-color:rgba(0,0,0,0); -webkit-tap-highlight-color: trans
 <meta name="author" content="SKMNS">
 <title>WEB ${pageTitle} | 베네피아</title>
 <link rel="stylesheet" type="text/css" href="https://newfront.benepia.co.kr/resources/css/evt_common.css">
+<script type="text/javascript" src="https://newfront.benepia.co.kr/resources/plugin/jquery/jquery-1.12.4.min.js"></script>
 <style>
 .evt-wrap {width: 1080px; font-family: 'Pretendard', sans-serif;font-size: 24px;}
 .evt-wrap .evt-cnt {position:relative; width: 1080px; margin: 0 auto; }
@@ -521,10 +515,6 @@ a {-webkit-tap-highlight-color: rgba(0,0,0,0); -webkit-tap-highlight-color: tran
 	<\/script>` : ''}
 
 	<div class="evt-cnt">
-		<div class="hide">
-			<h1>새해에 꼭 배우고 싶은 CLASS101, 가격 인상 전 마지막 할인</h1>
-			<h2>6,000개 이상 강의를 무제한 구독하세요</h2>
-		</div>
 		${(data.hotspotGroups || []).map(group => generateImageSection(group)).join('\n')}
 	</div>
 

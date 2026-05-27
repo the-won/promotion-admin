@@ -85,7 +85,7 @@
               'selected': selectedAreaId === area.id,
               'flash-highlight': flashingAreaId === area.id
             }"
-            @click="selectArea(area.id)"
+            @click.stop="selectArea(area.id)"
           >
             <div class="card-header card-header-sm">
               <span class="card-title">핫스팟 {{ areaIndex + 1 }}</span>

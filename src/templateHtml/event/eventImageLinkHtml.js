@@ -79,6 +79,7 @@ ${imagesHtml}
 <meta name='viewport' content='initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no'/>
 <link rel="stylesheet" type="text/css" href="https://m.benepia.co.kr/resources/benepia/css/base.css">
 <link rel="stylesheet" type="text/css" href="https://m.benepia.co.kr/resources/benepia/css/evt_common_mobile.css">
+<script type="text/javascript" src="https://newfront.benepia.co.kr/resources/plugin/jquery/jquery-1.12.4.min.js"></script>
 <style>
 .evt-wrap {width:100%; font-size:2.222222222222vw; font-family:'Pretendard', '맑은 고딕', 'Droid Sans', AppleSDGothicNeo, Helvetica,sans-serif;}
 .evt-wrap .evt-cnt {position:relative; background-color: #ffffff;}
@@ -194,6 +195,7 @@ ${contentHtml}
 <meta name="author" content="SKMNS">
 <title>WEB ${pageTitle} | 베네피아</title>
 <link rel="stylesheet" type="text/css" href="https://newfront.benepia.co.kr/resources/css/evt_common.css">
+<script type="text/javascript" src="https://newfront.benepia.co.kr/resources/plugin/jquery/jquery-1.12.4.min.js"></script>
 <style>
 .evt-wrap {width: 1080px; font-family: 'Pretendard', sans-serif; font-size: 24px;}
 .evt-wrap .evt-cnt {position:relative; width: 1080px; margin: 0 auto;}

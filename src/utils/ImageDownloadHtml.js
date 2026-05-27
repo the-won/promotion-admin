@@ -92,12 +92,17 @@ export async function imageDownloadHtml(templateName, formData, deviceType = 'we
     const prefix = deviceType === 'mobile' ? 'm.' : ''
     const companySuffix = formData.companyType === 'hynix' ? '_hynix' : formData.companyType === 'normal' ? '_tobe' : ''
 
-    // folderName이 있으면 사용, 없으면 templateName_timestamp 사용
+    // folderName이 있으면 사용, 없으면 템플릿별 기본 prefix_timestamp 사용
+    const defaultPrefixMap = {
+      'em-type-3': 'event-imageMap'
+    }
+    const defaultPrefix = defaultPrefixMap[templateName] || templateName
+
     let zipFilename
     if (formData.folderName && formData.folderName.trim()) {
       zipFilename = `${prefix}${formData.folderName.trim()}${companySuffix}.zip`
     } else {
-      zipFilename = `${prefix}${templateName}_${timestamp}${companySuffix}.zip`
+      zipFilename = `${prefix}${defaultPrefix}_${timestamp}${companySuffix}.zip`
     }
     
     saveAs(zipBlob, zipFilename)

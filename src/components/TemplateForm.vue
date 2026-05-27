@@ -300,6 +300,17 @@
           @update:row3Products="localData.row3Products = $event"
         />
 
+        <!-- 패밀리세일 일괄 업로드 -->
+        <FamilySaleUploader
+          v-else-if="config.type === 'familysale-uploader'"
+          :headerImage="localData.headerImage"
+          :headerImageAlt="localData.headerImageAlt"
+          :productGroups="localData.productGroups"
+          @update:headerImage="localData.headerImage = $event"
+          @update:headerImageAlt="localData.headerImageAlt = $event"
+          @update:productGroups="localData.productGroups = $event"
+        />
+
         <!-- Hotdeal Row1 Editor -->
         <HotdealRow1Editor
           v-else-if="config.type === 'hotdeal-row1-list'"
@@ -359,6 +370,7 @@ import BannerListEditor from './em/efamily/BannerListEditor.vue'
 import EfamilyExcelUploader from './em/efamily/EfamilyExcelUploader.vue'
 import PrivacySectionEditor from './privacy/PrivacySectionEditor.vue'
 import FamilySaleGroupEditor from './em/family-sale/FamilySaleGroupEditor.vue'
+import FamilySaleUploader from './em/family-sale/FamilySaleUploader.vue'
 import EventImageLinkGroupEditor from './event/ImageLinkGroupEditor.vue'
 
 export default {
@@ -377,6 +389,7 @@ export default {
     EfamilyExcelUploader,
     PrivacySectionEditor,
     FamilySaleGroupEditor,
+    FamilySaleUploader,
     EventImageLinkGroupEditor
   },
   props: [
@@ -793,6 +806,7 @@ export default {
         'privacy-section-list',
         'efamily-uploader',
         'hotdeal-uploader',
+        'familysale-uploader',
         'notice-items',
         'checkbox',
         'family-sale-group'
@@ -801,7 +815,7 @@ export default {
     },
 
     isHideLabelField(type) {
-      return ['hotspot-group', 'hotspot-group-list', 'privacy-section-list', 'efamily-uploader', 'hotdeal-uploader', 'checkbox', 'notice-items', 'family-sale-group', 'event-image-link-group'].includes(type)
+      return ['hotspot-group', 'hotspot-group-list', 'privacy-section-list', 'efamily-uploader', 'hotdeal-uploader', 'familysale-uploader', 'checkbox', 'notice-items', 'family-sale-group', 'event-image-link-group'].includes(type)
     },
     
     handleSelectProduct(info) {
@@ -1136,7 +1150,7 @@ export default {
 .form-fields.expanded {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 16px 20px;
+  gap: 28px 20px;
 }
 
 .form-fields.expanded .form-group.full-width {
@@ -1147,7 +1161,7 @@ export default {
   display: flex;
   align-items: center;
   gap: 10px;
-  margin: 8px 0 4px;
+  margin: 20px 0 12px;
   font-size: 10px;
   font-weight: 600;
   letter-spacing: 0.1em;

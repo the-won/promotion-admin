@@ -564,12 +564,12 @@ export const templateDefaults = {
   },
 
   'em-type-familysale': {
-    folderName: {
-      label: 'Zip 폴더 이름',
-      type: 'text',
-      tab: '기본',
-      value: ''
-    },
+    // folderName: {
+    //   label: 'Zip 폴더 이름',
+    //   type: 'text',
+    //   tab: '기본',
+    //   value: ''
+    // },
     companyType: {
       label: '도메인',
       type: 'select',
@@ -605,7 +605,7 @@ export const templateDefaults = {
       label: '상단 이미지 대체텍스트',
       type: 'text',
       tab: '기본',
-      value: ''
+      value: '가정의달 Family Sale'
     },
     productGroups: {
       label: '상품 그룹',
@@ -615,18 +615,18 @@ export const templateDefaults = {
         {
           id: 'pg_fs_001',
           backgroundColor: '#E9F9FF',
-          titleImage: { url: 'http://10.71.101.60:13305/Promotion/2026%EB%85%84/familysale_img_pack/title_01.jpg', alt: '' },
+          titleImage: { url: 'http://10.71.101.60:13305/Promotion/2026%EB%85%84/familysale_img_pack/title_01.png', alt: '우리 아이 취향 맞춤 선물 BEST' },
           products: [
             { productCode: '', imageUrl: 'http://10.71.101.60:13305/Promotion/2026%EB%85%84/familysale_img_pack/product_01_01.jpg', imageAlt: '' },
-            { productCode: '', imageUrl: 'http://10.71.101.60:13305/Promotion/2026%EB%85%84/familysale_img_pack/product_01_02.jpg', imageAlt: '' },
-            { productCode: '', imageUrl: 'http://10.71.101.60:13305/Promotion/2026%EB%85%84/familysale_img_pack/product_01_03.jpg', imageAlt: '' },
-            { productCode: '', imageUrl: 'http://10.71.101.60:13305/Promotion/2026%EB%85%84/familysale_img_pack/product_01_04.jpg', imageAlt: '' },
-            { productCode: '', imageUrl: 'http://10.71.101.60:13305/Promotion/2026%EB%85%84/familysale_img_pack/product_01_05.jpg', imageAlt: '' }
+            { productCode: '', imageUrl: 'http://10.71.101.60:13305/Promotion/2026%EB%85%84/familysale_img_pack/product_01_02.png', imageAlt: '' },
+            { productCode: '', imageUrl: 'http://10.71.101.60:13305/Promotion/2026%EB%85%84/familysale_img_pack/product_01_03.png', imageAlt: '' },
+            { productCode: '', imageUrl: 'http://10.71.101.60:13305/Promotion/2026%EB%85%84/familysale_img_pack/product_01_04.png', imageAlt: '' },
+            { productCode: '', imageUrl: 'http://10.71.101.60:13305/Promotion/2026%EB%85%84/familysale_img_pack/product_01_05.png', imageAlt: '' }
           ]
         },
         {
           id: 'pg_fs_002',
-          backgroundColor: '#E9F9FF',
+          backgroundColor: '#6a519a',
           titleImage: { url: 'http://10.71.101.60:13305/Promotion/2026%EB%85%84/familysale_img_pack/title_02.jpg', alt: '' },
           products: [
             { productCode: '', imageUrl: 'http://10.71.101.60:13305/Promotion/2026%EB%85%84/familysale_img_pack/product_02_01.jpg', imageAlt: '' },
@@ -638,8 +638,8 @@ export const templateDefaults = {
         },
         {
           id: 'pg_fs_003',
-          backgroundColor: '#E9F9FF',
-          titleImage: { url: 'http://10.71.101.60:13305/Promotion/2026%EB%85%84/familysale_img_pack/title_03.jpg', alt: '' },
+          backgroundColor: '#91511d',
+          titleImage: { url: 'http://10.71.101.60:13305/Promotion/2026%EB%85%84/familysale_img_pack/title_01.png', alt: '' },
           products: [
             { productCode: '', imageUrl: 'http://10.71.101.60:13305/Promotion/2026%EB%85%84/familysale_img_pack/product_03_01.jpg', imageAlt: '' },
             { productCode: '', imageUrl: 'http://10.71.101.60:13305/Promotion/2026%EB%85%84/familysale_img_pack/product_03_02.jpg', imageAlt: '' },
@@ -649,6 +649,11 @@ export const templateDefaults = {
           ]
         }
       ]
+    },
+    _uploader_familysale: {
+      type: 'familysale-uploader',
+      tab: '업로드',
+      label: '일괄 업로드'
     }
   },
 

@@ -27,7 +27,7 @@ export function generateEmTypeFamilySaleHtml(data) {
   let productGroupsHtml = ''
   const groups = data.productGroups || []
 
-  groups.forEach((group, groupIndex) => {
+  groups.forEach((group) => {
     const titleImg = group.titleImage || { url: '', alt: '' }
     const products = group.products || []
     const p0 = products[0] || { productCode: '', imageUrl: '', imageAlt: '' }
@@ -38,87 +38,89 @@ export function generateEmTypeFamilySaleHtml(data) {
     const bg = group.backgroundColor || '#E9F9FF'
 
     productGroupsHtml += `
-          <!-- 그룹 ${groupIndex + 1}: 타이틀 이미지 -->
+        <tbody>
           <tr>
             <td style="FONT-SIZE: 0px; VERTICAL-ALIGN: top">
               <table cellSpacing="0" cellPadding="0" width="720" border="0">
-                <tr>
-                  <td>
-                    <img src="${titleImg.url}" align="left" width="720" alt="${titleImg.alt}" border="0">
-                  </td>
-                </tr>
+                <tbody>
+                  <tr>
+                    <td style="background-color: ${bg}">
+                      <img src="${titleImg.url}" align="left" width="720" alt="${titleImg.alt}" border="0">
+                    </td>
+                  </tr>
+                </tbody>
               </table>
             </td>
           </tr>
-          <!-- 대표 상품 -->
           <tr>
             <td style="FONT-SIZE: 0px; VERTICAL-ALIGN: top">
               <table cellSpacing="0" cellPadding="0" width="720" border="0" style="background-color: ${bg}">
-                <tr>
-                  <td width="66"></td>
-                  <td style="FONT-SIZE: 0px; VERTICAL-ALIGN: top">
-                    <a href="${getProductUrl(p0.productCode)}" target="_blank">
-                      <img src="${p0.imageUrl || ''}" align="left" width="588" alt="${p0.imageAlt || ''}" border="0">
-                    </a>
-                  </td>
-                  <td width="66"></td>
-                </tr>
+                <tbody>
+                  <tr>
+                    <td width="66"></td>
+                    <td style="FONT-SIZE: 0px; VERTICAL-ALIGN: top">
+                      <a href="${getProductUrl(p0.productCode)}" target="_blank">
+                        <img src="${p0.imageUrl || ''}" align="left" width="588" alt="${p0.imageAlt || ''}" border="0">
+                      </a>
+                    </td>
+                    <td width="66"></td>
+                  </tr>
+                </tbody>
               </table>
             </td>
           </tr>
-          <!-- 그리드 행 1 간격 -->
           <tr>
             <td height="20" style="background-color: ${bg}"></td>
           </tr>
-          <!-- 그리드 행 1 -->
           <tr>
             <td style="FONT-SIZE: 0px; VERTICAL-ALIGN: top">
               <table cellSpacing="0" cellPadding="0" width="720" border="0" style="background-color: ${bg}">
-                <tr>
-                  <td width="66"></td>
-                  <td style="FONT-SIZE: 0px; VERTICAL-ALIGN: top">
-                    <a href="${getProductUrl(p1.productCode)}" target="_blank">
-                      <img src="${p1.imageUrl || ''}" align="left" width="294" alt="${p1.imageAlt || ''}" border="0">
-                    </a>
-                  </td>
-                  <td style="FONT-SIZE: 0px; VERTICAL-ALIGN: top">
-                    <a href="${getProductUrl(p2.productCode)}" target="_blank">
-                      <img src="${p2.imageUrl || ''}" align="left" width="294" alt="${p2.imageAlt || ''}" border="0">
-                    </a>
-                  </td>
-                  <td width="66"></td>
-                </tr>
+                <tbody>
+                  <tr>
+                    <td width="66"></td>
+                    <td style="FONT-SIZE: 0px; VERTICAL-ALIGN: top">
+                      <a href="${getProductUrl(p1.productCode)}" target="_blank">
+                        <img src="${p1.imageUrl || ''}" align="left" width="294" alt="${p1.imageAlt || ''}" border="0">
+                      </a>
+                    </td>
+                    <td style="FONT-SIZE: 0px; VERTICAL-ALIGN: top">
+                      <a href="${getProductUrl(p2.productCode)}" target="_blank">
+                        <img src="${p2.imageUrl || ''}" align="left" width="294" alt="${p2.imageAlt || ''}" border="0">
+                      </a>
+                    </td>
+                    <td width="66"></td>
+                  </tr>
+                </tbody>
               </table>
             </td>
           </tr>
-          <!-- 그리드 행 2 간격 -->
-          <tr>
-            <td height="20" style="background-color: ${bg}"></td>
-          </tr>
-          <!-- 그리드 행 2 -->
           <tr>
             <td style="FONT-SIZE: 0px; VERTICAL-ALIGN: top">
               <table cellSpacing="0" cellPadding="0" width="720" border="0" style="background-color: ${bg}">
-                <tr>
-                  <td width="66"></td>
-                  <td style="FONT-SIZE: 0px; VERTICAL-ALIGN: top">
-                    <a href="${getProductUrl(p3.productCode)}" target="_blank">
-                      <img src="${p3.imageUrl || ''}" align="left" width="294" alt="${p3.imageAlt || ''}" border="0">
-                    </a>
-                  </td>
-                  <td style="FONT-SIZE: 0px; VERTICAL-ALIGN: top">
-                    <a href="${getProductUrl(p4.productCode)}" target="_blank">
-                      <img src="${p4.imageUrl || ''}" align="left" width="294" alt="${p4.imageAlt || ''}" border="0">
-                    </a>
-                  </td>
-                  <td width="66"></td>
-                </tr>
+                <tbody>
+                  <tr>
+                    <td width="66"></td>
+                    <td style="FONT-SIZE: 0px; VERTICAL-ALIGN: top">
+                      <a href="${getProductUrl(p3.productCode)}" target="_blank">
+                        <img src="${p3.imageUrl || ''}" align="left" width="294" alt="${p3.imageAlt || ''}" border="0">
+                      </a>
+                    </td>
+                    <td style="FONT-SIZE: 0px; VERTICAL-ALIGN: top">
+                      <a href="${getProductUrl(p4.productCode)}" target="_blank">
+                        <img src="${p4.imageUrl || ''}" align="left" width="294" alt="${p4.imageAlt || ''}" border="0">
+                      </a>
+                    </td>
+                    <td width="66"></td>
+                  </tr>
+                </tbody>
               </table>
             </td>
-          </tr>`
+          </tr>
+          <tr>
+            <td height="60" style="background-color: ${bg}"></td>
+          </tr>
+        </tbody>`
   })
-
-  const lastGroupBg = groups.length > 0 ? (groups[groups.length - 1].backgroundColor || '#E9F9FF') : '#E9F9FF'
 
   return `<!DOCTYPE html PUBLIC "-//W3C//Dtd XHTML 1.0 transitional//EN" "https://www.w3.org/tr/xhtml1/Dtd/xhtml1-transitional.dtd">
 <html xmlns="https://www.w3.org/1999/xhtml" xml:lang="ko" lang="ko">
@@ -158,9 +160,7 @@ export function generateEmTypeFamilySaleHtml(data) {
         <!-- 정기 교체 영역: 상품 그룹 -->
         <table cellSpacing="0" cellPadding="0" width="720" border="0" style="background-color: #eeeeee;">
 ${productGroupsHtml}
-          <tr>
-            <td height="60" style="background-color: ${lastGroupBg}"></td>
-          </tr>
+        
         </table>
         <!-- // 정기 교체 영역: 상품 그룹 -->
 

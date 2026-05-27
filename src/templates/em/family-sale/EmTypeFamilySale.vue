@@ -44,108 +44,99 @@
 
                     <!-- 상품 그룹 영역 -->
                     <table cellspacing="0" cellpadding="0" width="720" border="0" style="background-color: #eeeeee;">
-                      <tbody>
-                        <template v-for="(group, groupIndex) in (data.productGroups || [])">
-                          <!-- 타이틀 이미지 -->
-                          <tr :key="'title-' + group.id">
-                            <td style="font-size: 0px; vertical-align: top">
-                              <table cellspacing="0" cellpadding="0" width="720" border="0">
-                                <tbody>
-                                  <tr>
-                                    <td>
-                                      <img :src="(group.titleImage || {}).url" align="left" width="720" :alt="(group.titleImage || {}).alt" border="0">
-                                    </td>
-                                  </tr>
-                                </tbody>
-                              </table>
-                            </td>
-                          </tr>
+                      <tbody
+                        v-for="group in (data.productGroups || [])"
+                        :key="group.id"
+                      >
+                        <!-- 타이틀 이미지 -->
+                        <tr>
+                          <td style="font-size: 0px; vertical-align: top">
+                            <table cellspacing="0" cellpadding="0" width="720" border="0" >
+                              <tbody>
+                                <tr>
+                                  <td :style="{ backgroundColor: group.backgroundColor || '#E9F9FF' }">
+                                    <img :src="(group.titleImage || {}).url" align="left" width="720" :alt="(group.titleImage || {}).alt" border="0">
+                                  </td>
+                                </tr>
+                              </tbody>
+                            </table>
+                          </td>
+                        </tr>
 
-                          <!-- 대표 상품 간격 -->
-                          <!-- <tr :key="'featured-space-' + group.id">
-                            <td :height="groupIndex === 0 ? 43 : 30"></td>
-                          </tr> -->
-
-                          <!-- 대표 상품 (products[0]) -->
-                          <tr :key="'featured-' + group.id">
-                            <td style="font-size: 0px; vertical-align: top">
-                              <table cellspacing="0" cellpadding="0" width="720" border="0" :style="{ backgroundColor: group.backgroundColor || '#E9F9FF' }">
-                                <tbody>
-                                  <tr>
-                                    <td width="66"></td>
-                                    <td style="font-size: 0px; vertical-align: top">
-                                      <a :href="getProductUrl(getProduct(group, 0).productCode)" target="_blank">
-                                        <img :src="getProduct(group, 0).imageUrl" align="left" width="588" :alt="getProduct(group, 0).imageAlt" border="0">
-                                      </a>
-                                    </td>
-                                    <td width="66"></td>
-                                  </tr>
-                                </tbody>
-                              </table>
-                            </td>
-                          </tr>
-
-                          <!-- 그리드 행 1 간격 -->
-                          <tr :key="'grid1-space-' + group.id">
-                            <td height="20" :style="{ backgroundColor: group.backgroundColor || '#E9F9FF' }"></td>
-                          </tr>
-
-                          <!-- 그리드 행 1 (products[1], products[2]) -->
-                          <tr :key="'grid1-' + group.id">
-                            <td style="font-size: 0px; vertical-align: top">
-                              <table cellspacing="0" cellpadding="0" width="720" border="0" :style="{ backgroundColor: group.backgroundColor || '#E9F9FF' }">
-                                <tbody>
-                                  <tr>
-                                    <td width="66"></td>
-                                    <td style="font-size: 0px; vertical-align: top">
-                                      <a :href="getProductUrl(getProduct(group, 1).productCode)" target="_blank">
-                                        <img :src="getProduct(group, 1).imageUrl" align="left" width="294" :alt="getProduct(group, 1).imageAlt" border="0">
-                                      </a>
-                                    </td>
-                                    <td style="font-size: 0px; vertical-align: top">
-                                      <a :href="getProductUrl(getProduct(group, 2).productCode)" target="_blank">
-                                        <img :src="getProduct(group, 2).imageUrl" align="left" width="294" :alt="getProduct(group, 2).imageAlt" border="0">
-                                      </a>
-                                    </td>
-                                    <td width="66"></td>
-                                  </tr>
-                                </tbody>
-                              </table>
-                            </td>
-                          </tr>
-
-                          <!-- 그리드 행 2 간격 -->
-                          <tr :key="'grid2-space-' + group.id">
-                            <td height="20" :style="{ backgroundColor: group.backgroundColor || '#E9F9FF' }"></td>
-                          </tr>
-
-                          <!-- 그리드 행 2 (products[3], products[4]) -->
-                          <tr :key="'grid2-' + group.id">
-                            <td style="font-size: 0px; vertical-align: top">
-                              <table cellspacing="0" cellpadding="0" width="720" border="0" :style="{ backgroundColor: group.backgroundColor || '#E9F9FF' }">
-                                <tbody>
-                                  <tr>
-                                    <td width="66"></td>
-                                    <td style="font-size: 0px; vertical-align: top">
-                                      <a :href="getProductUrl(getProduct(group, 3).productCode)" target="_blank">
-                                        <img :src="getProduct(group, 3).imageUrl" align="left" width="294" :alt="getProduct(group, 3).imageAlt" border="0">
-                                      </a>
-                                    </td>
-                                    <td style="font-size: 0px; vertical-align: top">
-                                      <a :href="getProductUrl(getProduct(group, 4).productCode)" target="_blank">
-                                        <img :src="getProduct(group, 4).imageUrl" align="left" width="294" :alt="getProduct(group, 4).imageAlt" border="0">
-                                      </a>
-                                    </td>
-                                    <td width="66"></td>
-                                  </tr>
-                                </tbody>
-                              </table>
-                            </td>
-                          </tr>
-                        </template>
+                        <!-- 대표 상품 (products[0]) -->
+                        <tr>
+                          <td style="font-size: 0px; vertical-align: top">
+                            <table cellspacing="0" cellpadding="0" width="720" border="0" :style="{ backgroundColor: group.backgroundColor || '#E9F9FF' }">
+                              <tbody>
+                                <tr>
+                                  <td width="66"></td>
+                                  <td style="font-size: 0px; vertical-align: top">
+                                    <a :href="getProductUrl(getProduct(group, 0).productCode)" target="_blank">
+                                      <img :src="getProduct(group, 0).imageUrl" align="left" width="588" :alt="getProduct(group, 0).imageAlt" border="0">
+                                    </a>
+                                  </td>
+                                  <td width="66"></td>
+                                </tr>
+                              </tbody>
+                            </table>
+                          </td>
+                        </tr>
 
                         <tr>
-                          <td height="60" :style="{ backgroundColor: lastGroupColor }"></td>
+                          <td height="20" :style="{ backgroundColor: group.backgroundColor || '#E9F9FF' }"></td>
+                        </tr>
+
+                        <!-- 그리드 행 1 (products[1], products[2]) -->
+                        <tr>
+                          <td style="font-size: 0px; vertical-align: top">
+                            <table cellspacing="0" cellpadding="0" width="720" border="0" :style="{ backgroundColor: group.backgroundColor || '#E9F9FF' }">
+                              <tbody>
+                                <tr>
+                                  <td width="66"></td>
+                                  <td style="font-size: 0px; vertical-align: top">
+                                    <a :href="getProductUrl(getProduct(group, 1).productCode)" target="_blank">
+                                      <img :src="getProduct(group, 1).imageUrl" align="left" width="294" :alt="getProduct(group, 1).imageAlt" border="0">
+                                    </a>
+                                  </td>
+                                  <td style="font-size: 0px; vertical-align: top">
+                                    <a :href="getProductUrl(getProduct(group, 2).productCode)" target="_blank">
+                                      <img :src="getProduct(group, 2).imageUrl" align="left" width="294" :alt="getProduct(group, 2).imageAlt" border="0">
+                                    </a>
+                                  </td>
+                                  <td width="66"></td>
+                                </tr>
+                              </tbody>
+                            </table>
+                          </td>
+                        </tr>
+
+                        <!-- 그리드 행 2 (products[3], products[4]) -->
+                        <tr>
+                          <td style="font-size: 0px; vertical-align: top">
+                            <table cellspacing="0" cellpadding="0" width="720" border="0" :style="{ backgroundColor: group.backgroundColor || '#E9F9FF' }">
+                              <tbody>
+                                <tr>
+                                  <td width="66"></td>
+                                  <td style="font-size: 0px; vertical-align: top">
+                                    <a :href="getProductUrl(getProduct(group, 3).productCode)" target="_blank">
+                                      <img :src="getProduct(group, 3).imageUrl" align="left" width="294" :alt="getProduct(group, 3).imageAlt" border="0">
+                                    </a>
+                                  </td>
+                                  <td style="font-size: 0px; vertical-align: top">
+                                    <a :href="getProductUrl(getProduct(group, 4).productCode)" target="_blank">
+                                      <img :src="getProduct(group, 4).imageUrl" align="left" width="294" :alt="getProduct(group, 4).imageAlt" border="0">
+                                    </a>
+                                  </td>
+                                  <td width="66"></td>
+                                </tr>
+                              </tbody>
+                            </table>
+                          </td>
+                        </tr>
+
+                        <!-- 하단 간격 -->
+                        <tr>
+                          <td height="60" :style="{ backgroundColor: group.backgroundColor || '#E9F9FF' }"></td>
                         </tr>
                       </tbody>
                     </table>
