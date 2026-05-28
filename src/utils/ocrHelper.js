@@ -16,7 +16,7 @@ const USE_CLOVA = true
 // 【큰 텍스트 기준】 이미지 높이 대비 단어 높이 비율
 //   0.03 → 이미지 높이의 3% 이상 (소제목 수준까지 포함)
 //   0.05 → 이미지 높이의 5% 이상 (메인 카피 위주)
-const LARGE_TEXT_RATIO = 2
+const LARGE_TEXT_RATIO = 0.05
 
 
 
@@ -140,16 +140,39 @@ async function runOcrOnRegionClova(imageUrl, region) {
   if (!region || region.width <= 0 || region.height <= 0) {
     return { success: false, errorType: 'invalid', errorMessage: '핫스팟 영역이 유효하지 않습니다.' }
   }
+
+  // URL 이미지: canvas 크롭 없이 전체 이미지를 Clova에 전송 후 좌표로 필터링 (CORS 우회)
+  if (!imageUrl.startsWith('data:')) {
+    try {
+      const data  = await callClovaOcr({ format: 'jpg', url: imageUrl })
+      const image = data.images?.[0]
+      if (!image || image.inferResult !== 'SUCCESS') return { success: true, text: '' }
+
+      const filtered = (image.fields || []).filter(f => {
+        const xs = f.boundingPoly.vertices.map(v => v.x)
+        const ys = f.boundingPoly.vertices.map(v => v.y)
+        const cx = (Math.min(...xs) + Math.max(...xs)) / 2
+        const cy = (Math.min(...ys) + Math.max(...ys)) / 2
+        return cx >= region.x && cx <= region.x + region.width &&
+               cy >= region.y && cy <= region.y + region.height
+      })
+      return { success: true, text: clovaFieldsToLines(filtered).filter(l => l.trim()).join(' ').trim() }
+    } catch (e) {
+      console.error('[Clova OCR 오류]', e)
+      return { success: false, errorType: 'ocr', errorMessage: 'OCR 처리 중 오류가 발생했습니다.' }
+    }
+  }
+
+  // data: URL (직접 업로드): 기존 canvas 크롭 방식
   return new Promise(resolve => {
     const img = new Image()
-    if (!imageUrl.startsWith('data:')) img.crossOrigin = 'anonymous'
     img.onload = async () => {
       try {
         const base64 = cropRegionToBase64(img, region)
         const data   = await callClovaOcr({ format: 'png', data: base64 })
         resolve({ success: true, text: extractRegionTextFromClova(data) })
       } catch {
-        resolve({ success: false, errorType: 'cors', errorMessage: '이미지 서버가 CORS를 허용하지 않습니다. 파일 업로드 후 OCR을 사용하세요.' })
+        resolve({ success: false, errorType: 'cors', errorMessage: 'OCR 처리 중 오류가 발생했습니다.' })
       }
     }
     img.onerror = () => resolve({ success: false, errorType: 'network', errorMessage: '이미지를 불러올 수 없습니다. URL을 확인하세요.' })

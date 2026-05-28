@@ -80,8 +80,10 @@ export function buildWebAction(linkConfig) {
 
     case 'product': {
       const code = linkData.code || ''
-      const action = code ? `onclick="goProdDetail('${code}');"` : ''
-      return { tag: useLink ? 'a' : 'button', action, extra: '' }
+      if (useLink) {
+        return { tag: 'a', action: code ? `href="/frnt/pointmall/pointmall.do?returnUrl=/disp/storeMain.bene?prdId=${code}"` : '', extra: '' }
+      }
+      return { tag: 'button', action: code ? `onclick="goProdDetail('${code}');"` : '', extra: '' }
     }
 
     case 'event': {
@@ -105,14 +107,15 @@ export function buildWebAction(linkConfig) {
 
     case 'external': {
       const url = linkData.url || ''
-      const action = url ? `onclick="window.open('${url}');"` : ''
-      return { tag: useLink ? 'a' : 'button', action, extra: '' }
+      if (useLink) {
+        return { tag: 'a', action: url ? `href="${url}"` : '', extra: 'target="_blank"' }
+      }
+      return { tag: 'button', action: url ? `onclick="window.open('${url}');"` : '', extra: '' }
     }
 
     case 'brand_ecoupon': {
       const code = linkData.code || ''
-      const action = code ? `onclick="goECouponProdDetail('${code}');"` : ''
-      return { tag: useLink ? 'a' : 'button', action, extra: '' }
+      return { tag: 'button', action: code ? `onclick="goECouponProdDetail('${code}');"` : '', extra: '' }
     }
 
     case 'search': {
@@ -129,8 +132,10 @@ export function buildWebAction(linkConfig) {
 
     case 'custom': {
       const url = linkData.url || ''
-      const action = url ? `onclick="window.open('${url}');"` : ''
-      return { tag: useLink ? 'a' : 'button', action, extra: '' }
+      if (useLink) {
+        return { tag: 'a', action: url ? `href="${url}"` : '', extra: 'target="_blank"' }
+      }
+      return { tag: 'button', action: url ? `onclick="window.open('${url}');"` : '', extra: '' }
     }
 
     // brand_store / coupon → 웹 미지원

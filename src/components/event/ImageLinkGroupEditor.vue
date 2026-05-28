@@ -45,8 +45,8 @@
           />
         </div>
 
-        <!-- 기획전 / 상품 / 브랜드e쿠폰 : 웹에서 a/button 선택 -->
-        <div v-if="deviceType === 'web' && ['plan','product','brand_ecoupon'].includes(getGroupConfig(group).linkType)" class="form-group">
+        <!-- 기획전 / 상품 : a/button 선택 -->
+        <div v-if="['plan','product'].includes(getGroupConfig(group).linkType)" class="form-group">
           <label class="checkbox-label">
             <input
               type="checkbox"
@@ -83,7 +83,7 @@
               @click.stop
             />
           </div>
-          <div v-if="deviceType === 'web'" class="form-group">
+          <div class="form-group">
             <label class="checkbox-label">
               <input
                 type="checkbox"
@@ -132,7 +132,7 @@
               @click.stop
             />
           </div>
-          <div v-if="deviceType === 'web'" class="form-group">
+          <div class="form-group">
             <label class="checkbox-label">
               <input
                 type="checkbox"
@@ -159,7 +159,7 @@
               @click.stop
             />
           </div>
-          <div v-if="deviceType === 'web'" class="form-group">
+          <div class="form-group">
             <label class="checkbox-label">
               <input
                 type="checkbox"

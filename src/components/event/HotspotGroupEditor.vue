@@ -143,8 +143,8 @@
             />
           </div>
 
-          <!-- 기획전 / 상품 / 브랜드e쿠폰 : 웹에서 a/button 선택 (brand_store 제외) -->
-          <div v-if="deviceType === 'web' && ['plan','product','brand_ecoupon'].includes(getHotspotConfig(hotspot).linkType)" class="form-group">
+          <!-- 기획전 / 상품 : a/button 선택 -->
+          <div v-if="['plan','product'].includes(getHotspotConfig(hotspot).linkType)" class="form-group">
             <label class="checkbox-label">
               <input
                 type="checkbox"
@@ -181,8 +181,8 @@
                 @click.stop
               />
             </div>
-            <!-- 웹에서 a/button 선택 -->
-            <div v-if="deviceType === 'web'" class="form-group">
+            <!-- a/button 선택 -->
+            <div class="form-group">
               <label class="checkbox-label">
                 <input
                   type="checkbox"
@@ -231,8 +231,8 @@
                 @click.stop
               />
             </div>
-            <!-- 웹에서 a/button 선택 -->
-            <div v-if="deviceType === 'web'" class="form-group">
+            <!-- a/button 선택 -->
+            <div class="form-group">
               <label class="checkbox-label">
                 <input
                   type="checkbox"
@@ -259,8 +259,8 @@
                 @click.stop
               />
             </div>
-            <!-- 웹에서 a/button 선택 -->
-            <div v-if="deviceType === 'web'" class="form-group">
+            <!-- a/button 선택 -->
+            <div class="form-group">
               <label class="checkbox-label">
                 <input
                   type="checkbox"
@@ -505,17 +505,16 @@ export default {
       try {
         const { runOcrOnRegion } = await import('../../utils/ocrHelper.js')
 
-        // 이미지 자연 크기를 로드해서 % → 픽셀 변환
+        // 이미지 자연 크기를 로드해서 % → 픽셀 변환 (crossOrigin 불필요 — 크기만 읽음)
         const imgSize = await new Promise((resolve) => {
           const img = new Image()
-          if (!imageUrl.startsWith('data:')) img.crossOrigin = 'anonymous'
           img.onload = () => resolve({ w: img.naturalWidth, h: img.naturalHeight })
           img.onerror = () => resolve(null)
           img.src = imageUrl
         })
 
         if (!imgSize) {
-          this.$set(hotspot, '_ocrError', '이미지 서버가 CORS를 허용하지 않습니다. 파일 업로드 후 OCR을 사용하세요.')
+          this.$set(hotspot, '_ocrError', '이미지를 불러올 수 없습니다. URL을 확인하세요.')
           setTimeout(() => this.$set(hotspot, '_ocrError', null), 6000)
           return
         }
