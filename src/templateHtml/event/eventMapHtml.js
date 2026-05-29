@@ -1,6 +1,11 @@
+import { buildMobileAction } from '../../utils/hotspotLinkBuilder.js'
+
 export function generateEventMapHtml(data, deviceType = 'web', options = {}) {
   const showTopBanner = !!options.showTopBanner
-  const showBottomBanner = !!options.showBottomBanner
+  const bb = options.showBottomBanner || {}
+  const showBannerHowto  = !!(bb.enabled && bb.howto  !== false)
+  const showBannerReview = !!(bb.enabled && bb.review !== false)
+  const showBannerKakao  = !!(bb.enabled && bb.kakao  !== false)
   const showNotice = !!options.showNotice
   const noticeTitle = options.noticeTitle || '꼭 확인하세요'
   const noticeItems = Array.isArray(options.noticeItems) ? options.noticeItems : []
@@ -107,58 +112,7 @@ export function generateEventMapHtml(data, deviceType = 'web', options = {}) {
           return { tag: 'button', action: '', extra: '' }
       }
     } else {
-      // mobile
-      switch (linkType) {
-        case 'plan': {
-          const code = linkData.code || ''
-          return { tag: 'button', action: code ? `onclick="handleInternalUrl('/main/planDetail.bene?dpPlanNo=${code}');"` : '' }
-        }
-        case 'product': {
-          const code = linkData.code || ''
-          return { tag: 'button', action: code ? `onclick="handleInternalUrl('/disp/detailView.bene?prdId=${code}');"` : '' }
-        }
-        case 'event': {
-          const code = linkData.mobileEventCode || ''
-          return { tag: 'button', action: code ? `onclick="handleInternalUrl('/disp/eventDetailView.bene?dispAreaSeq=${code}');"` : '' }
-        }
-        case 'partner': {
-          const code = linkData.mobilePartnerCode || ''
-          const ret = linkData.returnUrl || ''
-          return { tag: 'button', action: code ? `onclick="goPartnerPage('${code}','${ret}');"` : '' }
-        }
-        case 'external': {
-          const url = linkData.url || ''
-          return { tag: 'button', action: url ? `onclick="goExternalUrl('${url}');"` : '' }
-        }
-        case 'brand_ecoupon': {
-          const code = linkData.code || ''
-          return { tag: 'button', action: code ? `onclick="handleInternalUrl('/disp/eCouponStoreMain.bene?brdId=${code}');"` : '' }
-        }
-        case 'brand_store': {
-          const code = linkData.code || ''
-          return { tag: 'button', action: code ? `onclick="AppBrandDetail('${code}');"` : '' }
-        }
-        case 'coupon': {
-          const type = linkData.couponType || 'single'
-          const codes = (linkData.couponCodes || '').split(',').map(s => s.trim()).filter(Boolean)
-          let fn = ''
-          if (type === 'single' && codes[0]) fn = `goNewEvtCpnDown('${codes[0]}');`
-          else if (type === 'multi' && codes.length) fn = `goNewMultiEvtCpnDown(${codes.map(c => `'${c}'`).join(', ')});`
-          else if (type === 'brgg_single' && codes[0]) fn = `goNewEvtBrggCpnDown('${codes[0]}');`
-          else if (type === 'brgg_multi' && codes.length) fn = `goNewMultiEvtBrggCpnDown(${codes.map(c => `'${c}'`).join(', ')});`
-          return { tag: 'button', action: fn ? `onclick="${fn}"` : '' }
-        }
-        case 'search': {
-          const kw = linkData.keyword || ''
-          return { tag: 'button', action: kw ? `onclick="callAppProcess('benepia://search_link?url='+encodeURIComponent('/searchResult.bene?srchTxt='+encodeURIComponent('${kw}')));"` : '' }
-        }
-        case 'custom': {
-          const url = linkData.url || ''
-          return { tag: 'button', action: url ? `onclick="handleInternalUrl('${url}');"` : '' }
-        }
-        default:
-          return { tag: 'button', action: '' }
-      }
+      return buildMobileAction(cfg)
     }
   }
 
@@ -373,17 +327,17 @@ a {-webkit-tap-highlight-color:rgba(0,0,0,0); -webkit-tap-highlight-color: trans
 	${generateNoticeHtml()}
 	<!-- // 꼭 확인하세요 -->
 
-	${showBottomBanner ? `<!-- 배너 - 활용백서 -->
+	${showBannerHowto ? `<!-- 배너 - 활용백서 -->
 	<div class="evt-cnt banner-howto" id="section_howto">
     <a href="javascript:void(0);" onclick="handleInternalUrl('/disp/eventUsesWhiteNew.bene'); gaEvtAction('MO_프로모션', '${pageTitle}', '배너(활용백서)');" style="width:100%; display:block;"><img src="https://www.benepia.co.kr/event/2023/07/0726_kakao_friends/images/banner_info_mo_20250904.jpg?date=20250910172538" alt="베네피아 활용백서"></a>
 	</div>
-	<!-- // 배너 - 활용백서 -->
-	<!-- 배너 - 리뷰 혜택 -->
+	<!-- // 배너 - 활용백서 -->` : ''}
+	${showBannerReview ? `<!-- 배너 - 리뷰 혜택 -->
 	<div class="evt-cnt banner-review" id="section_review">
 		<button type="button" onclick="handleInternalUrl('/frnt/mypage/reviewWritableList.bene'); gaEvtAction('MO_프로모션', '${pageTitle}', '배너(리뷰 혜택)');" style="width:100%"><img src="https://www.benepia.co.kr/event/2023/07/0726_kakao_friends/images/banner_review_mo_20240306.jpg" alt="리뷰쓰고 혜택받자!"></button>
 	</div>
-	<!-- // 배너 - 리뷰 혜택 -->
-	<!-- 배너 - 카카오톡 플러스 친구 -->
+	<!-- // 배너 - 리뷰 혜택 -->` : ''}
+	${showBannerKakao ? `<!-- 배너 - 카카오톡 플러스 친구 -->
 	<div class="evt-cnt banner-kakao-plus" id="section_kakao">
 		<button type="button" onclick="AppWeblink('https://pf.kakao.com/_mxbBkT'); gaEvtAction('MO_프로모션', '${pageTitle}', '배너(카카오톡 플러스 친구)');" style="width:100%"><img src="https://www.benepia.co.kr/event/2023/07/0726_kakao_friends/images/banner_kakao_plus_mo_20240306.jpg" alt="베네피아와 카카오톡 친구해요"></button>
 	</div>
@@ -517,13 +471,13 @@ a {-webkit-tap-highlight-color: rgba(0,0,0,0); -webkit-tap-highlight-color: tran
 
 	${generateNoticeHtml()}
 
-	${showBottomBanner ? `<div class="evt-cnt banner-howto" id="section_howto">
+	${showBannerHowto ? `<div class="evt-cnt banner-howto" id="section_howto">
 		<button type="button" onclick="window.open('/frnt/event/eventUsesWhiteNew.do');"><img src="https://www.benepia.co.kr/event/2023/07/0726_kakao_friends/images/banner_info_pc_20250904.jpg?date=20250910172538" alt="베네피아 활용백서"></button>
-	</div>
-	<div class="evt-cnt banner-review" id="section_review">
+	</div>` : ''}
+	${showBannerReview ? `<div class="evt-cnt banner-review" id="section_review">
 		<button type="button" onclick="window.open('/frnt/pointmall/pointmall.do?returnUrl=/mypg/prdReviewList.bene');"><img src="https://www.benepia.co.kr/event/2023/07/0726_kakao_friends/images/banner_review_pc_20240306.jpg?date=20250910172538" alt="리뷰쓰고 혜택받자!"></button>
-	</div>
-	<div class="evt-cnt banner-kakao-plus" id="section_kakao">
+	</div>` : ''}
+	${showBannerKakao ? `<div class="evt-cnt banner-kakao-plus" id="section_kakao">
 		<button type="button" onclick="window.open('https://pf.kakao.com/_mxbBkT');"><img src="https://www.benepia.co.kr/event/2023/07/0726_kakao_friends/images/banner_kakao_plus_pc_20240306.jpg?date=20250910172538" alt="베네피아와 카카오톡 친구해요"></button>
 	</div>` : ''}
 

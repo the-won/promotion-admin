@@ -2,7 +2,10 @@ import { buildWebAction, buildMobileAction } from '../../utils/hotspotLinkBuilde
 
 export function generateEventImageLinkHtml(data, deviceType = 'web', options = {}) {
   const showTopBanner = !!options.showTopBanner
-  const showBottomBanner = !!options.showBottomBanner
+  const bb = options.showBottomBanner || {}
+  const showBannerHowto  = !!(bb.enabled && bb.howto  !== false)
+  const showBannerReview = !!(bb.enabled && bb.review !== false)
+  const showBannerKakao  = !!(bb.enabled && bb.kakao  !== false)
   const showNotice = !!options.showNotice
   const noticeTitle = options.noticeTitle || '꼭 확인하세요'
   const noticeItems = Array.isArray(options.noticeItems) ? options.noticeItems : []
@@ -53,7 +56,16 @@ ${imagesHtml}
 \t\t</button>
 \t</div>`
     } else {
-      const { action } = buildMobileAction(cfg)
+      const { tag, action, extra } = buildMobileAction(cfg)
+      if (tag === 'a' && action && action.startsWith('href=')) {
+        const hrefVal = action.replace(/^href="/, '').replace(/"$/, '')
+        const extraAttr = extra ? ` ${extra}` : ''
+        return `\t<div class="evt-cnt">
+\t\t<a href="${hrefVal}"${extraAttr} onclick="${gaCall}" style="display:block;">
+${imagesHtml}
+\t\t</a>
+\t</div>`
+      }
       const onclick = action
         ? `${action.replace(/^onclick="/, '').replace(/"$/, '')} ${gaCall}`
         : gaCall
@@ -167,17 +179,17 @@ ${contentHtml}
 	${generateNoticeHtml()}
 	<!-- // 꼭 확인하세요 -->
 
-	${showBottomBanner ? `<!-- 배너 - 활용백서 -->
+	${showBannerHowto ? `<!-- 배너 - 활용백서 -->
 	<div class="evt-cnt banner-howto" id="section_howto">
     <a href="javascript:void(0);" onclick="handleInternalUrl('/disp/eventUsesWhiteNew.bene'); gaEvtAction('MO_프로모션', '${pageTitle}', '배너(활용백서)');" style="width:100%; display:block;"><img src="https://www.benepia.co.kr/event/2023/07/0726_kakao_friends/images/banner_info_mo_20250904.jpg?date=20250910172538" alt="베네피아 활용백서"></a>
 	</div>
-	<!-- // 배너 - 활용백서 -->
-	<!-- 배너 - 리뷰 혜택 -->
+	<!-- // 배너 - 활용백서 -->` : ''}
+	${showBannerReview ? `<!-- 배너 - 리뷰 혜택 -->
 	<div class="evt-cnt banner-review" id="section_review">
 		<button type="button" onclick="handleInternalUrl('/frnt/mypage/reviewWritableList.bene'); gaEvtAction('MO_프로모션', '${pageTitle}', '배너(리뷰 혜택)');" style="width:100%"><img src="https://www.benepia.co.kr/event/2023/07/0726_kakao_friends/images/banner_review_mo_20240306.jpg" alt="리뷰쓰고 혜택받자!"></button>
 	</div>
-	<!-- // 배너 - 리뷰 혜택 -->
-	<!-- 배너 - 카카오톡 플러스 친구 -->
+	<!-- // 배너 - 리뷰 혜택 -->` : ''}
+	${showBannerKakao ? `<!-- 배너 - 카카오톡 플러스 친구 -->
 	<div class="evt-cnt banner-kakao-plus" id="section_kakao">
 		<button type="button" onclick="AppWeblink('https://pf.kakao.com/_mxbBkT'); gaEvtAction('MO_프로모션', '${pageTitle}', '배너(카카오톡 플러스 친구)');" style="width:100%"><img src="https://www.benepia.co.kr/event/2023/07/0726_kakao_friends/images/banner_kakao_plus_mo_20240306.jpg" alt="베네피아와 카카오톡 친구해요"></button>
 	</div>
@@ -275,13 +287,13 @@ ${contentHtml}
 
 	${generateNoticeHtml()}
 
-	${showBottomBanner ? `<div class="evt-cnt banner-howto" id="section_howto">
+	${showBannerHowto ? `<div class="evt-cnt banner-howto" id="section_howto">
 		<button type="button" onclick="window.open('/frnt/event/eventUsesWhiteNew.do');"><img src="https://www.benepia.co.kr/event/2023/07/0726_kakao_friends/images/banner_info_pc_20250904.jpg?date=20250910172538" alt="베네피아 활용백서"></button>
-	</div>
-	<div class="evt-cnt banner-review" id="section_review">
+	</div>` : ''}
+	${showBannerReview ? `<div class="evt-cnt banner-review" id="section_review">
 		<button type="button" onclick="window.open('/frnt/pointmall/pointmall.do?returnUrl=/mypg/prdReviewList.bene');"><img src="https://www.benepia.co.kr/event/2023/07/0726_kakao_friends/images/banner_review_pc_20240306.jpg?date=20250910172538" alt="리뷰쓰고 혜택받자!"></button>
-	</div>
-	<div class="evt-cnt banner-kakao-plus" id="section_kakao">
+	</div>` : ''}
+	${showBannerKakao ? `<div class="evt-cnt banner-kakao-plus" id="section_kakao">
 		<button type="button" onclick="window.open('https://pf.kakao.com/_mxbBkT');"><img src="https://www.benepia.co.kr/event/2023/07/0726_kakao_friends/images/banner_kakao_plus_pc_20240306.jpg?date=20250910172538" alt="베네피아와 카카오톡 친구해요"></button>
 	</div>` : ''}
 

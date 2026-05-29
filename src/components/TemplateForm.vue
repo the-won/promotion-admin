@@ -112,6 +112,30 @@
           </label>
         </div>
         
+        <!-- Banner Group (마스터 토글 + 서브 체크박스) -->
+        <div v-else-if="config.type === 'banner-group'" class="banner-group-container">
+          <label class="toggle-item">
+            <span class="toggle-label">{{ config.label }}</span>
+            <span class="toggle-track" :class="{ active: localData[key] && localData[key].enabled }">
+              <input type="checkbox" :checked="localData[key] && localData[key].enabled" @change="onBannerMasterToggle(key, $event)" class="toggle-input" />
+              <span class="toggle-thumb"></span>
+            </span>
+          </label>
+          <div v-show="localData[key] && localData[key].enabled" class="banner-sub-list">
+            <label
+              v-for="opt in config.options"
+              :key="opt.key"
+              class="toggle-item banner-sub-item"
+            >
+              <span class="toggle-label sub-label">{{ opt.label }}</span>
+              <span class="toggle-track" :class="{ active: localData[key] && localData[key][opt.key] }">
+                <input type="checkbox" :checked="localData[key] && localData[key][opt.key]" @change="onBannerSubToggle(key, opt.key, $event)" class="toggle-input" />
+                <span class="toggle-thumb toggle-thumb-sm"></span>
+              </span>
+            </label>
+          </div>
+        </div>
+
         <!-- Checkbox (Toggle Switch) -->
         <label v-else-if="config.type === 'checkbox'" class="toggle-item">
           <span class="toggle-label">{{ config.label }}</span>
@@ -815,7 +839,7 @@ export default {
     },
 
     isHideLabelField(type) {
-      return ['hotspot-group', 'hotspot-group-list', 'privacy-section-list', 'efamily-uploader', 'hotdeal-uploader', 'familysale-uploader', 'checkbox', 'notice-items', 'family-sale-group', 'event-image-link-group'].includes(type)
+      return ['hotspot-group', 'hotspot-group-list', 'privacy-section-list', 'efamily-uploader', 'hotdeal-uploader', 'familysale-uploader', 'checkbox', 'banner-group', 'notice-items', 'family-sale-group', 'event-image-link-group'].includes(type)
     },
     
     handleSelectProduct(info) {
@@ -880,6 +904,16 @@ export default {
         this.$nextTick(() => { this.activeSubItem = row1Count + list.length - 1 })
       }
     },
+    onBannerMasterToggle(key, event) {
+      const current = this.localData[key] || {}
+      this.$set(this.localData, key, { ...current, enabled: event.target.checked })
+    },
+
+    onBannerSubToggle(key, subKey, event) {
+      const current = this.localData[key] || {}
+      this.$set(this.localData, key, { ...current, [subKey]: event.target.checked })
+    },
+
     isHiddenByCondition(config) {
       if (!config.showWhen) return false
       return !this.localData[config.showWhen]
@@ -1309,6 +1343,44 @@ export default {
 }
 
 .toggle-track.active .toggle-thumb {
+  transform: translateX(18px);
+}
+
+.banner-group-container {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.banner-sub-list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding-left: 12px;
+  border-left: 2px solid var(--color-border, #d2d2d7);
+  margin-left: 8px;
+}
+
+.banner-sub-item {
+  background: transparent;
+  border-color: transparent;
+}
+
+.banner-sub-item:hover {
+  background: var(--color-bg-secondary, #f5f6fa);
+}
+
+.sub-label {
+  font-size: 12px;
+  color: var(--color-text-secondary, #6e6e73);
+}
+
+.toggle-thumb-sm {
+  width: 14px;
+  height: 14px;
+}
+
+.toggle-track.active .toggle-thumb-sm {
   transform: translateX(18px);
 }
 

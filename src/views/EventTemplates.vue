@@ -310,7 +310,7 @@ export default {
     async handleDownload() {
       const bannerOptions = {
         showTopBanner: this.formData.showTopBanner || false,
-        showBottomBanner: this.formData.showBottomBanner || false,
+        showBottomBanner: this.formData.showBottomBanner || {},
         showNotice: this.formData.showNotice || false,
         noticeTitle: this.formData.noticeTitle || '꼭 확인하세요',
         noticeItems: this.formData.noticeItems || []

@@ -467,13 +467,14 @@ export default {
 
     onLinkTypeChange(group, newType) {
       const cfg = this.getGroupConfig(group)
-      cfg.linkType = newType
-      cfg.linkData = createEmptyLinkData()
-      cfg.useLink = false
+      this.$set(cfg, 'linkType', newType)
+      this.$set(cfg, 'linkData', createEmptyLinkData())
+      this.$set(cfg, 'useLink', false)
     },
 
     onUseLinkChange(group, checked) {
-      this.getGroupConfig(group).useLink = checked
+      const cfg = this.getGroupConfig(group)
+      this.$set(cfg, 'useLink', checked)
     },
 
     updateLinkData(group, field, value) {
@@ -490,7 +491,7 @@ export default {
         return `<${r.tag} ${r.action}${r.extra ? ' ' + r.extra : ''}>`
       } else {
         const r = buildMobileAction(cfg)
-        return r.action ? `<${r.tag} ${r.action}>` : '(없음)'
+        return r.action ? `<${r.tag} ${r.action}${r.extra ? ' ' + r.extra : ''}>` : '(없음)'
       }
     },
 
@@ -529,7 +530,7 @@ export default {
           { id: this.generateId('img_el'), url: '', fileName: '', alt: '' }
         ],
         web: { linkType: 'plan', useLink: false, linkData: { ...ld } },
-        mobile: { linkType: 'plan', linkData: { ...ld } }
+        mobile: { linkType: 'plan', useLink: false, linkData: { ...ld } }
       }
     },
 

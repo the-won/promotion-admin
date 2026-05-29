@@ -42,8 +42,18 @@
         />
 
         <!-- BottomBanner (디바이스별) -->
-        <BottomBanner v-if="deviceType === 'web' && effectiveShowBottomBanner" />
-        <BottomBannerMobile v-if="deviceType === 'mobile' && effectiveShowBottomBanner" />
+        <BottomBanner
+          v-if="deviceType === 'web' && effectiveShowBottomBanner"
+          :show-howto="effectiveBannerFlags.howto"
+          :show-review="effectiveBannerFlags.review"
+          :show-kakao="effectiveBannerFlags.kakao"
+        />
+        <BottomBannerMobile
+          v-if="deviceType === 'mobile' && effectiveShowBottomBanner"
+          :show-howto="effectiveBannerFlags.howto"
+          :show-review="effectiveBannerFlags.review"
+          :show-kakao="effectiveBannerFlags.kakao"
+        />
 
        
 
@@ -154,9 +164,21 @@ export default {
         : this.showTopBanner
     },
     effectiveShowBottomBanner() {
-      return this.formData && this.formData.showBottomBanner !== undefined
-        ? this.formData.showBottomBanner
-        : this.showBottomBanner
+      const bb = this.formData && this.formData.showBottomBanner
+      if (bb && typeof bb === 'object') return !!bb.enabled
+      if (typeof bb === 'boolean') return bb
+      return this.showBottomBanner
+    },
+    effectiveBannerFlags() {
+      const bb = this.formData && this.formData.showBottomBanner
+      if (bb && typeof bb === 'object') {
+        return {
+          howto:  bb.howto  !== false,
+          review: bb.review !== false,
+          kakao:  bb.kakao  !== false,
+        }
+      }
+      return { howto: true, review: true, kakao: true }
     },
     effectiveShowNotice() {
       return this.formData && this.formData.showNotice !== undefined

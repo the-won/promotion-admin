@@ -74,8 +74,10 @@ export function buildWebAction(linkConfig) {
   switch (linkType) {
     case 'plan': {
       const code = linkData.code || ''
-      const action = code ? `onclick="goDisp('${code}');"` : ''
-      return { tag: useLink ? 'a' : 'button', action, extra: '' }
+      if (useLink) {
+        return { tag: 'a', action: code ? `href="/frnt/pointmall/pointmall.do?returnUrl=/main/eventDisplay.bene?dpPlanNo=${code}"` : '', extra: '' }
+      }
+      return { tag: 'button', action: code ? `onclick="goDisp('${code}');"` : '', extra: '' }
     }
 
     case 'product': {
@@ -146,78 +148,72 @@ export function buildWebAction(linkConfig) {
 
 // ─────────────────────────────────────────────
 // 모바일 액션 생성
-// returns: { tag: 'button', action: 'onclick="..."' }
+// returns: { tag: 'a'|'button', action: 'href="..."'|'onclick="..."', extra: 'target="_blank"'|'' }
 // ─────────────────────────────────────────────
 export function buildMobileAction(linkConfig) {
-  const { linkType, linkData } = linkConfig
-  if (!linkData) return { tag: 'button', action: '' }
+  const { linkType, useLink, linkData } = linkConfig
+  if (!linkData) return { tag: 'button', action: '', extra: '' }
 
   switch (linkType) {
     case 'plan': {
       const code = linkData.code || ''
-      return {
-        tag: 'button',
-        action: code
-          ? `onclick="handleInternalUrl('/main/planDetail.bene?dpPlanNo=${code}');"`
-          : ''
+      const url = `/main/planDetail.bene?dpPlanNo=${code}`
+      if (useLink) {
+        return { tag: 'a', action: code ? `href="${url}"` : '', extra: 'target="_blank"' }
       }
+      return { tag: 'button', action: code ? `onclick="handleInternalUrl('${url}');"` : '', extra: '' }
     }
 
     case 'product': {
       const code = linkData.code || ''
-      return {
-        tag: 'button',
-        action: code
-          ? `onclick="handleInternalUrl('/disp/detailView.bene?prdId=${code}');"`
-          : ''
+      const url = `/disp/detailView.bene?prdId=${code}`
+      if (useLink) {
+        return { tag: 'a', action: code ? `href="${url}"` : '', extra: 'target="_blank"' }
       }
+      return { tag: 'button', action: code ? `onclick="handleInternalUrl('${url}');"` : '', extra: '' }
     }
 
     case 'event': {
       const code = linkData.mobileEventCode || ''
-      return {
-        tag: 'button',
-        action: code
-          ? `onclick="handleInternalUrl('/disp/eventDetailView.bene?dispAreaSeq=${code}');"`
-          : ''
+      const url = `/disp/eventDetailView.bene?dispAreaSeq=${code}`
+      if (useLink) {
+        return { tag: 'a', action: code ? `href="${url}"` : '', extra: 'target="_blank"' }
       }
+      return { tag: 'button', action: code ? `onclick="handleInternalUrl('${url}');"` : '', extra: '' }
     }
 
     case 'partner': {
       const code = linkData.mobilePartnerCode || ''
       const ret = linkData.returnUrl || ''
-      return {
-        tag: 'button',
-        action: code
-          ? `onclick="goPartnerPage('${code}','${ret}');"`
-          : ''
+      const url = ret
+        ? `/frnt/partnersite/partnerSite.bene?coopCoCd=${code}&returnUrl=${ret}`
+        : `/frnt/partnersite/partnerSite.bene?coopCoCd=${code}`
+      if (useLink) {
+        return { tag: 'a', action: code ? `href="${url}"` : '', extra: 'target="_blank"' }
       }
+      return { tag: 'button', action: code ? `onclick="goPartnerPage('${code}','${ret}');"` : '', extra: '' }
     }
 
     case 'external': {
       const url = linkData.url || ''
-      return {
-        tag: 'button',
-        action: url ? `onclick="goExternalUrl('${url}');"` : ''
+      if (useLink) {
+        return { tag: 'a', action: url ? `href="${url}"` : '', extra: 'target="_blank"' }
       }
+      return { tag: 'button', action: url ? `onclick="goExternalUrl('${url}');"` : '', extra: '' }
     }
 
     case 'brand_ecoupon': {
       const code = linkData.code || ''
       return {
         tag: 'button',
-        action: code
-          ? `onclick="handleInternalUrl('/disp/eCouponStoreMain.bene?brdId=${code}');"`
-          : ''
+        action: code ? `onclick="handleInternalUrl('/disp/eCouponStoreMain.bene?brdId=${code}');"` : '',
+        extra: ''
       }
     }
 
     case 'brand_store': {
       const code = linkData.code || ''
-      return {
-        tag: 'button',
-        action: code ? `onclick="AppBrandDetail('${code}');"` : ''
-      }
+      return { tag: 'button', action: code ? `onclick="AppBrandDetail('${code}');"` : '', extra: '' }
     }
 
     case 'coupon': {
@@ -234,10 +230,7 @@ export function buildMobileAction(linkConfig) {
       } else if (type === 'brgg_multi' && codes.length >= 1) {
         fn = `goNewMultiEvtBrggCpnDown(${codes.map(c => `'${c}'`).join(', ')});`
       }
-      return {
-        tag: 'button',
-        action: fn ? `onclick="${fn}"` : ''
-      }
+      return { tag: 'button', action: fn ? `onclick="${fn}"` : '', extra: '' }
     }
 
     case 'search': {
@@ -246,20 +239,18 @@ export function buildMobileAction(linkConfig) {
         tag: 'button',
         action: kw
           ? `onclick="callAppProcess('benepia://search_link?url='+encodeURIComponent('/searchResult.bene?srchTxt='+encodeURIComponent('${kw}')));"`
-          : ''
+          : '',
+        extra: ''
       }
     }
 
     case 'custom': {
       const url = linkData.url || ''
-      return {
-        tag: 'button',
-        action: url ? `onclick="handleInternalUrl('${url}');"` : ''
-      }
+      return { tag: 'button', action: url ? `onclick="handleInternalUrl('${url}');"` : '', extra: '' }
     }
 
     default:
-      return { tag: 'button', action: '' }
+      return { tag: 'button', action: '', extra: '' }
   }
 }
 
@@ -278,7 +269,7 @@ export function buildPreviewText(hotspot) {
       ? `<${webResult.tag} ${webResult.action}${webResult.extra ? ' ' + webResult.extra : ''}>`
       : '(없음)',
     mobile: mobileResult.action
-      ? `<${mobileResult.tag} ${mobileResult.action}>`
+      ? `<${mobileResult.tag} ${mobileResult.action}${mobileResult.extra ? ' ' + mobileResult.extra : ''}>`
       : '(없음)'
   }
 }

@@ -135,7 +135,7 @@ export const templateDefaults = {
       value: ''
     },
     pageTitle: {
-      label: '페이지 타이틀',
+      label: '페이지 타이틀, GA - (필수작성)',
       type: 'text',
       tab: '기본',
       placeholder: '이벤트 이미지 링크',
@@ -149,9 +149,14 @@ export const templateDefaults = {
     },
     showBottomBanner: {
       label: '하단 배너 사용',
-      type: 'checkbox',
+      type: 'banner-group',
       tab: '설정',
-      value: true
+      value: { enabled: true, howto: true, review: true, kakao: true },
+      options: [
+        { key: 'howto',  label: '활용백서' },
+        { key: 'review', label: '리뷰 혜택' },
+        { key: 'kakao',  label: '카카오톡 플러스친구' },
+      ]
     },
     showNotice: {
       label: '공지사항 사용',
@@ -206,7 +211,7 @@ export const templateDefaults = {
       value: ''
     },
     pageTitle: {
-      label: '페이지 타이틀',
+      label: '페이지 타이틀, GA - (필수작성)',
       type: 'text',
       tab: '기본',
       placeholder: '클래스101 신년 프로모션',
@@ -220,9 +225,14 @@ export const templateDefaults = {
     },
     showBottomBanner: {
       label: '하단 배너 사용',
-      type: 'checkbox',
+      type: 'banner-group',
       tab: '설정',
-      value: true
+      value: { enabled: true, howto: true, review: true, kakao: true },
+      options: [
+        { key: 'howto',  label: '활용백서' },
+        { key: 'review', label: '리뷰 혜택' },
+        { key: 'kakao',  label: '카카오톡 플러스친구' },
+      ]
     },
     showNotice: {
       label: '공지사항 사용',
