@@ -16,7 +16,7 @@
             <p class="hero-subtitle">
               실시간으로 프로모션 템플릿을 편집·미리보기한 뒤 HTML로 내려받을 수 있습니다
             </p>
-            <div class="template-tabs" role="tablist" aria-label="템플릿 종류">
+            <!-- <div class="template-tabs" role="tablist" aria-label="템플릿 종류">
               <button
                 v-for="template in templates"
                 :key="template.value"
@@ -30,7 +30,7 @@
                 <span class="tab-icon">{{ template.icon }}</span>
                 <span class="tab-text">{{ template.name }}</span>
               </button>
-            </div>
+            </div> -->
           </div>
         </div>
       </section>
@@ -163,7 +163,7 @@ export default {
   name: 'EventTemplates',
   components: { TemplateForm, PreviewFrame, TemplateSelectModal },
   data() {
-    let _tpl = 'em-type-1'
+    let _tpl = 'em-type-3'
     try {
       const s = JSON.parse(localStorage.getItem('defaultLanding'))
       if (s && s.page === 'event-templates' && s.template) _tpl = s.template
@@ -184,7 +184,7 @@ export default {
       visibleScrollPosition: { scrollTop: 0, viewportHeight: 400 },
       currentDevice: 'web',
       templates: [
-        { value: 'em-type-1', name: 'Type 1', icon: '', description: '기본 텍스트 템플릿' },
+        // { value: 'em-type-1', name: 'Type 1', icon: '', description: '기본 텍스트 템플릿' },
         { value: 'em-type-3', name: 'Image Map', icon: '', description: '이벤트 이미지맵 템플릿' },
         { value: 'event-imagelink', name: 'Image Link', icon: '', description: '이미지 링크 템플릿' }
       ]

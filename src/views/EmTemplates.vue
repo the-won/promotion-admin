@@ -128,6 +128,7 @@
                   :template="selectedTemplate"
                   :formData="formData"
                   :deviceType="currentDevice"
+                  :pageContext="'email'"
                   :selectedHotspotId="selectedHotspotId"
                   :activeRowId="activeRowId"
                   :activeImageIndex="activeImageIndex"

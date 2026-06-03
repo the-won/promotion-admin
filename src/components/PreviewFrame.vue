@@ -1,5 +1,54 @@
 <template>
-  <div class="preview-deel">
+  <div class="preview-deel" :class="
+    deviceType === 'mobile'
+      ? 'is-phone-mockup'
+      : pageContext === 'email'
+        ? 'is-email-mockup'
+        : 'is-browser-mockup'
+  ">
+
+    <!-- 브라우저 목업 상단 크롬 바 (웹 모드, 이메일 제외) -->
+    <div v-if="deviceType === 'web' && pageContext !== 'email'" class="browser-chrome">
+      <div class="browser-dots">
+        <span class="dot dot-red"></span>
+        <span class="dot dot-yellow"></span>
+        <span class="dot dot-green"></span>
+      </div>
+      <div class="browser-url-bar">
+        <span class="browser-url-text">promotion-preview</span>
+      </div>
+    </div>
+
+    <!-- 이메일 목업 크롬 (EmTemplates 웹 모드) -->
+    <div v-if="pageContext === 'email' && deviceType === 'web'" class="email-chrome">
+      <div class="email-chrome-toolbar">
+        <div class="email-toolbar-dots">
+          <span class="dot dot-red"></span>
+          <span class="dot dot-yellow"></span>
+          <span class="dot dot-green"></span>
+        </div>
+        <span class="email-toolbar-title">받은편지함</span>
+        <div class="email-toolbar-actions">
+          <span class="email-action-icon">↩</span>
+          <span class="email-action-icon">↪</span>
+          <span class="email-action-icon">⋯</span>
+        </div>
+      </div>
+      <div class="email-chrome-header">
+        <div class="email-sender-avatar">P</div>
+        <div class="email-meta">
+          <div class="email-subject">이메일 프로모션 미리보기</div>
+          <div class="email-from">발신: 프로모션팀 &lt;promo@mnservice.co.kr&gt;</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 모바일 목업 상단 (스피커 + 카메라) -->
+    <div v-if="deviceType === 'mobile'" class="phone-top">
+      <div class="phone-speaker"></div>
+      <div class="phone-camera"></div>
+    </div>
+
     <div class="preview-card">
       <div class="preview-body" ref="previewBody" @scroll="handleScroll" @click.capture="handleBodyClick">
         <!-- TopBanner (디바이스별) -->
@@ -59,6 +108,10 @@
 
       </div>
     </div>
+
+    <!-- 모바일 목업 하단 홈 인디케이터 -->
+    <div v-if="deviceType === 'mobile'" class="phone-home-indicator"></div>
+
   </div>
 </template>
 
@@ -107,6 +160,10 @@ export default {
     deviceType: {
       type: String,
       default: 'web'
+    },
+    pageContext: {
+      type: String,
+      default: null
     },
     showTopBanner: {
       type: Boolean,
@@ -406,25 +463,7 @@ export default {
 }
 
 .preview-card {
-  margin-top: 30px;
-  padding: 40px 5px 5px;
-  background: #3d3d3e;
-  border-radius: 5px;
   position: relative;
-  overflow: hidden;
-}
-.preview-card::after {
-  content: '';
-  box-shadow: 20px 0 #fdbc40, 40px 0 #35cd4b;
-  height: 12px;
-  left: 12px;
-  width: 12px;
-  top: 9px;
-  margin-top: 3px;
-  position: absolute;
-  background: #fc625d;
-  border-radius: 50%;
-  pointer-events: all;
 }
 
 .preview-body {
@@ -432,9 +471,11 @@ export default {
   background: #fff;
   min-height: 500px;
 }
-
 .page-event-templates .preview-body {
-  width: 960px;
+  padding: 0;
+}
+.page-event-templates .preview-body {
+  width: 980px;
 }
 
 .is-mobile .preview-body  {
