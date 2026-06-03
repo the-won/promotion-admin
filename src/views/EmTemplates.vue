@@ -4,19 +4,36 @@
       <!-- HERO -->
       <section class="hero-section" :class="{ 'no-sidebar': !sidebarOpen, 'wide-sidebar': sidebarExpanded }">
         <div class="hero-bg-glow" aria-hidden="true"></div>
+        <div class="hero-bg-glow-left" aria-hidden="true"></div>
         <div class="hero-inner">
           <div class="hero-panel">
             <div class="hero-panel-head">
-              <div class="hero-panel-titles">
-                <p class="hero-eyebrow">이메일 템플릿</p>
-                <h1 class="hero-title">Email Template Builder</h1>
+              <div class="hero-badge">
+                <svg width="11" height="11" viewBox="0 0 12 12" fill="currentColor" aria-hidden="true">
+                  <path d="M6 0L7.35 4.65H12L8.32 7.53L9.67 12L6 9.12L2.33 12L3.68 7.53L0 4.65H4.65L6 0Z"/>
+                </svg>
+                이메일 템플릿
               </div>
               <span class="hero-status-chip" title="현재 편집 중인 템플릿">{{ selectedTemplateLabel }}</span>
+            </div>
+            <div class="hero-panel-titles">
+              <h1 class="hero-title">Email Template Builder</h1>
+              <div class="hero-title-accent" aria-hidden="true"></div>
             </div>
             <p class="hero-subtitle">
               실시간으로 이메일 템플릿을 편집·미리보기한 뒤 HTML로 내려받을 수 있습니다
             </p>
-            <div class="template-tabs" role="tablist" aria-label="템플릿 종류">
+            <div class="hero-meta-row">
+              <span class="hero-meta-item">
+                <svg width="11" height="11" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><rect x="2" y="2" width="12" height="2" rx="1"/><rect x="2" y="6" width="12" height="8" rx="1"/></svg>
+                {{ templates.length }}종 템플릿
+              </span>
+              <span class="hero-meta-dot"></span>
+              <span class="hero-meta-item">웹</span>
+              <span class="hero-meta-dot"></span>
+              <span class="hero-meta-item">HTML 다운로드</span>
+            </div>
+            <!-- <div class="template-tabs" role="tablist" aria-label="템플릿 종류">
               <button
                 v-for="template in templates"
                 :key="template.value"
@@ -29,7 +46,7 @@
               >
                 <span class="tab-text">{{ template.name }}</span>
               </button>
-            </div>
+            </div> -->
           </div>
         </div>
       </section>
