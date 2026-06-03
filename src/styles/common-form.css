@@ -1,3 +1,10 @@
+/* 사이드바 현재 너비를 애니메이션 가능한 CSS 변수로 등록 */
+@property --sidebar-w-current {
+  syntax: '<length>';
+  inherits: true;
+  initial-value: 340px;
+}
+
 /* ============================================
    공통 폼 스타일 - Clean Minimal Theme
    ============================================ */
@@ -110,7 +117,7 @@ button {
 
 /* SIDEBAR */
 .sidebar-card {
-  width: var(--sidebar-w);
+  width: var(--sidebar-w-current);
   background: #fff;
   display: flex;
   flex-direction: column;
@@ -121,7 +128,6 @@ button {
   /* box-shadow: 0 1px 2px 0 rgb(0 0 0 / 16%), 0 1px 2px 0 rgb(0 0 0 / 2%); */
   z-index: 20;
   transition:
-    width var(--template-layout-duration, 0.35s) var(--template-layout-ease, cubic-bezier(0.4, 0, 0.2, 1)),
     opacity var(--template-layout-duration, 0.35s) var(--template-layout-ease, cubic-bezier(0.4, 0, 0.2, 1));
   flex-shrink: 0;
   background: radial-gradient(ellipse 80% 60% at 92% 8%, oklch(52% 0.18 267 / 10%) 0%, transparent 52%), radial-gradient(ellipse 60% 50% at 8% 85%, oklch(52% 0.18 267 / 5%) 0%, transparent 48%), linear-gradient(158deg, oklch(99% 0.005 260) 0%, oklch(97% 0.012 265) 100%);;
@@ -136,12 +142,7 @@ button {
     mix-blend-mode: multiply;
 }
 
-.sidebar-card.expanded {
-  width: var(--sidebar-w-expanded);
-}
-
 .sidebar-card.collapsed {
-  width: 0;
   opacity: 0;
   pointer-events: none;
   overflow: hidden;
@@ -168,15 +169,7 @@ button {
 }
 
 .em-templates {
-  padding-left: var(--sidebar-w);
-  transition: padding-left var(--template-layout-duration, 0.35s) var(--template-layout-ease, cubic-bezier(0.4, 0, 0.2, 1));
-}
-.em-templates.wide-sidebar {
-  padding-left: var(--sidebar-w-expanded);
-}
-.em-templates.no-sidebar,
-.em-templates.no-sidebar.wide-sidebar {
-  padding-left: 0 !important;
+  padding-left: var(--sidebar-w-current);
 }
 .main-container {
   max-width: 1200px;
@@ -234,15 +227,43 @@ button {
 
 .show-sidebar-btn {
   position: fixed;
-  top: 72px;
-  padding: 6px 12px;
-  font-size: 13px;
-  font-weight: 600;
-  border-radius: 3px;
-  border: 1px solid var(--color-primary, #5c61d4);
-  background: #fff;
-  color: var(--color-primary, #5c61d4);
+  top: 50px;
+  left: 0;
+  z-index: 200;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background: var(--color-bg, #fff);
+  border: 1px solid var(--color-border, #d2d2d7);
+  border-left: none;
+  border-radius: 0 6px 6px 0;
+  box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.08);
   cursor: pointer;
+  font-size: 0;
+  color: transparent;
+  transition: background 0.15s, box-shadow 0.15s;
+}
+
+.show-sidebar-btn:hover {
+  background: var(--color-bg-secondary, #f5f5f7);
+  box-shadow: 2px 4px 14px rgba(92, 97, 212, 0.18);
+}
+
+.show-sidebar-btn::before {
+  content: '';
+  display: block;
+  flex-shrink: 0;
+  width: 16px;
+  height: 2px;
+  border-radius: 1px;
+  background: var(--color-text, #1d1d1f);
+  box-shadow:
+    0 -5px 0 var(--color-text, #1d1d1f),
+    0  5px 0 var(--color-text, #1d1d1f);
 }
 
 .card-body {
@@ -1595,6 +1616,20 @@ body.page-event-templates {
   --hero-accent-deep: oklch(38% 0.17 268);
   --hero-accent-glow: oklch(52% 0.18 267 / 14%);
   --hero-accent-ring: oklch(52% 0.18 267 / 38%);
+  --sidebar-w-current: var(--sidebar-w);
+  transition: --sidebar-w-current var(--template-layout-duration, 0.35s) var(--template-layout-ease, cubic-bezier(0.4, 0, 0.2, 1));
+}
+
+body.page-item-templates.sidebar-expanded,
+body.page-em-templates.sidebar-expanded,
+body.page-event-templates.sidebar-expanded {
+  --sidebar-w-current: var(--sidebar-w-expanded);
+}
+
+body.page-item-templates.sidebar-closed,
+body.page-em-templates.sidebar-closed,
+body.page-event-templates.sidebar-closed {
+  --sidebar-w-current: 0px;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -1608,8 +1643,8 @@ body.page-event-templates {
 body.page-item-templates .hero-section,
 body.page-em-templates .hero-section,
 body.page-event-templates .hero-section {
-  width: calc(100vw - var(--sidebar-w));
-  margin-left: calc(((calc(100vw - var(--sidebar-w)) - 100%) / 2) * -1) !important;
+  width: calc(100vw - var(--sidebar-w-current));
+  margin-left: calc(((calc(100vw - var(--sidebar-w-current)) - 100%) / 2) * -1) !important;
   position: relative;
   overflow: hidden;
   padding: 100px 36px 0;
@@ -1820,22 +1855,7 @@ body.page-event-templates .hero-section .template-tab:focus-visible {
   outline-offset: -2px;
 }
 
-body.page-item-templates .hero-section.wide-sidebar,
-body.page-em-templates .hero-section.wide-sidebar,
-body.page-event-templates .hero-section.wide-sidebar {
-  width: calc(100vw - var(--sidebar-w-expanded));
-  margin-left: calc(((calc(100vw - var(--sidebar-w-expanded)) - 100%) / 2) * -1) !important;
-}
-
-body.page-item-templates .hero-section.no-sidebar,
-body.page-item-templates .hero-section.no-sidebar.wide-sidebar,
-body.page-em-templates .hero-section.no-sidebar,
-body.page-em-templates .hero-section.no-sidebar.wide-sidebar,
-body.page-event-templates .hero-section.no-sidebar,
-body.page-event-templates .hero-section.no-sidebar.wide-sidebar {
-  width: 100vw !important;
-  margin-left: 0 !important;
-}
+/* .wide-sidebar / .no-sidebar 상태는 --sidebar-w-current 변수가 처리 */
 
 /* ============================================
    히어로 — 다크 모드 오버라이드

@@ -109,58 +109,15 @@ export default {
   left: 0;
   top: 0;
   z-index: 100;
-  transition: left var(--template-layout-duration, 0.35s) var(--template-layout-ease, cubic-bezier(0.4, 0, 0.2, 1)), width var(--template-layout-duration, 0.35s) var(--template-layout-ease, cubic-bezier(0.4, 0, 0.2, 1));
   /* background: #1f2937; */
 }
 
-/* Sidebar 상태에 따른 Header 조정 - Item Templates 페이지 */
-body.page-item-templates:not(.sidebar-closed) .app-header {
-  left: var(--sidebar-w);
-  width: calc(100% - var(--sidebar-w));
-
-}
-
-body.page-item-templates.sidebar-expanded .app-header {
-  left: var(--sidebar-w-expanded);
-  width: calc(100% - var(--sidebar-w-expanded));
-  
-}
-
-body.page-item-templates.sidebar-closed .app-header {
-  left: 0;
-  width: 100%;
-}
-
-/* Sidebar 상태에 따른 Header 조정 - EM Templates 페이지에서만 */
-body.page-em-templates:not(.sidebar-closed) .app-header {
-  left: var(--sidebar-w);
-  width: calc(100% - var(--sidebar-w));
-}
-
-body.page-em-templates.sidebar-expanded .app-header {
-  left: var(--sidebar-w-expanded);
-  width: calc(100% - var(--sidebar-w-expanded));
-}
-
-body.page-em-templates.sidebar-closed .app-header {
-  left: 0;
-  width: 100%;
-}
-
-/* Sidebar 상태에 따른 Header 조정 - Event Templates 페이지에서만 */
-body.page-event-templates:not(.sidebar-closed) .app-header {
-  left: var(--sidebar-w);
-  width: calc(100% - var(--sidebar-w));
-}
-
-body.page-event-templates.sidebar-expanded .app-header {
-  left: var(--sidebar-w-expanded);
-  width: calc(100% - var(--sidebar-w-expanded));
-}
-
-body.page-event-templates.sidebar-closed .app-header {
-  left: 0;
-  width: 100%;
+/* Sidebar 상태에 따른 Header 조정 — --sidebar-w-current 변수가 모든 상태 처리 */
+body.page-item-templates .app-header,
+body.page-em-templates .app-header,
+body.page-event-templates .app-header {
+  left: var(--sidebar-w-current);
+  width: calc(100% - var(--sidebar-w-current));
 }
 
 .header-left {

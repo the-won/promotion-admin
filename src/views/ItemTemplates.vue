@@ -89,10 +89,9 @@
             <button
               v-if="!sidebarOpen"
               class="show-sidebar-btn"
+              aria-label="설정 열기"
               @click="toggleSidebar"
-            >
-              설정 열기
-            </button>
+            ></button>
 
             <div class="preview-body-wrap">
               <div class="preview-canvas">
@@ -160,8 +159,6 @@ export default {
     selectedTemplate(newTemplate) {
       this.formData = this.extractValues(templateDefaults[newTemplate])
     },
-    sidebarOpen() { this.updateBodyClass() },
-    sidebarExpanded() { this.updateBodyClass() }
   },
   methods: {
     extractValues(config) {
@@ -192,9 +189,11 @@ export default {
     },
     toggleSidebar() {
       this.sidebarOpen = !this.sidebarOpen
+      this.updateBodyClass()
     },
     toggleSidebarWidth() {
       this.sidebarExpanded = !this.sidebarExpanded
+      this.updateBodyClass()
     },
     updateBodyClass() {
       document.body.classList.remove('sidebar-closed', 'sidebar-expanded')

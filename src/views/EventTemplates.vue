@@ -107,10 +107,9 @@
             <button
                 v-if="!sidebarOpen"
                 class="show-sidebar-btn"
+                aria-label="설정 열기"
                 @click="toggleSidebar"
-              >
-                설정 열기
-              </button>
+              ></button>
 
             <div class="preview-body-wrap">
               <div class="preview-canvas">
@@ -207,12 +206,6 @@ export default {
       this.$nextTick(() => {
         this.updateVisiblePositions()
       })
-    },
-    sidebarOpen() {
-      this.updateBodyClass()
-    },
-    sidebarExpanded() {
-      this.updateBodyClass()
     },
   },
   mounted() {
@@ -475,10 +468,12 @@ export default {
 
     toggleSidebar() {
       this.sidebarOpen = !this.sidebarOpen
+      this.updateBodyClass()
     },
-    
+
     toggleSidebarWidth() {
       this.sidebarExpanded = !this.sidebarExpanded
+      this.updateBodyClass()
     },
     
     selectTemplate(templateValue) {
@@ -511,18 +506,7 @@ export default {
 
 <style scoped>
 
-.show-sidebar-btn {
-  position: fixed;
-  top: 72px;
-  padding: 6px 12px;
-  font-size: 13px;
-  font-weight: 600;
-  border-radius: 3px;
-  border: 1px solid var(--color-primary, #0071e3);
-  background: #fff;
-  color: var(--color-primary, #0071e3);
-  cursor: pointer;
-}
+/* show-sidebar-btn은 common-form.css에서 전역 정의 */
 
 
 
