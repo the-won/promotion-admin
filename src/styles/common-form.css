@@ -127,6 +127,7 @@ button {
   left: 0;
   /* box-shadow: 0 1px 2px 0 rgb(0 0 0 / 16%), 0 1px 2px 0 rgb(0 0 0 / 2%); */
   z-index: 20;
+  overflow: hidden;
   transition:
     opacity var(--template-layout-duration, 0.35s) var(--template-layout-ease, cubic-bezier(0.4, 0, 0.2, 1));
   flex-shrink: 0;
@@ -292,6 +293,93 @@ button {
   padding: 16px;
   border-top: 1px solid var(--color-border);
   background: var(--color-bg);
+}
+
+/* ── 사이드바 슬라이드 패널 ── */
+.sidebar-pages {
+  flex: 1;
+  display: flex;
+  flex-direction: row;
+  min-height: 0;
+  transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.sidebar-pages.is-template-panel {
+  transform: translateX(-100%);
+}
+
+.sidebar-page {
+  flex: 0 0 100%;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.sidebar-back-btn {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  border-radius: 6px;
+  color: var(--color-primary, #5c61d4);
+  cursor: pointer;
+  transition: background 0.15s;
+  flex-shrink: 0;
+}
+
+.sidebar-back-btn:hover {
+  background: oklch(60% 0.18 267 / 10%);
+}
+
+.template-panel-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.template-panel-item {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 12px 14px;
+  border-radius: 10px;
+  border: 1.5px solid var(--color-border, #e5e7eb);
+  background: oklch(97% 0.014 265);
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s, color 0.15s;
+  text-align: left;
+  font-size: 13px;
+  color: var(--color-text, #1d1d1f);
+}
+
+.template-panel-item:hover {
+  border-color: var(--color-primary, #5c61d4);
+  background: oklch(96% 0.025 267);
+}
+
+.template-panel-item.active {
+  border-color: var(--color-primary, #5c61d4);
+  background: var(--color-primary, #5c61d4);
+  color: #fff;
+}
+
+.template-panel-item-name {
+  font-weight: 500;
+}
+
+.template-panel-item-desc {
+  font-size: 11px;
+  margin-top: 2px;
+  opacity: 0.65;
+}
+
+.template-panel-check {
+  flex-shrink: 0;
 }
 
 /* Template Select Button */
@@ -1285,7 +1373,8 @@ button {
 .dark-mode .sidebar-card > .card-header .close-btn:hover {
   color: #fff;
 }
-.dark-mode .sidebar-card > .card-body {
+.dark-mode .sidebar-card > .card-body,
+.dark-mode .sidebar-page > .card-body {
   position: relative;
   z-index: 2;
   min-height: 0;

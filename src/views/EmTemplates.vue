@@ -57,7 +57,7 @@
           <!-- SIDEBAR -->
           <aside class="sidebar-card" :class="{ collapsed: !sidebarOpen, expanded: sidebarExpanded }">
             <header class="card-header">
-              <button class="width-toggle-btn" @click="toggleSidebarWidth" :aria-label="sidebarExpanded ? '너비 좁히기' : '너비 넓히기'" title="너비 조절">
+              <button v-if="!showTemplatePanel" class="width-toggle-btn" @click="toggleSidebarWidth" :aria-label="sidebarExpanded ? '너비 좁히기' : '너비 넓히기'" title="너비 조절">
                 <svg v-if="!sidebarExpanded" width="16" height="16" viewBox="0 0 16 16" fill="none">
                   <path d="M1 8H15M15 8L11 4M15 8L11 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                 </svg>
@@ -65,55 +65,88 @@
                   <path d="M15 8H1M1 8L5 4M1 8L5 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                 </svg>
               </button>
-              <h3 class="card-title">템플릿 설정</h3>
+              <button v-else class="sidebar-back-btn" @click="showTemplatePanel = false" aria-label="뒤로">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                  <path d="M10 3L4 8L10 13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </button>
+              <h3 class="card-title">{{ showTemplatePanel ? '템플릿 선택' : '템플릿 설정' }}</h3>
               <button class="close-btn" @click="toggleSidebar" aria-label="사이드바 닫기">✕</button>
             </header>
 
-            <div class="card-body">
-              <button class="template-select-btn" @click="openModal">
-                <div class="tsb-icon">
-                  <svg width="18" height="18" viewBox="0 0 20 20" fill="none" aria-hidden="true">
-                    <rect x="2" y="2" width="7" height="7" rx="1.5" fill="currentColor" opacity="0.9"/>
-                    <rect x="11" y="2" width="7" height="7" rx="1.5" fill="currentColor" opacity="0.65"/>
-                    <rect x="2" y="11" width="7" height="7" rx="1.5" fill="currentColor" opacity="0.65"/>
-                    <rect x="11" y="11" width="7" height="7" rx="1.5" fill="currentColor" opacity="0.9"/>
-                  </svg>
+            <div class="sidebar-pages" :class="{ 'is-template-panel': showTemplatePanel }">
+              <!-- Page 1: 폼 -->
+              <div class="sidebar-page">
+                <div class="card-body">
+                  <button class="template-select-btn" @click="showTemplatePanel = true">
+                    <div class="tsb-icon">
+                      <svg width="18" height="18" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                        <rect x="2" y="2" width="7" height="7" rx="1.5" fill="currentColor" opacity="0.9"/>
+                        <rect x="11" y="2" width="7" height="7" rx="1.5" fill="currentColor" opacity="0.65"/>
+                        <rect x="2" y="11" width="7" height="7" rx="1.5" fill="currentColor" opacity="0.65"/>
+                        <rect x="11" y="11" width="7" height="7" rx="1.5" fill="currentColor" opacity="0.9"/>
+                      </svg>
+                    </div>
+                    <div class="tsb-body">
+                      <span class="tsb-label">템플릿</span>
+                      <span class="tsb-value">{{ selectedTemplateLabel }}</span>
+                    </div>
+                    <svg class="tsb-chevron" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                      <path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                  </button>
+                  <section class="sidebar-section">
+                    <h4 class="section-title">기본 설정</h4>
+                    <TemplateForm
+                      :template="selectedTemplate"
+                      v-model="formData"
+                      :templateConfig="getTemplateConfig(selectedTemplate)"
+                      :selectedHotspotId="selectedHotspotId"
+                      :visibleTopPositions="visibleTopPositions"
+                      :visibleScrollPosition="visibleScrollPosition"
+                      :sidebarExpanded="sidebarExpanded"
+                      :sidebarFocusInfo="sidebarFocusInfo"
+                      @select-hotspot="handleSelectHotspot"
+                      @select-image="handleSelectImage"
+                      @select-row="handleSelectRow"
+                      @select-product="handleSelectProduct"
+                      @active-row-change="handleActiveRowChange"
+                      @active-image-change="handleActiveImageChange"
+                      @device-change="currentDevice = $event"
+                    />
+                  </section>
                 </div>
-                <div class="tsb-body">
-                  <span class="tsb-label">템플릿</span>
-                  <span class="tsb-value">{{ selectedTemplateLabel }}</span>
-                </div>
-                <svg class="tsb-chevron" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-                  <path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-              </button>
-              <section class="sidebar-section">
-                <h4 class="section-title">기본 설정</h4>
-                <TemplateForm
-                  :template="selectedTemplate"
-                  v-model="formData"
-                  :templateConfig="getTemplateConfig(selectedTemplate)"
-                  :selectedHotspotId="selectedHotspotId"
-                  :visibleTopPositions="visibleTopPositions"
-                  :visibleScrollPosition="visibleScrollPosition"
-                  :sidebarExpanded="sidebarExpanded"
-                  :sidebarFocusInfo="sidebarFocusInfo"
-                  @select-hotspot="handleSelectHotspot"
-                  @select-image="handleSelectImage"
-                  @select-row="handleSelectRow"
-                  @select-product="handleSelectProduct"
-                  @active-row-change="handleActiveRowChange"
-                  @active-image-change="handleActiveImageChange"
-                  @device-change="currentDevice = $event"
-                />
-              </section>
-            </div>
+                <footer class="sidebar-footer-fixed">
+                  <button class="download-btn" @click="handleDownload">
+                    HTML 다운로드
+                  </button>
+                </footer>
+              </div>
 
-            <footer class="sidebar-footer-fixed">
-              <button class="download-btn" @click="handleDownload">
-                HTML 다운로드
-              </button>
-            </footer>
+              <!-- Page 2: 템플릿 선택 -->
+              <div class="sidebar-page">
+                <div class="card-body">
+                  <div class="template-panel-list">
+                    <button
+                      v-for="template in templates"
+                      :key="template.value"
+                      type="button"
+                      class="template-panel-item"
+                      :class="{ active: selectedTemplate === template.value }"
+                      @click="selectTemplateFromPanel(template.value)"
+                    >
+                      <div>
+                        <div class="template-panel-item-name">{{ template.name }}</div>
+                        <div v-if="template.description" class="template-panel-item-desc">{{ template.description }}</div>
+                      </div>
+                      <svg v-if="selectedTemplate === template.value" class="template-panel-check" width="16" height="16" viewBox="0 0 20 20" fill="none">
+                        <path d="M16.6667 5L7.50004 14.1667L3.33337 10" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
           </aside>
 
           <!-- PREVIEW -->
@@ -167,28 +200,19 @@
       </div>
     </div>
 
-    <!-- Template Select Modal -->
-    <TemplateSelectModal
-      :isOpen="isModalOpen"
-      :selectedTemplate="selectedTemplate"
-      :templates="templates"
-      @select="handleModalSelect"
-      @close="closeModal"
-    />
   </div>
 </template>
 
 <script>
 import TemplateForm from '../components/TemplateForm.vue'
 import PreviewFrame from '../components/PreviewFrame.vue'
-import TemplateSelectModal from '../modals/TemplateSelectModal.vue'
 import { downloadHtml } from '../utils/downloadHtml'
 import { imageDownloadHtml } from '../utils/ImageDownloadHtml'
 import { templateDefaults } from '../config/templateDefaults'
 
 export default {
   name: 'EmTemplates',
-  components: { TemplateForm, PreviewFrame, TemplateSelectModal },
+  components: { TemplateForm, PreviewFrame },
   data() {
     let _tpl = 'em-type-2'
     try {
@@ -207,7 +231,7 @@ export default {
       sidebarFocusInfo: null,
       sidebarOpen: true,
       sidebarExpanded: true,
-      isModalOpen: false,
+      showTemplatePanel: false,
       visibleTopPositions: { 1: 10, 2: 10 },
       visibleScrollPosition: { scrollTop: 0, viewportHeight: 400 },
       currentDevice: 'web',
@@ -439,14 +463,9 @@ export default {
     handlePreviewScroll() {
       this.updateVisiblePositions()
     },
-    openModal() {
-      this.isModalOpen = true
-    },
-    closeModal() {
-      this.isModalOpen = false
-    },
-    handleModalSelect(templateValue) {
+    selectTemplateFromPanel(templateValue) {
       this.selectedTemplate = templateValue
+      this.showTemplatePanel = false
     },
     updateBodyClass() {
       document.body.classList.remove('sidebar-closed', 'sidebar-expanded')
