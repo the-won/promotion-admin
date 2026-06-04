@@ -1603,6 +1603,10 @@ button {
    body: page-item-templates | page-em-templates | page-event-templates
    ============================================ */
 
+body.no-sidebar-transition {
+  transition: none !important;
+}
+
 body.page-item-templates,
 body.page-em-templates,
 body.page-event-templates {
@@ -2192,18 +2196,28 @@ body.page-event-templates.dark-mode .hero-section .template-tab.active {
 /* ── 브라우저 목업 ── */
 .browser-chrome {
   display: flex;
-  align-items: center;
-  gap: 10px;
-  background: #3d3d3e;
-  padding: 9px 14px;
+  flex-direction: column;
   border-radius: 8px 8px 0 0;
   margin-top: 30px;
+  overflow: hidden;
+}
+
+/* 타이틀 바 (3-dot + 탭) */
+.browser-title-bar {
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+  background: #262628;
+  padding: 8px 14px 0;
+  min-height: 36px;
 }
 
 .browser-dots {
   display: flex;
   gap: 6px;
   flex-shrink: 0;
+  align-self: center;
+  padding-bottom: 5px;
 }
 
 .dot {
@@ -2216,18 +2230,134 @@ body.page-event-templates.dark-mode .hero-section .template-tab.active {
 .dot-yellow { background: #fdbc40; }
 .dot-green  { background: #35cd4b; }
 
+.browser-tabs {
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+  flex: 1;
+  overflow: hidden;
+}
+
+.browser-tab {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: #3d3d3e;
+  border-radius: 6px 6px 0 0;
+  padding: 5px 10px 7px;
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.85);
+  max-width: 200px;
+  min-width: 120px;
+  flex-shrink: 0;
+}
+
+.browser-tab-favicon {
+  width: 12px;
+  height: 12px;
+  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.25);
+  flex-shrink: 0;
+}
+
+.browser-tab-title {
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  letter-spacing: 0.01em;
+}
+
+.browser-tab-close {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.4);
+  cursor: default;
+  flex-shrink: 0;
+  line-height: 1;
+  user-select: none;
+}
+
+.browser-new-tab {
+  font-size: 16px;
+  color: rgba(255, 255, 255, 0.4);
+  padding: 0 6px 5px;
+  cursor: default;
+  align-self: center;
+  line-height: 1;
+  user-select: none;
+}
+
+.browser-title-spacer {
+  flex-shrink: 0;
+  width: 60px;
+}
+
+/* 내비게이션 바 (주소창 + 버튼) */
+.browser-nav-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #3d3d3e;
+  padding: 7px 14px 9px;
+}
+
+.browser-nav-btns {
+  display: flex;
+  gap: 2px;
+  flex-shrink: 0;
+}
+
+.nav-btn {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.5);
+  cursor: default;
+  width: 24px;
+  text-align: center;
+  user-select: none;
+  line-height: 1;
+}
+
 .browser-url-bar {
   flex: 1;
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 4px;
-  padding: 3px 10px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 5px;
+  padding: 4px 10px;
+  overflow: hidden;
+}
+
+.browser-lock {
+  font-size: 10px;
+  opacity: 0.45;
+  flex-shrink: 0;
+  line-height: 1;
+}
+
+.browser-url-text {
+  flex: 1;
   font-size: 11px;
-  color: rgba(255, 255, 255, 0.45);
+  color: rgba(255, 255, 255, 0.6);
   text-align: center;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   letter-spacing: 0.01em;
+}
+
+.browser-toolbar-icons {
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.browser-star,
+.browser-more {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.4);
+  cursor: default;
+  user-select: none;
 }
 
 .is-browser-mockup .preview-card {
@@ -2248,7 +2378,7 @@ body.page-event-templates.dark-mode .hero-section .template-tab.active {
   border: 10px solid #1c1c1e;
   border-bottom: none;
   border-radius: 44px 44px 0 0;
-  padding: 14px 0 10px;
+  padding: 10px 0 12px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -2300,6 +2430,59 @@ body.page-event-templates.dark-mode .hero-section .template-tab.active {
 
 .is-phone-mockup .preview-body {
   padding: 0 !important;
+}
+
+/* 모바일 상태바 */
+.phone-status-bar {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 2px 20px;
+  box-sizing: border-box;
+  flex-shrink: 0;
+}
+
+.phone-time {
+  font-size: 13px;
+  font-weight: 600;
+  color: #ffffff;
+  letter-spacing: -0.3px;
+  font-family: -apple-system, 'SF Pro Display', 'Helvetica Neue', sans-serif;
+}
+
+.phone-status-icons {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.phone-signal {
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+  height: 10px;
+}
+
+.phone-signal i {
+  display: block;
+  width: 3px;
+  background: #ffffff;
+  border-radius: 1px;
+  font-style: normal;
+}
+
+.phone-signal i:nth-child(1) { height: 4px; }
+.phone-signal i:nth-child(2) { height: 6px; }
+.phone-signal i:nth-child(3) { height: 8px; }
+.phone-signal i:nth-child(4) { height: 10px; }
+
+.phone-5g {
+  font-size: 11px;
+  font-weight: 700;
+  color: #ffffff;
+  letter-spacing: -0.2px;
+  font-family: -apple-system, 'SF Pro Display', 'Helvetica Neue', sans-serif;
 }
 
 /* ── 이메일 목업 ── */

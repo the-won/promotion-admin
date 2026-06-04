@@ -9,13 +9,38 @@
 
     <!-- 브라우저 목업 상단 크롬 바 (웹 모드, 이메일 제외) -->
     <div v-if="deviceType === 'web' && pageContext !== 'email'" class="browser-chrome">
-      <div class="browser-dots">
-        <span class="dot dot-red"></span>
-        <span class="dot dot-yellow"></span>
-        <span class="dot dot-green"></span>
+      <!-- 타이틀 바: 3-dot + 탭 -->
+      <div class="browser-title-bar">
+        <div class="browser-dots">
+          <span class="dot dot-red"></span>
+          <span class="dot dot-yellow"></span>
+          <span class="dot dot-green"></span>
+        </div>
+        <div class="browser-tabs">
+          <div class="browser-tab">
+            <span class="browser-tab-favicon"></span>
+            <span class="browser-tab-title">promotion-preview</span>
+            <span class="browser-tab-close">&#215;</span>
+          </div>
+          <span class="browser-new-tab">&#43;</span>
+        </div>
+        <div class="browser-title-spacer"></div>
       </div>
-      <div class="browser-url-bar">
-        <span class="browser-url-text">promotion-preview</span>
+      <!-- 내비게이션 바: 뒤로/앞으로/새로고침 + 주소창 -->
+      <div class="browser-nav-bar">
+        <div class="browser-nav-btns">
+          <span class="nav-btn">&#8592;</span>
+          <span class="nav-btn">&#8594;</span>
+          <span class="nav-btn">&#8635;</span>
+        </div>
+        <div class="browser-url-bar">
+          <span class="browser-lock">&#128274;</span>
+          <span class="browser-url-text">mnservice.co.kr/promotion-preview</span>
+        </div>
+        <div class="browser-toolbar-icons">
+          <span class="browser-star">&#9733;</span>
+          <span class="browser-more">&#8942;</span>
+        </div>
       </div>
     </div>
 
@@ -43,8 +68,30 @@
       </div>
     </div>
 
-    <!-- 모바일 목업 상단 (스피커 + 카메라) -->
+    <!-- 모바일 목업 상단 (상태바 + 스피커 + 카메라) -->
     <div v-if="deviceType === 'mobile'" class="phone-top">
+      <!-- 상태바: 시간 + 5G/WiFi/배터리 -->
+      <div class="phone-status-bar">
+        <span class="phone-time">9:41</span>
+        <div class="phone-status-icons">
+          <span class="phone-signal"><i></i><i></i><i></i><i></i></span>
+          <span class="phone-5g">5G</span>
+          <span class="phone-wifi">
+            <svg width="15" height="11" viewBox="0 0 15 11" fill="none">
+              <circle cx="7.5" cy="10" r="1.5" fill="white"/>
+              <path d="M4.5 7C5.6 5.9 6.5 5.3 7.5 5.3s1.9.6 3 1.7" stroke="white" stroke-width="1.4" stroke-linecap="round"/>
+              <path d="M1.5 4C3.2 2.3 5.2 1.3 7.5 1.3S11.8 2.3 13.5 4" stroke="white" stroke-width="1.4" stroke-linecap="round"/>
+            </svg>
+          </span>
+          <span class="phone-battery">
+            <svg width="22" height="12" viewBox="0 0 22 12" fill="none">
+              <rect x="0.5" y="0.5" width="18" height="11" rx="3" stroke="white" stroke-opacity="0.35"/>
+              <rect x="2" y="2" width="13" height="8" rx="2" fill="white"/>
+              <path d="M20 4v4a2 2 0 0 0 0-4z" fill="white" fill-opacity="0.4"/>
+            </svg>
+          </span>
+        </div>
+      </div>
       <div class="phone-speaker"></div>
       <div class="phone-camera"></div>
     </div>

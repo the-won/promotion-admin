@@ -243,11 +243,16 @@ export default {
     document.body.classList.add('page-em-templates')
     window.addEventListener('scroll', this.handleWindowScroll, { passive: true })
     this.$nextTick(() => {
+      document.body.classList.remove('no-sidebar-transition')
       setTimeout(() => {
         this.updateVisiblePositions()
       }, 100)
     })
     this.updateBodyClass()
+  },
+  beforeRouteLeave(_to, _from, next) {
+    document.body.classList.add('no-sidebar-transition')
+    next()
   },
   beforeDestroy() {
     window.removeEventListener('scroll', this.handleWindowScroll)

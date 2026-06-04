@@ -151,6 +151,13 @@ export default {
   mounted() {
     document.body.classList.add('page-item-templates')
     this.updateBodyClass()
+    this.$nextTick(() => {
+      document.body.classList.remove('no-sidebar-transition')
+    })
+  },
+  beforeRouteLeave(_to, _from, next) {
+    document.body.classList.add('no-sidebar-transition')
+    next()
   },
   beforeDestroy() {
     document.body.classList.remove('page-item-templates', 'sidebar-closed', 'sidebar-expanded')

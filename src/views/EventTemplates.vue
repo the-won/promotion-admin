@@ -212,12 +212,13 @@ export default {
   },
   mounted() {
     document.body.classList.add('page-event-templates')
-    
+
     // window 스크롤 이벤트 리스너
     window.addEventListener('scroll', this.handleWindowScroll, { passive: true })
-    
+
     // PreviewFrame 내부 스크롤도 감지
     this.$nextTick(() => {
+      document.body.classList.remove('no-sidebar-transition')
       const previewFrame = this.$refs.previewFrame
       if (previewFrame && previewFrame.$el) {
         const previewBody = previewFrame.$el.querySelector('.preview-body')
@@ -225,13 +226,17 @@ export default {
           previewBody.addEventListener('scroll', this.handlePreviewScroll, { passive: true })
         }
       }
-      
+
       setTimeout(() => {
         this.updateVisiblePositions()
       }, 100)
     })
-    
+
     this.updateBodyClass()
+  },
+  beforeRouteLeave(_to, _from, next) {
+    document.body.classList.add('no-sidebar-transition')
+    next()
   },
   beforeDestroy() {
     window.removeEventListener('scroll', this.handleWindowScroll)
