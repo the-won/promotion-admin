@@ -84,6 +84,7 @@
                   <section class="sidebar-section">
                     <h4 class="section-title">기본 설정</h4>
                     <TemplateForm
+                      ref="templateForm"
                       :template="selectedTemplate"
                       v-model="formData"
                       :templateConfig="getTemplateConfig(selectedTemplate)"
@@ -174,20 +175,29 @@
       </div>
     </div>
 
+    <DownloadCheckModal
+      :isOpen="showDownloadCheck"
+      :issues="downloadIssues"
+      @close="showDownloadCheck = false"
+      @confirm="doDownload"
+      @goto="handleGotoIssue"
+    />
   </div>
 </template>
 
 <script>
 import TemplateForm from '../components/TemplateForm.vue'
 import PreviewFrame from '../components/PreviewFrame.vue'
+import DownloadCheckModal from '../components/DownloadCheckModal.vue'
 // import { downloadHtml } from '../utils/downloadHtml'
 // 새로운: imageDownloadHtml.js (이미지 분리용)
 import { imageDownloadHtml } from '../utils/ImageDownloadHtml'
 import { templateDefaults } from '../config/templateDefaults'
+import { validateFormData } from '../utils/formValidator'
 
 export default {
   name: 'EventTemplates',
-  components: { TemplateForm, PreviewFrame },
+  components: { TemplateForm, PreviewFrame, DownloadCheckModal },
   data() {
     let _tpl = 'em-type-3'
     try {
@@ -206,6 +216,8 @@ export default {
       sidebarOpen: true,
       sidebarExpanded: true,
       showTemplatePanel: false,
+      showDownloadCheck: false,
+      downloadIssues: [],
       visibleTopPositions: { 1: 10, 2: 10 },
       visibleScrollPosition: { scrollTop: 0, viewportHeight: 400 },
       currentDevice: 'web',
@@ -332,6 +344,13 @@ export default {
     },
     
     async handleDownload() {
+      this.downloadIssues = validateFormData(
+        this.selectedTemplate, this.formData, this.getTemplateConfig(this.selectedTemplate), this.currentDevice
+      )
+      this.showDownloadCheck = true
+    },
+    async doDownload() {
+      this.showDownloadCheck = false
       const bannerOptions = {
         showTopBanner: this.formData.showTopBanner || false,
         showBottomBanner: this.formData.showBottomBanner || {},
@@ -340,6 +359,12 @@ export default {
         noticeItems: this.formData.noticeItems || []
       }
       await imageDownloadHtml(this.selectedTemplate, this.formData, this.currentDevice, bannerOptions)
+    },
+    handleGotoIssue(issue) {
+      this.showDownloadCheck = false
+      this.$nextTick(() => {
+        this.$refs.templateForm?.navigateToIssue(issue)
+      })
     },
     
     handlePreviewImageClick({ refKey }) {

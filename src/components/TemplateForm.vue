@@ -789,6 +789,20 @@ export default {
         }
       }
     },
+    navigateToIssue({ tab, fieldKey, subIndex }) {
+      if (tab) this.activeTab = tab
+      this.$nextTick(() => {
+        // 탭 전환 후 activeSubItem watcher가 0으로 초기화한 뒤 덮어씀
+        if (subIndex !== undefined && subIndex !== null) {
+          this.activeSubItem = subIndex
+        }
+        if (fieldKey) {
+          this.$nextTick(() => {
+            this.scrollPrivacyFormFieldIntoView(fieldKey)
+          })
+        }
+      })
+    },
     scrollPrivacyFormFieldIntoView(fieldKey) {
       const root = this.$el
       if (!root || !fieldKey) return
