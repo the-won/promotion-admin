@@ -8,7 +8,7 @@
     >
       <div class="card-header">
         <span class="card-title">링크 그룹 {{ groupIndex + 1 }}</span>
-        <button @click.stop="removeGroup(group.id)" class="btn btn-danger btn-sm">그룹 삭제</button>
+        <button v-if="localGroups.length > 1" @click.stop="removeGroup(group.id)" class="btn btn-danger btn-sm">링크그룹 {{ groupIndex + 1 }} 삭제</button>
       </div>
 
       <!-- 링크 타입 선택 -->

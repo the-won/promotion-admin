@@ -211,8 +211,8 @@ export default {
       currentDevice: 'web',
       templates: [
         // { value: 'em-type-1', name: 'Type 1', icon: '', description: '기본 텍스트 템플릿' },
-        { value: 'em-type-3', name: 'Image Map', icon: '', description: '이벤트 이미지맵 템플릿' },
-        { value: 'event-imagelink', name: 'Image Link', icon: '', description: '이미지 링크 템플릿' }
+        { value: 'em-type-3', name: '영역 링크 이미지', icon: '', description: '특정 영역마다 링크 설정 템플릿' },
+        { value: 'event-imagelink', name: '전체 링크 이미지', icon: '', description: '이미지 전체가 하나의 링크 템플릿' }
       ]
     }
   },

@@ -267,7 +267,7 @@ export const templateDefaults = {
         {
           id: 'hg_t3_001',
           webImageUrl: 'https://org-i.benepia.co.kr/ckeditor/2026/04/29/d5dbf950-0954-4be6-8587-2b48ca13c57e.jpg',
-          webImageAlt: '웹 이미지 설명',
+          webImageAlt: '',
           mobileImageUrl: '',
           mobileImageAlt: '',
           hotspots: [
@@ -277,7 +277,7 @@ export const templateDefaults = {
         {
           id: 'hg_t3_002',
           webImageUrl: 'https://org-i.benepia.co.kr/ckeditor/2026/04/30/aff5fac6-cb27-4707-ab3d-a63503af7c40.jpg',
-          webImageAlt: '웹 이미지 설명',
+          webImageAlt: '',
           mobileImageUrl: '',
           mobileImageAlt: '',
           hotspots: [

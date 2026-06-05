@@ -14,8 +14,8 @@
       @click="selectRow(row.id, rowIndex)"
     >
       <div class="card-header">
-        <span class="card-title">이미지 행 {{ rowIndex + 1 }}</span>
-        <button @click.stop="removeRow(row.id)" class="btn btn-danger btn-sm">행 삭제</button>
+        <span class="card-title">이미지 {{ rowIndex + 1 }}</span>
+        <button v-if="localRows.length > 1" @click.stop="removeRow(row.id)" class="btn btn-danger btn-sm">이미지 {{ rowIndex + 1 }} 삭제</button>
       </div>
 
       <!-- 이미지 설정 -->

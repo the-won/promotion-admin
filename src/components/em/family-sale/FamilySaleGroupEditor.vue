@@ -18,7 +18,7 @@
           class="btn btn-danger btn-sm"
           :disabled="localGroups.length === 1"
         >
-          그룹 삭제
+          상품그룹 {{ groupIndex + 1 }} 삭제
         </button>
       </div>
 

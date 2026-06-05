@@ -12,7 +12,7 @@
           v-if="localGroups.length > 1"
           @click="removeGroup(group.id)"
           class="btn btn-danger btn-sm"
-        >그룹 삭제</button>
+        >링크그룹 {{ actualIdx + 1 }} 삭제</button>
       </div>
 
       <!-- ── 링크 설정 ── -->

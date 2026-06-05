@@ -13,7 +13,7 @@
           @click="removeGroup(group.id)"
           class="btn btn-danger btn-sm"
         >
-          그룹 삭제
+          이미지 {{ actualIdx + 1 }} 삭제
         </button>
       </div>
 

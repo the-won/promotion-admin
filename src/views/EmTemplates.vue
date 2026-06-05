@@ -237,8 +237,8 @@ export default {
       currentDevice: 'web',
       templates: [
         // { value: 'em-type-1', name: 'Type 1', description: '기본 텍스트 템플릿' },
-        { value: 'em-type-2', name: 'Image Link', description: '이미지 중심 템플릿' },
-        { value: 'em-type-imagemap', name: 'Use Map', description: '이미지맵 템플릿' },
+        { value: 'em-type-imagemap', name: '영역 링크 이미지', description: '특정 영역마다 링크 설정 템플릿' },
+        { value: 'em-type-2', name: '전체 링크 이미지', description: '이미지 전체가 하나의 링크 템플릿' },
         // { value: 'em-type-imagemap2', name: 'Use Map2', description: '이미지맵 템플릿2' },
         { value: 'em-type-coupon', name: '쿠폰혜택', description: '쿠폰혜택 템플릿' },
         { value: 'em-type-letter', name: '베네레터', description: '베네레터 템플릿' },

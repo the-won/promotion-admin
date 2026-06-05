@@ -100,12 +100,12 @@ export default {
           id: 'em-templates',
           label: 'EM Templates',
           templates: [
-            { value: 'em-type-2',        name: 'Image Link',      abbr: 'IL', color: '#5c61d4', desc: '이미지 클릭 시 링크로 연결되는 기본 이메일 템플릿' },
-            { value: 'em-type-imagemap', name: 'Use Map',         abbr: 'UM', color: '#3b5bdb', desc: '이미지맵으로 다중 클릭 영역을 지정하는 이메일' },
-            { value: 'em-type-coupon',   name: '쿠폰혜택',        abbr: '쿠', color: '#e67700', desc: '쿠폰 및 혜택 안내를 위한 이메일 템플릿' },
-            { value: 'em-type-letter',   name: '베네레터',        abbr: '베', color: '#0ca678', desc: '뉴스레터 형식의 베네피아 레터 이메일' },
-            { value: 'em-type-4',        name: '이패밀리샵',      abbr: '이', color: '#1c7ed6', desc: '이패밀리샵 상품 소개 이메일 템플릿' },
-            { value: 'em-type-5',        name: '비밀특가',        abbr: '비', color: '#c92a2a', desc: '시크릿세일 특가 상품 안내 이메일' },
+            { value: 'em-type-2', name: '전체 링크 이미지',  abbr: 'IL', color: '#5c61d4', desc: '이미지 클릭 시 링크로 연결되는 기본 이메일 템플릿' },
+            { value: 'em-type-imagemap', name: '영역 링크 이미지', abbr: 'UM', color: '#3b5bdb', desc: '이미지맵으로 다중 클릭 영역을 지정하는 이메일' },
+            { value: 'em-type-coupon', name: '쿠폰혜택',  abbr: '쿠', color: '#e67700', desc: '쿠폰 및 혜택 안내를 위한 이메일 템플릿' },
+            { value: 'em-type-letter', name: '베네레터', abbr: '베', color: '#0ca678', desc: '뉴스레터 형식의 베네피아 레터 이메일' },
+            { value: 'em-type-4',  name: '이패밀리샵', abbr: '이', color: '#1c7ed6', desc: '이패밀리샵 상품 소개 이메일 템플릿' },
+            { value: 'em-type-5', name: '비밀특가', abbr: '비', color: '#c92a2a', desc: '시크릿세일 특가 상품 안내 이메일' },
             { value: 'em-type-familysale', name: '패밀리세일',   abbr: '패', color: '#a61e4d', desc: '패밀리세일 상품 그룹 이메일 템플릿' }
           ]
         },
@@ -113,8 +113,8 @@ export default {
           id: 'event-templates',
           label: 'Event Templates',
           templates: [
-            { value: 'em-type-1', name: 'Type 1',    abbr: 'T1', color: '#2f9e44', desc: '기본 이벤트 페이지 템플릿' },
-            { value: 'em-type-3', name: 'Image Map', abbr: 'IM', color: '#0b7285', desc: '이미지맵 클릭 영역 이벤트 페이지' }
+            { value: 'em-type-1', name: '전체 링크 이미지',    abbr: 'T1', color: '#2f9e44', desc: '이미지 클릭 시 링크로 연결되는 이벤트 페이지' },
+            { value: 'em-type-3', name: '영역 링크 이미지', abbr: 'IM', color: '#0b7285', desc: '이미지맵 다중 클릭 영역을 지정하는 이벤트 페이지' }
           ]
         },
         {
