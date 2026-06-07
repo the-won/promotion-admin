@@ -21,6 +21,7 @@
         >
           <span class="nav-icon" aria-hidden="true" v-html="tabIcon(tab)"></span>
           <span class="nav-label">{{ tab }}</span>
+          <span v-if="tabIssueLevel(tab)" class="nav-issue-dot" :class="`is-${tabIssueLevel(tab)}`"></span>
         </button>
 
         <!-- 서브-nav: 이미지 / 이미지맵 탭에서만 표시 -->
@@ -36,6 +37,7 @@
           >
             <span class="sub-nav-bullet" aria-hidden="true">·</span>
             {{ label }}
+            <span v-if="subItemIssueLevel(activeTab || tabs[0], idx)" class="sub-issue-dot" :class="`is-${subItemIssueLevel(activeTab || tabs[0], idx)}`"></span>
           </button>
         </template>
       </nav>
@@ -50,7 +52,10 @@
           v-else-if="config.type !== 'image-map-areas' && !isHiddenByHotdealNav(config.type) && !isHiddenByCondition(config)"
           :key="key"
           class="form-group"
-          :class="{ 'full-width': isFullWidthField(config.type) || config.fullWidth }"
+          :class="{
+            'full-width': isFullWidthField(config.type) || config.fullWidth,
+            'has-error': issueMap[key] && issueMap[key].level === 'error'
+          }"
           :data-privacy-form-field="key"
         >
         <label v-if="!isHideLabelField(config.type)" class="form-label">{{ config.label }}</label>
@@ -426,7 +431,8 @@ export default {
     'sidebarExpanded',
     'privacyPreviewFocus',
     'sidebarFocusInfo',
-    'activeImageInfo'
+    'activeImageInfo',
+    'validationIssues'
   ],
   data() {
     return {
@@ -437,10 +443,31 @@ export default {
       selectedImageInfo: { groupId: null, imageId: null },
       selectedRowInfo: { rowId: null, rowIndex: null },
       selectedHotspotInfo: { hotspotId: null, groupIndex: null },
-      focusedHotspotGroupIdx: { idx: null, timestamp: null }
+      focusedHotspotGroupIdx: { idx: null, timestamp: null },
+      clearedIssueKeys: []
     }
   },
   computed: {
+    issueMap() {
+      const map = {}
+      ;(this.validationIssues || []).forEach(issue => {
+        if (issue.fieldKey && !this.clearedIssueKeys.includes(issue.fieldKey)) {
+          if (!map[issue.fieldKey] || issue.level === 'error') map[issue.fieldKey] = issue
+        }
+      })
+      return map
+    },
+    subIssueMap() {
+      const map = {}
+      ;(this.validationIssues || []).forEach(issue => {
+        if (issue.subIndex != null) {
+          if (!map[issue.tab]) map[issue.tab] = {}
+          const cur = map[issue.tab][issue.subIndex]
+          if (!cur || issue.level === 'error') map[issue.tab][issue.subIndex] = issue.level
+        }
+      })
+      return map
+    },
     tabs() {
       const seen = new Set()
       return Object.values(this.templateConfig || {})
@@ -552,12 +579,22 @@ export default {
       deep: true
     },
     localData: {
-      handler(val) {
+      handler(val, old) {
         if (JSON.stringify(val) !== JSON.stringify(this.value)) {
           this.$emit('input', { ...val })
         }
+        if (this.validationIssues && this.validationIssues.length && old) {
+          Object.keys(val).forEach(key => {
+            if (JSON.stringify(val[key]) !== JSON.stringify(old[key])) {
+              this.clearedIssueKeys = [...this.clearedIssueKeys, key]
+            }
+          })
+        }
       },
       deep: true
+    },
+    validationIssues() {
+      this.clearedIssueKeys = []
     },
     template() {
       this.activeTab = null
@@ -792,27 +829,63 @@ export default {
     navigateToIssue({ tab, fieldKey, subIndex }) {
       if (tab) this.activeTab = tab
       this.$nextTick(() => {
-        // 탭 전환 후 activeSubItem watcher가 0으로 초기화한 뒤 덮어씀
         if (subIndex !== undefined && subIndex !== null) {
           this.activeSubItem = subIndex
         }
-        if (fieldKey) {
-          this.$nextTick(() => {
-            this.scrollPrivacyFormFieldIntoView(fieldKey)
-          })
-        }
+        setTimeout(() => {
+          if (fieldKey) {
+            this._flashAndFocusField(fieldKey)
+          } else {
+            this._flashSubNavItem(subIndex)
+            this._focusFirstFormInput()
+          }
+        }, 50)
       })
     },
-    scrollPrivacyFormFieldIntoView(fieldKey) {
+    _flashAndFocusField(fieldKey) {
       const root = this.$el
       if (!root || !fieldKey) return
       const wrap = root.querySelector(`[data-privacy-form-field="${fieldKey}"]`)
       if (!wrap) return
-      wrap.scrollIntoView({ behavior: 'smooth', block: 'center' })
-      const focusable = wrap.querySelector('input, textarea, select')
+      const scrollContainer = wrap.closest('.card-body')
+      if (scrollContainer) {
+        const top = wrap.getBoundingClientRect().top - scrollContainer.getBoundingClientRect().top + scrollContainer.scrollTop - 80
+        scrollContainer.scrollTo({ top: Math.max(0, top), behavior: 'smooth' })
+      } else {
+        wrap.scrollIntoView({ behavior: 'smooth', block: 'center' })
+      }
+      const focusable = wrap.querySelector('input[type="text"], input[type="url"], input[type="email"], input[type="number"], textarea, select')
       if (focusable) focusable.focus()
-      wrap.classList.add('privacy-form-field-flash')
-      setTimeout(() => wrap.classList.remove('privacy-form-field-flash'), 1600)
+    },
+    _flashSubNavItem(idx) {
+      if (idx == null) return
+      const nav = this.$el && this.$el.querySelector('.form-nav')
+      if (!nav) return
+      const subItems = nav.querySelectorAll('.form-nav-sub-item')
+      const target = subItems[idx]
+      if (!target) return
+      target.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
+    },
+    _focusFirstFormInput() {
+      const root = this.$el
+      if (!root) return
+      const focusable = root.querySelector(
+        'input[type="text"], input[type="url"], input[type="email"], input[type="number"], textarea'
+      )
+      if (!focusable) return
+      focusable.focus()
+    },
+    scrollPrivacyFormFieldIntoView(fieldKey) {
+      this._flashAndFocusField(fieldKey)
+    },
+    tabIssueLevel(tab) {
+      const issues = this.validationIssues || []
+      if (issues.some(i => (i.tab === tab) && i.level === 'error' && !this.clearedIssueKeys.includes(i.fieldKey))) return 'error'
+      if (issues.some(i => (i.tab === tab) && !this.clearedIssueKeys.includes(i.fieldKey))) return 'warning'
+      return null
+    },
+    subItemIssueLevel(tab, idx) {
+      return (this.subIssueMap[tab] || {})[idx] || null
     },
     tabIcon(tab) {
       const icons = {
@@ -1506,13 +1579,25 @@ export default {
   border-color: var(--color-primary, #0071e3);
 }
 
-.privacy-form-field-flash {
-  animation: privacyFormFlash 1.5s ease;
-  outline: 2px solid #6366f1;
-  outline-offset: 2px;
+/* 탭 네비 이슈 dot */
+.nav-issue-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  margin-top: 1px;
 }
-@keyframes privacyFormFlash {
-  from { outline-color: #6366f1; }
-  to { outline-color: transparent; }
+.nav-issue-dot.is-error   { background: #dc2626; }
+.nav-issue-dot.is-warning { background: #d97706; }
+
+/* 서브 네비 이슈 dot */
+.sub-issue-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  margin-left: auto;
 }
+.sub-issue-dot.is-error   { background: #dc2626; }
+.sub-issue-dot.is-warning { background: #d97706; }
 </style>

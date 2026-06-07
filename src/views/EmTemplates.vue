@@ -107,6 +107,7 @@
                       :visibleScrollPosition="visibleScrollPosition"
                       :sidebarExpanded="sidebarExpanded"
                       :sidebarFocusInfo="sidebarFocusInfo"
+                      :validationIssues="validationIssues"
                       @select-hotspot="handleSelectHotspot"
                       @select-image="handleSelectImage"
                       @select-row="handleSelectRow"
@@ -244,6 +245,7 @@ export default {
       showTemplatePanel: false,
       showDownloadCheck: false,
       downloadIssues: [],
+      validationIssues: [],
       visibleTopPositions: { 1: 10, 2: 10 },
       visibleScrollPosition: { scrollTop: 0, viewportHeight: 400 },
       currentDevice: 'web',
@@ -334,9 +336,11 @@ export default {
       return templateDefaults[templateName]
     },
     async handleDownload() {
-      this.downloadIssues = validateFormData(
+      const issues = validateFormData(
         this.selectedTemplate, this.formData, this.getTemplateConfig(this.selectedTemplate)
       )
+      this.downloadIssues = issues
+      this.validationIssues = issues
       this.showDownloadCheck = true
     },
     async doDownload() {
@@ -350,9 +354,9 @@ export default {
     },
     handleGotoIssue(issue) {
       this.showDownloadCheck = false
-      this.$nextTick(() => {
+      setTimeout(() => {
         this.$refs.templateForm?.navigateToIssue(issue)
-      })
+      }, 300)
     },
     handleSelectHotspot(id) {
       this.selectedHotspotId = id

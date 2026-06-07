@@ -34,30 +34,30 @@ export function validateFormData(templateKey, formData, templateConfig, deviceTy
         const side = isMobile ? group.mobile : group.web
         const sideLabel = isMobile ? '모바일' : '웹'
         if (side && side.linkType && !hasLinkDataForType(side.linkType, side.linkData)) {
-          issues.push({ level: 'warning', label: `링크 그룹 ${n} — ${sideLabel} 링크`, message: '링크 데이터가 설정되지 않았습니다', tab: '이미지링크', fieldKey: null, subIndex: gi })
+          issues.push({ level: 'warning', label: `링크 그룹 ${n} — ${sideLabel} 링크`, message: '링크 데이터가 설정되지 않았습니다', tab: '이미지링크', fieldKey: 'imageLinkGroups', subIndex: gi })
         }
 
         // 이미지 URL + 대체텍스트 체크
         if (Array.isArray(group.images)) {
           group.images.forEach((img, ii) => {
             if (!img.url || !String(img.url).trim()) {
-              issues.push({ level: 'warning', label: `링크 그룹 ${n} — 이미지 ${ii + 1} URL`, message: '이미지 URL이 비어 있습니다', tab: '이미지링크', fieldKey: null, subIndex: gi })
+              issues.push({ level: 'warning', label: `링크 그룹 ${n} — 이미지 ${ii + 1} URL`, message: '이미지 URL이 비어 있습니다', tab: '이미지링크', fieldKey: 'imageLinkGroups', subIndex: gi })
             }
             if (!img.alt || !String(img.alt).trim()) {
-              issues.push({ level: 'warning', label: `링크 그룹 ${n} — 이미지 ${ii + 1} 대체텍스트`, message: '대체텍스트(alt)가 비어 있습니다', tab: '이미지링크', fieldKey: null, subIndex: gi })
+              issues.push({ level: 'warning', label: `링크 그룹 ${n} — 이미지 ${ii + 1} 대체텍스트`, message: '대체텍스트(alt)가 비어 있습니다', tab: '이미지링크', fieldKey: 'imageLinkGroups', subIndex: gi })
             }
           })
         }
       } else {
         // EmTemplate (em-type-2, em-type-coupon 등): 단일 linkData
         if (!group.web && !group.mobile && !hasLinkDataForType(group.linkType, group.linkData)) {
-          issues.push({ level: 'warning', label: `이미지 링크 그룹 ${n}`, message: '링크가 설정되지 않았습니다', tab: '이미지', fieldKey: null, subIndex: gi })
+          issues.push({ level: 'warning', label: `이미지 링크 그룹 ${n}`, message: '링크가 설정되지 않았습니다', tab: '이미지', fieldKey: 'imageLinkGroups', subIndex: gi })
         }
         // 이미지 URL 체크
         if (Array.isArray(group.images)) {
           group.images.forEach((img, ii) => {
             if (!String(img.url || '').trim()) {
-              issues.push({ level: 'warning', label: `이미지 링크 그룹 ${n} — 이미지 ${ii + 1} URL`, message: '이미지 URL이 비어 있습니다', tab: '이미지', fieldKey: null, subIndex: gi })
+              issues.push({ level: 'warning', label: `이미지 링크 그룹 ${n} — 이미지 ${ii + 1} URL`, message: '이미지 URL이 비어 있습니다', tab: '이미지', fieldKey: 'imageLinkGroups', subIndex: gi })
             }
           })
         }
@@ -74,11 +74,11 @@ export function validateFormData(templateKey, formData, templateConfig, deviceTy
       if (isMobile) {
         // 모바일: getImageAlt 폴백과 동일하게 mobileImageAlt || webImageAlt 기준
         if (!String(group.mobileImageAlt || group.webImageAlt || '').trim()) {
-          issues.push({ level: 'warning', label: `핫스팟 그룹 ${n} — 모바일 이미지 대체텍스트`, message: '대체텍스트 없음', tab: '이미지맵', fieldKey: null, subIndex: gi })
+          issues.push({ level: 'warning', label: `핫스팟 그룹 ${n} — 모바일 이미지 대체텍스트`, message: '대체텍스트 없음', tab: '이미지맵', fieldKey: 'hotspotGroups', subIndex: gi })
         }
       } else {
         if (!String(group.webImageAlt || '').trim()) {
-          issues.push({ level: 'warning', label: `핫스팟 그룹 ${n} — 웹 이미지 대체텍스트`, message: '대체텍스트 없음', tab: '이미지맵', fieldKey: null, subIndex: gi })
+          issues.push({ level: 'warning', label: `핫스팟 그룹 ${n} — 웹 이미지 대체텍스트`, message: '대체텍스트 없음', tab: '이미지맵', fieldKey: 'hotspotGroups', subIndex: gi })
         }
       }
 
@@ -87,14 +87,14 @@ export function validateFormData(templateKey, formData, templateConfig, deviceTy
         group.hotspots.forEach((hs, hi) => {
           // 핫스팟 자체 대체텍스트 (디바이스 무관)
           if (!String(hs.alt || '').trim()) {
-            issues.push({ level: 'warning', label: `핫스팟 ${n}-${hi + 1} 대체텍스트`, message: '대체텍스트(alt)가 비어 있습니다', tab: '이미지맵', fieldKey: null, subIndex: gi })
+            issues.push({ level: 'warning', label: `핫스팟 ${n}-${hi + 1} 대체텍스트`, message: '대체텍스트(alt)가 비어 있습니다', tab: '이미지맵', fieldKey: 'hotspotGroups', subIndex: gi })
           }
 
           // 현재 디바이스 링크 데이터
           const side = isMobile ? hs.mobile : hs.web
           if (side && side.linkType && !hasLinkDataForType(side.linkType, side.linkData)) {
             const sideLabel = isMobile ? '모바일' : '웹'
-            issues.push({ level: 'warning', label: `핫스팟 ${n}-${hi + 1} (${sideLabel} 링크)`, message: '링크 데이터가 설정되지 않았습니다', tab: '이미지맵', fieldKey: null, subIndex: gi })
+            issues.push({ level: 'warning', label: `핫스팟 ${n}-${hi + 1} (${sideLabel} 링크)`, message: '링크 데이터가 설정되지 않았습니다', tab: '이미지맵', fieldKey: 'hotspotGroups', subIndex: gi })
           }
         })
       }
@@ -105,7 +105,7 @@ export function validateFormData(templateKey, formData, templateConfig, deviceTy
   if (Array.isArray(formData.imageMapRows)) {
     formData.imageMapRows.forEach((row, ri) => {
       if (!String(row.imageUrl || '').trim()) {
-        issues.push({ level: 'warning', label: `이미지맵 행 ${ri + 1} — 이미지 URL`, message: '이미지 URL이 비어 있습니다', tab: '이미지맵', fieldKey: null, subIndex: ri })
+        issues.push({ level: 'warning', label: `이미지맵 행 ${ri + 1} — 이미지 URL`, message: '이미지 URL이 비어 있습니다', tab: '이미지맵', fieldKey: 'imageMapRows', subIndex: ri })
       }
     })
   }
@@ -123,7 +123,7 @@ export function validateFormData(templateKey, formData, templateConfig, deviceTy
           label: `이미지맵 영역 ${ai + 1} 링크`,
           message: '링크 데이터가 설정되지 않았습니다',
           tab: '이미지맵',
-          fieldKey: null,
+          fieldKey: 'imageMapRows',
           subIndex: rowIdx >= 0 ? rowIdx : null
         })
       }

@@ -2672,3 +2672,9 @@ body.page-event-templates.dark-mode .hero-section .template-tab.active {
   /* background: #f0f0f5; */
   min-height: 300px;
 }
+
+/* Validation indicators */
+.form-group.has-error .form-label { color: #dc2626; }
+.form-group.has-error .form-input,
+.form-group.has-error .form-textarea { border-bottom-color: #dc2626; }
+
